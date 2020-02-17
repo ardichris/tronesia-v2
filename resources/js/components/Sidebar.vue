@@ -70,7 +70,7 @@
                     <li class="nav-item">
                         <a class="nav-link">
                         <i class="fas fa-dolly nav-icon"></i>
-                        <p><router-link :to="{ name: 'teachers.data' }">Master Barang</router-link></p>
+                        <p><router-link :to="{ name: 'barang.data' }">Master Barang</router-link></p>
                         </a>
                     </li>
                     </ul>
