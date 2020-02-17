@@ -60816,7 +60816,9 @@ var render = function() {
                       _vm._v(" "),
                       _c("li", { staticClass: "nav-item" }, [
                         _c("a", { staticClass: "nav-link" }, [
-                          _c("i", { staticClass: "fas fa-venus nav-icon" }),
+                          _c("i", {
+                            staticClass: "fas fa-sign-in-alt nav-icon"
+                          }),
                           _vm._v(" "),
                           _c(
                             "p",
@@ -60836,7 +60838,9 @@ var render = function() {
                       _vm._v(" "),
                       _c("li", { staticClass: "nav-item" }, [
                         _c("a", { staticClass: "nav-link" }, [
-                          _c("i", { staticClass: "fas fa-mars nav-icon" }),
+                          _c("i", {
+                            staticClass: "fas fa-toilet-paper nav-icon"
+                          }),
                           _vm._v(" "),
                           _c(
                             "p",
@@ -60846,7 +60850,7 @@ var render = function() {
                                 {
                                   attrs: { to: { name: "pelanggarans.data" } }
                                 },
-                                [_vm._v("Barang Keluar")]
+                                [_vm._v("Pemakaian Barang")]
                               )
                             ],
                             1

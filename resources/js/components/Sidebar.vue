@@ -121,14 +121,14 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link">
-                                <i class="fas fa-venus nav-icon"></i>
+                                <i class="fas fa-sign-in-alt nav-icon"></i>
                                 <p><router-link :to="{ name: 'pelanggarans.data' }">Barang Masuk</router-link></p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link">
-                                <i class="fas fa-mars nav-icon"></i>
-                                <p><router-link :to="{ name: 'pelanggarans.data' }">Barang Keluar</router-link></p>
+                                <i class="fas fa-toilet-paper nav-icon"></i>
+                                <p><router-link :to="{ name: 'pelanggarans.data' }">Pemakaian Barang</router-link></p>
                             </a>
                         </li>
                     </ul>
