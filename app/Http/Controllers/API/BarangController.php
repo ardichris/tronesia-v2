@@ -52,4 +52,33 @@ class BarangController extends Controller
                         ]);
         return response()->json(['status' => 'success'], 200);
     }
+
+    public function edit($id)
+    {
+        $barang = Barang::whereBarang_kode($id)->first();
+        return response()->json(['status' => 'success', 'data' => $barang], 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'barang_nama' => 'required',
+            'barang_satuan' => 'required',
+            'barang_lokasi' => 'required',
+        ]);
+        
+        $barang = Barang::whereBarang_kode($id)->first();
+        $barang->update(['barang_nama' => $request->barang_nama,
+                         'barang_satuan' => $request->barang_satuan,
+                         'barang_lokasi' => $request->barang_lokasi
+                        ]);
+        return response()->json(['status' => 'success'], 200);
+    }
+
+    public function destroy($id)
+    {
+        $barang = Barang::find($id);
+        $barang->delete();
+        return response()->json(['status' => 'success'], 200);
+    }
 }

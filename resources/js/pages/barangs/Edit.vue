@@ -2,10 +2,10 @@
     <div class="col-md-12">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">Edit Mapel</h3>
+                <h3 class="panel-title">Edit Barang</h3>
             </div>
             <div class="panel-body">
-                <mapel-form></mapel-form>
+                <barang-form></barang-form>
                 <div class="form-group">
                     <button class="btn btn-primary btn-sm btn-flat" @click.prevent="submit">
                         <i class="fa fa-save"></i> Update
@@ -22,31 +22,25 @@
 </template>
 <script>
     import { mapActions, mapState } from 'vuex'
-    import FormMapel from './Form.vue'
+    import FormBarang from './Form.vue'
     export default {
-        name: 'EditMapel',
+        name: 'EditBarang',
         created() {
-            //SEBELUM COMPONENT DI-RENDER KITA MELAKUKAN REQUEST KESERVER
-            //BERDASARKAN CODE YANG ADA DI URL
-            this.editMapel(this.$route.params.id)
+            this.editBarang(this.$route.params.id)
         },
         methods: {
-            ...mapActions('mapel', ['editMapel', 'updateMapel']),
+            ...mapActions('barang', ['editBarang', 'updateBarang']),
             submit() {
-                //KETIKA TOMBOL UPDATE DI MAKA AKAN MENGIRIMKAN PERMINTAAN
-                //UNTUK MENGUBAH DATA BERDASARKAN CODE YANG DIKIRIMKAN
-                this.updateMapel(this.$route.params.id).then(() => {
-                    //APABILA BERHASIL MAKA AKAN DI-DIRECT KEMBALI
-                    //KE HALAMAN /outlets
-                    this.$router.push({ name: 'mapel.data' })
+                this.updateBarang(this.$route.params.id).then(() => {
+                    this.$router.push({ name: 'barang.data' })
                 })
             },
             back() {
-                    this.$router.push({ name: 'mapel.data' })
+                    this.$router.push({ name: 'barang.data' })
             }
         },
         components: {
-            'mapel-form': FormMapel
+            'barang-form': FormBarang
         },
     }
 </script>

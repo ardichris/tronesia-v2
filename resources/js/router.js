@@ -6,7 +6,7 @@ import store from './store.js'
 import IndexBarang from './pages/barangs/Index.vue'
 import DataBarang from './pages/barangs/Barang.vue'
 import AddBarang from './pages/barangs/Add.vue'
-//import EditBarang from './pages/barangs/Edit.vue'
+import EditBarang from './pages/barangs/Edit.vue'
 import IndexSiswa from './pages/siswas/Index.vue'
 import DataSiswa from './pages/siswas/Siswa.vue'
 import AddSiswa from './pages/siswas/Add.vue'
@@ -98,10 +98,10 @@ const router = new Router({
                     component: AddBarang,
                     meta: { title: 'Tambah Barang' }
                 },
-                /*{
+                {
                     path: 'view/:id',
                     name: 'barang.view',
-                    component: ViewBarang,
+                    component: EditBarang,
                     meta: { title: 'View Barang' }
                 },
                 {
@@ -109,7 +109,7 @@ const router = new Router({
                     name: 'barang.edit',
                     component: EditBarang,
                     meta: { title: 'Edit Barang' }
-                }*/
+                }
             ]
         },
         {

@@ -53,11 +53,9 @@ const actions = {
     },
     submitBarang({ dispatch, commit, state }) {
         return new Promise((resolve, reject) => {
-            console.log(state.barang);
             $axios.post(`/barang`, state.barang)
             .then((response) => {
                 dispatch('getBarang').then(() => {
-                    console.log(response.data)
                     resolve(response.data)
 
                 })
