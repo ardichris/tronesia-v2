@@ -6,7 +6,7 @@ const state = () => ({
     barang: {
         barang_kode: '',
         barang_nama: '',
-        barang_stok: 0,
+        barang_stok: '',
         barang_satuan: '',
         barang_lokasi: ''
     },

@@ -57,8 +57,8 @@ export default {
     data() {
         return {
             fields: [
-                { key: 'barang_kode', label: 'Kode' },
-                { key: 'barang_nama', label: 'Nama Barang' },
+                { key: 'barang_kode', label: 'Kode', sortable: true },
+                { key: 'barang_nama', label: 'Nama Barang', sortable: true },
                 { key: 'barang_stok', label: 'Stok' },
                 { key: 'barang_lokasi', label: 'Lokasi' },
                 { key: 'actions', label: 'Aksi' }

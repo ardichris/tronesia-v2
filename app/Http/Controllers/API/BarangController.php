@@ -10,7 +10,7 @@ use App\Http\Resources\BarangCollection;
 class BarangController extends Controller
 {
     public function index(Request $request) {
-        $barangs = Barang::orderBy('barang_nama', 'DESC');
+        $barangs = Barang::orderBy('barang_nama', 'ASC');
         if (request()->q != '') {
             $barangs = $barangs->where('barang_nama', 'LIKE', '%' . request()->q . '%')
                              ->orWhere('barang_kode', 'LIKE', '%' . request()->q . '%');

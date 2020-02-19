@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/mapel', 'API\MapelController')->except(['create', 'show']);
     Route::resource('/kelas', 'API\KelasController')->except(['create', 'show']);
     Route::resource('/barang', 'API\BarangController')->except(['create', 'show']);
+    Route::resource('/pemakaianbarang', 'API\PemakaianBarangController')->except(['create', 'show']);
     Route::resource('/kompetensi', 'API\KompetensiController')->except(['create','show']);
     Route::put('/jurnal/changestatus/{kode}','API\JurnalController@changeJMstatus');
     Route::resource('/jurnal', 'API\JurnalController')->except(['create', 'show']);

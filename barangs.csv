@@ -1,0 +1,4 @@
+"id";"barang_kode";"barang_nama";"barang_stok";"barang_satuan";"barang_lokasi";"created_at";"updated_at"
+"1";"B0001";"Spidol Snowman";"100";"galon";"Ruang TU";NULL;"2020-02-17 08:47:51"
+"2";"B0002";"Jersey Bola";"5";"pcs";"Gudang Pojok";"2020-02-17 23:49:54";"2020-02-17 23:49:54"
+"3";"B0003";"Yessy";"1";"galon";"Ruang TU";"2020-02-18 00:01:59";"2020-02-18 00:01:59"

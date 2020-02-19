@@ -128,7 +128,7 @@
                         <li class="nav-item">
                             <a class="nav-link">
                                 <i class="fas fa-toilet-paper nav-icon"></i>
-                                <p><router-link :to="{ name: 'pelanggarans.data' }">Pemakaian Barang</router-link></p>
+                                <p><router-link :to="{ name: 'pemakaianbarang.data' }">Pemakaian Barang</router-link></p>
                             </a>
                         </li>
                     </ul>

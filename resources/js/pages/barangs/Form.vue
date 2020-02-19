@@ -18,6 +18,7 @@
                 </span>
             </div>
             <p class="text-danger" v-if="errors.barang_stok">{{ errors.barang_stok[0] }}</p>
+            <p class="text-danger" v-if="errors.barang_satuan">{{ errors.barang_satuan[0] }}</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.barang_lokasi }">
             <label for="">Lokasi Barang</label>

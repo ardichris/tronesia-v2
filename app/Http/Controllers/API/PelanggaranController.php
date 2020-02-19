@@ -16,16 +16,10 @@ class PelanggaranController extends Controller
             $filter = $request->q;
             $siswas = Siswa::where('siswa_nama','like','%'.$filter.'%')->select('id')->get();
             $pelanggarans = Pelanggaran::where('siswa_id',$siswas)
-            /*$pelanggarans = Pelanggaran::whereHas('siswa',function ($q) use ($filter) {
-                            $q->where('siswa_nama','like','%'.$filter.'%');
-                            })*/
-            //$pelanggarans = Pelanggaran::with(['siswa'=>function($q) use ($filter) {
-                //$q->where('siswa_nama','like','%'.$filter.'%');
+
                             ->orderBy('created_at', 'DESC');
-            //$pelanggarans = $pelanggarans->where('siswa_id', 'LIKE', '%' . request()->q . '%'); //MAKA BUAT FUNGSI FILTERING DATA BERDASARKAN NAME
         }
         else{
-            //GET PELANGGARAN DENGAN MENGURUTKAN DATANYA BERDASARKAN CREATED_AT
             $pelanggarans = Pelanggaran::with(['siswa'])->orderBy('created_at', 'DESC');
         }
         return new PelanggaranCollection($pelanggarans->paginate(10));

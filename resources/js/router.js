@@ -7,6 +7,10 @@ import IndexBarang from './pages/barangs/Index.vue'
 import DataBarang from './pages/barangs/Barang.vue'
 import AddBarang from './pages/barangs/Add.vue'
 import EditBarang from './pages/barangs/Edit.vue'
+import IndexPemakaianBarang from './pages/pemakaianbarangs/Index.vue'
+import DataPemakaianBarang from './pages/pemakaianbarangs/PemakaianBarang.vue'
+import AddPemakaianBarang from './pages/pemakaianbarangs/Add.vue'
+import EditPemakaianBarang from './pages/pemakaianbarangs/Edit.vue'
 import IndexSiswa from './pages/siswas/Index.vue'
 import DataSiswa from './pages/siswas/Siswa.vue'
 import AddSiswa from './pages/siswas/Add.vue'
@@ -79,6 +83,37 @@ const router = new Router({
                     component: SetPermission,
                     meta: { title: 'Set Permissions' }
                 },
+            ]
+        },
+        {
+            path: '/pemakaianbarang',
+            component: IndexPemakaianBarang,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'pemakaianbarang.data',
+                    component: DataPemakaianBarang,
+                    meta: { title: 'Daftar Pemakaian' }
+                },
+                {
+                    path: 'add',
+                    name: 'pemakaianbarang.add',
+                    component: AddPemakaianBarang,
+                    meta: { title: 'Tambah Barang' }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'pemakaianbarang.view',
+                    component: EditPemakaianBarang,
+                    meta: { title: 'View Barang' }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'pemakaianbarang.edit',
+                    component: EditPemakaianBarang,
+                    meta: { title: 'Edit Barang' }
+                }
             ]
         },
         {
