@@ -59,8 +59,8 @@ export default {
         }
     },
     destroyed() {
-        this.CLEAR_FORM()
-        //store.commit('CLEAR_ERRORS')
+        this.CLEAR_FORM(),
+        this.$store.commit('CLEAR_ERRORS')
     },
     components: {
         vSelect

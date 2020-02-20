@@ -3037,7 +3037,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   destroyed: function destroyed() {
-    this.CLEAR_FORM();
+    this.CLEAR_FORM(), this.$store.commit('CLEAR_ERRORS');
   },
   components: {
     vSelect: vue_select__WEBPACK_IMPORTED_MODULE_1___default.a
@@ -6429,7 +6429,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   destroyed: function destroyed() {
-    this.CLEAR_FORM(); //store.commit('CLEAR_ERRORS')
+    this.CLEAR_FORM(), this.$store.commit('CLEAR_ERRORS');
   },
   components: {
     vSelect: vue_select__WEBPACK_IMPORTED_MODULE_1___default.a
@@ -63186,7 +63186,7 @@ var render = function() {
         _vm._v(" "),
         _vm.errors.siswa_id
           ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.siswa_id[0]))
+              _vm._v("Siswa belum dipilih")
             ])
           : _vm._e()
       ],
@@ -63226,7 +63226,7 @@ var render = function() {
         _vm._v(" "),
         _vm.errors.absensi_tanggal
           ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.absensi_tanggal[0]))
+              _vm._v("Tanggal belum diisi")
             ])
           : _vm._e()
       ]
@@ -63258,7 +63258,7 @@ var render = function() {
         _vm._v(" "),
         _vm.errors.absensi_jenis
           ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.absensi_jenis[0]))
+              _vm._v("Absensi belum dipilih")
             ])
           : _vm._e()
       ],
@@ -63298,7 +63298,7 @@ var render = function() {
         _vm._v(" "),
         _vm.errors.absensi_keterangan
           ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.absensi_keterangan[0]))
+              _vm._v("Keterangan wajib diisi")
             ])
           : _vm._e()
       ]

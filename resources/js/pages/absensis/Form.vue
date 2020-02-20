@@ -16,12 +16,12 @@
                     {{ option.siswa_nama }} - {{ option.siswa_kelas }}
                 </template>
             </v-select>
-            <p class="text-danger" v-if="errors.siswa_id">{{ errors.siswa_id[0] }}</p>
+            <p class="text-danger" v-if="errors.siswa_id">Siswa belum dipilih</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.absensi_tanggal }">
             <label for="">Tanggal</label>
             <input type="date" class="form-control" v-model="absensi.absensi_tanggal" :readonly="$route.name == 'absensi.view'">
-            <p class="text-danger" v-if="errors.absensi_tanggal">{{ errors.absensi_tanggal[0] }}</p>
+            <p class="text-danger" v-if="errors.absensi_tanggal">Tanggal belum diisi</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.absensi_jenis }">
             <label for="">Jenis Absensi</label>
@@ -31,12 +31,12 @@
                         :value="absensi.absensi_jenis"
                         >
             </v-select>
-            <p class="text-danger" v-if="errors.absensi_jenis">{{ errors.absensi_jenis[0] }}</p>
+            <p class="text-danger" v-if="errors.absensi_jenis">Absensi belum dipilih</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.absensi_keterangan }">
             <label for="">Keterangan</label>
             <input type="text" class="form-control" v-model="absensi.absensi_keterangan" :readonly="$route.name == 'absensi.view'">
-            <p class="text-danger" v-if="errors.absensi_keterangan">{{ errors.absensi_keterangan[0] }}</p>
+            <p class="text-danger" v-if="errors.absensi_keterangan">Keterangan wajib diisi</p>
         </div>
     </div>
 </template>
@@ -65,7 +65,8 @@ export default {
         }
     },
     destroyed() {
-            this.CLEAR_FORM()
+            this.CLEAR_FORM(),
+            this.$store.commit('CLEAR_ERRORS')
     },
     components: {
         vSelect
