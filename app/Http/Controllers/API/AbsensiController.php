@@ -7,25 +7,18 @@ use Illuminate\Http\Request;
 use App\Http\Resources\AbsensiCollection;
 use App\Absensi;
 use App\Siswa;
-use DB;
 
 class AbsensiController extends Controller
 {
     public function index(Request $request)
     {
-        if (request()->q != '') { //JIKA DATA PENCARIAN ADA
-            $filter = $request->q;
-            //$siswas = Siswa::where('siswa_nama','like','%'.$filter.'%')->select('id')->get();
-            //$absensis = Absensi::where('siswa_id',$siswas)
-            $absensis = DB::table('absensis')
-                            ->leftJoin('siswas','absensis.siswa_id','=','siswas.id')
-                            ->where('siswas.siswa_nama','like','%'.$filter.'%')
-                            ->orderBy('absensis.created_at', 'DESC');
-           
-        }
-        else{
-            //GET PELANGGARAN DENGAN MENGURUTKAN DATANYA BERDASARKAN CREATED_AT
-            $absensis = Absensi::with(['siswa'])->orderBy('created_at', 'DESC');
+        if (request()->q != '') { 
+            $filter = request()->q;
+            $siswas = Siswa::where('siswa_nama','like','%'.$filter.'%')->select('id')->first();
+            $absensis = Absensi::with('siswa')
+                                       ->where('siswa_id','=',$siswas->id);                   
+        } else {
+            $absensis = Absensi::with('siswa',)->orderBy('created_at', 'DESC');
         }
         return new AbsensiCollection($absensis->paginate(10));
     }
@@ -77,7 +70,7 @@ class AbsensiController extends Controller
 
     public function edit($id)
     {
-        $absensi = Absensi::with(['siswa'])->whereAbsensi_kode($id)->first();
+        $absensi = Absensi::with('siswa')->whereAbsensi_kode($id)->first();
         return response()->json(['status' => 'success', 'data' => $absensi], 200);
     }
 

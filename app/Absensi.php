@@ -12,4 +12,9 @@ class Absensi extends Model
     {
         return $this->belongsTo(Siswa::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

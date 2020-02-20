@@ -4,7 +4,37 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <router-link :to="{ name: 'pelanggarans.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
+                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('add-modal')">Tambah</b-button>
+                        <b-modal id="add-modal">
+                            <template v-slot:modal-title>
+                                Tambah Pelanggaran
+                            </template>
+                            <pelanggaran-form></pelanggaran-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block @click="simpanPLbaru"
+                                >
+                                    Simpan
+                                </b-button>
+                            </template>
+                        </b-modal>
+                        <b-modal id="edit-modal">
+                            <template v-slot:modal-title>
+                                Edit Pelanggaran
+                            </template>
+                            <pelanggaran-form></pelanggaran-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block @click="editPLlama"
+                                >
+                                    Update
+                                </b-button>
+                            </template>
+                        </b-modal>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -20,9 +50,11 @@
                     <template v-slot:cell(siswa_id)="row">
                         {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
                     </template>
+                    <template v-slot:cell(user_id)="row">
+                        {{row.item.user.name}}
+                    </template>
                     <template v-slot:cell(actions)="row">
-                        <router-link :to="{ name: 'pelanggarans.view', params: {id: row.item.pelanggaran_kode} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
-                        <router-link :to="{ name: 'pelanggarans.edit', params: {id: row.item.pelanggaran_kode} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
+                        <button class="btn btn-warning btn-sm" @click="editPL(row.item.pelanggaran_kode)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-danger btn-sm" @click="deletePelanggaran(row.item.id)"><i class="fa fa-trash"></i></button>
                     </template>
                 </b-table>
@@ -51,21 +83,22 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import FormPelanggaran from './Form.vue'
 
 export default {
     name: 'DataPelanggaran',
     created() {
-        this.getPelanggarans() //LOAD DATA PELANGGAN KETIKA COMPONENT DI-LOAD
+        this.getPelanggarans()
     },
     data() {
         return {
-            //FIELD YANG AKAN DITAMPILKAN PADA TABLE DIATAS
             fields: [
                 { key: 'pelanggaran_kode', label: 'Kode' },
                 { key: 'siswa_id', label: 'Nama Lengkap' },
                 { key: 'pelanggaran_tanggal', label: 'Tanggal' },
                 { key: 'pelanggaran_jenis', label: 'Jenis' },
                 { key: 'pelanggaran_keterangan', label: 'Keterangan' },
+                { key: 'user_id', label: 'User' },
                 { key: 'actions', label: 'Aksi' }
             ],
             search: ''
@@ -73,9 +106,8 @@ export default {
     },
     computed: {
         ...mapState('pelanggaran', {
-            pelanggarans: state => state.pelanggarans //MENGAMBIL DATA PELANGGARAN DARI STATE PELANGGARAN
+            pelanggarans: state => state.pelanggarans
         }),
-        //MENGAMBIL DATA PAGE DARI STATE PELANGGARAN
         page: {
             get() {
                 return this.$store.state.pelanggaran.page
@@ -87,15 +119,32 @@ export default {
     },
     watch: {
         page() {
-            this.getPelanggarans() //KETIKA VALUE PAGE TERJADI PERUBAHAN, MAKA REQUEST DATA BARU
+            this.getPelanggarans()
         },
         search() {
-            this.getPelanggarans(this.search) //KETIKA VALUE SEARCH TERJADI PERUBAHAN, MAKA REQUEST DATA BARU
+            this.getPelanggarans(this.search)
         }
     },
     methods: {
-        ...mapActions('pelanggaran', ['getPelanggarans', 'removePelanggaran']), 
-        //KETIKA TOMBOL HAPUS DITEKAN MAKA FUNGSI INI AKAN DIJALANKAN
+        ...mapActions('pelanggaran', ['submitPelanggaran','updatePelanggaran','editPelanggaran','getPelanggarans', 'removePelanggaran']),
+        simpanPLbaru(){
+            this.submitPelanggaran().then(() => {
+                this.$bvModal.hide('add-modal'),
+                this.getPelanggarans()
+            })
+        },
+        editPLlama(){
+            this.updatePelanggaran().then(() => {
+                this.$bvModal.hide('edit-modal'),
+                this.getPelanggarans()
+            })
+        },
+        editPL(kode){
+            this.editPelanggaran({
+                kode: kode
+            }),
+            this.$bvModal.show('edit-modal')
+        },
         deletePelanggaran(id) {
             this.$swal({
                 title: 'Kamu Yakin?',
@@ -111,6 +160,9 @@ export default {
                 }
             })
         }
+    },
+    components: {
+        'pelanggaran-form': FormPelanggaran
     }
 }
 </script>

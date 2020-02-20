@@ -151,12 +151,6 @@ export default {
             }),
             this.$bvModal.show('edit-modal')
         },
-        onSearch(search, loading) {
-            this.getBarang({
-                search: search,
-                loading: loading
-            })
-        },
         deletePemakaianbarang(kode) {
             this.$swal({
                 title: 'Kamu Yakin?',

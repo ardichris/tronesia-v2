@@ -7,20 +7,19 @@ use Illuminate\Http\Request;
 use App\Http\Resources\PelanggaranCollection;
 use App\Pelanggaran;
 use App\Siswa;
+use DB;
 
 class PelanggaranController extends Controller
 {
     public function index(Request $request)
     {
-        if (request()->q != '') { //JIKA DATA PENCARIAN ADA
-            $filter = $request->q;
-            $siswas = Siswa::where('siswa_nama','like','%'.$filter.'%')->select('id')->get();
-            $pelanggarans = Pelanggaran::where('siswa_id',$siswas)
-
-                            ->orderBy('created_at', 'DESC');
-        }
-        else{
-            $pelanggarans = Pelanggaran::with(['siswa'])->orderBy('created_at', 'DESC');
+        if (request()->q != '') { 
+            $filter = request()->q;
+            $siswas = Siswa::where('siswa_nama','like','%'.$filter.'%')->select('id')->first();
+            $pelanggarans = Pelanggaran::with(['siswa','user'])
+                                       ->where('siswa_id','=',$siswas->id);                   
+        } else {
+            $pelanggarans = Pelanggaran::with(['siswa','user'])->orderBy('created_at', 'DESC');
         }
         return new PelanggaranCollection($pelanggarans->paginate(10));
     }
@@ -29,7 +28,6 @@ class PelanggaranController extends Controller
     {
         //BUAT VALIDASI DATA
         $this->validate($request, [
-            //'pelanggaran_kode' => 'required|string|unique:pelanggarans,pelanggaran_kode',
             'siswa_id' => 'required',
             'pelanggaran_tanggal' => 'required|date',
             'pelanggaran_jenis' => 'required|string|max:150',
@@ -43,9 +41,9 @@ class PelanggaranController extends Controller
         } else {
             if(substr($lastId->pelanggaran_kode,2,6) == date('y').date('m').date('d')) {
             $counter = (int)substr($lastId->pelanggaran_kode,-3) + 1 ;
-                if($counter < 100) {
+                if($counter < 10) {
                     $kode = "PL".date('y').date('m').date('d')."00".$counter;
-                } elseif ($counter < 10) {
+                } elseif ($counter < 100) {
                     $kode = "PL".date('y').date('m').date('d')."0".$counter;
                 } else {
                     $kode = "PL".date('y').date('m').date('d').$counter;
@@ -54,12 +52,14 @@ class PelanggaranController extends Controller
                 $kode = "PL".date('y').date('m').date('d')."001";
             } 
         }
+        $user = $request->user();
         Pelanggaran::create([
             'pelanggaran_kode' => $kode,
             'siswa_id' => $request->siswa_id['id'],
             'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
             'pelanggaran_jenis' => $request->pelanggaran_jenis,
-            'pelanggaran_keterangan' => $request->pelanggaran_keterangan
+            'pelanggaran_keterangan' => $request->pelanggaran_keterangan,
+            'user_id' => $user->id
         ]);
         return response()->json(['status' => 'success']);
     }
@@ -70,27 +70,27 @@ class PelanggaranController extends Controller
         return response()->json(['status' => 'success', 'data' => $pelanggaran], 200);
     }
 
-    public function edit($id)
+    public function edit($kode)
     {
-        $pelanggaran = Pelanggaran::with(['siswa'])->wherePelanggaran_kode($id)->first();
+        $pelanggaran = Pelanggaran::with(['siswa','user'])->wherePelanggaran_kode($kode)->first();
         return response()->json(['status' => 'success', 'data' => $pelanggaran], 200);
     }
 
     public function update(Request $request, $id)
     {
-        /*$this->validate($request, [
+        $this->validate($request, [
             'siswa_id' => 'required',
             'pelanggaran_tanggal' => 'required|date',
-            'pelanggaran_jenis' => 'required|string|max:150',
-            'pelanggaran_keterangan' => 'required|string'
-        ]);*/
+            'pelanggaran_jenis' => 'required|string|max:150'
+        ]);
+        $user = $request->user();
         $pelanggaran = Pelanggaran::wherePelanggaran_kode($request->pelanggaran_kode);
-        //$pelanggaran->update([$request->except('Pelanggaran_kode')]);
-
         $pelanggaran->update(['siswa_id' => $request->siswa_id['id'],
-        'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
-        'pelanggaran_jenis' => $request->pelanggaran_jenis,
-        'pelanggaran_keterangan' => $request->pelanggaran_keterangan]);
+                              'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
+                              'pelanggaran_jenis' => $request->pelanggaran_jenis,
+                              'pelanggaran_keterangan' => $request->pelanggaran_keterangan,
+                              'user_id' => $user->id
+                            ]);
         return response()->json(['status' => 'success'], 200);
     }
 

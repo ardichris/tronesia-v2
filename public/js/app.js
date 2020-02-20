@@ -5921,11 +5921,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 
@@ -5937,13 +5932,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     pelanggaran: function pelanggaran(state) {
       return state.pelanggaran;
-    } //MENGAMBIL STATE PELANGGARAN
-
+    }
   })),
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('pelanggaran', ['getSiswas', 'editPelanggaran']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])('pelanggaran', ['CLEAR_FORM']), {
-    //PANGGIL MUTATIONS CLEAR_FORM
     onSearch: function onSearch(search, loading) {
-      //KITA AKAN ME-REQUEST DATA CUSTOMER BERDASARKAN KEYWORD YG DIMINTA
       this.getSiswas({
         search: search,
         loading: loading
@@ -5951,8 +5943,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   destroyed: function destroyed() {
-    //FORM DI BERSIHKAN
-    this.CLEAR_FORM();
+    this.CLEAR_FORM(), this.$store.commit('CLEAR_ERRORS');
   },
   components: {
     vSelect: vue_select__WEBPACK_IMPORTED_MODULE_1___default.a
@@ -6018,6 +6009,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _Form_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Form.vue */ "./resources/js/pages/pelanggarans/Form.vue");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -6075,15 +6067,47 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'DataPelanggaran',
   created: function created() {
-    this.getPelanggarans(); //LOAD DATA PELANGGAN KETIKA COMPONENT DI-LOAD
+    this.getPelanggarans();
   },
   data: function data() {
     return {
-      //FIELD YANG AKAN DITAMPILKAN PADA TABLE DIATAS
       fields: [{
         key: 'pelanggaran_kode',
         label: 'Kode'
@@ -6100,6 +6124,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         key: 'pelanggaran_keterangan',
         label: 'Keterangan'
       }, {
+        key: 'user_id',
+        label: 'User'
+      }, {
         key: 'actions',
         label: 'Aksi'
       }],
@@ -6109,10 +6136,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('pelanggaran', {
     pelanggarans: function pelanggarans(state) {
       return state.pelanggarans;
-    } //MENGAMBIL DATA PELANGGARAN DARI STATE PELANGGARAN
-
+    }
   }), {
-    //MENGAMBIL DATA PAGE DARI STATE PELANGGARAN
     page: {
       get: function get() {
         return this.$store.state.pelanggaran.page;
@@ -6124,16 +6149,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   }),
   watch: {
     page: function page() {
-      this.getPelanggarans(); //KETIKA VALUE PAGE TERJADI PERUBAHAN, MAKA REQUEST DATA BARU
+      this.getPelanggarans();
     },
     search: function search() {
-      this.getPelanggarans(this.search); //KETIKA VALUE SEARCH TERJADI PERUBAHAN, MAKA REQUEST DATA BARU
+      this.getPelanggarans(this.search);
     }
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('pelanggaran', ['getPelanggarans', 'removePelanggaran']), {
-    //KETIKA TOMBOL HAPUS DITEKAN MAKA FUNGSI INI AKAN DIJALANKAN
-    deletePelanggaran: function deletePelanggaran(id) {
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('pelanggaran', ['submitPelanggaran', 'updatePelanggaran', 'editPelanggaran', 'getPelanggarans', 'removePelanggaran']), {
+    simpanPLbaru: function simpanPLbaru() {
       var _this = this;
+
+      this.submitPelanggaran().then(function () {
+        _this.$bvModal.hide('add-modal'), _this.getPelanggarans();
+      });
+    },
+    editPLlama: function editPLlama() {
+      var _this2 = this;
+
+      this.updatePelanggaran().then(function () {
+        _this2.$bvModal.hide('edit-modal'), _this2.getPelanggarans();
+      });
+    },
+    editPL: function editPL(kode) {
+      this.editPelanggaran({
+        kode: kode
+      }), this.$bvModal.show('edit-modal');
+    },
+    deletePelanggaran: function deletePelanggaran(id) {
+      var _this3 = this;
 
       this.$swal({
         title: 'Kamu Yakin?',
@@ -6145,12 +6188,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         confirmButtonText: 'Iya, Lanjutkan!'
       }).then(function (result) {
         if (result.value) {
-          _this.removePelanggaran(id); //JIKA SETUJU MAKA PERMINTAAN HAPUS AKAN DI EKSEKUSI
+          _this3.removePelanggaran(id); //JIKA SETUJU MAKA PERMINTAAN HAPUS AKAN DI EKSEKUSI
 
         }
       });
     }
-  })
+  }),
+  components: {
+    'pelanggaran-form': _Form_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  }
 });
 
 /***/ }),
@@ -6672,12 +6718,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.editPemakaianbarang({
         kode: kode
       }), this.$bvModal.show('edit-modal');
-    },
-    onSearch: function onSearch(search, loading) {
-      this.getBarang({
-        search: search,
-        loading: loading
-      });
     },
     deletePemakaianbarang: function deletePemakaianbarang(kode) {
       var _this2 = this;
@@ -67214,51 +67254,6 @@ var render = function() {
       "div",
       {
         staticClass: "form-group",
-        class: { "has-error": _vm.errors.pelanggaran_kode },
-        attrs: { hidden: _vm.$route.name == "pelanggarans.add" }
-      },
-      [
-        _c("label", { attrs: { for: "" } }, [_vm._v("Kode Register")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.pelanggaran.pelanggaran_kode,
-              expression: "pelanggaran.pelanggaran_kode"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: {
-            type: "text",
-            readonly:
-              _vm.$route.name == "pelanggarans.edit" ||
-              _vm.$route.name == "pelanggarans.view"
-          },
-          domProps: { value: _vm.pelanggaran.pelanggaran_kode },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.pelanggaran, "pelanggaran_kode", $event.target.value)
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.pelanggaran_kode
-          ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.pelanggaran_kode[0]))
-            ])
-          : _vm._e()
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "form-group",
         class: { "has-error": _vm.errors.siswa_id }
       },
       [
@@ -67309,7 +67304,7 @@ var render = function() {
         _vm._v(" "),
         _vm.errors.siswa_id
           ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.siswa_id[0]))
+              _vm._v("Siswa belum dipilih")
             ])
           : _vm._e()
       ],
@@ -67356,7 +67351,7 @@ var render = function() {
         _vm._v(" "),
         _vm.errors.pelanggaran_tanggal
           ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.pelanggaran_tanggal[0]))
+              _vm._v("Tanggal belum diisi")
             ])
           : _vm._e()
       ]
@@ -67397,7 +67392,7 @@ var render = function() {
         _vm._v(" "),
         _vm.errors.pelanggaran_jenis
           ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.pelanggaran_jenis[0]))
+              _vm._v("Pelanggaran belum dipilih")
             ])
           : _vm._e()
       ],
@@ -67444,7 +67439,7 @@ var render = function() {
         _vm._v(" "),
         _vm.errors.pelanggaran_keterangan
           ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.pelanggaran_keterangan[0]))
+              _vm._v("Keterangan belum diisi")
             ])
           : _vm._e()
       ]
@@ -67531,12 +67526,110 @@ var render = function() {
             { staticClass: "col-sm-12 col-md-6" },
             [
               _c(
-                "router-link",
+                "b-button",
                 {
-                  staticClass: "btn btn-primary btn-sm btn-flat",
-                  attrs: { to: { name: "pelanggarans.add" } }
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal",
+                      value: "add-modal",
+                      expression: "'add-modal'"
+                    }
+                  ],
+                  attrs: { variant: "primary", size: "sm" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$bvModal.show("add-modal")
+                    }
+                  }
                 },
                 [_vm._v("Tambah")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  attrs: { id: "add-modal" },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "modal-title",
+                      fn: function() {
+                        return [
+                          _vm._v(
+                            "\n                            Tambah Pelanggaran\n                        "
+                          )
+                        ]
+                      },
+                      proxy: true
+                    },
+                    {
+                      key: "modal-footer",
+                      fn: function() {
+                        return [
+                          _c(
+                            "b-button",
+                            {
+                              staticClass: "mt-3",
+                              attrs: { variant: "success", block: "" },
+                              on: { click: _vm.simpanPLbaru }
+                            },
+                            [
+                              _vm._v(
+                                "\n                                Simpan\n                            "
+                              )
+                            ]
+                          )
+                        ]
+                      },
+                      proxy: true
+                    }
+                  ])
+                },
+                [_vm._v(" "), _c("pelanggaran-form")],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  attrs: { id: "edit-modal" },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "modal-title",
+                      fn: function() {
+                        return [
+                          _vm._v(
+                            "\n                            Edit Pelanggaran\n                        "
+                          )
+                        ]
+                      },
+                      proxy: true
+                    },
+                    {
+                      key: "modal-footer",
+                      fn: function() {
+                        return [
+                          _c(
+                            "b-button",
+                            {
+                              staticClass: "mt-3",
+                              attrs: { variant: "success", block: "" },
+                              on: { click: _vm.editPLlama }
+                            },
+                            [
+                              _vm._v(
+                                "\n                                Update\n                            "
+                              )
+                            ]
+                          )
+                        ]
+                      },
+                      proxy: true
+                    }
+                  ])
+                },
+                [_vm._v(" "), _c("pelanggaran-form")],
+                1
               )
             ],
             1
@@ -67599,31 +67692,28 @@ var render = function() {
                 }
               },
               {
+                key: "cell(user_id)",
+                fn: function(row) {
+                  return [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(row.item.user.name) +
+                        "\n                "
+                    )
+                  ]
+                }
+              },
+              {
                 key: "cell(actions)",
                 fn: function(row) {
                   return [
                     _c(
-                      "router-link",
-                      {
-                        staticClass: "btn btn-success btn-sm",
-                        attrs: {
-                          to: {
-                            name: "pelanggarans.view",
-                            params: { id: row.item.pelanggaran_kode }
-                          }
-                        }
-                      },
-                      [_c("i", { staticClass: "fa fa-eye" })]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "router-link",
+                      "button",
                       {
                         staticClass: "btn btn-warning btn-sm",
-                        attrs: {
-                          to: {
-                            name: "pelanggarans.edit",
-                            params: { id: row.item.pelanggaran_kode }
+                        on: {
+                          click: function($event) {
+                            return _vm.editPL(row.item.pelanggaran_kode)
                           }
                         }
                       },
@@ -92869,6 +92959,12 @@ var actions = {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/absensi/".concat(kode), state.absensi).then(function (response) {
         commit('CLEAR_FORM');
         resolve(response.data);
+      })["catch"](function (error) {
+        if (error.response.status == 422) {
+          commit('SET_ERRORS', error.response.data.errors, {
+            root: true
+          });
+        }
       });
     });
   },
@@ -93936,9 +94032,7 @@ __webpack_require__.r(__webpack_exports__);
 var state = function state() {
   return {
     pelanggarans: [],
-    //STATE UNTUK MENAMPUNG DATA PELANGGARANS
     siswas: [],
-    //STATE INI UNTUK FORM ADD DAN EDIT NANTINYA
     pelanggaran: {
       pelanggaran_kode: '',
       siswa_id: '',
@@ -93951,18 +94045,15 @@ var state = function state() {
 };
 
 var mutations = {
-  //MUTATIONS UNTUK ASSIGN DATA PELANGGARAN KE DALAM STATE PELANGGARAN
   DATA_SISWA: function DATA_SISWA(state, payload) {
     state.siswas = payload;
   },
   ASSIGN_DATA: function ASSIGN_DATA(state, payload) {
     state.pelanggarans = payload;
   },
-  //MENGUBAH STATE PAGE
   SET_PAGE: function SET_PAGE(state, payload) {
     state.page = payload;
   },
-  //MENGUBAH STATE PELANGGARAN
   ASSIGN_FORM: function ASSIGN_FORM(state, payload) {
     state.pelanggaran = {
       pelanggaran_kode: payload.pelanggaran_kode,
@@ -93972,7 +94063,6 @@ var mutations = {
       pelanggaran_keterangan: payload.pelanggaran_keterangan
     };
   },
-  //RESET STATE PELANGGARAN
   CLEAR_FORM: function CLEAR_FORM(state) {
     state.pelanggaran = {
       pelanggaran_kode: '',
@@ -93991,7 +94081,6 @@ var actions = {
     payload.loading(true);
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/siswas?page=".concat(state.page, "&q=").concat(search)).then(function (response) {
-        //JIKA BERHASIL, SIMPAN DATANYA KE STATE
         commit('DATA_SISWA', response.data);
         payload.loading(false);
         resolve(response.data);
@@ -94003,20 +94092,17 @@ var actions = {
         state = _ref2.state;
     var search = typeof payload != 'undefined' ? payload : '';
     return new Promise(function (resolve, reject) {
-      //REQUEST DATA PELANGGARAN  DENGAN MENGIRIMKAN PARAMETER PAGE YG SEDANG AKTIF DAN VALUE PENCARIAN
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/pelanggaran?page=".concat(state.page, "&q=").concat(search)).then(function (response) {
-        commit('ASSIGN_DATA', response.data); //JIKA DATA DITERIMA, SIMPAN DATA KEDALMA MUTATIONS
-
+        commit('ASSIGN_DATA', response.data);
         resolve(response.data);
       });
     });
   },
   editPelanggaran: function editPelanggaran(_ref3, payload) {
     var commit = _ref3.commit;
+    var kode = payload.kode;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
-      _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/pelanggaran/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
+      _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/pelanggaran/".concat(kode, "/edit")).then(function (response) {
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
@@ -94027,15 +94113,11 @@ var actions = {
         commit = _ref4.commit,
         state = _ref4.state;
     return new Promise(function (resolve, reject) {
-      console.log(state.pelanggaran); //MENGIRIMKAN REQUEST KE BACKEND DENGAN DATA YANG DIDAPATKAN DARI STATE PELANGGARAN
-
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/pelanggaran", state.pelanggaran).then(function (response) {
-        //APABILA BERHASIL MAKA LOAD DATA PELANGGARAN UNTUK MENGAMBIL DATA TERBARU
         dispatch('getPelanggarans').then(function () {
           resolve(response.data);
         });
       })["catch"](function (error) {
-        //JIKA TERJADI ERROR VALIDASI, ASSIGN ERROR TERSEBUT KE DALAM STATE ERRORS
         if (error.response.status == 422) {
           commit('SET_ERRORS', error.response.data.errors, {
             root: true
@@ -94051,15 +94133,19 @@ var actions = {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/pelanggaran/".concat(payload), state.pelanggaran).then(function (response) {
         commit('CLEAR_FORM');
         resolve(response.data);
+      })["catch"](function (error) {
+        if (error.response.status == 422) {
+          commit('SET_ERRORS', error.response.data.errors, {
+            root: true
+          });
+        }
       });
     });
   },
   viewPelanggaran: function viewPelanggaran(_ref6, payload) {
     var commit = _ref6.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/pelanggaran/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
@@ -94068,10 +94154,7 @@ var actions = {
   removePelanggaran: function removePelanggaran(_ref7, payload) {
     var dispatch = _ref7.dispatch;
     return new Promise(function (resolve, reject) {
-      //MENGIRIM PERMINTAAN KE SERVER UNTUK MENGHAPUS DATA
-      //DENGAN METHOD DELETE DAN ID SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"]("/pelanggaran/".concat(payload)).then(function (response) {
-        //APABILA BERHASIL, FETCH DATA TERBARU DARI SERVER
         dispatch('getPelanggarans').then(function () {
           return resolve();
         });

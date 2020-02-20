@@ -1,10 +1,5 @@
 <template>
     <div class>
-        <div class="form-group" :hidden="$route.name == 'pelanggarans.add'" :class="{ 'has-error': errors.pelanggaran_kode }">
-            <label for="">Kode Register</label>
-            <input type="text" class="form-control" v-model="pelanggaran.pelanggaran_kode" :readonly="$route.name == 'pelanggarans.edit' || $route.name == 'pelanggarans.view'">
-            <p class="text-danger" v-if="errors.pelanggaran_kode">{{ errors.pelanggaran_kode[0] }}</p>
-        </div>
         <div class="form-group" :class="{ 'has-error': errors.siswa_id }">
             <label for="">Nama Siswa</label>
             <v-select :options="siswas.data"
@@ -21,12 +16,12 @@
                     {{ option.siswa_nama }} - {{ option.siswa_kelas }}
                 </template>
             </v-select>
-            <p class="text-danger" v-if="errors.siswa_id">{{ errors.siswa_id[0] }}</p>
+            <p class="text-danger" v-if="errors.siswa_id">Siswa belum dipilih</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.pelanggaran_tanggal }">
             <label for="">Tanggal</label>
             <input type="date" class="form-control" v-model="pelanggaran.pelanggaran_tanggal" :readonly="$route.name == 'pelanggarans.view'">
-            <p class="text-danger" v-if="errors.pelanggaran_tanggal">{{ errors.pelanggaran_tanggal[0] }}</p>
+            <p class="text-danger" v-if="errors.pelanggaran_tanggal">Tanggal belum diisi</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.pelanggaran_jenis }">
             <label for="">Jenis Pelanggaran</label>
@@ -36,12 +31,12 @@
                         :value="pelanggaran.pelanggaran_jenis"
                         >
             </v-select>
-            <p class="text-danger" v-if="errors.pelanggaran_jenis">{{ errors.pelanggaran_jenis[0] }}</p>
+            <p class="text-danger" v-if="errors.pelanggaran_jenis">Pelanggaran belum dipilih</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.pelanggaran_keterangan }">
             <label for="">Keterangan</label>
             <input type="text" class="form-control" v-model="pelanggaran.pelanggaran_keterangan" :readonly="$route.name == 'pelanggarans.view'">
-            <p class="text-danger" v-if="errors.pelanggaran_keterangan">{{ errors.pelanggaran_keterangan[0] }}</p>
+            <p class="text-danger" v-if="errors.pelanggaran_keterangan">Keterangan belum diisi</p>
         </div>
     </div>
 </template>
@@ -53,17 +48,16 @@ import 'vue-select/dist/vue-select.css'
 export default {
     name: 'FormPelanggarans',
     computed: {
-        ...mapState(['errors']), //MENGAMBIL STATE ERRORS
+        ...mapState(['errors']),
         ...mapState('pelanggaran', {
             siswas: state => state.siswas,
-            pelanggaran: state => state.pelanggaran //MENGAMBIL STATE PELANGGARAN
+            pelanggaran: state => state.pelanggaran
         })
     },
     methods: {
         ...mapActions('pelanggaran', ['getSiswas', 'editPelanggaran']),
-        ...mapMutations('pelanggaran', ['CLEAR_FORM']),//PANGGIL MUTATIONS CLEAR_FORM
+        ...mapMutations('pelanggaran', ['CLEAR_FORM']),
         onSearch(search, loading) {
-            //KITA AKAN ME-REQUEST DATA CUSTOMER BERDASARKAN KEYWORD YG DIMINTA
             this.getSiswas({
                 search: search,
                 loading: loading
@@ -71,8 +65,8 @@ export default {
         }
     },
     destroyed() {
-            //FORM DI BERSIHKAN
-            this.CLEAR_FORM()
+            this.CLEAR_FORM(),
+            this.$store.commit('CLEAR_ERRORS')
     },
     components: {
         vSelect
