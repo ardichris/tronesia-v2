@@ -135,9 +135,10 @@ export default {
     methods: {
         ...mapActions('pemakaianbarang', ['updatePemakaianbarang','editPemakaianbarang','submitPemakaianbarang','getPemakaianbarang', 'removePemakaianbarang','getBarang']),
         simpanPBbaru(){
-            this.submitPemakaianbarang(),
-            this.$bvModal.hide('add-modal'),
-            this.getPemakaianbarang()
+            this.submitPemakaianbarang().then(() => {
+                this.$bvModal.hide('add-modal'),
+                this.getPemakaianbarang()
+            })
         },
         editPBsaja(){
             this.updatePemakaianbarang(),
@@ -156,7 +157,7 @@ export default {
                 loading: loading
             })
         },
-        deletePemakaianbarang(id) {
+        deletePemakaianbarang(kode) {
             this.$swal({
                 title: 'Kamu Yakin?',
                 text: "Tindakan ini akan menghapus secara permanent!",
@@ -167,7 +168,7 @@ export default {
                 confirmButtonText: 'Iya, Lanjutkan!'
             }).then((result) => {
                 if (result.value) {
-                    this.removePemakaianbarang(id)
+                    this.removePemakaianbarang(kode)
                 }
             })
         }

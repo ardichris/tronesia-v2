@@ -1,6 +1,6 @@
 <template>
     <div class="d-block">
-        <div class="form-group">
+        <div class="form-group" :class="{ 'has-error': errors.barang }">
             <label for="">Nama Barang</label>
             <v-select :options="barangs.data"
                 v-model="pemakaianbarang.barang"
@@ -15,18 +15,21 @@
                     {{ option.barang_nama }} - {{ option.barang_stok }} {{ option.barang_satuan }}
                 </template>
             </v-select>
+            <p class="text-danger" v-if="errors.barang">Barang harus dipilih</p>
         </div>
-        <div class="form-group">
+        <div class="form-group" :class="{ 'has-error': errors.pb_tanggal }">
             <label for="">Tanggal</label>
             <div class="input-group col-md-6">
                 <input type="date" class="form-control" v-model="pemakaianbarang.pb_tanggal">
             </div>
+            <p class="text-danger" v-if="errors.pb_tanggal">Tanggal harus diisi</p>
         </div>
-        <div class="form-group">
+        <div class="form-group" :class="{ 'has-error': errors.pb_jumlah }">
             <label for="">Jumlah Barang</label>
             <div class="input-group col-md-6">
                 <input type="number" class="form-control" v-model="pemakaianbarang.pb_jumlah">
             </div>
+            <p class="text-danger" v-if="errors.pb_jumlah">Jumlah harus diisi</p>
         </div>
     </div>
 </template>
@@ -35,6 +38,7 @@
 import { mapState, mapMutations, mapActions } from 'vuex'
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
+//import store from 'store.js'
 export default {
     name: 'FormPemakaianBarang',
     computed: {
@@ -56,6 +60,7 @@ export default {
     },
     destroyed() {
         this.CLEAR_FORM()
+        //store.commit('CLEAR_ERRORS')
     },
     components: {
         vSelect

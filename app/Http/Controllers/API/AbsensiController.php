@@ -32,13 +32,12 @@ class AbsensiController extends Controller
 
     public function store(Request $request)
     {
-        //BUAT VALIDASI DATA
         $this->validate($request, [
             'siswa_id' => 'required',
             'absensi_tanggal' => 'required|date',
             'absensi_jenis' => 'required|string|max:150'
-            //'absensi_keterangan' => 'string'
         ]);
+        $user = $request->user();
         $getAB = Absensi::orderBy('id', 'DESC');
         $rowCount = $getAB->count();
         $lastId = $getAB->first();
@@ -48,9 +47,9 @@ class AbsensiController extends Controller
         } else {
             if(substr($lastId->absensi_kode,2,6) == date('y').date('m').date('d')) {
             $counter = (int)substr($lastId->absensi_kode,-3) + 1 ;
-                if($counter < 100) {
+                if($counter < 10) {
                     $kode = "AB".date('y').date('m').date('d')."00".$counter;
-                } elseif ($counter < 10) {
+                } elseif ($counter < 100) {
                     $kode = "AB".date('y').date('m').date('d')."0".$counter;
                 } else {
                     $kode = "AB".date('y').date('m').date('d').$counter;
@@ -64,7 +63,8 @@ class AbsensiController extends Controller
             'siswa_id' => $request->siswa_id['id'],
             'absensi_tanggal' => $request->absensi_tanggal,
             'absensi_jenis' => $request->absensi_jenis,
-            'absensi_keterangan' => $request->absensi_keterangan
+            'absensi_keterangan' => $request->absensi_keterangan,
+            'user_id' => $user->id
         ]);
         return response()->json(['status' => 'success']);
     }
@@ -83,20 +83,20 @@ class AbsensiController extends Controller
 
     public function update(Request $request, $id)
     {
-        /*$this->validate($request, [
+        $this->validate($request, [
             'siswa_id' => 'required',
             'absensi_tanggal' => 'required|date',
-            'absensi_jenis' => 'required|string|max:150',
-            'absensi_keterangan' => 'required|string'
-        ]);*/
+            'absensi_jenis' => 'required|string|max:150'
+        ]);
+        
+        $user = $request->user();
         $absensi = Absensi::whereAbsensi_kode($request->absensi_kode);
-        //$absensi->update([$request->except('Absensi_kode')]);
-
         $absensi->update(['siswa_id' => $request->siswa_id['id'],
-        'absensi_tanggal' => $request->absensi_tanggal,
-        'absensi_jenis' => $request->absensi_jenis,
-        'absensi_keterangan' => $request->absensi_keterangan]);
-        return response()->json(['status' => 'success'], 200);
+                        'absensi_tanggal' => $request->absensi_tanggal,
+                        'absensi_jenis' => $request->absensi_jenis,
+                        'absensi_keterangan' => $request->absensi_keterangan,
+                        'user_id' => $user->id]);
+        return response()->json(['status' => 'success']);
     }
 
     public function destroy($id)

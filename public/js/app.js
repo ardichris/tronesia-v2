@@ -2610,6 +2610,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _Form_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Form.vue */ "./resources/js/pages/absensis/Form.vue");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -2667,15 +2668,44 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'DataAbsensi',
   created: function created() {
-    this.getAbsensi(); //LOAD DATA PELANGGAN KETIKA COMPONENT DI-LOAD
+    this.getAbsensi();
   },
   data: function data() {
     return {
-      //FIELD YANG AKAN DITAMPILKAN PADA TABLE DIATAS
       fields: [{
         key: 'absensi_kode',
         label: 'Kode'
@@ -2701,13 +2731,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('absensi', {
     absensis: function absensis(state) {
       return state.absensis;
-    } //MENGAMBIL DATA PELANGGARAN DARI STATE PELANGGARAN
-
+    },
+    absensi: function absensi(state) {
+      return state.absensi;
+    },
+    siswas: function siswas(state) {
+      return state.siswas;
+    }
   }), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('user', {
     authenticated: function authenticated(state) {
       return state.authenticated;
-    } //ME-LOAD STATE AUTHENTICATED
-
+    }
   }), {
     //MENGAMBIL DATA PAGE DARI STATE PELANGGARAN
     page: {
@@ -2721,16 +2755,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   }),
   watch: {
     page: function page() {
-      this.getAbsensi(); //KETIKA VALUE PAGE TERJADI PERUBAHAN, MAKA REQUEST DATA BARU
+      this.getAbsensi();
     },
     search: function search() {
-      this.getAbsensi(this.search); //KETIKA VALUE SEARCH TERJADI PERUBAHAN, MAKA REQUEST DATA BARU
+      this.getAbsensi(this.search);
     }
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('absensi', ['getAbsensi', 'removeAbsensi']), {
-    //KETIKA TOMBOL HAPUS DITEKAN MAKA FUNGSI INI AKAN DIJALANKAN
-    deleteAbsensi: function deleteAbsensi(id) {
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('absensi', ['editAbsensi', 'getAbsensi', 'removeAbsensi', 'submitAbsensi', 'updateAbsensi']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])('absensi', ['CLEAR_FORM']), {
+    editABsaja: function editABsaja() {
       var _this = this;
+
+      this.updateAbsensi().then(function () {
+        _this.$bvModal.hide('edit-modal'), _this.getAbsensi();
+      });
+    },
+    editAB: function editAB(kode) {
+      this.editAbsensi({
+        kode: kode
+      }), this.$bvModal.show('edit-modal');
+    },
+    simpanABbaru: function simpanABbaru() {
+      var _this2 = this;
+
+      this.submitAbsensi().then(function () {
+        _this2.$bvModal.hide('add-modal'), _this2.getAbsensi();
+      });
+    },
+    deleteAbsensi: function deleteAbsensi(id) {
+      var _this3 = this;
 
       this.$swal({
         title: 'Kamu Yakin?',
@@ -2742,12 +2794,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         confirmButtonText: 'Iya, Lanjutkan!'
       }).then(function (result) {
         if (result.value) {
-          _this.removeAbsensi(id); //JIKA SETUJU MAKA PERMINTAAN HAPUS AKAN DI EKSEKUSI
+          _this3.removeAbsensi(id); //JIKA SETUJU MAKA PERMINTAAN HAPUS AKAN DI EKSEKUSI
 
         }
       });
     }
-  })
+  }),
+  components: {
+    'absensi-form': _Form_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  }
 });
 
 /***/ }),
@@ -2960,11 +3015,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
 
 
 
@@ -2976,13 +3026,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     absensi: function absensi(state) {
       return state.absensi;
-    } //MENGAMBIL STATE PELANGGARAN
-
+    }
   })),
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('absensi', ['getSiswas', 'editAbsensi']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])('absensi', ['CLEAR_FORM']), {
-    //PANGGIL MUTATIONS CLEAR_FORM
     onSearch: function onSearch(search, loading) {
-      //KITA AKAN ME-REQUEST DATA CUSTOMER BERDASARKAN KEYWORD YG DIMINTA
       this.getSiswas({
         search: search,
         loading: loading
@@ -2990,7 +3037,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   destroyed: function destroyed() {
-    //FORM DI BERSIHKAN
     this.CLEAR_FORM();
   },
   components: {
@@ -6357,8 +6403,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
+ //import store from 'store.js'
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'FormPemakaianBarang',
@@ -6379,7 +6429,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   destroyed: function destroyed() {
-    this.CLEAR_FORM();
+    this.CLEAR_FORM(); //store.commit('CLEAR_ERRORS')
   },
   components: {
     vSelect: vue_select__WEBPACK_IMPORTED_MODULE_1___default.a
@@ -6609,7 +6659,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('pemakaianbarang', ['updatePemakaianbarang', 'editPemakaianbarang', 'submitPemakaianbarang', 'getPemakaianbarang', 'removePemakaianbarang', 'getBarang']), {
     simpanPBbaru: function simpanPBbaru() {
-      this.submitPemakaianbarang(), this.$bvModal.hide('add-modal'), this.getPemakaianbarang();
+      var _this = this;
+
+      this.submitPemakaianbarang().then(function () {
+        _this.$bvModal.hide('add-modal'), _this.getPemakaianbarang();
+      });
     },
     editPBsaja: function editPBsaja() {
       this.updatePemakaianbarang(), this.$bvModal.hide('edit-modal'), this.getPemakaianbarang();
@@ -6625,8 +6679,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         loading: loading
       });
     },
-    deletePemakaianbarang: function deletePemakaianbarang(id) {
-      var _this = this;
+    deletePemakaianbarang: function deletePemakaianbarang(kode) {
+      var _this2 = this;
 
       this.$swal({
         title: 'Kamu Yakin?',
@@ -6638,7 +6692,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         confirmButtonText: 'Iya, Lanjutkan!'
       }).then(function (result) {
         if (result.value) {
-          _this.removePemakaianbarang(id);
+          _this2.removePemakaianbarang(kode);
         }
       });
     }
@@ -62639,12 +62693,110 @@ var render = function() {
             { staticClass: "col-sm-12 col-md-6" },
             [
               _c(
-                "router-link",
+                "b-button",
                 {
-                  staticClass: "btn btn-primary btn-sm btn-flat",
-                  attrs: { to: { name: "absensi.add" } }
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal",
+                      value: "add-modal",
+                      expression: "'add-modal'"
+                    }
+                  ],
+                  attrs: { variant: "primary", size: "sm" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$bvModal.show("my-modal")
+                    }
+                  }
                 },
                 [_vm._v("Tambah")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  attrs: { id: "add-modal" },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "modal-title",
+                      fn: function() {
+                        return [
+                          _vm._v(
+                            "\n                            Tambah Absensi\n                        "
+                          )
+                        ]
+                      },
+                      proxy: true
+                    },
+                    {
+                      key: "modal-footer",
+                      fn: function() {
+                        return [
+                          _c(
+                            "b-button",
+                            {
+                              staticClass: "mt-3",
+                              attrs: { variant: "success", block: "" },
+                              on: { click: _vm.simpanABbaru }
+                            },
+                            [
+                              _vm._v(
+                                "\n                                Simpan\n                            "
+                              )
+                            ]
+                          )
+                        ]
+                      },
+                      proxy: true
+                    }
+                  ])
+                },
+                [_vm._v(" "), _c("absensi-form")],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  attrs: { id: "edit-modal" },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "modal-title",
+                      fn: function() {
+                        return [
+                          _vm._v(
+                            "\n                            Edit Absensi\n                        "
+                          )
+                        ]
+                      },
+                      proxy: true
+                    },
+                    {
+                      key: "modal-footer",
+                      fn: function() {
+                        return [
+                          _c(
+                            "b-button",
+                            {
+                              staticClass: "mt-3",
+                              attrs: { variant: "success", block: "" },
+                              on: { click: _vm.editABsaja }
+                            },
+                            [
+                              _vm._v(
+                                "\n                                Update\n                            "
+                              )
+                            ]
+                          )
+                        ]
+                      },
+                      proxy: true
+                    }
+                  ])
+                },
+                [_vm._v(" "), _c("absensi-form")],
+                1
               )
             ],
             1
@@ -62711,27 +62863,12 @@ var render = function() {
                 fn: function(row) {
                   return [
                     _c(
-                      "router-link",
-                      {
-                        staticClass: "btn btn-success btn-sm",
-                        attrs: {
-                          to: {
-                            name: "absensi.view",
-                            params: { id: row.item.absensi_kode }
-                          }
-                        }
-                      },
-                      [_c("i", { staticClass: "fa fa-eye" })]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "router-link",
+                      "button",
                       {
                         staticClass: "btn btn-warning btn-sm",
-                        attrs: {
-                          to: {
-                            name: "absensi.edit",
-                            params: { id: row.item.absensi_kode }
+                        on: {
+                          click: function($event) {
+                            return _vm.editAB(row.item.absensi_kode)
                           }
                         }
                       },
@@ -62995,51 +63132,6 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c(
-      "div",
-      {
-        staticClass: "form-group",
-        class: { "has-error": _vm.errors.absensi_kode },
-        attrs: { hidden: _vm.$route.name == "absensi.add" }
-      },
-      [
-        _c("label", { attrs: { for: "" } }, [_vm._v("Kode Register")]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.absensi.absensi_kode,
-              expression: "absensi.absensi_kode"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: {
-            type: "text",
-            readonly:
-              _vm.$route.name == "absensi.edit" ||
-              _vm.$route.name == "absensi.view"
-          },
-          domProps: { value: _vm.absensi.absensi_kode },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.absensi, "absensi_kode", $event.target.value)
-            }
-          }
-        }),
-        _vm._v(" "),
-        _vm.errors.absensi_kode
-          ? _c("p", { staticClass: "text-danger" }, [
-              _vm._v(_vm._s(_vm.errors.absensi_kode[0]))
-            ])
-          : _vm._e()
-      ]
-    ),
-    _vm._v(" "),
     _c(
       "div",
       {
@@ -67864,7 +67956,7 @@ var render = function() {
   return _c("div", { staticClass: "d-block" }, [
     _c(
       "div",
-      { staticClass: "form-group" },
+      { staticClass: "form-group", class: { "has-error": _vm.errors.barang } },
       [
         _c("label", { attrs: { for: "" } }, [_vm._v("Nama Barang")]),
         _vm._v(" "),
@@ -67910,66 +68002,98 @@ var render = function() {
             ])
           ],
           2
-        )
+        ),
+        _vm._v(" "),
+        _vm.errors.barang
+          ? _c("p", { staticClass: "text-danger" }, [
+              _vm._v("Barang harus dipilih")
+            ])
+          : _vm._e()
       ],
       1
     ),
     _vm._v(" "),
-    _c("div", { staticClass: "form-group" }, [
-      _c("label", { attrs: { for: "" } }, [_vm._v("Tanggal")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "input-group col-md-6" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.pemakaianbarang.pb_tanggal,
-              expression: "pemakaianbarang.pb_tanggal"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: { type: "date" },
-          domProps: { value: _vm.pemakaianbarang.pb_tanggal },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+    _c(
+      "div",
+      {
+        staticClass: "form-group",
+        class: { "has-error": _vm.errors.pb_tanggal }
+      },
+      [
+        _c("label", { attrs: { for: "" } }, [_vm._v("Tanggal")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-group col-md-6" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.pemakaianbarang.pb_tanggal,
+                expression: "pemakaianbarang.pb_tanggal"
               }
-              _vm.$set(_vm.pemakaianbarang, "pb_tanggal", $event.target.value)
+            ],
+            staticClass: "form-control",
+            attrs: { type: "date" },
+            domProps: { value: _vm.pemakaianbarang.pb_tanggal },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.pemakaianbarang, "pb_tanggal", $event.target.value)
+              }
             }
-          }
-        })
-      ])
-    ]),
+          })
+        ]),
+        _vm._v(" "),
+        _vm.errors.pb_tanggal
+          ? _c("p", { staticClass: "text-danger" }, [
+              _vm._v("Tanggal harus diisi")
+            ])
+          : _vm._e()
+      ]
+    ),
     _vm._v(" "),
-    _c("div", { staticClass: "form-group" }, [
-      _c("label", { attrs: { for: "" } }, [_vm._v("Jumlah Barang")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "input-group col-md-6" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.pemakaianbarang.pb_jumlah,
-              expression: "pemakaianbarang.pb_jumlah"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: { type: "number" },
-          domProps: { value: _vm.pemakaianbarang.pb_jumlah },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+    _c(
+      "div",
+      {
+        staticClass: "form-group",
+        class: { "has-error": _vm.errors.pb_jumlah }
+      },
+      [
+        _c("label", { attrs: { for: "" } }, [_vm._v("Jumlah Barang")]),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-group col-md-6" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.pemakaianbarang.pb_jumlah,
+                expression: "pemakaianbarang.pb_jumlah"
               }
-              _vm.$set(_vm.pemakaianbarang, "pb_jumlah", $event.target.value)
+            ],
+            staticClass: "form-control",
+            attrs: { type: "number" },
+            domProps: { value: _vm.pemakaianbarang.pb_jumlah },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.pemakaianbarang, "pb_jumlah", $event.target.value)
+              }
             }
-          }
-        })
-      ])
-    ])
+          })
+        ]),
+        _vm._v(" "),
+        _vm.errors.pb_jumlah
+          ? _c("p", { staticClass: "text-danger" }, [
+              _vm._v("Jumlah harus diisi")
+            ])
+          : _vm._e()
+      ]
+    )
   ])
 }
 var staticRenderFns = []
@@ -92702,20 +92826,17 @@ var actions = {
         state = _ref2.state;
     var search = typeof payload != 'undefined' ? payload : '';
     return new Promise(function (resolve, reject) {
-      //REQUEST DATA PELANGGARAN  DENGAN MENGIRIMKAN PARAMETER PAGE YG SEDANG AKTIF DAN VALUE PENCARIAN
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/absensi?page=".concat(state.page, "&q=").concat(search)).then(function (response) {
-        commit('ASSIGN_DATA', response.data); //JIKA DATA DITERIMA, SIMPAN DATA KEDALMA MUTATIONS
-
+        commit('ASSIGN_DATA', response.data);
         resolve(response.data);
       });
     });
   },
   editAbsensi: function editAbsensi(_ref3, payload) {
     var commit = _ref3.commit;
+    var kode = payload.kode;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
-      _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/absensi/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
+      _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/absensi/".concat(kode, "/edit")).then(function (response) {
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
@@ -92726,9 +92847,9 @@ var actions = {
         commit = _ref4.commit,
         state = _ref4.state;
     return new Promise(function (resolve, reject) {
-      console.log(state.absensi);
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/absensi", state.absensi).then(function (response) {
         dispatch('getAbsensi').then(function () {
+          commit('CLEAR_FORM');
           resolve(response.data);
         });
       })["catch"](function (error) {
@@ -92743,8 +92864,9 @@ var actions = {
   updateAbsensi: function updateAbsensi(_ref5, payload) {
     var state = _ref5.state,
         commit = _ref5.commit;
+    var kode = state.absensi.absensi_kode;
     return new Promise(function (resolve, reject) {
-      _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/absensi/".concat(payload), state.absensi).then(function (response) {
+      _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/absensi/".concat(kode), state.absensi).then(function (response) {
         commit('CLEAR_FORM');
         resolve(response.data);
       });
@@ -92753,9 +92875,7 @@ var actions = {
   viewAbsensi: function viewAbsensi(_ref6, payload) {
     var commit = _ref6.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/absensi/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
@@ -92764,10 +92884,7 @@ var actions = {
   removeAbsensi: function removeAbsensi(_ref7, payload) {
     var dispatch = _ref7.dispatch;
     return new Promise(function (resolve, reject) {
-      //MENGIRIM PERMINTAAN KE SERVER UNTUK MENGHAPUS DATA
-      //DENGAN METHOD DELETE DAN ID SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"]("/absensi/".concat(payload)).then(function (response) {
-        //APABILA BERHASIL, FETCH DATA TERBARU DARI SERVER
         dispatch('getAbsensi').then(function () {
           return resolve();
         });

@@ -64,21 +64,19 @@ const actions = {
     },
     getAbsensi({ commit, state }, payload) {
         let search = typeof payload != 'undefined' ? payload:''
-        return new Promise((resolve, reject) => {
-            //REQUEST DATA PELANGGARAN  DENGAN MENGIRIMKAN PARAMETER PAGE YG SEDANG AKTIF DAN VALUE PENCARIAN
+        return new Promise((resolve, reject) => {            
             $axios.get(`/absensi?page=${state.page}&q=${search}`)
             .then((response) => {
-                commit('ASSIGN_DATA', response.data) //JIKA DATA DITERIMA, SIMPAN DATA KEDALMA MUTATIONS
+                commit('ASSIGN_DATA', response.data)
                 resolve(response.data)
             })
         })
     },
     editAbsensi({ commit }, payload) {
+        let kode = payload.kode
         return new Promise((resolve, reject) => {
-            //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
-            $axios.get(`/absensi/${payload}/edit`)
+            $axios.get(`/absensi/${kode}/edit`)
             .then((response) => {
-                //APABIL BERHASIL, DI ASSIGN KE FORM
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
             })
@@ -86,10 +84,10 @@ const actions = {
     },
     submitAbsensi({ dispatch, commit, state }) {
         return new Promise((resolve, reject) => {
-            console.log(state.absensi);
             $axios.post(`/absensi`, state.absensi)
             .then((response) => {
                 dispatch('getAbsensi').then(() => {
+                    commit('CLEAR_FORM')
                     resolve(response.data)
                 })
             })
@@ -101,8 +99,9 @@ const actions = {
         })
     },
     updateAbsensi({ state, commit }, payload) {
+        let kode = state.absensi.absensi_kode
         return new Promise((resolve, reject) => {
-            $axios.put(`/absensi/${payload}`, state.absensi)
+            $axios.put(`/absensi/${kode}`, state.absensi)
             .then((response) => {
                 commit('CLEAR_FORM')
                 resolve(response.data)
@@ -111,10 +110,8 @@ const actions = {
     },
     viewAbsensi({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
             $axios.get(`/absensi/${payload}/edit`)
             .then((response) => {
-                //APABIL BERHASIL, DI ASSIGN KE FORM
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
             })
@@ -122,11 +119,8 @@ const actions = {
     },
     removeAbsensi({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
-            //MENGIRIM PERMINTAAN KE SERVER UNTUK MENGHAPUS DATA
-            //DENGAN METHOD DELETE DAN ID SISWA DI URL
             $axios.delete(`/absensi/${payload}`)
             .then((response) => {
-                //APABILA BERHASIL, FETCH DATA TERBARU DARI SERVER
                 dispatch('getAbsensi').then(() => resolve())
             })
         })

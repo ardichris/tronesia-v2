@@ -4,7 +4,37 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6" >
-                        <router-link :to="{ name: 'absensi.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
+                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('my-modal')">Tambah</b-button>
+                        <b-modal id="add-modal">
+                            <template v-slot:modal-title>
+                                Tambah Absensi
+                            </template>
+                            <absensi-form></absensi-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block @click="simpanABbaru"
+                                >
+                                    Simpan
+                                </b-button>
+                            </template>
+                        </b-modal>
+                        <b-modal id="edit-modal">
+                            <template v-slot:modal-title>
+                                Edit Absensi
+                            </template>
+                            <absensi-form></absensi-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block @click="editABsaja"
+                                >
+                                    Update
+                                </b-button>
+                            </template>
+                        </b-modal>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -21,8 +51,7 @@
                         {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
                     </template>
                     <template v-slot:cell(actions)="row">
-                        <router-link :to="{ name: 'absensi.view', params: {id: row.item.absensi_kode} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
-                        <router-link :to="{ name: 'absensi.edit', params: {id: row.item.absensi_kode} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
+                        <button class="btn btn-warning btn-sm" @click="editAB(row.item.absensi_kode)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-danger btn-sm" @click="deleteAbsensi(row.item.id)"><i class="fa fa-trash"></i></button>
                     </template>
                 </b-table>
@@ -50,16 +79,16 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
+import FormAbsensi from './Form.vue'
 
 export default {
     name: 'DataAbsensi',
     created() {
-        this.getAbsensi() //LOAD DATA PELANGGAN KETIKA COMPONENT DI-LOAD
+        this.getAbsensi()
     },
     data() {
         return {
-            //FIELD YANG AKAN DITAMPILKAN PADA TABLE DIATAS
             fields: [
                 { key: 'absensi_kode', label: 'Kode' },
                 { key: 'siswa_id', label: 'Nama Lengkap' },
@@ -73,10 +102,12 @@ export default {
     },
     computed: {
         ...mapState('absensi', {
-            absensis: state => state.absensis //MENGAMBIL DATA PELANGGARAN DARI STATE PELANGGARAN
+            absensis: state => state.absensis,
+            absensi: state => state.absensi,
+            siswas: state => state.siswas
         }),
         ...mapState('user', {
-            authenticated: state => state.authenticated //ME-LOAD STATE AUTHENTICATED
+            authenticated: state => state.authenticated
         }),
         //MENGAMBIL DATA PAGE DARI STATE PELANGGARAN
         page: {
@@ -90,15 +121,33 @@ export default {
     },
     watch: {
         page() {
-            this.getAbsensi() //KETIKA VALUE PAGE TERJADI PERUBAHAN, MAKA REQUEST DATA BARU
+            this.getAbsensi()
         },
         search() {
-            this.getAbsensi(this.search) //KETIKA VALUE SEARCH TERJADI PERUBAHAN, MAKA REQUEST DATA BARU
+            this.getAbsensi(this.search)
         }
     },
     methods: {
-        ...mapActions('absensi', ['getAbsensi', 'removeAbsensi']), 
-        //KETIKA TOMBOL HAPUS DITEKAN MAKA FUNGSI INI AKAN DIJALANKAN
+        ...mapActions('absensi', ['editAbsensi','getAbsensi', 'removeAbsensi','submitAbsensi','updateAbsensi']),
+        ...mapMutations('absensi', ['CLEAR_FORM']),
+        editABsaja(){
+            this.updateAbsensi().then(() => {
+                this.$bvModal.hide('edit-modal'),
+                this.getAbsensi()
+            })
+        },
+        editAB(kode){
+            this.editAbsensi({
+                kode: kode
+            }),
+            this.$bvModal.show('edit-modal')
+        },
+        simpanABbaru(){
+            this.submitAbsensi().then(() => {
+                this.$bvModal.hide('add-modal'),
+                this.getAbsensi()
+            })
+        },
         deleteAbsensi(id) {
             this.$swal({
                 title: 'Kamu Yakin?',
@@ -114,6 +163,9 @@ export default {
                 }
             })
         }
+    },
+    components: {
+        'absensi-form': FormAbsensi
     }
 }
 </script>

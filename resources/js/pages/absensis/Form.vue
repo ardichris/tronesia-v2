@@ -1,10 +1,5 @@
 <template>
     <div>
-        <div class="form-group" :hidden="$route.name=='absensi.add'" :class="{ 'has-error': errors.absensi_kode }">
-            <label for="">Kode Register</label>
-            <input type="text" class="form-control" v-model="absensi.absensi_kode" :readonly="$route.name == 'absensi.edit' || $route.name == 'absensi.view'">
-            <p class="text-danger" v-if="errors.absensi_kode">{{ errors.absensi_kode[0] }}</p>
-        </div>
         <div class="form-group" :class="{ 'has-error': errors.siswa_id }">
             <label for="">Nama Siswa</label>
             <v-select :options="siswas.data"
@@ -53,17 +48,16 @@ import 'vue-select/dist/vue-select.css'
 export default {
     name: 'FormAbsensi',
     computed: {
-        ...mapState(['errors']), //MENGAMBIL STATE ERRORS
+        ...mapState(['errors']),
         ...mapState('absensi', {
             siswas: state => state.siswas,
-            absensi: state => state.absensi //MENGAMBIL STATE PELANGGARAN
+            absensi: state => state.absensi
         })
     },
     methods: {
         ...mapActions('absensi', ['getSiswas', 'editAbsensi']),
-        ...mapMutations('absensi', ['CLEAR_FORM']),//PANGGIL MUTATIONS CLEAR_FORM
+        ...mapMutations('absensi', ['CLEAR_FORM']),
         onSearch(search, loading) {
-            //KITA AKAN ME-REQUEST DATA CUSTOMER BERDASARKAN KEYWORD YG DIMINTA
             this.getSiswas({
                 search: search,
                 loading: loading
@@ -71,7 +65,6 @@ export default {
         }
     },
     destroyed() {
-            //FORM DI BERSIHKAN
             this.CLEAR_FORM()
     },
     components: {

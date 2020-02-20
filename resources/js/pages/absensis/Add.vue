@@ -39,7 +39,7 @@
                 this.submitAbsensi().then(() => {
                     //APABILA BERHASIL MAKA AKAN DI-DIRECT KE HALAMAN /absensis
                     this.$router.push({ name: 'absensi.data' }),
-                this.CLEAR_FORM()
+                    this.CLEAR_FORM()
                 })
             },
             back() {

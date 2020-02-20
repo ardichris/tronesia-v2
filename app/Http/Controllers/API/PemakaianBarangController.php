@@ -80,4 +80,11 @@ class PemakaianBarangController extends Controller
                 ]);
         return response()->json(['status' => 'success']);
     }
+
+    public function destroy($kode)
+    {
+        $pbs = PemakaianBarang::wherePb_kode($kode);
+        $pbs->delete();
+        return response()->json(['status' => 'success'], 200);
+    }
 }
