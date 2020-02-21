@@ -72,10 +72,8 @@ const actions = {
 
     submitKompetensi({ dispatch, commit, state }) {
         return new Promise((resolve, reject) => {
-            console.log(state.kompetensi);
             $axios.post(`/kompetensi`, state.kompetensi)
             .then((response) => {
-                console.log(response.data);
                 dispatch('getKompetensi').then(() => {
                     resolve(response.data)
                 })
@@ -87,13 +85,10 @@ const actions = {
             })
         })
     },
-    //UNTUK MENGAMBIL SINGLE DATA DARI SERVER BERDASARKAN CODE SISWA
     editKompetensi({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
             $axios.get(`/kompetensi/${payload}/edit`)
             .then((response) => {
-                //APABIL BERHASIL, DI ASSIGN KE FORM
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
             })
@@ -101,10 +96,8 @@ const actions = {
     },
     viewKompetensi({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
             $axios.get(`/kompetensi/${payload}/edit`)
             .then((response) => {
-                //APABIL BERHASIL, DI ASSIGN KE FORM
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
             })
@@ -112,7 +105,6 @@ const actions = {
     },
 
     updateKompetensi({ state, commit }, payload) {
-        console.log(state.kompetensi);
         return new Promise((resolve, reject) => {
             $axios.put(`/kompetensi/${payload}`, state.kompetensi)
             .then((response) => {
@@ -121,14 +113,10 @@ const actions = {
             })
         })
     } ,
-    //MENGHAPUS DATA 
     removeKompetensi({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
-            //MENGIRIM PERMINTAAN KE SERVER UNTUK MENGHAPUS DATA
-            //DENGAN METHOD DELETE DAN ID SISWA DI URL
             $axios.delete(`/kompetensi/${payload}`)
             .then((response) => {
-                //APABILA BERHASIL, FETCH DATA TERBARU DARI SERVER
                 dispatch('getKompetensi').then(() => resolve())
             })
         })

@@ -17,7 +17,6 @@ const actions = {
             $axios.get(`/`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
-                console.log(response.data)
                 resolve(response.data)
             })
         })

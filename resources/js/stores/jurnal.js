@@ -7,8 +7,6 @@ const state = () => ({
     mapel: [],
     jurnals: [],
     
-    //UNTUK MENAMPUNG VALUE DARI FORM INPUTAN NANTINYA
-    //STATE INI AKAN DIGUNAKAN PADA FORM ADD SISWA YANG AKAN DIBAHAS KEMUDIAN
     jurnal: {
         jm_kode: '',
         mapel_id: '',
@@ -20,11 +18,9 @@ const state = () => ({
         user_id: '',
         jm_status: '',
         jm_catatan: null,
-        detail: [
-            //{ id: null, jurnal_id: null, siswa_id: 1, alasan: null, siswa: null }
-        ]
+        detail: []
     },
-    page: 1 //UNTUK MENCATAT PAGE PAGINATE YANG SEDANG DIAKSES
+    page: 1 
 })
 
 const mutations = {
@@ -40,15 +36,12 @@ const mutations = {
     MAPEL_DATA(state, payload) {
         state.mapel = payload
     },
-    //MEMASUKKAN DATA KE STATE SISWAS
     ASSIGN_DATA(state, payload) {
         state.jurnals = payload
     },
-    //MENGUBAH DATA STATE PAGE
     SET_PAGE(state, payload) {
         state.page = payload
     },
-    //MENGUBAH DATA STATE SISWA
     ASSIGN_FORM(state, payload) {
         state.jurnal = {
             jm_kode: payload.jm_kode,
@@ -63,7 +56,6 @@ const mutations = {
             jm_catatan: payload.jm_catatan,
         }
     },
-    //ME-RESET STATE SISWA MENJADI KOSONG
     CLEAR_FORM(state) {
         state.jurnal = {
             jm_kode: '',
@@ -113,7 +105,6 @@ const actions = {
             $axios.get(`/kelas?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('KELAS_DATA', response.data)
-                console.log(response.data);
                 payload.loading(false)
                 resolve(response.data)
             })
@@ -130,32 +121,22 @@ const actions = {
             })
         })
     },
-    //FUNGSI INI UNTUK MELAKUKAN REQUEST DATA SISWA DARI SERVER
     getJurnal({ commit, state }, payload) {
-        //MENGECEK PAYLOAD ADA ATAU TIDAK
         let search = typeof payload != 'undefined' ? payload:''
-        //let search = payload.search
-        //payload.loading(true)
         return new Promise((resolve, reject) => {
-            //REQUEST DATA DENGAN ENDPOINT /SISWAS
             $axios.get(`/jurnal?page=${state.page}&q=${search}`)
             .then((response) => {
-                //SIMPAN DATA KE STATE MELALUI MUTATIONS
                 commit('ASSIGN_DATA', response.data)
-                //payload.loading(false)
                 resolve(response.data)
             })
         })
     },
-    //FUNGSI UNTUK MENAMBAHKAN DATA BARU
     submitJurnal({ dispatch, commit, state }) {
         return new Promise((resolve, reject) => {
-            console.log(state.jurnal);
             $axios.post(`/jurnal`, state.jurnal)
             .then((response) => {
                 dispatch('getJurnal').then(() => {
                     resolve(response.data)
-                    console.log(response.data);
                 })
             })
             .catch((error) => {
@@ -165,37 +146,28 @@ const actions = {
             })
         })
     },
-    //UNTUK MENGAMBIL SINGLE DATA DARI SERVER BERDASARKAN CODE SISWA
     editJurnal({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
             $axios.get(`/jurnal/${payload}/edit`)
             .then((response) => {
-                //APABIL BERHASIL, DI ASSIGN KE FORM
                 commit('ASSIGN_FORM', response.data.data)
-                console.log(response.data.data);
                 resolve(response.data)
             })
         })
     },
     viewJurnal({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
             $axios.get(`/jurnal/${payload}/edit`)
             .then((response) => {
-                //APABIL BERHASIL, DI ASSIGN KE FORM
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
             })
         })
     },
-    //UNTUK MENGUPDATE DATA BERDASARKAN CODE YANG SEDANG DIEDIT
     updateJurnal({ state, commit }, payload) {
         return new Promise((resolve, reject) => {
-            console.log(state.jurnal);
             $axios.put(`/jurnal/${payload}`, state.jurnal)
             .then((response) => {
-                //FORM DIBERSIHKAN
                 commit('CLEAR_FORM')
                 resolve(response.data)
             })
@@ -224,20 +196,14 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.put(`/jurnal/changestatus/${kode}`, payload)
             .then((response) => {
-                console.log(response.data)
                 dispatch('getJurnal').then(() => resolve())
             })
         })
     },
-
-    //MENGHAPUS DATA 
     removeJurnal({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
-            //MENGIRIM PERMINTAAN KE SERVER UNTUK MENGHAPUS DATA
-            //DENGAN METHOD DELETE DAN ID SISWA DI URL
             $axios.delete(`/jurnal/${payload}`)
             .then((response) => {
-                //APABILA BERHASIL, FETCH DATA TERBARU DARI SERVER
                 dispatch('getJurnal').then(() => resolve())
             })
         })

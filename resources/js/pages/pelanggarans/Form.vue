@@ -21,6 +21,7 @@
         <div class="form-group" :class="{ 'has-error': errors.pelanggaran_tanggal }">
             <label for="">Tanggal</label>
             <input type="date" class="form-control" v-model="pelanggaran.pelanggaran_tanggal" :readonly="$route.name == 'pelanggarans.view'">
+            <!--b-form-datepicker id="pelanggaran-datepicker" v-model="pelanggaran.pelanggaran_tanggal" class="mb-2"></b-form-datepicker-->
             <p class="text-danger" v-if="errors.pelanggaran_tanggal">Tanggal belum diisi</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.pelanggaran_jenis }">

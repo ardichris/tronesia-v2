@@ -16,9 +16,9 @@ class AbsensiController extends Controller
             $filter = request()->q;
             $siswas = Siswa::where('siswa_nama','like','%'.$filter.'%')->select('id')->first();
             $absensis = Absensi::with('siswa')
-                                       ->where('siswa_id','=',$siswas->id);                   
+                               ->where('siswa_id','=',$siswas->id);                   
         } else {
-            $absensis = Absensi::with('siswa',)->orderBy('created_at', 'DESC');
+            $absensis = Absensi::with('siswa')->orderBy('created_at', 'DESC');
         }
         return new AbsensiCollection($absensis->paginate(10));
     }

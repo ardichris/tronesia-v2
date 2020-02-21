@@ -5921,6 +5921,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 
@@ -92850,9 +92851,7 @@ __webpack_require__.r(__webpack_exports__);
 var state = function state() {
   return {
     absensis: [],
-    //STATE UNTUK MENAMPUNG DATA PELANGGARANS
     siswas: [],
-    //STATE INI UNTUK FORM ADD DAN EDIT NANTINYA
     absensi: {
       absensi_kode: '',
       siswa_id: '',
@@ -92865,18 +92864,15 @@ var state = function state() {
 };
 
 var mutations = {
-  //MUTATIONS UNTUK ASSIGN DATA PELANGGARAN KE DALAM STATE PELANGGARAN
   DATA_SISWA: function DATA_SISWA(state, payload) {
     state.siswas = payload;
   },
   ASSIGN_DATA: function ASSIGN_DATA(state, payload) {
     state.absensis = payload;
   },
-  //MENGUBAH STATE PAGE
   SET_PAGE: function SET_PAGE(state, payload) {
     state.page = payload;
   },
-  //MENGUBAH STATE PELANGGARAN
   ASSIGN_FORM: function ASSIGN_FORM(state, payload) {
     state.absensi = {
       absensi_kode: payload.absensi_kode,
@@ -92886,7 +92882,6 @@ var mutations = {
       absensi_keterangan: payload.absensi_keterangan
     };
   },
-  //RESET STATE PELANGGARAN
   CLEAR_FORM: function CLEAR_FORM(state) {
     state.absensi = {
       absensi_kode: '',
@@ -93227,7 +93222,6 @@ var actions = {
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/").then(function (response) {
         commit('ASSIGN_DATA', response.data);
-        console.log(response.data);
         resolve(response.data);
       });
     });
@@ -93261,8 +93255,6 @@ var state = function state() {
     kompetensi: [],
     mapel: [],
     jurnals: [],
-    //UNTUK MENAMPUNG VALUE DARI FORM INPUTAN NANTINYA
-    //STATE INI AKAN DIGUNAKAN PADA FORM ADD SISWA YANG AKAN DIBAHAS KEMUDIAN
     jurnal: {
       jm_kode: '',
       mapel_id: '',
@@ -93274,11 +93266,9 @@ var state = function state() {
       user_id: '',
       jm_status: '',
       jm_catatan: null,
-      detail: [//{ id: null, jurnal_id: null, siswa_id: 1, alasan: null, siswa: null }
-      ]
+      detail: []
     },
-    page: 1 //UNTUK MENCATAT PAGE PAGINATE YANG SEDANG DIAKSES
-
+    page: 1
   };
 };
 
@@ -93295,15 +93285,12 @@ var mutations = {
   MAPEL_DATA: function MAPEL_DATA(state, payload) {
     state.mapel = payload;
   },
-  //MEMASUKKAN DATA KE STATE SISWAS
   ASSIGN_DATA: function ASSIGN_DATA(state, payload) {
     state.jurnals = payload;
   },
-  //MENGUBAH DATA STATE PAGE
   SET_PAGE: function SET_PAGE(state, payload) {
     state.page = payload;
   },
-  //MENGUBAH DATA STATE SISWA
   ASSIGN_FORM: function ASSIGN_FORM(state, payload) {
     state.jurnal = {
       jm_kode: payload.jm_kode,
@@ -93318,7 +93305,6 @@ var mutations = {
       jm_catatan: payload.jm_catatan
     };
   },
-  //ME-RESET STATE SISWA MENJADI KOSONG
   CLEAR_FORM: function CLEAR_FORM(state) {
     state.jurnal = {
       jm_kode: '',
@@ -93370,7 +93356,6 @@ var actions = {
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/kelas?page=".concat(state.page, "&q=").concat(search)).then(function (response) {
         commit('KELAS_DATA', response.data);
-        console.log(response.data);
         payload.loading(false);
         resolve(response.data);
       });
@@ -93388,35 +93373,25 @@ var actions = {
       });
     });
   },
-  //FUNGSI INI UNTUK MELAKUKAN REQUEST DATA SISWA DARI SERVER
   getJurnal: function getJurnal(_ref5, payload) {
     var commit = _ref5.commit,
         state = _ref5.state;
-    //MENGECEK PAYLOAD ADA ATAU TIDAK
-    var search = typeof payload != 'undefined' ? payload : ''; //let search = payload.search
-    //payload.loading(true)
-
+    var search = typeof payload != 'undefined' ? payload : '';
     return new Promise(function (resolve, reject) {
-      //REQUEST DATA DENGAN ENDPOINT /SISWAS
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/jurnal?page=".concat(state.page, "&q=").concat(search)).then(function (response) {
-        //SIMPAN DATA KE STATE MELALUI MUTATIONS
-        commit('ASSIGN_DATA', response.data); //payload.loading(false)
-
+        commit('ASSIGN_DATA', response.data);
         resolve(response.data);
       });
     });
   },
-  //FUNGSI UNTUK MENAMBAHKAN DATA BARU
   submitJurnal: function submitJurnal(_ref6) {
     var dispatch = _ref6.dispatch,
         commit = _ref6.commit,
         state = _ref6.state;
     return new Promise(function (resolve, reject) {
-      console.log(state.jurnal);
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/jurnal", state.jurnal).then(function (response) {
         dispatch('getJurnal').then(function () {
           resolve(response.data);
-          console.log(response.data);
         });
       })["catch"](function (error) {
         if (error.response.status == 422) {
@@ -93427,15 +93402,11 @@ var actions = {
       });
     });
   },
-  //UNTUK MENGAMBIL SINGLE DATA DARI SERVER BERDASARKAN CODE SISWA
   editJurnal: function editJurnal(_ref7, payload) {
     var commit = _ref7.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/jurnal/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
-        console.log(response.data.data);
         resolve(response.data);
       });
     });
@@ -93443,22 +93414,17 @@ var actions = {
   viewJurnal: function viewJurnal(_ref8, payload) {
     var commit = _ref8.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/jurnal/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
     });
   },
-  //UNTUK MENGUPDATE DATA BERDASARKAN CODE YANG SEDANG DIEDIT
   updateJurnal: function updateJurnal(_ref9, payload) {
     var state = _ref9.state,
         commit = _ref9.commit;
     return new Promise(function (resolve, reject) {
-      console.log(state.jurnal);
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/jurnal/".concat(payload), state.jurnal).then(function (response) {
-        //FORM DIBERSIHKAN
         commit('CLEAR_FORM');
         resolve(response.data);
       });
@@ -93490,21 +93456,16 @@ var actions = {
     var status = payload.status;
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/jurnal/changestatus/".concat(kode), payload).then(function (response) {
-        console.log(response.data);
         dispatch('getJurnal').then(function () {
           return resolve();
         });
       });
     });
   },
-  //MENGHAPUS DATA 
   removeJurnal: function removeJurnal(_ref13, payload) {
     var dispatch = _ref13.dispatch;
     return new Promise(function (resolve, reject) {
-      //MENGIRIM PERMINTAAN KE SERVER UNTUK MENGHAPUS DATA
-      //DENGAN METHOD DELETE DAN ID SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"]("/jurnal/".concat(payload)).then(function (response) {
-        //APABILA BERHASIL, FETCH DATA TERBARU DARI SERVER
         dispatch('getJurnal').then(function () {
           return resolve();
         });
@@ -93588,7 +93549,6 @@ var actions = {
   removeAnggota: function removeAnggota(_ref2, payload) {
     var dispatch = _ref2.dispatch;
     return new Promise(function (resolve, reject) {
-      console.log(state.kelas);
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/siswas/".concat(payload)).then(function (response) {
         resolve(response.data);
       });
@@ -93614,31 +93574,21 @@ var actions = {
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/kelas?page=".concat(state.page, "&q=").concat(search)).then(function (response) {
         commit('ASSIGN_DATA', response.data);
-        console.log(response.data);
         resolve(response.data);
       });
     });
   },
-  //FUNGSI UNTUK MENAMBAHKAN DATA BARU
   submitKelas: function submitKelas(_ref5) {
     var dispatch = _ref5.dispatch,
         commit = _ref5.commit,
         state = _ref5.state;
     return new Promise(function (resolve, reject) {
-      //MENGIRIMKAN PERMINTAAN KE SERVER DAN MELAMPIRKAN DATA YANG AKAN DISIMPAN
-      //DARI STATE SISWA
-      console.log(state.kelas);
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/kelas", state.kelas).then(function (response) {
-        //APABILA BERHASIL KITA MELAKUKAN REQUEST LAGI
-        //UNTUK MENGAMBIL DATA TERBARU
         dispatch('getKelas').then(function () {
           resolve(response.data);
         });
       })["catch"](function (error) {
-        //APABILA TERJADI ERROR VALIDASI
-        //DIMANA LARAVEL MENGGUNAKAN CODE 422
         if (error.response.status == 422) {
-          //MAKA LIST ERROR AKAN DIASSIGN KE STATE ERRORS
           commit('SET_ERRORS', error.response.data.errors, {
             root: true
           });
@@ -93658,30 +93608,22 @@ var actions = {
   viewKelas: function viewKelas(_ref7, payload) {
     var commit = _ref7.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/kelas/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
     });
   },
-  //UNTUK MENGUPDATE DATA BERDASARKAN CODE YANG SEDANG DIEDIT
   updateKelas: function updateKelas(_ref8, payload) {
     var state = _ref8.state,
         commit = _ref8.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE DIURL
-      //DAN MENGIRIMKAN DATA TERBARU YANG TELAH DIEDIT
-      //MELALUI STATE SISWA
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/kelas/".concat(payload), state.kelas).then(function (response) {
-        //FORM DIBERSIHKAN
         commit('CLEAR_FORM');
         resolve(response.data);
       });
     });
   },
-  //MENGHAPUS DATA 
   removeKelas: function removeKelas(_ref9, payload) {
     var dispatch = _ref9.dispatch;
     return new Promise(function (resolve, reject) {
@@ -93785,9 +93727,7 @@ var actions = {
         commit = _ref3.commit,
         state = _ref3.state;
     return new Promise(function (resolve, reject) {
-      console.log(state.kompetensi);
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/kompetensi", state.kompetensi).then(function (response) {
-        console.log(response.data);
         dispatch('getKompetensi').then(function () {
           resolve(response.data);
         });
@@ -93800,13 +93740,10 @@ var actions = {
       });
     });
   },
-  //UNTUK MENGAMBIL SINGLE DATA DARI SERVER BERDASARKAN CODE SISWA
   editKompetensi: function editKompetensi(_ref4, payload) {
     var commit = _ref4.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/kompetensi/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
@@ -93815,9 +93752,7 @@ var actions = {
   viewKompetensi: function viewKompetensi(_ref5, payload) {
     var commit = _ref5.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/kompetensi/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
@@ -93826,7 +93761,6 @@ var actions = {
   updateKompetensi: function updateKompetensi(_ref6, payload) {
     var state = _ref6.state,
         commit = _ref6.commit;
-    console.log(state.kompetensi);
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/kompetensi/".concat(payload), state.kompetensi).then(function (response) {
         commit('CLEAR_FORM');
@@ -93834,14 +93768,10 @@ var actions = {
       });
     });
   },
-  //MENGHAPUS DATA 
   removeKompetensi: function removeKompetensi(_ref7, payload) {
     var dispatch = _ref7.dispatch;
     return new Promise(function (resolve, reject) {
-      //MENGIRIM PERMINTAAN KE SERVER UNTUK MENGHAPUS DATA
-      //DENGAN METHOD DELETE DAN ID SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"]("/kompetensi/".concat(payload)).then(function (response) {
-        //APABILA BERHASIL, FETCH DATA TERBARU DARI SERVER
         dispatch('getKompetensi').then(function () {
           return resolve();
         });
@@ -93873,35 +93803,27 @@ __webpack_require__.r(__webpack_exports__);
 var state = function state() {
   return {
     mapels: [],
-    //UNTUK MENAMPUNG DATA SISWAS YANG DIDAPATKAN DARI DATABASE
-    //UNTUK MENAMPUNG VALUE DARI FORM INPUTAN NANTINYA
-    //STATE INI AKAN DIGUNAKAN PADA FORM ADD SISWA YANG AKAN DIBAHAS KEMUDIAN
     mapel: {
       mapel_kode: '',
       mapel_nama: ''
     },
-    page: 1 //UNTUK MENCATAT PAGE PAGINATE YANG SEDANG DIAKSES
-
+    page: 1
   };
 };
 
 var mutations = {
-  //MEMASUKKAN DATA KE STATE SISWAS
   ASSIGN_DATA: function ASSIGN_DATA(state, payload) {
     state.mapels = payload;
   },
-  //MENGUBAH DATA STATE PAGE
   SET_PAGE: function SET_PAGE(state, payload) {
     state.page = payload;
   },
-  //MENGUBAH DATA STATE SISWA
   ASSIGN_FORM: function ASSIGN_FORM(state, payload) {
     state.mapel = {
       mapel_kode: payload.mapel_kode,
       mapel_nama: payload.mapel_nama
     };
   },
-  //ME-RESET STATE SISWA MENJADI KOSONG
   CLEAR_FORM: function CLEAR_FORM(state) {
     state.mapel = {
       mapel_kode: '',
@@ -93910,44 +93832,28 @@ var mutations = {
   }
 };
 var actions = {
-  //FUNGSI INI UNTUK MELAKUKAN REQUEST DATA SISWA DARI SERVER
   getMapel: function getMapel(_ref, payload) {
     var commit = _ref.commit,
         state = _ref.state;
-    //MENGECEK PAYLOAD ADA ATAU TIDAK
-    var search = typeof payload != 'undefined' ? payload : ''; //let search = payload.search
-    //payload.loading(true)
-
+    var search = typeof payload != 'undefined' ? payload : '';
     return new Promise(function (resolve, reject) {
-      //REQUEST DATA DENGAN ENDPOINT /SISWAS
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/mapel?page=".concat(state.page, "&q=").concat(search)).then(function (response) {
-        //SIMPAN DATA KE STATE MELALUI MUTATIONS
-        commit('ASSIGN_DATA', response.data); //payload.loading(false)
-
+        commit('ASSIGN_DATA', response.data);
         resolve(response.data);
       });
     });
   },
-  //FUNGSI UNTUK MENAMBAHKAN DATA BARU
   submitMapel: function submitMapel(_ref2) {
     var dispatch = _ref2.dispatch,
         commit = _ref2.commit,
         state = _ref2.state;
     return new Promise(function (resolve, reject) {
-      //MENGIRIMKAN PERMINTAAN KE SERVER DAN MELAMPIRKAN DATA YANG AKAN DISIMPAN
-      //DARI STATE SISWA
-      console.log(state.mapel);
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/mapel", state.mapel).then(function (response) {
-        //APABILA BERHASIL KITA MELAKUKAN REQUEST LAGI
-        //UNTUK MENGAMBIL DATA TERBARU
         dispatch('getMapel').then(function () {
           resolve(response.data);
         });
       })["catch"](function (error) {
-        //APABILA TERJADI ERROR VALIDASI
-        //DIMANA LARAVEL MENGGUNAKAN CODE 422
         if (error.response.status == 422) {
-          //MAKA LIST ERROR AKAN DIASSIGN KE STATE ERRORS
           commit('SET_ERRORS', error.response.data.errors, {
             root: true
           });
@@ -93955,13 +93861,10 @@ var actions = {
       });
     });
   },
-  //UNTUK MENGAMBIL SINGLE DATA DARI SERVER BERDASARKAN CODE SISWA
   editMapel: function editMapel(_ref3, payload) {
     var commit = _ref3.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/mapel/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
@@ -93970,37 +93873,26 @@ var actions = {
   viewMapel: function viewMapel(_ref4, payload) {
     var commit = _ref4.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/mapel/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
     });
   },
-  //UNTUK MENGUPDATE DATA BERDASARKAN CODE YANG SEDANG DIEDIT
   updateMapel: function updateMapel(_ref5, payload) {
     var state = _ref5.state,
         commit = _ref5.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE DIURL
-      //DAN MENGIRIMKAN DATA TERBARU YANG TELAH DIEDIT
-      //MELALUI STATE SISWA
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/mapel/".concat(payload), state.mapel).then(function (response) {
-        //FORM DIBERSIHKAN
         commit('CLEAR_FORM');
         resolve(response.data);
       });
     });
   },
-  //MENGHAPUS DATA 
   removeMapel: function removeMapel(_ref6, payload) {
     var dispatch = _ref6.dispatch;
     return new Promise(function (resolve, reject) {
-      //MENGIRIM PERMINTAAN KE SERVER UNTUK MENGHAPUS DATA
-      //DENGAN METHOD DELETE DAN ID SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"]("/mapel/".concat(payload)).then(function (response) {
-        //APABILA BERHASIL, FETCH DATA TERBARU DARI SERVER
         dispatch('getMapel').then(function () {
           return resolve();
         });
@@ -94333,9 +94225,6 @@ __webpack_require__.r(__webpack_exports__);
 var state = function state() {
   return {
     siswas: [],
-    //UNTUK MENAMPUNG DATA SISWAS YANG DIDAPATKAN DARI DATABASE
-    //UNTUK MENAMPUNG VALUE DARI FORM INPUTAN NANTINYA
-    //STATE INI AKAN DIGUNAKAN PADA FORM ADD SISWA YANG AKAN DIBAHAS KEMUDIAN
     siswa: {
       siswa_nis: '',
       siswa_nisn: '',
@@ -94364,21 +94253,17 @@ var state = function state() {
       siswa_wali: '',
       siswa_pekerjaanwali: ''
     },
-    page: 1 //UNTUK MENCATAT PAGE PAGINATE YANG SEDANG DIAKSES
-
+    page: 1
   };
 };
 
 var mutations = {
-  //MEMASUKKAN DATA KE STATE SISWAS
   ASSIGN_DATA: function ASSIGN_DATA(state, payload) {
     state.siswas = payload;
   },
-  //MENGUBAH DATA STATE PAGE
   SET_PAGE: function SET_PAGE(state, payload) {
     state.page = payload;
   },
-  //MENGUBAH DATA STATE SISWA
   ASSIGN_FORM: function ASSIGN_FORM(state, payload) {
     state.siswa = {
       siswa_nis: payload.siswa_nis,
@@ -94409,7 +94294,6 @@ var mutations = {
       siswa_pekerjaanwali: payload.siswa_pekerjaanwali
     };
   },
-  //ME-RESET STATE SISWA MENJADI KOSONG
   CLEAR_FORM: function CLEAR_FORM(state) {
     state.siswa = {
       siswa_nis: '',
@@ -94442,43 +94326,28 @@ var mutations = {
   }
 };
 var actions = {
-  //FUNGSI INI UNTUK MELAKUKAN REQUEST DATA SISWA DARI SERVER
   getSiswas: function getSiswas(_ref, payload) {
     var commit = _ref.commit,
         state = _ref.state;
-    //MENGECEK PAYLOAD ADA ATAU TIDAK
-    var search = typeof payload != 'undefined' ? payload : ''; //let search = payload.search
-    //payload.loading(true)
-
+    var search = typeof payload != 'undefined' ? payload : '';
     return new Promise(function (resolve, reject) {
-      //REQUEST DATA DENGAN ENDPOINT /SISWAS
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/siswas?page=".concat(state.page, "&q=").concat(search)).then(function (response) {
-        //SIMPAN DATA KE STATE MELALUI MUTATIONS
-        commit('ASSIGN_DATA', response.data); //payload.loading(false)
-
+        commit('ASSIGN_DATA', response.data);
         resolve(response.data);
       });
     });
   },
-  //FUNGSI UNTUK MENAMBAHKAN DATA BARU
   submitSiswa: function submitSiswa(_ref2) {
     var dispatch = _ref2.dispatch,
         commit = _ref2.commit,
         state = _ref2.state;
     return new Promise(function (resolve, reject) {
-      //MENGIRIMKAN PERMINTAAN KE SERVER DAN MELAMPIRKAN DATA YANG AKAN DISIMPAN
-      //DARI STATE SISWA
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/siswas", state.siswa).then(function (response) {
-        //APABILA BERHASIL KITA MELAKUKAN REQUEST LAGI
-        //UNTUK MENGAMBIL DATA TERBARU
         dispatch('getSiswas').then(function () {
           resolve(response.data);
         });
       })["catch"](function (error) {
-        //APABILA TERJADI ERROR VALIDASI
-        //DIMANA LARAVEL MENGGUNAKAN CODE 422
         if (error.response.status == 422) {
-          //MAKA LIST ERROR AKAN DIASSIGN KE STATE ERRORS
           commit('SET_ERRORS', error.response.data.errors, {
             root: true
           });
@@ -94486,13 +94355,10 @@ var actions = {
       });
     });
   },
-  //UNTUK MENGAMBIL SINGLE DATA DARI SERVER BERDASARKAN CODE SISWA
   editSiswa: function editSiswa(_ref3, payload) {
     var commit = _ref3.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/siswas/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
@@ -94501,37 +94367,26 @@ var actions = {
   viewSiswa: function viewSiswa(_ref4, payload) {
     var commit = _ref4.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/siswas/".concat(payload, "/edit")).then(function (response) {
-        //APABIL BERHASIL, DI ASSIGN KE FORM
         commit('ASSIGN_FORM', response.data.data);
         resolve(response.data);
       });
     });
   },
-  //UNTUK MENGUPDATE DATA BERDASARKAN CODE YANG SEDANG DIEDIT
   updateSiswa: function updateSiswa(_ref5, payload) {
     var state = _ref5.state,
         commit = _ref5.commit;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN REQUEST DENGAN MENGIRIMKAN CODE DIURL
-      //DAN MENGIRIMKAN DATA TERBARU YANG TELAH DIEDIT
-      //MELALUI STATE SISWA
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/siswas/".concat(payload), state.siswa).then(function (response) {
-        //FORM DIBERSIHKAN
         commit('CLEAR_FORM');
         resolve(response.data);
       });
     });
   },
-  //MENGHAPUS DATA 
   removeSiswa: function removeSiswa(_ref6, payload) {
     var dispatch = _ref6.dispatch;
     return new Promise(function (resolve, reject) {
-      //MENGIRIM PERMINTAAN KE SERVER UNTUK MENGHAPUS DATA
-      //DENGAN METHOD DELETE DAN ID SISWA DI URL
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"]("/siswas/".concat(payload)).then(function (response) {
-        //APABILA BERHASIL, FETCH DATA TERBARU DARI SERVER
         dispatch('getSiswas').then(function () {
           return resolve();
         });
@@ -94563,38 +94418,29 @@ __webpack_require__.r(__webpack_exports__);
 var state = function state() {
   return {
     teachers: [],
-    //UNTUK MENAMPUNG DATA KURIR
     page: 1,
-    //PAGE AKTIF
-    id: '' //NANTI AKAN DIGUNAKAN UNTUK EDIT DATA
-
+    id: ''
   };
 };
 
 var mutations = {
-  //MEMASUKKAN DATA YANG DITERIMA KE DALAM STATE KURIR
   ASSIGN_DATA: function ASSIGN_DATA(state, payload) {
     state.teachers = payload;
   },
-  //MENGUBAH STATE PAGE
   SET_PAGE: function SET_PAGE(state, payload) {
     state.page = payload;
   },
-  //MENGUBAH STATE ID
   SET_ID_UPDATE: function SET_ID_UPDATE(state, payload) {
     state.id = payload;
   }
 };
 var actions = {
-  //FUNGSI INI AKAN MELAKUKAN REQUEST KE SERVER UNTUK MENGAMBILD ATA
   getTeachers: function getTeachers(_ref, payload) {
     var commit = _ref.commit,
         state = _ref.state;
     var search = typeof payload != 'undefined' ? payload : '';
     return new Promise(function (resolve, reject) {
-      //DENGAN MENGGUNAKAN AXIOS METHOD GET
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/teachers?page=".concat(state.page, "&q=").concat(search)).then(function (response) {
-        //KEMUDIAN DI COMMIT UNTUK MELAKUKAN PERUBAHA STATE
         commit('ASSIGN_DATA', response.data);
         resolve(response.data);
       });
@@ -94604,19 +94450,15 @@ var actions = {
     var dispatch = _ref2.dispatch,
         commit = _ref2.commit;
     return new Promise(function (resolve, reject) {
-      //MENGIRIMKAN PERMINTAAN KE SERVER DENGAN METHOD POST
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/teachers", payload, {
-        //KARENA TERDAPAT FILE FOTO, MAKA HEADERNYA DITAMBAHKAN multipart/form-data
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }).then(function (response) {
-        //KETIKA BERHASIL, MAKA DILAKUKAN REQUEST UNTUK MENGAMBIL DATA KURIR TERBARU
         dispatch('getTeachers').then(function () {
           resolve(response.data);
         });
       })["catch"](function (error) {
-        //JIKA GAGALNYA VALIDASI MAKA ERRONYA AKAN DI ASSIGN
         if (error.response.status == 422) {
           commit('SET_ERRORS', error.response.data.errors, {
             root: true
@@ -94628,9 +94470,7 @@ var actions = {
   editTeacher: function editTeacher(_ref3, payload) {
     var commit = _ref3.commit;
     return new Promise(function (resolve, reject) {
-      //FUNGSI UNTUK MELAKUKAN REQUEST SINGLE DATA BERDASARKAN ID KURIR
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/teachers/".concat(payload, "/edit")).then(function (response) {
-        //DATA YANG DITERIMA AKAN DIKIRIMKAN KE FORM
         resolve(response.data);
       });
     });
@@ -94638,9 +94478,7 @@ var actions = {
   viewTeacher: function viewTeacher(_ref4, payload) {
     var commit = _ref4.commit;
     return new Promise(function (resolve, reject) {
-      //FUNGSI UNTUK MELAKUKAN REQUEST SINGLE DATA BERDASARKAN ID KURIR
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/teachers/".concat(payload, "/view")).then(function (response) {
-        //DATA YANG DITERIMA AKAN DIKIRIMKAN KE FORM
         resolve(response.data);
       });
     });
@@ -94648,7 +94486,6 @@ var actions = {
   updateTeacher: function updateTeacher(_ref5, payload) {
     var state = _ref5.state;
     return new Promise(function (resolve, reject) {
-      //FUNGSI UNTUK MELAKUKAN REQUEST DATA PERUBAHAN DATA KURIR BERDASARKAN STATE ID KURIR
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/teachers/".concat(state.id), payload, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -94661,9 +94498,7 @@ var actions = {
   removeTeacher: function removeTeacher(_ref6, payload) {
     var dispatch = _ref6.dispatch;
     return new Promise(function (resolve, reject) {
-      //MELAKUKAN PERMINTAAN KE SERVER DENGAN METHOD DELETE DAN MENGIRIMKAN ID YANG AKAN DIHAPUS
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"]["delete"]("/teachers/".concat(payload)).then(function (response) {
-        //MENGAMBIL DATA TERBARU DARI SERVER
         dispatch('getTeachers').then(function () {
           return resolve(response.data);
         });
@@ -94695,15 +94530,10 @@ __webpack_require__.r(__webpack_exports__);
 var state = function state() {
   return {
     users: [],
-    //MENAMPUNG LIST USER
     roles: [],
-    //MENAMPUNG LIST ROLES
     permissions: [],
-    //MENAMPUNG LIST PERMISSION
     role_permission: [],
-    //MENAMPUNG PERMISSION YANG DIMILIKI OLEH ROLE
-    authenticated: [] //MENAMPUNG USER YANG SEDANG LOGIN
-
+    authenticated: []
   };
 };
 
@@ -94728,31 +94558,24 @@ var mutations = {
   }
 };
 var actions = {
-  //FUNGSI INI UNTUK MENGAMBIL DATA USER
   getUserLists: function getUserLists(_ref) {
     var commit = _ref.commit;
     return new Promise(function (resolve, reject) {
-      //KIRIM PERMINTAAN KE BACKEND
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/user-lists").then(function (response) {
-        //SIMPAN DATANYA KE STATE USERS MENGGUNAKAN MUTATIONS
         commit('ASSIGN_USER', response.data.data);
         resolve(response.data);
       });
     });
   },
-  //FUNGSI INI UNTUK MENGATUR ROLE TIAP USER
   setRoleUser: function setRoleUser(_ref2, payload) {
     var commit = _ref2.commit;
     return new Promise(function (resolve, reject) {
       commit('CLEAR_ERRORS', '', {
         root: true
-      }); //STATE ERROR DIBERSIHKAN
-      //KIRIM PERMINTAAN KE BACKEND
-
+      });
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/set-role-user", payload).then(function (response) {
         resolve(response.data);
       })["catch"](function (error) {
-        //APABILA TERJADI ERROR VALIDASI, SET ERRONYA AGAR DAPAT DITAMPILKAN
         if (error.response.status == 422) {
           commit('SET_ERRORS', error.response.data.errors, {
             root: true
@@ -94761,62 +94584,48 @@ var actions = {
       });
     });
   },
-  //UNTUK MENGAMBIL LIST ROLES
   getRoles: function getRoles(_ref3) {
     var commit = _ref3.commit;
     return new Promise(function (resolve, reject) {
-      //KIRIM PERMINTAAN KE BACKEND
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/roles").then(function (response) {
-        //SIMPAN DATANYA KE DALAM STATE ROLES
         commit('ASSIGN_ROLES', response.data.data);
         resolve(response.data);
       });
     });
   },
-  //MENGAMBIL LIST PERMISSIONS
   getAllPermission: function getAllPermission(_ref4) {
     var commit = _ref4.commit;
     return new Promise(function (resolve, reject) {
-      //KIRIM PERMINTAAN KE BACKEND
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/permissions").then(function (response) {
-        //SIMPAN DATA YANG DITERIMA KE DALAM STATE PERMISSIONS
         commit('ASSIGN_PERMISSION', response.data.data);
         resolve(response.data);
       });
     });
   },
-  //MENGAMBIL PERMISSION YANG TELAH DIMILIKI OLEH ROLE TERTENTU
   getRolePermission: function getRolePermission(_ref5, payload) {
     var commit = _ref5.commit;
     return new Promise(function (resolve, reject) {
       commit('CLEAR_ERRORS', '', {
         root: true
-      }); //BERSIHKAN STATE ERRORS
-      //KIRIM PERMINTAAN KE BACKEND BERDASARKAN ROLE_ID
-
+      });
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/role-permission", {
         role_id: payload
       }).then(function (response) {
-        //SIMPAN DATANYA DENGAN MUTATIONS
         commit('ASSIGN_ROLE_PERMISSION', response.data.data);
         resolve(response.data);
       });
     });
   },
-  //BERFUNGSI UNTUK MENGATUR PERMISSION SETIAP ROLEH YANG DIPILIH
   setRolePermission: function setRolePermission(_ref6, payload) {
     var commit = _ref6.commit;
     return new Promise(function (resolve, reject) {
       commit('CLEAR_ERRORS', '', {
         root: true
-      }); //KIRIM PERMINTAAN KE BACKEND
-
+      });
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/set-role-permission", payload).then(function (response) {
         resolve(response.data);
       })["catch"](function (error) {
-        //APABILA TERJADI ERROR VALIDASI
         if (error.response.status == 422) {
-          //SET ERRORNYA AGAR DAPAT DITAMPILKAN
           commit('SET_ERRORS', error.response.data.errors, {
             root: true
           });
@@ -94824,12 +94633,10 @@ var actions = {
       });
     });
   },
-  //MENGAMBIL DATA USER YANG SEDANG LOGIN
   getUserLogin: function getUserLogin(_ref7) {
     var commit = _ref7.commit;
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("user-authenticated").then(function (response) {
-        //SIMPAN DATA USER TERSEBUT
         commit('ASSIGN_USER_AUTH', response.data.data);
         resolve(response.data);
       });

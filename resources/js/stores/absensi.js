@@ -1,10 +1,9 @@
 import $axios from '../api.js'
 
 const state = () => ({
-    absensis: [], //STATE UNTUK MENAMPUNG DATA PELANGGARANS
+    absensis: [],
     siswas: [],
     
-    //STATE INI UNTUK FORM ADD DAN EDIT NANTINYA
     absensi: {
         absensi_kode: '',
         siswa_id: '',
@@ -16,18 +15,15 @@ const state = () => ({
 })
 
 const mutations = {
-    //MUTATIONS UNTUK ASSIGN DATA PELANGGARAN KE DALAM STATE PELANGGARAN
     DATA_SISWA(state, payload) {
         state.siswas = payload
     },
     ASSIGN_DATA(state, payload) {
         state.absensis = payload
     },
-    //MENGUBAH STATE PAGE
     SET_PAGE(state, payload) {
         state.page = payload
     },
-    //MENGUBAH STATE PELANGGARAN
     ASSIGN_FORM(state, payload) {
         state.absensi = {
             absensi_kode: payload.absensi_kode,
@@ -37,7 +33,6 @@ const mutations = {
             absensi_keterangan: payload.absensi_keterangan
         }
     },
-    //RESET STATE PELANGGARAN
     CLEAR_FORM(state) {
         state.absensi = {
             absensi_kode: '',

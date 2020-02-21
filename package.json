@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "admin-lte": "^3.0.1",
+    "portal-vue": "^2.1.7",
     "vue": "^2.6.11",
     "vue-material-checkbox": "^2.2.0",
     "vue-sweetalert2": "^2.1.5",
