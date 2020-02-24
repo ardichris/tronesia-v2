@@ -10,7 +10,7 @@ class ListBarangMasuk extends Model
 
     public function barangmasuk()
     {
-        return $this->belongsTo(BarangMasuk::class);
+        return $this->belongsTo(BarangMasuk::class, 'barangmasuk_id', 'id');
     }
 
     public function barang()

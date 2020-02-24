@@ -3233,6 +3233,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_select__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue_select__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-select/dist/vue-select.css */ "./node_modules/vue-select/dist/vue-select.css");
 /* harmony import */ var vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_select_dist_vue_select_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Form_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Form.vue */ "./resources/js/pages/barangmasuks/Form.vue");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -3290,6 +3291,39 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -3348,9 +3382,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     }
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('barangmasuk', ['getBarangmasuk', 'removeBarangmasuk', 'getBarang']), {
-    deleteBarangmasuk: function deleteBarangmasuk(kode) {
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('barangmasuk', ['updateBarangmasuk', 'editBarangmasuk', 'submitBarangmasuk', 'getBarangmasuk', 'removeBarangmasuk', 'getBarang']), {
+    simpanBMbaru: function simpanBMbaru() {
       var _this = this;
+
+      this.submitBarangmasuk().then(function () {
+        _this.$bvModal.hide('add-modal'), _this.getBarangmasuk();
+      });
+    },
+    editBMsaja: function editBMsaja() {
+      this.updateBarangmasuk(), this.$bvModal.hide('edit-modal'), this.getBarangmasuk();
+    },
+    editBM: function editBM(kode) {
+      this.editBarangmasuk({
+        kode: kode
+      }), this.$bvModal.show('edit-modal');
+    },
+    deleteBarangmasuk: function deleteBarangmasuk(kode) {
+      var _this2 = this;
 
       this.$swal({
         title: 'Kamu Yakin?',
@@ -3362,13 +3411,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         confirmButtonText: 'Iya, Lanjutkan!'
       }).then(function (result) {
         if (result.value) {
-          _this.removeBarangmasuk(kode);
+          _this2.removeBarangmasuk(kode);
         }
       });
     }
   }),
   components: {
-    vSelect: vue_select__WEBPACK_IMPORTED_MODULE_1___default.a
+    vSelect: vue_select__WEBPACK_IMPORTED_MODULE_1___default.a,
+    'barangmasuk-form': _Form_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   }
 });
 
@@ -64048,12 +64098,110 @@ var render = function() {
             { staticClass: "col-sm-12 col-md-6" },
             [
               _c(
-                "router-link",
+                "b-button",
                 {
-                  staticClass: "btn btn-primary btn-sm btn-flat",
-                  attrs: { to: { name: "barangmasuk.add" } }
+                  directives: [
+                    {
+                      name: "b-modal",
+                      rawName: "v-b-modal",
+                      value: "add-modal",
+                      expression: "'add-modal'"
+                    }
+                  ],
+                  attrs: { variant: "primary", size: "sm" },
+                  on: {
+                    click: function($event) {
+                      return _vm.$bvModal.show("add-modal")
+                    }
+                  }
                 },
                 [_vm._v("Tambah")]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  attrs: { id: "add-modal" },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "modal-title",
+                      fn: function() {
+                        return [
+                          _vm._v(
+                            "\n                            Tambah Barang Masuk\n                        "
+                          )
+                        ]
+                      },
+                      proxy: true
+                    },
+                    {
+                      key: "modal-footer",
+                      fn: function() {
+                        return [
+                          _c(
+                            "b-button",
+                            {
+                              staticClass: "mt-3",
+                              attrs: { variant: "success", block: "" },
+                              on: { click: _vm.simpanBMbaru }
+                            },
+                            [
+                              _vm._v(
+                                "\n                                Simpan\n                            "
+                              )
+                            ]
+                          )
+                        ]
+                      },
+                      proxy: true
+                    }
+                  ])
+                },
+                [_vm._v(" "), _c("barangmasuk-form")],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-modal",
+                {
+                  attrs: { id: "edit-modal" },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "modal-title",
+                      fn: function() {
+                        return [
+                          _vm._v(
+                            "\n                            Edit Barang Masuk\n                        "
+                          )
+                        ]
+                      },
+                      proxy: true
+                    },
+                    {
+                      key: "modal-footer",
+                      fn: function() {
+                        return [
+                          _c(
+                            "b-button",
+                            {
+                              staticClass: "mt-3",
+                              attrs: { variant: "success", block: "" },
+                              on: { click: _vm.editBMsaja }
+                            },
+                            [
+                              _vm._v(
+                                "\n                                Update\n                            "
+                              )
+                            ]
+                          )
+                        ]
+                      },
+                      proxy: true
+                    }
+                  ])
+                },
+                [_vm._v(" "), _c("barangmasuk-form")],
+                1
               )
             ],
             1
@@ -64132,13 +64280,12 @@ var render = function() {
                 fn: function(row) {
                   return [
                     _c(
-                      "router-link",
+                      "button",
                       {
                         staticClass: "btn btn-warning btn-sm",
-                        attrs: {
-                          to: {
-                            name: "barangmasuk.edit",
-                            params: { id: row.item.bm_kode }
+                        on: {
+                          click: function($event) {
+                            return _vm.editBM(row.item.bm_kode)
                           }
                         }
                       },
@@ -64151,7 +64298,7 @@ var render = function() {
                         staticClass: "btn btn-danger btn-sm",
                         on: {
                           click: function($event) {
-                            return _vm.deleteBarangmasuk(row.item.bm_kode)
+                            return _vm.deleteBarangmasuk(row.item.id)
                           }
                         }
                       },
@@ -64317,7 +64464,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "col-md-6" }, [
+  return _c("div", { staticClass: "d-block" }, [
     _c(
       "div",
       {
@@ -94687,6 +94834,7 @@ var state = function state() {
     barangmasuks: [],
     barang: [],
     barangmasuk: {
+      bm_kode: '',
       bm_tanggal: '',
       listbarang: []
     },
@@ -94706,12 +94854,14 @@ var mutations = {
   },
   ASSIGN_FORM: function ASSIGN_FORM(state, payload) {
     state.barangmasuk = {
+      bm_kode: payload.bm_kode,
       bm_tanggal: payload.bm_tanggal,
-      listbarang: payload.barang
+      listbarang: payload.listbarang
     };
   },
   CLEAR_FORM: function CLEAR_FORM(state) {
     state.barangmasuk = {
+      bm_kode: '',
       bm_tanggal: '',
       listbarang: []
     };
@@ -94753,9 +94903,6 @@ var actions = {
         });
       })["catch"](function (error) {
         console.log(error.response.data);
-        /*if (error.response.status == 500) {
-            commit('SET_ERRORS', error.response.data.errors, { root: true })
-        }*/
       });
     });
   },
@@ -94765,7 +94912,10 @@ var actions = {
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/barangmasuk/".concat(kode, "/edit")).then(function (response) {
         commit('ASSIGN_FORM', response.data.data);
+        console.log(response.data);
         resolve(response.data);
+      })["catch"](function (error) {
+        console.log(error.response.data);
       });
     });
   },
@@ -94781,8 +94931,9 @@ var actions = {
   updateBarangmasuk: function updateBarangmasuk(_ref6, payload) {
     var state = _ref6.state,
         commit = _ref6.commit;
-    var kode = state.barangmasuk.pb_kode;
+    var kode = state.barangmasuk.bm_kode;
     return new Promise(function (resolve, reject) {
+      console.log(state.barangmasuk);
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/barangmasuk/".concat(kode), state.barangmasuk).then(function (response) {
         commit('CLEAR_FORM');
         resolve(response.data);

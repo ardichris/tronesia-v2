@@ -34,7 +34,7 @@ class Jurnal extends Model
     }
 
     public function detail()
-{
-    return $this->hasMany(DetailJurnal::class);
-}
+    {
+        return $this->hasMany(DetailJurnal::class);
+    }
 }

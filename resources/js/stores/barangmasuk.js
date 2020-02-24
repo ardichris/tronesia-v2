@@ -5,6 +5,7 @@ const state = () => ({
     barang:[],
 
     barangmasuk: {
+        bm_kode: '',
         bm_tanggal: '',
         listbarang: []
     },
@@ -23,12 +24,14 @@ const mutations = {
     },
     ASSIGN_FORM(state, payload) {
         state.barangmasuk = {
+            bm_kode: payload.bm_kode,
             bm_tanggal: payload.bm_tanggal,
-            listbarang: payload.barang
+            listbarang: payload.listbarang
         }
     },
     CLEAR_FORM(state) {
         state.barangmasuk = {
+            bm_kode: '',
             bm_tanggal: '',
             listbarang: []
         }
@@ -69,9 +72,6 @@ const actions = {
             })
             .catch((error) => {   
                 console.log(error.response.data)
-                /*if (error.response.status == 500) {
-                    commit('SET_ERRORS', error.response.data.errors, { root: true })
-                }*/
             })
         })
     },
@@ -81,7 +81,11 @@ const actions = {
             $axios.get(`/barangmasuk/${kode}/edit`)
             .then((response) => {
                 commit('ASSIGN_FORM', response.data.data)
+                console.log(response.data)
                 resolve(response.data)
+            })
+            .catch((error) => {   
+                console.log(error.response.data)
             })
         })
     },
@@ -95,8 +99,9 @@ const actions = {
         })
     },
     updateBarangmasuk({ state, commit }, payload) {
-        let kode = state.barangmasuk.pb_kode
+        let kode = state.barangmasuk.bm_kode
         return new Promise((resolve, reject) => {
+            console.log(state.barangmasuk)
             $axios.put(`/barangmasuk/${kode}`, state.barangmasuk)
             .then((response) => {
                 commit('CLEAR_FORM')

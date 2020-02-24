@@ -1,5 +1,5 @@
 <template>
-    <div class="col-md-6">
+    <div class="d-block">
         <div class="form-group" :class="{ 'has-error': errors.bm_tanggal }">
             <label for="">Tanggal</label>
             <input type="date" class="form-control" v-model="barangmasuk.bm_tanggal" :readonly="$route.name == 'barangmasuk.edit' || $route.name == 'barangmasuk.view'">

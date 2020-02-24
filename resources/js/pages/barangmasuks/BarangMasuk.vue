@@ -4,7 +4,38 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <router-link :to="{ name: 'barangmasuk.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
+                        <!--router-link :to="{ name: 'barangmasuk.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link-->
+                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('add-modal')">Tambah</b-button>
+                        <b-modal id="add-modal">
+                            <template v-slot:modal-title>
+                                Tambah Barang Masuk
+                            </template>
+                            <barangmasuk-form></barangmasuk-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block @click="simpanBMbaru"
+                                >
+                                    Simpan
+                                </b-button>
+                            </template>
+                        </b-modal>
+                        <b-modal id="edit-modal">
+                            <template v-slot:modal-title>
+                                Edit Barang Masuk
+                            </template>
+                            <barangmasuk-form></barangmasuk-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block @click="editBMsaja"
+                                >
+                                    Update
+                                </b-button>
+                            </template>
+                        </b-modal>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -22,9 +53,10 @@
                         {{row.item.bm_jumlah}} {{row.item.barang.barang_satuan}}
                     </template>
                     <template v-slot:cell(actions)="row">
-                        <!--router-link :to="{ name: 'barangmasuk.view', params: {id: row.item.barangmasuk_kode} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link-->
-                        <router-link :to="{ name: 'barangmasuk.edit', params: {id: row.item.bm_kode} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
-                        <button class="btn btn-danger btn-sm" @click="deleteBarangmasuk(row.item.bm_kode)"><i class="fa fa-trash"></i></button>
+                        <!--router-link :to="{ name: 'barangmasuk.view', params: {id: row.item.barangmasuk_kode} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
+                        <router-link :to="{ name: 'barangmasuk.edit', params: {id: row.item.bm_kode} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link-->
+                        <button class="btn btn-warning btn-sm" @click="editBM(row.item.bm_kode)"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-danger btn-sm" @click="deleteBarangmasuk(row.item.id)"><i class="fa fa-trash"></i></button>
                     </template>
                 </b-table>
 
@@ -53,6 +85,7 @@
 import { mapActions, mapState, mapMutations } from 'vuex'
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
+import FormBarangMasuk from './Form.vue'
 
 export default {
     name: 'DataBarangmasuk',
@@ -95,7 +128,24 @@ export default {
         }
     },
     methods: {
-        ...mapActions('barangmasuk', ['getBarangmasuk', 'removeBarangmasuk','getBarang']),
+        ...mapActions('barangmasuk', ['updateBarangmasuk','editBarangmasuk','submitBarangmasuk','getBarangmasuk', 'removeBarangmasuk','getBarang']),
+        simpanBMbaru(){
+            this.submitBarangmasuk().then(() => {
+                this.$bvModal.hide('add-modal'),
+                this.getBarangmasuk()
+            })
+        },
+        editBMsaja(){
+            this.updateBarangmasuk(),
+            this.$bvModal.hide('edit-modal'),
+            this.getBarangmasuk()
+        },
+        editBM(kode){
+            this.editBarangmasuk({
+                kode: kode
+            }),
+            this.$bvModal.show('edit-modal')
+        },
         deleteBarangmasuk(kode) {
             this.$swal({
                 title: 'Kamu Yakin?',
@@ -113,7 +163,8 @@ export default {
         }
     },
     components: {
-        vSelect
+        vSelect,
+        'barangmasuk-form': FormBarangMasuk
     }
 }
 </script>

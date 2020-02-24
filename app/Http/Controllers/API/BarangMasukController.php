@@ -63,30 +63,40 @@ class BarangMasukController extends Controller
 
     public function edit($kode)
     {
-        $pbs = BarangMasuk::whereBm_kode($kode)->with(['barang','user'])->first();
+        $pbs = BarangMasuk::whereBm_kode($kode)->with(['user','listbarang','listbarang.barang'])->first();
         return response()->json(['status' => 'success', 'data' => $pbs], 200);
     }
 
     public function update(Request $request,$kode)
     {
         $this->validate($request, [
-            'barang' => 'required',
+            'listbarang' => 'required',
             'bm_tanggal' => 'required'
         ]);
         
-        $pbs = BarangMasuk::whereBm_kode($request->bl_kode);
+        $barangmasuk = BarangMasuk::whereBm_kode($kode)->first();
         $user = $request->user();
-        $pbs->update([
-                'bl_tanggal' => $request->bl_tanggal,
-                'barang_id' => $request->barang['id'],
-                'user_id' => $user->id
-                ]);
+        $barangmasuk->update([
+                        'bm_tanggal' => $request->bm_tanggal,
+                        'user_id' => $user->id
+                        ]);
+        ListBarangMasuk::whereBarangmasuk_id($barangmasuk->id)->delete();
+        foreach ($request->listbarang as $row) {
+            if (!is_null($row['jumlah'])&&!is_null($row['barang'])) {
+                ListBarangMasuk::create([
+                                    'barangmasuk_id' => $barangmasuk->id,
+                                    'barang_id' => $row['barang']['id'],
+                                    'jumlah' => $row['jumlah']
+                                ]);
+            }            
+        }
         return response()->json(['status' => 'success']);
     }
 
     public function destroy($kode)
     {
-        $pbs = BarangMasuk::whereBm_kode($kode);
+        $pbs = BarangMasuk::find($kode);
+        ListBarangMasuk::whereBarangmasuk_id($kode)->delete();
         $pbs->delete();
         return response()->json(['status' => 'success'], 200);
     }

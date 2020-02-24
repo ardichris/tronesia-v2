@@ -8,9 +8,9 @@ class BarangMasuk extends Model
 {
     protected $guarded = [];
 
-    public function barang()
+    public function listbarang()
     {
-        return $this->belongsTo(Barang::class);
+        return $this->hasMany(ListBarangMasuk::class,'barangmasuk_id');
     }
 
     public function user()
