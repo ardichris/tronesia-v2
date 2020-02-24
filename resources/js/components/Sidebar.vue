@@ -122,7 +122,7 @@
                         <li class="nav-item">
                             <a class="nav-link">
                                 <i class="fas fa-sign-in-alt nav-icon"></i>
-                                <p><router-link :to="{ name: 'pelanggarans.data' }">Barang Masuk</router-link></p>
+                                <p><router-link :to="{ name: 'barangmasuk.data' }">Barang Masuk</router-link></p>
                             </a>
                         </li>
                         <li class="nav-item">

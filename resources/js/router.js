@@ -11,6 +11,10 @@ import IndexPemakaianBarang from './pages/pemakaianbarangs/Index.vue'
 import DataPemakaianBarang from './pages/pemakaianbarangs/PemakaianBarang.vue'
 import AddPemakaianBarang from './pages/pemakaianbarangs/Add.vue'
 import EditPemakaianBarang from './pages/pemakaianbarangs/Edit.vue'
+import IndexBarangMasuk from './pages/barangmasuks/Index.vue'
+import DataBarangMasuk from './pages/barangmasuks/BarangMasuk.vue'
+import AddBarangMasuk from './pages/barangmasuks/Add.vue'
+import EditBarangMasuk from './pages/barangmasuks/Edit.vue'
 import IndexSiswa from './pages/siswas/Index.vue'
 import DataSiswa from './pages/siswas/Siswa.vue'
 import AddSiswa from './pages/siswas/Add.vue'
@@ -83,6 +87,31 @@ const router = new Router({
                     component: SetPermission,
                     meta: { title: 'Set Permissions' }
                 },
+            ]
+        },
+        {
+            path: '/barangmasuk',
+            component: IndexBarangMasuk,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'barangmasuk.data',
+                    component: DataBarangMasuk,
+                    meta: { title: 'Daftar Barang Masuk' }
+                },
+                {
+                    path: 'add',
+                    name: 'barangmasuk.add',
+                    component: AddBarangMasuk,
+                    meta: { title: 'Tambah Barang Masuk' }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'barangmasuk.edit',
+                    component: EditBarangMasuk,
+                    meta: { title: 'Edit Barang Masuk' }
+                }                
             ]
         },
         {
