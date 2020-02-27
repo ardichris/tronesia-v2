@@ -75,7 +75,7 @@
                     </li>
                     </ul>
                 </li>
-                <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==3 || authenticated.role==2">
+                <li class="nav-item has-treeview">
                     <a class="nav-link active">
                         <i class="nav-icon fas fa-users"></i>
                             <p>
@@ -98,7 +98,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==4">
+                <li class="nav-item has-treeview">
                     <a class="nav-link active">
                         <i class="nav-icon fas fa-building"></i>
                             <p>
@@ -113,19 +113,19 @@
                                 <p><router-link :to="{ name: 'pelanggarans.data' }">Laporan</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="authenticated.role==0 || authenticated.role==4">
                             <a class="nav-link">
                                 <i class="fas fa-house-damage nav-icon"></i>
                                 <p><router-link :to="{ name: 'pelanggarans.data' }">Kerusakan</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="authenticated.role==0 || authenticated.role==4">
                             <a class="nav-link">
                                 <i class="fas fa-sign-in-alt nav-icon"></i>
                                 <p><router-link :to="{ name: 'barangmasuk.data' }">Barang Masuk</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="authenticated.role==0 || authenticated.role==4">
                             <a class="nav-link">
                                 <i class="fas fa-toilet-paper nav-icon"></i>
                                 <p><router-link :to="{ name: 'pemakaianbarang.data' }">Pemakaian Barang</router-link></p>

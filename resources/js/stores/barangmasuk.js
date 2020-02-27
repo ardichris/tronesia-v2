@@ -61,7 +61,7 @@ const actions = {
     },
     submitBarangmasuk({ dispatch, commit, state }) {
         return new Promise((resolve, reject) => {
-            console.log(state.barangmasuk)
+            //console.log(state.barangmasuk)
             $axios.post(`/barangmasuk`, state.barangmasuk)
             .then((response) => {
                 dispatch('getBarangmasuk').then(() => {
@@ -81,7 +81,6 @@ const actions = {
             $axios.get(`/barangmasuk/${kode}/edit`)
             .then((response) => {
                 commit('ASSIGN_FORM', response.data.data)
-                console.log(response.data)
                 resolve(response.data)
             })
             .catch((error) => {   
@@ -101,7 +100,6 @@ const actions = {
     updateBarangmasuk({ state, commit }, payload) {
         let kode = state.barangmasuk.bm_kode
         return new Promise((resolve, reject) => {
-            console.log(state.barangmasuk)
             $axios.put(`/barangmasuk/${kode}`, state.barangmasuk)
             .then((response) => {
                 commit('CLEAR_FORM')

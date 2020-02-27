@@ -62216,39 +62216,15 @@ var render = function() {
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              _vm.authenticated.role == 0 ||
-              _vm.authenticated.role == 3 ||
-              _vm.authenticated.role == 2
-                ? _c("li", { staticClass: "nav-item has-treeview" }, [
-                    _vm._m(2),
-                    _vm._v(" "),
-                    _c("ul", { staticClass: "nav nav-treeview" }, [
-                      _c("li", { staticClass: "nav-item" }, [
-                        _vm.authenticated.role != 2
-                          ? _c("a", { staticClass: "nav-link" }, [
-                              _c("i", {
-                                staticClass: "fas fa-user-injured nav-icon"
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "p",
-                                [
-                                  _c(
-                                    "router-link",
-                                    { attrs: { to: { name: "absensi.data" } } },
-                                    [_vm._v("Absensi")]
-                                  )
-                                ],
-                                1
-                              )
-                            ])
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "nav-item" }, [
-                        _c("a", { staticClass: "nav-link" }, [
+              _c("li", { staticClass: "nav-item has-treeview" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c("ul", { staticClass: "nav nav-treeview" }, [
+                  _c("li", { staticClass: "nav-item" }, [
+                    _vm.authenticated.role != 2
+                      ? _c("a", { staticClass: "nav-link" }, [
                           _c("i", {
-                            staticClass: "fas fa-exclamation-triangle nav-icon"
+                            staticClass: "fas fa-user-injured nav-icon"
                           }),
                           _vm._v(" "),
                           _c(
@@ -62256,46 +62232,62 @@ var render = function() {
                             [
                               _c(
                                 "router-link",
-                                {
-                                  attrs: { to: { name: "pelanggarans.data" } }
-                                },
-                                [_vm._v("Pelanggaran")]
+                                { attrs: { to: { name: "absensi.data" } } },
+                                [_vm._v("Absensi")]
                               )
                             ],
                             1
                           )
                         ])
-                      ])
+                      : _vm._e()
+                  ]),
+                  _vm._v(" "),
+                  _c("li", { staticClass: "nav-item" }, [
+                    _c("a", { staticClass: "nav-link" }, [
+                      _c("i", {
+                        staticClass: "fas fa-exclamation-triangle nav-icon"
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "p",
+                        [
+                          _c(
+                            "router-link",
+                            { attrs: { to: { name: "pelanggarans.data" } } },
+                            [_vm._v("Pelanggaran")]
+                          )
+                        ],
+                        1
+                      )
                     ])
                   ])
-                : _vm._e(),
+                ])
+              ]),
               _vm._v(" "),
-              _vm.authenticated.role == 0 || _vm.authenticated.role == 4
-                ? _c("li", { staticClass: "nav-item has-treeview" }, [
-                    _vm._m(3),
-                    _vm._v(" "),
-                    _c("ul", { staticClass: "nav nav-treeview" }, [
-                      _c("li", { staticClass: "nav-item" }, [
-                        _c("a", { staticClass: "nav-link" }, [
-                          _c("i", { staticClass: "fas fa-bullhorn nav-icon" }),
-                          _vm._v(" "),
-                          _c(
-                            "p",
-                            [
-                              _c(
-                                "router-link",
-                                {
-                                  attrs: { to: { name: "pelanggarans.data" } }
-                                },
-                                [_vm._v("Laporan")]
-                              )
-                            ],
-                            1
-                          )
-                        ])
-                      ]),
+              _c("li", { staticClass: "nav-item has-treeview" }, [
+                _vm._m(3),
+                _vm._v(" "),
+                _c("ul", { staticClass: "nav nav-treeview" }, [
+                  _c("li", { staticClass: "nav-item" }, [
+                    _c("a", { staticClass: "nav-link" }, [
+                      _c("i", { staticClass: "fas fa-bullhorn nav-icon" }),
                       _vm._v(" "),
-                      _c("li", { staticClass: "nav-item" }, [
+                      _c(
+                        "p",
+                        [
+                          _c(
+                            "router-link",
+                            { attrs: { to: { name: "pelanggarans.data" } } },
+                            [_vm._v("Laporan")]
+                          )
+                        ],
+                        1
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _vm.authenticated.role == 0 || _vm.authenticated.role == 4
+                    ? _c("li", { staticClass: "nav-item" }, [
                         _c("a", { staticClass: "nav-link" }, [
                           _c("i", {
                             staticClass: "fas fa-house-damage nav-icon"
@@ -62315,9 +62307,11 @@ var render = function() {
                             1
                           )
                         ])
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "nav-item" }, [
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.authenticated.role == 0 || _vm.authenticated.role == 4
+                    ? _c("li", { staticClass: "nav-item" }, [
                         _c("a", { staticClass: "nav-link" }, [
                           _c("i", {
                             staticClass: "fas fa-sign-in-alt nav-icon"
@@ -62335,9 +62329,11 @@ var render = function() {
                             1
                           )
                         ])
-                      ]),
-                      _vm._v(" "),
-                      _c("li", { staticClass: "nav-item" }, [
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.authenticated.role == 0 || _vm.authenticated.role == 4
+                    ? _c("li", { staticClass: "nav-item" }, [
                         _c("a", { staticClass: "nav-link" }, [
                           _c("i", {
                             staticClass: "fas fa-toilet-paper nav-icon"
@@ -62360,9 +62356,9 @@ var render = function() {
                           )
                         ])
                       ])
-                    ])
-                  ])
-                : _vm._e(),
+                    : _vm._e()
+                ])
+              ]),
               _vm._v(" "),
               _vm.authenticated.role == 0 ||
               _vm.authenticated.role == 2 ||
@@ -63104,7 +63100,18 @@ var render = function() {
               "div",
               {
                 staticClass: "form-group has-feedback",
-                class: { "has-error": _vm.errors.password }
+                class: { "has-error": _vm.errors.password },
+                on: {
+                  keyup: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
+                    return _vm.postLogin($event)
+                  }
+                }
               },
               [
                 _c("input", {
@@ -94895,7 +94902,7 @@ var actions = {
         commit = _ref3.commit,
         state = _ref3.state;
     return new Promise(function (resolve, reject) {
-      console.log(state.barangmasuk);
+      //console.log(state.barangmasuk)
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].post("/barangmasuk", state.barangmasuk).then(function (response) {
         dispatch('getBarangmasuk').then(function () {
           commit('CLEAR_FORM');
@@ -94912,7 +94919,6 @@ var actions = {
     return new Promise(function (resolve, reject) {
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].get("/barangmasuk/".concat(kode, "/edit")).then(function (response) {
         commit('ASSIGN_FORM', response.data.data);
-        console.log(response.data);
         resolve(response.data);
       })["catch"](function (error) {
         console.log(error.response.data);
@@ -94933,7 +94939,6 @@ var actions = {
         commit = _ref6.commit;
     var kode = state.barangmasuk.bm_kode;
     return new Promise(function (resolve, reject) {
-      console.log(state.barangmasuk);
       _api_js__WEBPACK_IMPORTED_MODULE_0__["default"].put("/barangmasuk/".concat(kode), state.barangmasuk).then(function (response) {
         commit('CLEAR_FORM');
         resolve(response.data);

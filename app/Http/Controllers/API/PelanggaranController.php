@@ -13,14 +13,18 @@ class PelanggaranController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
+        $pelanggarans = Pelanggaran::with(['siswa','user'])->orderBy('created_at', 'DESC');
         if (request()->q != '') { 
             $filter = request()->q;
             $siswas = Siswa::where('siswa_nama','like','%'.$filter.'%')->select('id')->first();
-            $pelanggarans = Pelanggaran::with(['siswa','user'])
-                                       ->where('siswa_id','=',$siswas->id);                   
-        } else {
-            $pelanggarans = Pelanggaran::with(['siswa','user'])->orderBy('created_at', 'DESC');
+            $pelanggarans->with(['siswa','user'])
+                         ->where('siswa_id','=',$siswas->id);                   
         }
+        if($user->role==2){
+            $pelanggarans = $pelanggarans->where('user_id',$user->id);
+        }
+        
         return new PelanggaranCollection($pelanggarans->paginate(10));
     }
     

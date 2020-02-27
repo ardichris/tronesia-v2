@@ -57,6 +57,7 @@ class BarangMasukController extends Controller
                     'barang_id' => $row['barang']['id'],
                     'jumlah' => $row['jumlah']
                 ]);
+                Barang::find($row['barang']['id'])->increment('barang_stok',$row['jumlah']);
         }
         return response()->json(['status' => 'success']); 
     }
@@ -80,7 +81,12 @@ class BarangMasukController extends Controller
                         'bm_tanggal' => $request->bm_tanggal,
                         'user_id' => $user->id
                         ]);
-        ListBarangMasuk::whereBarangmasuk_id($barangmasuk->id)->delete();
+        $barang = ListBarangMasuk::whereBarangmasuk_id($barangmasuk->id);                 
+        $listbarang = $barang->get();
+        foreach ($listbarang as $row) {
+            Barang::find($row->barang_id)->decrement('barang_stok',$row->jumlah);
+        }
+        $barang->delete();
         foreach ($request->listbarang as $row) {
             if (!is_null($row['jumlah'])&&!is_null($row['barang'])) {
                 ListBarangMasuk::create([
@@ -88,6 +94,7 @@ class BarangMasukController extends Controller
                                     'barang_id' => $row['barang']['id'],
                                     'jumlah' => $row['jumlah']
                                 ]);
+                Barang::find($row['barang']['id'])->increment('barang_stok',$row['jumlah']);
             }            
         }
         return response()->json(['status' => 'success']);
@@ -96,7 +103,12 @@ class BarangMasukController extends Controller
     public function destroy($kode)
     {
         $pbs = BarangMasuk::find($kode);
-        ListBarangMasuk::whereBarangmasuk_id($kode)->delete();
+        $barang = ListBarangMasuk::whereBarangmasuk_id($kode);                 
+        $listbarang = $barang->get();
+        foreach ($listbarang as $row) {
+            Barang::find($row->barang_id)->decrement('barang_stok',$row->jumlah);
+        }
+        $barang->delete();
         $pbs->delete();
         return response()->json(['status' => 'success'], 200);
     }

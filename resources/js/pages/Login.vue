@@ -16,7 +16,7 @@
                             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                             <p class="text-danger" v-if="errors.email">{{ errors.email[0] }}</p>
                         </div>
-                        <div class="form-group has-feedback" :class="{'has-error': errors.password}">
+                        <div class="form-group has-feedback" :class="{'has-error': errors.password}" v-on:keyup.enter="postLogin">
                             <input type="password" class="form-control" placeholder="Password" v-model="data.password">
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                             <p class="text-danger" v-if="errors.password">{{ errors.password[0] }}</p>
