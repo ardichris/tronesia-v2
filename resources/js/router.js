@@ -15,6 +15,8 @@ import IndexBarangMasuk from './pages/barangmasuks/Index.vue'
 import DataBarangMasuk from './pages/barangmasuks/BarangMasuk.vue'
 import AddBarangMasuk from './pages/barangmasuks/Add.vue'
 import EditBarangMasuk from './pages/barangmasuks/Edit.vue'
+import IndexSeragam from './pages/seragams/Index.vue'
+import DataSeragam from './pages/seragams/Seragam.vue'
 import IndexSiswa from './pages/siswas/Index.vue'
 import DataSiswa from './pages/siswas/Siswa.vue'
 import AddSiswa from './pages/siswas/Add.vue'
@@ -87,6 +89,19 @@ const router = new Router({
                     component: SetPermission,
                     meta: { title: 'Set Permissions' }
                 },
+            ]
+        },
+        {
+            path: '/seragam',
+            component: IndexSeragam,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'seragam.data',
+                    component: DataSeragam,
+                    meta: { title: 'Daftar Seragam' }
+                }                               
             ]
         },
         {

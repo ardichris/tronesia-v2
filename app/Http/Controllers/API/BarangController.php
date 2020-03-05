@@ -48,6 +48,8 @@ class BarangController extends Controller
                         'barang_nama' => $request->barang_nama,
                         'barang_stok' => (int)$request->barang_stok,
                         'barang_satuan' => $request->barang_satuan,
+                        'b_varian' => $request->b_varian,
+                        'b_kategori' => $request->b_kategori,
                         'barang_lokasi' => $request->barang_lokasi
                         ]);
         return response()->json(['status' => 'success'], 200);
@@ -64,13 +66,15 @@ class BarangController extends Controller
         $this->validate($request, [
             'barang_nama' => 'required',
             'barang_satuan' => 'required',
-            'barang_lokasi' => 'required',
+            //'barang_lokasi' => 'required',
         ]);
         
         $barang = Barang::whereBarang_kode($id)->first();
         $barang->update(['barang_nama' => $request->barang_nama,
                          'barang_satuan' => $request->barang_satuan,
-                         'barang_lokasi' => $request->barang_lokasi
+                         'barang_lokasi' => $request->barang_lokasi,
+                         'b_varian' => $request->b_varian,
+                         'b_kategori' => $request->b_kategori
                         ]);
         return response()->json(['status' => 'success'], 200);
     }

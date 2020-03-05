@@ -30,9 +30,11 @@
                                     Masukkan Kata Kunci
                                 </template>
                                 <template slot="option" slot-scope="option">
-                                    {{ option.barang_nama }}
+                                    {{ option.barang_nama }} {{ option.b_varian }}
                                 </template>
                             </v-select>
+                            <!--input type="text" readonly class="form-control-plaintext" v-if="row.barang!=null" v-model="row.barang.b_varian"-->
+                            <h5><span class="badge badge-info" v-if="row.barang!=null">{{row.barang.b_varian}}</span></h5>
                         </td>
                         <td>
                             <input type="number" class="form-control" v-model="row.jumlah" :readonly="$route.name == 'barangmasuk.edit' || $route.name == 'barangmasuk.view'">

@@ -59,6 +59,8 @@ export default {
             fields: [
                 { key: 'barang_kode', label: 'Kode', sortable: true },
                 { key: 'barang_nama', label: 'Nama Barang', sortable: true },
+                { key: 'b_varian', label: 'Varian' },
+                { key: 'b_kategori', label: 'Kategori' },
                 { key: 'barang_stok', label: 'Stok' },
                 { key: 'barang_lokasi', label: 'Lokasi' },
                 { key: 'actions', label: 'Aksi' }

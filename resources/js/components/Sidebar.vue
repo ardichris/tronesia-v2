@@ -150,6 +150,23 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==4">
+                    <a class="nav-link active">
+                        <i class="nav-icon fas fa-mail-bulk"></i>
+                            <p>
+                                Tata Usaha
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                    </a>
+                    <ul class="nav nav-treeview" >
+                        <li class="nav-item">
+                            <a class="nav-link">
+                                <i class="fas fa-tshirt nav-icon"></i>
+                                <p><router-link :to="{ name: 'seragam.data' }">Seragam</router-link></p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item has-treeview" v-if="authenticated.role==0">
                     <a class="nav-link active">
                         <i class="nav-icon fas fa-cog"></i>

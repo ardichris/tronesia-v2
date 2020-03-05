@@ -20,6 +20,20 @@
             <p class="text-danger" v-if="errors.barang_stok">{{ errors.barang_stok[0] }}</p>
             <p class="text-danger" v-if="errors.barang_satuan">{{ errors.barang_satuan[0] }}</p>
         </div>
+        <div class="form-group" :class="{ 'has-error': errors.b_varian }">
+            <label for="">Varian Barang</label>
+            <input type="text" class="form-control" v-model="barang.b_varian">
+            <p class="text-danger" v-if="errors.b_varian">{{ errors.b_varian[0] }}</p>
+        </div>
+        <div class="form-group" :class="{ 'has-error': errors.b_kategori }">
+            <label for="">Kategori Barang</label>
+            <v-select :options="['ATK', 'Seragam']"
+                        v-model="barang.b_kategori"                      
+                        :value="barang.b_kategori"
+                        >
+            </v-select>
+            <p class="text-danger" v-if="errors.b_kategori">{{ errors.b_kategori[0] }}</p>
+        </div>
         <div class="form-group" :class="{ 'has-error': errors.barang_lokasi }">
             <label for="">Lokasi Barang</label>
             <v-select :options="['Gudang ATK', 'Ruang TU', 'Gudang OR', 'Gudang Pojok']"

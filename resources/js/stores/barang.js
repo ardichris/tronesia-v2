@@ -6,6 +6,8 @@ const state = () => ({
     barang: {
         barang_kode: '',
         barang_nama: '',
+        b_varian: '',
+        b_kategori: '',
         barang_stok: '',
         barang_satuan: '',
         barang_lokasi: ''
@@ -24,6 +26,8 @@ const mutations = {
         state.barang = {
             barang_kode: payload.barang_kode,
             barang_nama: payload.barang_nama,
+            b_kategori: payload.b_kategori,
+            b_varian: payload.b_varian,
             barang_stok: payload.barang_stok,
             barang_satuan: payload.barang_satuan,
             barang_lokasi: payload.barang_lokasi
@@ -33,6 +37,8 @@ const mutations = {
         state.barang = {
             barang_kode: '',
             barang_nama: '',
+            b_kategori: '',
+            b_varian: '',
             barang_stok: 0,
             barang_satuan: '',
             barang_lokasi: ''
