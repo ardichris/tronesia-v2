@@ -14,7 +14,11 @@ class SeragamController extends Controller
 {
     public function index(Request $request) {
         $pbs = Seragam::orderBy('created_at', 'DESC')
-                                ->with(['user','siswa']);
+                                ->with(['user','siswa'])
+                                ->orderBy('id','ASC');
+        if (request()->q != '') {
+            $pbs = $pbs->where('s_nama', 'LIKE', '%' . request()->q . '%');
+        }
         return new SeragamCollection($pbs->paginate(30)); 
     }
 
@@ -49,7 +53,8 @@ class SeragamController extends Controller
                     's_kode' => $kode,
                     //'s_tanggal' => $request->s_tanggal,
                     'user_id' => $user->id,
-                    'siswa_id' => $request->siswa_id['id']
+                    'siswa_id' => $request->siswa_id['id'],
+                    's_nama' => $request->siswa_id['siswa_nama']
                 ]);
         //return response()->json(['status' => 'success']);        
         foreach ($request->pemesanan as $row) {
@@ -87,7 +92,8 @@ class SeragamController extends Controller
         $seragams->update([
                         //'s_tanggal' => $request->s_tanggal,
                         'user_id' => $user->id,
-                        'siswa_id' => $request->siswa_id['id']
+                        'siswa_id' => $request->siswa_id['id'],
+                        's_nama' => $request->siswa_id['siswa_nama']
                         ]);
         $barang = PemesananSeragam::whereSeragam_id($seragams->id);                 
         $pemesanan = $barang->get();

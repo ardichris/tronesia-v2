@@ -49,7 +49,7 @@ const actions = {
     getSiswa({ commit, state }, payload) {
         let search = payload.search
         return new Promise((resolve, reject) => {
-            $axios.get(`/siswas?q=${search}`)
+            $axios.get(`/siswas?q=${search}&seragam=pesan`)
             .then((response) => {
                 commit('SISWA_DATA', response.data)
                 resolve(response.data)

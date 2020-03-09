@@ -131,7 +131,7 @@ export default {
             this.getSeragam()
         },
         search() {
-            this.getSeragam({search: this.search})
+            this.getSeragam(this.search)
         }
     },
     methods: {

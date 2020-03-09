@@ -19,6 +19,12 @@ class SiswaController extends Controller
         if (request()->q != '') {
             $siswas = $siswas->where('siswa_nama', 'LIKE', '%' . request()->q . '%');
         }
+        if (request()->s != '') {
+            $siswas = $siswas->where('s_keterangan', 'LIKE', '%' . request()->s . '%');
+        }
+        if (request()->seragam != '') {
+            $siswas = $siswas->whereIn('s_keterangan',['SISWA BARU','AKTIF']);
+        }
         $siswas = $siswas->paginate(40);
         return new SiswaCollection($siswas);
     }

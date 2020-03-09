@@ -8,7 +8,15 @@
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
-                            <input type="text" class="form-control form-control-sm" placeholder="Cari..." v-model="search">
+                            <b-form-input type="text" class="form-control form-control-sm" placeholder="Cari..." v-model="search"></b-form-input>
+                        </span>
+                        <span class="float-right">
+                            <b-form-select 
+                                v-model="status"
+                                size="sm"                               
+                                :options="['','AKTIF','ALUMNI','SISWA BARU']"
+                                required
+                                ></b-form-select>
                         </span>
                     </div>
                 </div>
@@ -17,7 +25,11 @@
                 <b-table striped hover bordered :items="siswas.data" :fields="fields" show-empty>
                     <template v-slot:cell(siswa_kelamin)="row">
                         <span class="badge badge-info" v-if="row.item.siswa_kelamin == 'Laki-laki'">Laki-Laki</span>
-                        <span class="badge badge-danger" v-else>Perempuan</span>
+                        <span class="badge badge-danger" v-if="row.item.siswa_kelamin == 'Perempuan'">Perempuan</span>
+                    </template>
+                    <template v-slot:cell(s_keterangan)="row">
+                        <span class="badge badge-primary" v-if="row.item.s_keterangan == 'SISWA BARU'">Siswa Baru</span>
+                        <span class="badge badge-success" v-if="row.item.s_keterangan == 'AKTIF'">Aktif</span>
                     </template>
                     <template v-slot:cell(actions)="row">
                         <router-link :to="{ name: 'siswas.view', params: {id: row.item.siswa_nis} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
@@ -54,7 +66,10 @@ export default {
     name: 'DataSiswa',
     created() {
         //SEBELUM COMPONENT DI-LOAD, REQUEST DATA DARI SERVER
-        this.getSiswas()
+        this.getSiswas({
+                search: this.search,
+                status: this.status
+            })
     },
     data() {
         return {
@@ -65,9 +80,11 @@ export default {
                 { key: 'siswa_nis', label: 'NIS' },
                 { key: 'siswa_nama', label: 'Nama Siswa' },
                 { key: 'siswa_kelamin', label: 'L/P' },
+                { key: 's_keterangan', label: 'Status' },
                 { key: 'actions', label: 'Aksi' }
             ],
-            search: ''
+            search: '',
+            status: ''
         }
     },
     computed: {
@@ -88,14 +105,20 @@ export default {
         }
     },
     watch: {
-        page() {
-            //APABILA VALUE DARI PAGE BERUBAH, MAKA AKAN MEMINTA DATA DARI SERVER
+        page() {            
             this.getSiswas()
         },
         search() {
-            //APABILA VALUE DARI SEARCH BERUBAH MAKA AKAN MEMINTA DATA
-            //SESUAI DENGAN DATA YANG SEDANG DICARI
-            this.getSiswas(this.search)
+            this.getSiswas({
+                search: this.search,
+                status: this.status
+            })
+        },
+        status() {
+            this.getSiswas({
+                search: this.search,
+                status: this.status
+            })
         }
     },
     methods: {

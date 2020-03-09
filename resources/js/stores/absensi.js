@@ -49,7 +49,7 @@ const actions = {
         let search = payload.search
         payload.loading(true)
         return new Promise((resolve, reject) => {
-            $axios.get(`/siswas?page=${state.page}&q=${search}`)
+            $axios.get(`/siswas?page=${state.page}&q=${search}&s=AKTIF`)
             .then((response) => {
                 commit('DATA_SISWA', response.data)
                 payload.loading(false)
