@@ -26,9 +26,11 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/absensi', 'API\AbsensiController')->except(['create', 'show']);
     Route::resource('/mapel', 'API\MapelController')->except(['create', 'show']);
     Route::resource('/kelas', 'API\KelasController')->except(['create', 'show']);
-    Route::resource('/barang', 'API\BarangController')->except(['create', 'show']);
+    Route::resource('/barang', 'API\BarangController')->except(['create', 'show']);    
     Route::resource('/pemakaianbarang', 'API\PemakaianBarangController')->except(['create', 'show']);
+    Route::get('/pemakaianbarang/list/{kode}','API\PemakaianBarangController@listPemakaian');
     Route::resource('/barangmasuk', 'API\BarangMasukController')->except(['create', 'show']);
+    Route::get('/barangmasuk/list/{kode}','API\BarangMasukController@listBarangmasuk');
     Route::resource('/kompetensi', 'API\KompetensiController')->except(['create','show']);
     Route::resource('/seragam', 'API\SeragamController')->except(['create', 'show']);
     Route::put('/jurnal/changestatus/{kode}','API\JurnalController@changeJMstatus');

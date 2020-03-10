@@ -93,4 +93,9 @@ class PemakaianBarangController extends Controller
         $pbs->delete();
         return response()->json(['status' => 'success'], 200);
     }
+
+    public function listPemakaian(Request $request,$kode){
+        $listbarang = PemakaianBarang::whereBarang_id($kode)->get();
+        return response()->json(['status' => 'success', 'data' => $listbarang], 200);
+    }
 }

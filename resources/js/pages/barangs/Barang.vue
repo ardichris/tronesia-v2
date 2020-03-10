@@ -5,6 +5,29 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
                         <router-link :to="{ name: 'barang.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
+                        <b-modal id="view-stok" scrollable size="lg" hide-footer>
+                            <template v-slot:modal-title>
+                                Kartu Stok :  <b>{{barang.barang_nama}}</b>
+                            </template>
+                            <div class="row">
+                            <div class="col-md-6">
+                                <label>Barang Masuk</label>
+                                <b-table striped hover bordered :items="barangmasuk.data" :fields="masuk" show-empty>
+                                    <template v-slot:cell(bm_kode)="row">
+                                        {{row.item.barangmasuk.bm_kode}}
+                                    </template>
+                                    <template v-slot:cell(bm_tanggal)="row">
+                                        {{row.item.barangmasuk.bm_tanggal}}
+                                    </template>
+                                </b-table>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Pemakaian</label>
+                                <b-table striped hover bordered :items="pemakaian.data" :fields="pakai" show-empty>
+                                </b-table>
+                            </div>
+                            </div>
+                        </b-modal>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -19,7 +42,8 @@
                         {{row.item.barang_stok}} {{row.item.barang_satuan}}
                     </template>
                     <template v-slot:cell(actions)="row">
-                        <router-link :to="{ name: 'barang.view', params: {id: row.item.barang_kode} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
+                        <!--router-link :to="{ name: 'barang.view', params: {id: row.item.barang_kode} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link-->
+                        <button class="btn btn-success btn-sm"  @click="viewBarang(row.item)"><i class="fa fa-eye"></i></button>
                         <router-link :to="{ name: 'barang.edit', params: {id: row.item.barang_kode} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
                         <button class="btn btn-danger btn-sm" @click="deleteBarang(row.item.id)"><i class="fa fa-trash"></i></button>
                     </template>
@@ -65,12 +89,25 @@ export default {
                 { key: 'barang_lokasi', label: 'Lokasi' },
                 { key: 'actions', label: 'Aksi' }
             ],
+            masuk: [
+                { key: 'bm_kode', label: 'Kode', sortable: true },
+                { key: 'bm_tanggal', label: 'Tanggal', sortable: true },
+                { key: 'jumlah', label: 'Jumlah', sortable: true }                
+            ],
+            pakai: [
+                { key: 'pb_kode', label: 'Kode', sortable: true },
+                { key: 'pb_tanggal', label: 'Tanggal', sortable: true },
+                { key: 'pb_jumlah', label: 'Jumlah', sortable: true }                
+            ],
             search: ''
         }
     },
     computed: {
         ...mapState('barang', {
-            barangs: state => state.barangs
+            barang: state => state.barang,
+            barangs: state => state.barangs,
+            barangmasuk: state => state.barangmasuk,
+            pemakaian: state => state.pemakaian
         }),
         page: {
             get() {
@@ -90,7 +127,13 @@ export default {
         }
     },
     methods: {
-        ...mapActions('barang', ['getBarang', 'removeBarang']),
+        ...mapActions('barang', ['getPemakaian','getBarangmasuk','getBarang', 'removeBarang','editBarang']),
+        viewBarang(barang) {
+            this.getBarangmasuk({barang: barang})
+            this.getPemakaian({barang: barang})
+            this.editBarang(barang.barang_kode)
+            this.$bvModal.show('view-stok')
+        },
         deleteBarang(id) {
             this.$swal({
                 title: 'Kamu Yakin?',

@@ -112,4 +112,9 @@ class BarangMasukController extends Controller
         $pbs->delete();
         return response()->json(['status' => 'success'], 200);
     }
+
+    public function listBarangmasuk(Request $request,$kode){
+        $listbarang = ListBarangMasuk::whereBarang_id($kode)->with('barangmasuk')->get();
+        return response()->json(['status' => 'success', 'data' => $listbarang], 200);
+    }
 }

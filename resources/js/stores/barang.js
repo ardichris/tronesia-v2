@@ -2,7 +2,8 @@ import $axios from '../api.js'
 
 const state = () => ({
     barangs: [], 
-
+    barangmasuk: [],
+    pemakaian: [],
     barang: {
         barang_kode: '',
         barang_nama: '',
@@ -12,10 +13,18 @@ const state = () => ({
         barang_satuan: '',
         barang_lokasi: ''
     },
-    page: 1 
+    page: 1,
+    pagemasuk: 1,
+    pagepemakaian: 1 
 })
 
 const mutations = {
+    PEMAKAIAN_DATA(state, payload) {
+        state.pemakaian = payload
+    },
+    BARANGMASUK_DATA(state, payload) {
+        state.barangmasuk = payload
+    },
     ASSIGN_DATA(state, payload) {
         state.barangs = payload
     },
@@ -47,6 +56,26 @@ const mutations = {
 }
 
 const actions = {
+    getPemakaian({ commit, state }, payload) {
+        let id = payload.barang.id
+        return new Promise((resolve, reject) => {
+            $axios.get(`/pemakaianbarang/list/${id}`, payload)
+            .then((response) => {
+                commit('PEMAKAIAN_DATA', response.data)
+                resolve(response.data)
+            })
+        })
+    },
+    getBarangmasuk({ commit, state }, payload) {
+        let id = payload.barang.id
+        return new Promise((resolve, reject) => {
+            $axios.get(`/barangmasuk/list/${id}`, payload)
+            .then((response) => {
+                commit('BARANGMASUK_DATA', response.data)
+                resolve(response.data)
+            })
+        })
+    },
     getBarang({ commit, state }, payload) {
         let search = typeof payload != 'undefined' ? payload:''
         return new Promise((resolve, reject) => {
