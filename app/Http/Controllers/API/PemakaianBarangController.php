@@ -12,8 +12,12 @@ class PemakaianBarangController extends Controller
 {
     
     public function index(Request $request) {
+            $user = $request->user();
             $pbs = PemakaianBarang::orderBy('created_at', 'DESC')
                                     ->with(['barang','user']);
+            if($user->role!=0 && $user->role!=4){
+                $pbs = $pbs->where('user_id',$user->id);
+            }
             return new PemakaianBarangCollection($pbs->paginate(30)); 
     }
 
@@ -23,6 +27,7 @@ class PemakaianBarangController extends Controller
             'barang' => 'required',
             'pb_tanggal' => 'required',
             'pb_jumlah' => 'required',
+            
         ]);
         $user = $request->user();
         $getPB = PemakaianBarang::orderBy('id', 'DESC');
@@ -51,9 +56,11 @@ class PemakaianBarangController extends Controller
             'pb_tanggal' => $request->pb_tanggal,
             'barang_id' => $request->barang['id'],
             'pb_jumlah' => $request->pb_jumlah,
+            'pb_keterangan' => $request->pb_keterangan,
+            'pb_status' => 0,
             'user_id' => $user->id
         ]);
-        Barang::find($request->barang['id'])->decrement('barang_stok',$request->pb_jumlah);
+        //Barang::find($request->barang['id'])->decrement('barang_stok',$request->pb_jumlah);
         return response()->json(['status' => 'success']);
     }
 
@@ -78,10 +85,11 @@ class PemakaianBarangController extends Controller
                 'pb_tanggal' => $request->pb_tanggal,
                 'barang_id' => $request->barang['id'],
                 'pb_jumlah' => $request->pb_jumlah,
+                'pb_keterangan' => $request->pb_keterangan,
                 'user_id' => $user->id
                 ]);
-        Barang::find($oldPB->barang_id)->increment('barang_stok',$oldPB->pb_jumlah);
-        Barang::find($oldPB->barang_id)->decrement('barang_stok',$request->pb_jumlah);
+        //Barang::find($oldPB->barang_id)->increment('barang_stok',$oldPB->pb_jumlah);
+        //Barang::find($oldPB->barang_id)->decrement('barang_stok',$request->pb_jumlah);
         return response()->json(['status' => 'success']);
     }
 
@@ -89,7 +97,9 @@ class PemakaianBarangController extends Controller
     {
         $pbs = PemakaianBarang::wherePb_kode($kode);
         $barang = $pbs->first();
-        Barang::find($barang->barang_id)->increment('barang_stok',$barang->pb_jumlah);
+        if($barang->pb_status == 1) {
+            Barang::find($barang->barang_id)->increment('barang_stok',$barang->pb_jumlah);
+        }   
         $pbs->delete();
         return response()->json(['status' => 'success'], 200);
     }
@@ -97,5 +107,14 @@ class PemakaianBarangController extends Controller
     public function listPemakaian(Request $request,$kode){
         $listbarang = PemakaianBarang::whereBarang_id($kode)->get();
         return response()->json(['status' => 'success', 'data' => $listbarang], 200);
+    }
+
+    public function changeStatus(Request $request,$kode) {
+        $pb = PemakaianBarang::wherePb_kode($kode)->first();
+            $pb->update(['pb_status' => $request->status]);
+            if($request->status == 1){
+                Barang::find($pb->barang_id)->decrement('barang_stok',$pb->pb_jumlah);
+            }       
+        return response()->json(['status' => 'success'], 200);
     }
 }

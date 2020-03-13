@@ -8,7 +8,7 @@
                         <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('my-modal')">Tambah</b-button>
                         <b-modal id="add-modal">
                             <template v-slot:modal-title>
-                                Tambah Pemakaian Barang
+                                Tambah Permintaan Barang
                             </template>
                             <pemakaianbarang-form></pemakaianbarang-form>
                             <template v-slot:modal-footer>
@@ -55,11 +55,22 @@
                     <template v-slot:cell(pb_jumlah)="row">
                         {{row.item.pb_jumlah}} {{row.item.barang.barang_satuan}}
                     </template>
+                    <template v-slot:cell(pb_status)="row">
+                        <span class="badge badge-success" v-if="row.item.pb_status == 1">Approved</span>
+                        <span class="badge badge-danger" v-else-if="row.item.pb_status == 2">Reject</span>
+                        <span class="badge badge-warning" v-else-if="row.item.pb_status == 0">Waiting</span>
+                    </template>
                     <template v-slot:cell(actions)="row">
                         <!--router-link :to="{ name: 'pemakaianbarang.view', params: {id: row.item.pemakaianbarang_kode} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
                         <router-link :to="{ name: 'pemakaianbarang.edit', params: {id: row.item.pemakaianbarang_kode} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link-->
-                        <button class="btn btn-warning btn-sm" @click="editPB(row.item.pb_kode)"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm" @click="deletePemakaianbarang(row.item.pb_kode)"><i class="fa fa-trash"></i></button>
+                        <div class="btn-group">
+                            <button class="btn btn-success btn-sm" v-if="(authenticated.role==0 || authenticated.role==4) && row.item.pb_status == 0" @click="updatePBStatus(row.item,1)"><i class="far fa-check-circle"></i></button>
+                            <button class="btn btn-danger btn-sm" v-if="(authenticated.role==0 || authenticated.role==4) && row.item.pb_status == 0" @click="updatePBStatus(row.item,2)"><i class="fa fa-times"></i></button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm" @click="editPB(row.item.pb_kode)" v-if="row.item.pb_status != 1 || authenticated.role==0"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm" @click="deletePemakaianbarang(row.item.pb_kode)" v-if="row.item.pb_status != 1 || authenticated.role==0"><i class="fa fa-trash"></i></button>
+                        </div>
                     </template>
                 </b-table>
 
@@ -98,11 +109,11 @@ export default {
     data() {
         return {
             fields: [
-                { key: 'pb_kode', label: 'Kode', sortable: true },
+                { key: 'user_id', label: 'User', sortable: true },
                 { key: 'pb_tanggal', label: 'Tanggal', sortable: true },
                 { key: 'barang_id', label: 'Barang' },
                 { key: 'pb_jumlah', label: 'Jumlah' },
-                { key: 'user_id', label: 'User' },
+                { key: 'pb_status', label: 'Status' },
                 { key: 'actions', label: 'Aksi' }
             ],
             search: ''
@@ -114,6 +125,9 @@ export default {
             pemakaianbarangs: state => state.pemakaianbarangs,
             barangs: state => state.barangs
 
+        }),
+        ...mapState('user', {
+            authenticated: state => state.authenticated
         }),
         page: {
             get() {
@@ -133,7 +147,13 @@ export default {
         }
     },
     methods: {
-        ...mapActions('pemakaianbarang', ['updatePemakaianbarang','editPemakaianbarang','submitPemakaianbarang','getPemakaianbarang', 'removePemakaianbarang','getBarang']),
+        ...mapActions('pemakaianbarang', ['updateStatus','updatePemakaianbarang','editPemakaianbarang','submitPemakaianbarang','getPemakaianbarang', 'removePemakaianbarang','getBarang']),
+        updatePBStatus(pb,status){
+            this.updateStatus({
+                pb: pb,
+                status: status
+            })
+        },
         simpanPBbaru(){
             this.submitPemakaianbarang().then(() => {
                 this.$bvModal.hide('add-modal'),

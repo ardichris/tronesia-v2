@@ -31,6 +31,12 @@
             </div>
             <p class="text-danger" v-if="errors.pb_jumlah">Jumlah harus diisi</p>
         </div>
+        <div class="form-group" :class="{ 'has-error': errors.pb_keterangan }">
+            <label for="">Keterangan</label>
+            <div class="input-group">
+                <input type="text" class="form-control" v-model="pemakaianbarang.pb_keterangan">
+            </div>
+        </div>
     </div>
 </template>
 

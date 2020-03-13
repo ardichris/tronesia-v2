@@ -96,6 +96,12 @@
                                 <p><router-link :to="{ name: 'pelanggarans.data' }">Pelanggaran</router-link></p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link">
+                                <i class="fas fa-ticket-alt nav-icon"></i>
+                                <p><router-link :to="{ name: 'kitirsiswa.data' }">Kitir Siswa</router-link></p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item has-treeview">
@@ -110,7 +116,7 @@
                         <li class="nav-item">
                             <a class="nav-link">
                                 <i class="fas fa-bullhorn nav-icon"></i>
-                                <p><router-link :to="{ name: 'pelanggarans.data' }">Laporan</router-link></p>
+                                <p><router-link :to="{ name: 'laporsarpras.data' }">Lapor</router-link></p>
                             </a>
                         </li>
                         <li class="nav-item" v-if="authenticated.role==0 || authenticated.role==4">
@@ -128,7 +134,7 @@
                         <li class="nav-item" v-if="authenticated.role==0 || authenticated.role==4">
                             <a class="nav-link">
                                 <i class="fas fa-toilet-paper nav-icon"></i>
-                                <p><router-link :to="{ name: 'pemakaianbarang.data' }">Pemakaian Barang</router-link></p>
+                                <p><router-link :to="{ name: 'pemakaianbarang.data' }">Permintaan Barang</router-link></p>
                             </a>
                         </li>
                     </ul>

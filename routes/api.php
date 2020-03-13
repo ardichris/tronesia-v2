@@ -23,12 +23,12 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('/teachers/{id}', 'API\UserController@update')->name('teachers.update');
     Route::resource('/pelanggaran', 'API\PelanggaranController')->except(['create', 'show']);
     Route::post('/pelanggaran/{id}', 'API\PelanggaranController@update')->name('pelanggarans.update');
-    Route::resource('/absensi', 'API\AbsensiController')->except(['create', 'show']);
     Route::resource('/mapel', 'API\MapelController')->except(['create', 'show']);
     Route::resource('/kelas', 'API\KelasController')->except(['create', 'show']);
     Route::resource('/barang', 'API\BarangController')->except(['create', 'show']);    
     Route::resource('/pemakaianbarang', 'API\PemakaianBarangController')->except(['create', 'show']);
     Route::get('/pemakaianbarang/list/{kode}','API\PemakaianBarangController@listPemakaian');
+    Route::put('/pemakaianbarang/changestatus/{kode}','API\PemakaianBarangController@changeStatus');
     Route::resource('/barangmasuk', 'API\BarangMasukController')->except(['create', 'show']);
     Route::get('/barangmasuk/list/{kode}','API\BarangMasukController@listBarangmasuk');
     Route::resource('/kompetensi', 'API\KompetensiController')->except(['create','show']);
@@ -36,15 +36,18 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::put('/jurnal/changestatus/{kode}','API\JurnalController@changeJMstatus');
     Route::resource('/jurnal', 'API\JurnalController')->except(['create', 'show']);
     Route::get('roles', 'API\RolePermissionController@getAllRole')->name('roles');
+    Route::resource('/absensi', 'API\AbsensiController')->except(['create', 'show']);
     Route::get('permissions', 'API\RolePermissionController@getAllPermission')->name('permission');
     Route::post('role-permission', 'API\RolePermissionController@getRolePermission')->name('role_permission');
     Route::post('set-role-permission', 'API\RolePermissionController@setRolePermission')->name('set_role_permission');
     Route::post('set-role-user', 'API\RolePermissionController@setRoleUser')->name('user.set_role');
     Route::get('user-authenticated', 'API\UserController@getUserLogin')->name('user.authenticated');
     Route::get('user-lists', 'API\UserController@userLists')->name('user.index');
-    
+    Route::resource('/siswas', 'API\SiswaController')->except(['show']);
+    Route::resource('/laporsarpras', 'API\LaporSarprasController');
+    Route::put('/laporsarpras/changestatus/{kode}','API\LaporSarprasController@changeStatus');
+    Route::resource('/kitirsiswa', 'API\KitirSiswaController');
 });
 
-Route::resource('/siswas', 'API\SiswaController')->except(['show']);
 
 

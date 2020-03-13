@@ -9,6 +9,7 @@ const state = () => ({
         pb_tanggal: '',
         barang_id: '',
         pb_jumlah: '',
+        pb_keterangan: '',
         barang: ''
     },
     page: 1 
@@ -29,7 +30,8 @@ const mutations = {
             pb_kode: payload.pb_kode,
             pb_tanggal: payload.pb_tanggal,
             barang: payload.barang,
-            pb_jumlah: payload.pb_jumlah
+            pb_jumlah: payload.pb_jumlah,
+            pb_keterangan: payload.pb_keterangan
         }
     },
     CLEAR_FORM(state) {
@@ -44,6 +46,19 @@ const mutations = {
 }
 
 const actions = {
+    updateStatus({ dispatch }, payload) {
+        let kode = payload.pb.pb_kode
+        let status = payload.status
+        console.log(payload)
+        return new Promise((resolve, reject) => {
+            $axios.put(`/pemakaianbarang/changestatus/${kode}`, payload)
+            .then((response) => {
+                dispatch('getPemakaianbarang').then(() => resolve())
+                console.log(response.data)
+            })
+            
+        })
+    },
     getBarang({ commit, state }, payload) {
         let search = payload.search
         return new Promise((resolve, reject) => {

@@ -59,6 +59,10 @@ import EditJurnal from './pages/jurnals/Edit.vue'
 import ViewJurnal from './pages/jurnals/View.vue'
 import Setting from './pages/setting/Index.vue'
 import SetPermission from './pages/setting/roles/SetPermission.vue'
+import IndexLaporSarpras from './pages/laporsarpras/Index.vue'
+import DataLaporSarpras from './pages/laporsarpras/LaporSarpras.vue'
+import IndexKitirSiswa from './pages/kitirsiswas/Index.vue'
+import DataKitirSiswa from './pages/kitirsiswas/KitirSiswa.vue'
 
 
 Vue.use(Router)
@@ -105,6 +109,32 @@ const router = new Router({
             ]
         },
         {
+            path: '/laporsarpras',
+            component: IndexLaporSarpras,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'laporsarpras.data',
+                    component: DataLaporSarpras,
+                    meta: { title: 'Daftar Lapor' }
+                }                               
+            ]
+        },
+        {
+            path: '/kitirsiswa',
+            component: IndexKitirSiswa,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'kitirsiswa.data',
+                    component: DataKitirSiswa,
+                    meta: { title: 'Daftar Kitir Siswa' }
+                }                               
+            ]
+        },
+        {
             path: '/barangmasuk',
             component: IndexBarangMasuk,
             meta: { requiresAuth: true },
@@ -138,7 +168,7 @@ const router = new Router({
                     path: '',
                     name: 'pemakaianbarang.data',
                     component: DataPemakaianBarang,
-                    meta: { title: 'Daftar Pemakaian' }
+                    meta: { title: 'Daftar Permintaan' }
                 },
                 {
                     path: 'add',

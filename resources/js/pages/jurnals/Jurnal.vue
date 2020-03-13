@@ -31,10 +31,12 @@
                     </template>
                     <template v-slot:cell(actions)="row">
                         <div class="btn-group">
-                            <button class="btn btn-success btn-sm" v-if="authenticated.role!=2" @click="updateJMstatus(row.item,1)"><i class="far fa-check-circle"></i></button>
-                            <button class="btn btn-danger btn-sm" v-if="authenticated.role!=2" @click="updateJMstatus(row.item,2)"><i class="fa fa-times"></i></button>
-                            <router-link :to="{ name: 'jurnal.edit', params: {id: row.item.jm_kode} }" class="btn btn-warning btn-sm" v-if="authenticated.role==2 || authenticated.role==0"><i class="fa fa-edit"></i></router-link>
-                            <button class="btn btn-danger btn-sm" @click="deleteJurnal(row.item.id)" v-if="authenticated.role==2 || authenticated.role==0"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-success btn-sm" v-if="(authenticated.role==0 || authenticated.role==2) && row.item.jm_status == 0" @click="updateJMstatus(row.item,1)"><i class="far fa-check-circle"></i></button>
+                            <button class="btn btn-danger btn-sm" v-if="(authenticated.role==0 || authenticated.role==2) && row.item.jm_status == 0" @click="updateJMstatus(row.item,2)"><i class="fa fa-times"></i></button>
+                        </div>
+                        <div class="btn-group">  
+                            <router-link :to="{ name: 'jurnal.edit', params: {id: row.item.jm_kode} }" class="btn btn-warning btn-sm" v-if="row.item.jm_status != 1 || authenticated.role==0"><i class="fa fa-edit"></i></router-link>
+                            <button class="btn btn-danger btn-sm" @click="deleteJurnal(row.item.id)" v-if="row.item.jm_status != 1 || authenticated.role==0"><i class="fa fa-trash"></i></button>
                         </div>
                     </template>
                 </b-table>

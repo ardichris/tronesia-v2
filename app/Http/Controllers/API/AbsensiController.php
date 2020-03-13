@@ -12,11 +12,11 @@ class AbsensiController extends Controller
 {
     public function index(Request $request)
     {
-        if (request()->q != '') { 
-            $filter = request()->q;
-            $siswas = Siswa::where('siswa_nama','like','%'.$filter.'%')->select('id')->first();
-            $absensis = Absensi::with('siswa')
-                               ->where('siswa_id','=',$siswas->id);                   
+        if (request()->q != '') {
+            $q = $request->q; 
+            $absensis = Absensi::with('siswa')->whereHas('siswa', function($query) use($q){
+                $query->where('siswa_nama','like','%'.$q.'%');
+            });                   
         } else {
             $absensis = Absensi::with('siswa')->orderBy('created_at', 'DESC');
         }
@@ -97,5 +97,19 @@ class AbsensiController extends Controller
         $absensi = Absensi::find($id);
         $absensi->delete();
         return response()->json(['status' => 'success'], 200);
+    }
+
+    public function denies_test(Request $request){
+        $q = '';
+        if($request->has('q')){
+            $q = $request->q;
+        }
+        $absensis = Absensi::with('siswa')->whereHas('siswa', function($query) use($q){
+            $query->where('siswa_nama','like','%'.$q.'%');
+        })->get();
+        return response()->json($absensis);
+        //wkwkwkwkw piye yaw... ora nemu2 ket biyen kae
+        //ya wis kodingku iki disave sik. aq tak golek inspirasi karo mangan lunch.
+        //oke siap
     }
 }
