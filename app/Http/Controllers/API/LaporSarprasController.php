@@ -74,7 +74,7 @@ class LaporSarprasController extends Controller
 
     public function edit($kode)
     {
-        $lapor = LaporSarpras::with('user')->whereLs_kode($kode)->first();
+        $lapor = LaporSarpras::with('updater')->whereLs_kode($kode)->first();
         return response()->json(['status' => 'success', 'data' => $lapor], 200);
     }
 

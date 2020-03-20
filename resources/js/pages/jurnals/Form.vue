@@ -52,6 +52,7 @@
             <p class="text-danger" v-if="errors.jm_jampel">{{ errors.jm_jampel[0] }}</p>          
             <v-select :options="[1,2,3,4,5,6,7,8,9]"
                 v-model="jurnal.jm_jampel"
+                :disabled="$route.name == 'jurnal.view'"
                 :multiple="$route.name == 'jurnal.add'"
                 :value="jurnal.jm_jampel">
             </v-select>
@@ -82,6 +83,11 @@
             <textarea cols="6" rows="5" class="form-control" v-model="jurnal.jm_materi" :readonly="$route.name == 'jurnal.view'"></textarea>
             <p class="text-danger" v-if="errors.jm_materi">{{ errors.jm_materi[0] }}</p>
         </div>
+        <div class="form-group" :class="{ 'has-error': errors.jm_keterangan }">
+            <label for="">Keterangan</label>
+            <textarea cols="6" rows="5" class="form-control" v-model="jurnal.jm_keterangan" :readonly="$route.name == 'jurnal.view'"></textarea>
+            <p class="text-danger" v-if="errors.jm_keterangan">{{ errors.jm_keterangan[0] }}</p>
+        </div>
     </div>
     <div class="col-md-6">
         <div class="alert alert-danger alert-dismissible" v-if="jurnal.jm_catatan!=null && jurnal.jm_catatan!=''">
@@ -89,7 +95,7 @@
             {{jurnal.jm_catatan}}
         </div>
         <label for="">Siswa Tidak Hadir</label><br>
-        <button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addSiswa">Tambah</button>
+        <button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addSiswa" :disabled="$route.name == 'jurnal.view'">Tambah</button>
         <div class="table-responsive" style="height: 600px">
             <table class="table" >
                 <thead>
@@ -125,7 +131,7 @@
                             </v-select>
                         </td>
                         <td>
-                            <button class="btn btn-danger btn-flat" @click="removeSiswa(index)"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-danger btn-flat" @click="removeSiswa(index)" :disabled="$route.name == 'jurnal.view'"><i class="fa fa-trash"></i></button>
                         </td>
                     </tr>
                 </tbody>

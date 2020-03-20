@@ -7,7 +7,7 @@
             <div class="panel-body">
                 <jurnal-form></jurnal-form>
                 <div class="form-group">
-                    <button class="btn btn-primary btn-sm btn-flat" @click.prevent="submit">
+                    <button class="btn btn-primary btn-sm btn-flat" @click.prevent="submit"  :disabled="$route.name == 'jurnal.view'">
                         <i class="fa fa-save"></i> Update
                     </button>
                     <span class="float-right">

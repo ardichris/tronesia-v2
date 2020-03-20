@@ -18,6 +18,8 @@ const state = () => ({
         user_id: '',
         jm_status: '',
         jm_catatan: null,
+        jm_keterangan: '',
+        jm_status: '',
         detail: []
     },
     page: 1 
@@ -53,7 +55,9 @@ const mutations = {
             jm_materi: payload.jm_materi,
             user_id: payload.user,
             detail: payload.detail,
-            jm_catatan: payload.jm_catatan,
+            jm_status: payload.jm_status,
+            jm_keterangan: payload.jm_keterangan,
+            jm_catatan: payload.jm_catatan
         }
     },
     CLEAR_FORM(state) {
@@ -67,6 +71,7 @@ const mutations = {
             jm_materi: '',
             user_id: '',
             jm_status: '',
+            jm_keterangan: '',
             detail: []
         }
     }

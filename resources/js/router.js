@@ -56,13 +56,15 @@ import IndexJurnal from './pages/jurnals/Index.vue'
 import DataJurnal from './pages/jurnals/Jurnal.vue'
 import AddJurnal from './pages/jurnals/Add.vue'
 import EditJurnal from './pages/jurnals/Edit.vue'
-import ViewJurnal from './pages/jurnals/View.vue'
+import ViewJurnal from './pages/jurnals/Edit.vue'
 import Setting from './pages/setting/Index.vue'
 import SetPermission from './pages/setting/roles/SetPermission.vue'
 import IndexLaporSarpras from './pages/laporsarpras/Index.vue'
 import DataLaporSarpras from './pages/laporsarpras/LaporSarpras.vue'
 import IndexKitirSiswa from './pages/kitirsiswas/Index.vue'
 import DataKitirSiswa from './pages/kitirsiswas/KitirSiswa.vue'
+import IndexRekapJurnal from './pages/rekapjurnals/Index.vue'
+import DataRekapJurnal from './pages/rekapjurnals/RekapJurnal.vue'
 
 
 Vue.use(Router)
@@ -93,6 +95,19 @@ const router = new Router({
                     component: SetPermission,
                     meta: { title: 'Set Permissions' }
                 },
+            ]
+        },
+        {
+            path: '/rekapjurnal',
+            component: IndexRekapJurnal,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'rekapjurnal.data',
+                    component: DataRekapJurnal,
+                    meta: { title: 'Rekap Jurnal' }
+                }                               
             ]
         },
         {

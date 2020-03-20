@@ -154,6 +154,12 @@
                                 <p><router-link :to="{ name: 'jurnal.data' }">Jurnal Mengajar</router-link></p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link">
+                                <i class="fas fa-tasks nav-icon"></i>
+                                <p><router-link :to="{ name: 'rekapjurnal.data' }">Rekap Jurnal</router-link></p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==4">

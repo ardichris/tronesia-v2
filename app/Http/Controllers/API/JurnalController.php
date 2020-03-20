@@ -11,12 +11,25 @@ use DB;
 
 class JurnalController extends Controller
 {
+    public function rekap(Request $request) {
+        //return response()->json($request);
+        $jurnals = Jurnal::with(['mapel','kelas'])->where([['kelas_id', request()->kls],['jm_tanggal', request()->tgl]])->orderBy('jm_jampel', 'ASC');
+        return new JurnalCollection($jurnals->get());
+    }
+    
     public function index(Request $request) {
         $user = $request->user();
         $jurnals = Jurnal::with(['mapel','kelas','kompetensi','user'])->orderBy('created_at', 'DESC');
         if (request()->q != '') {
+            $q = $request->q;
             $jurnals = $jurnals->where('jm_kode', 'LIKE', '%' . request()->q . '%')
-                             ->orWhere('jm_materi', 'LIKE', '%' . request()->q . '%');
+                             ->orWhere('jm_materi', 'LIKE', '%' . request()->q . '%')
+                             ->orwhereHas('kelas', function($query) use($q){
+                                $query->where('kelas_nama','like','%'.$q.'%');
+                               })
+                             ->orwhereHas('user', function($query) use($q){
+                                $query->where('name','like','%'.$q.'%');
+                               });
         }
         if($user->role==2){
             $jurnals = $jurnals->where('user_id',$user->id);
@@ -56,9 +69,9 @@ class JurnalController extends Controller
             } else {
                 if(substr($lastId->jm_kode,2,6) == date('y').date('m').date('d')) {
                 $counter = (int)substr($lastId->jm_kode,-3) + 1 ;
-                    if($counter < 100) {
+                    if($counter < 10) {
                         $kode = "JM".date('y').date('m').date('d')."00".$counter;
-                    } elseif ($counter < 10) {
+                    } elseif ($counter < 100) {
                         $kode = "JM".date('y').date('m').date('d')."0".$counter;
                     } else {
                         $kode = "JM".date('y').date('m').date('d').$counter;
@@ -79,6 +92,7 @@ class JurnalController extends Controller
                             'jm_materi' => $request->jm_materi,
                             'user_id' => $user->id,
                             'jm_status' => $konflik != 0 ? 2:0,
+                            'jm_keterangan' => $request->jm_keterangan,
                             'jm_catatan' => $catatan
                         ]);
 
@@ -150,6 +164,7 @@ class JurnalController extends Controller
             'jm_materi' => $request->jm_materi,
             'user_id' => $request->user_id['id'],
             'jm_status' => $konflik != 0 ? 2:0,
+            'jm_keterangan' => $request->jm_keterangan,
             'jm_catatan' => $catatan
         ]);
         
