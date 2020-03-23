@@ -13,7 +13,7 @@ class JurnalController extends Controller
 {
     public function rekap(Request $request) {
         //return response()->json($request);
-        $jurnals = Jurnal::with(['mapel','kelas'])->where([['kelas_id', request()->kls],['jm_tanggal', request()->tgl]])->orderBy('jm_jampel', 'ASC');
+        $jurnals = Jurnal::with(['mapel','kelas'])->where([['kelas_id', request()->kls],['jm_tanggal', request()->tgl],['jm_status','!=',2]])->orderBy('jm_jampel', 'ASC');
         return new JurnalCollection($jurnals->get());
     }
     
@@ -30,6 +30,10 @@ class JurnalController extends Controller
                              ->orwhereHas('user', function($query) use($q){
                                 $query->where('name','like','%'.$q.'%');
                                });
+        }
+        if (request()->s != '') {
+            $s = $request->s;
+            $jurnals = $jurnals->where('jm_status',$s);
         }
         if($user->role==2){
             $jurnals = $jurnals->where('user_id',$user->id);
@@ -65,19 +69,21 @@ class JurnalController extends Controller
             }
 
             if($rowCount==0) {
-                $kode = "JM".date('y').date('m').date('d')."001";    
+                $kode = "JM".date('y').date('m').date('d')."0001";    
             } else {
                 if(substr($lastId->jm_kode,2,6) == date('y').date('m').date('d')) {
-                $counter = (int)substr($lastId->jm_kode,-3) + 1 ;
+                $counter = (int)substr($lastId->jm_kode,-4) + 1 ;
                     if($counter < 10) {
-                        $kode = "JM".date('y').date('m').date('d')."00".$counter;
+                        $kode = "JM".date('y').date('m').date('d')."000".$counter;
                     } elseif ($counter < 100) {
+                        $kode = "JM".date('y').date('m').date('d')."00".$counter;
+                    } elseif ($counter < 1000) {
                         $kode = "JM".date('y').date('m').date('d')."0".$counter;
                     } else {
                         $kode = "JM".date('y').date('m').date('d').$counter;
                     }
                 } else {
-                    $kode = "JM".date('y').date('m').date('d')."001";
+                    $kode = "JM".date('y').date('m').date('d')."0001";
                 } 
             }
             $user = $request->user();
@@ -142,7 +148,8 @@ class JurnalController extends Controller
         ]);
         
         $jurnal = Jurnal::whereJm_kode($id)->first();
-        $cekkonflik = Jurnal::where([['jm_jampel', $request->jm_jampel],
+        $cekkonflik = Jurnal::where([['jm_kode','!=',$request->jm_kode],
+                                        ['jm_jampel', $request->jm_jampel],
                                         ['kelas_id', $request->kelas_id['id']],
                                         ['jm_tanggal', $request->jm_tanggal],
                                         ['jm_status','!=',2]]);
@@ -167,17 +174,18 @@ class JurnalController extends Controller
             'jm_keterangan' => $request->jm_keterangan,
             'jm_catatan' => $catatan
         ]);
-        
-        DetailJurnal::whereJurnal_id($jurnal->id)->delete();
-        foreach ($request->detail as $row) {
-            if (!is_null($row['siswa'])) {
-                DetailJurnal::create([
-                    'jurnal_id' => $jurnal->id,
-                    'siswa_id' => $row['siswa']['id'],
-                    'alasan' => $row['alasan']
-                ]);
-            }            
-        }
+
+            DetailJurnal::whereJurnal_id($jurnal->id)->delete();
+            foreach ($request->detail as $row) {
+                if (!is_null($row['siswa'])) {
+                    DetailJurnal::create([
+                        'jurnal_id' => $jurnal->id,
+                        'siswa_id' => $row['siswa']['id'],
+                        'alasan' => $row['alasan']
+                    ]);
+                }            
+            }
+            
         return response()->json(['status' => 'success'], 200);
     }
 

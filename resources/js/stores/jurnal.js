@@ -127,9 +127,10 @@ const actions = {
         })
     },
     getJurnal({ commit, state }, payload) {
-        let search = typeof payload != 'undefined' ? payload:''
+        let search = typeof payload.search != 'undefined' ? payload.search:''
+        let status = typeof payload.status != 'undefined' ? payload.status:''
         return new Promise((resolve, reject) => {
-            $axios.get(`/jurnal?page=${state.page}&q=${search}`)
+            $axios.get(`/jurnal?page=${state.page}&q=${search}&s=${status}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
                 resolve(response.data)
@@ -153,7 +154,7 @@ const actions = {
     },
     editJurnal({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            $axios.get(`/jurnal/${payload}/edit`)
+            $axios.get(`/jurnal/${payload.kode}/edit`)
             .then((response) => {
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
@@ -170,9 +171,11 @@ const actions = {
         })
     },
     updateJurnal({ state, commit }, payload) {
+        let kode = state.jurnal.jm_kode
         return new Promise((resolve, reject) => {
-            $axios.put(`/jurnal/${payload}`, state.jurnal)
+            $axios.put(`/jurnal/${kode}`, state.jurnal)
             .then((response) => {
+                console.log(state.jurnal)
                 commit('CLEAR_FORM')
                 resolve(response.data)
             })
@@ -200,17 +203,11 @@ const actions = {
         let status = payload.status
         return new Promise((resolve, reject) => {
             $axios.put(`/jurnal/changestatus/${kode}`, payload)
-            .then((response) => {
-                dispatch('getJurnal').then(() => resolve())
-            })
         })
     },
-    removeJurnal({ dispatch }, payload) {
+    removeJurnal({ dispatch },payload) {
         return new Promise((resolve, reject) => {
             $axios.delete(`/jurnal/${payload}`)
-            .then((response) => {
-                dispatch('getJurnal').then(() => resolve())
-            })
         })
     }
 }

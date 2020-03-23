@@ -21,7 +21,7 @@
                                 </b-button>
                             </template>
                         </b-modal>
-                        <b-modal id="edit-modal" scrollable size="lg">
+                        <b-modal id="edit-modal" scrollable size="xl">
                             <template v-slot:modal-title>
                                 Edit Seragam
                             </template>

@@ -3,7 +3,7 @@
     <div class="col-md-6">
         <div class="form-group" :class="{ 'has-error': errors.jm_tanggal }">
             <label for="">Tanggal</label>
-            <input type="date" class="form-control" v-model="jurnal.jm_tanggal" :readonly="$route.name == 'jurnal.view'">
+            <input type="date" class="form-control" v-model="jurnal.jm_tanggal" :readonly="jurnal.jm_status == 1 && authenticated.role != 0">
             <p class="text-danger" v-if="errors.jm_tanggal">{{ errors.jm_tanggal[0] }}</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.mapel_id }">
@@ -15,7 +15,7 @@
                 :value="$store.myValue"
                 label="mapel_kode"
                 placeholder="Masukkan Kata Kunci" 
-                :disabled="$route.name == 'jurnal.view'"
+                :disabled="jurnal.jm_status == 1 && authenticated.role != 0"
                 :filterable="false">
                 <template slot="no-options">
                     Masukkan Kata Kunci
@@ -35,7 +35,7 @@
                 @change="setSelected"
                 label="kelas_nama"
                 placeholder="Masukkan Kata Kunci" 
-                :disabled="$route.name == 'jurnal.view'"
+                :disabled="jurnal.jm_status == 1 && authenticated.role != 0"
                 :filterable="false">
                 <template slot="no-options">
                     Masukkan Kata Kunci
@@ -48,11 +48,11 @@
         </div>
         <div class="form-group" :class="{ 'has-error': errors.jm_jampel }">
             <label for="">Jam Pelajaran</label>
-            <!--input type="text" class="form-control" v-model="jurnal.jm_jampel" :readonly="$route.name == 'jurnal.view'" v-if="$route.name == 'jurnal.edit'"-->
+            <!--input type="text" class="form-control" v-model="jurnal.jm_jampel" :readonly="jurnal.jm_status == 1 && authenticated.role != 0" v-if="$route.name == 'jurnal.edit'"-->
             <p class="text-danger" v-if="errors.jm_jampel">{{ errors.jm_jampel[0] }}</p>          
             <v-select :options="[1,2,3,4,5,6,7,8,9]"
                 v-model="jurnal.jm_jampel"
-                :disabled="$route.name == 'jurnal.view'"
+                :disabled="jurnal.jm_status == 1 && authenticated.role != 0"
                 :multiple="$route.name == 'jurnal.add'"
                 :value="jurnal.jm_jampel">
             </v-select>
@@ -64,7 +64,7 @@
                 @search="setSelected"
                 label="kd_kode"
                 placeholder="Masukkan Kata Kunci" 
-                :disabled="$route.name == 'jurnal.view'"
+                :disabled="jurnal.jm_status == 1 && authenticated.role != 0"
                 :filterable="false">
                 <template slot="no-options">
                     Masukkan Kata Kunci
@@ -80,12 +80,12 @@
         </div>
         <div class="form-group" :class="{ 'has-error': errors.jm_materi }">
             <label for="">Materi Mengajar</label>
-            <textarea cols="6" rows="5" class="form-control" v-model="jurnal.jm_materi" :readonly="$route.name == 'jurnal.view'"></textarea>
+            <textarea cols="6" rows="5" class="form-control" v-model="jurnal.jm_materi" :readonly="jurnal.jm_status == 1 && authenticated.role != 0"></textarea>
             <p class="text-danger" v-if="errors.jm_materi">{{ errors.jm_materi[0] }}</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.jm_keterangan }">
             <label for="">Keterangan</label>
-            <textarea cols="6" rows="5" class="form-control" v-model="jurnal.jm_keterangan" :readonly="$route.name == 'jurnal.view'"></textarea>
+            <textarea cols="6" rows="5" class="form-control" v-model="jurnal.jm_keterangan" :readonly="jurnal.jm_status == 1 && authenticated.role != 0"></textarea>
             <p class="text-danger" v-if="errors.jm_keterangan">{{ errors.jm_keterangan[0] }}</p>
         </div>
     </div>
@@ -95,7 +95,7 @@
             {{jurnal.jm_catatan}}
         </div>
         <label for="">Siswa Tidak Hadir</label><br>
-        <button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addSiswa" :disabled="$route.name == 'jurnal.view'">Tambah</button>
+        <button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addSiswa" :disabled="jurnal.jm_status == 1 && authenticated.role != 0">Tambah</button>
         <div class="table-responsive" style="height: 600px">
             <table class="table" >
                 <thead>
@@ -131,7 +131,7 @@
                             </v-select>
                         </td>
                         <td>
-                            <button class="btn btn-danger btn-flat" @click="removeSiswa(index)" :disabled="$route.name == 'jurnal.view'"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-danger btn-flat" @click="removeSiswa(index)" :disabled="jurnal.jm_status == 1 && authenticated.role != 0"><i class="fa fa-trash"></i></button>
                         </td>
                     </tr>
                 </tbody>
@@ -167,6 +167,9 @@ export default {
             kelass: state => state.kelas,
             kompetensis: state => state.kompetensi,
             jurnal: state => state.jurnal 
+        }),
+        ...mapState('user', {
+            authenticated: state => state.authenticated
         }),
         filterSiswa() {
             return _.filter(this.jurnal.detail, function(item) {

@@ -10,7 +10,37 @@
                         <span class="float-right">
                             <input type="text" class="form-control form-control-sm" placeholder="Cari..." v-model="search">
                         </span>
+                        <span class="float-right">
+                            <b-form-select 
+                                v-model="status"
+                                size="sm"   
+                                placeholder="Status"                            
+                                :options="status_options"
+                                required
+                                ></b-form-select>
+                        </span>
                     </div>
+                    <b-modal id="edit-modal" scrollable size="xl">
+                        <template v-slot:modal-title>
+                            Edit Jurnal Mengajar
+                        </template>
+                        <jurnal-form></jurnal-form>
+                        <template v-slot:modal-footer >
+                            <b-button
+                                variant="success"
+                                class="mt-3"                                    
+                                block @click="editJMsaja"
+                            >
+                                Update
+                            </b-button>
+                        </template>
+                    </b-modal>
+                    <b-modal id="view-modal" scrollable size="xl" hide-footer="true">
+                        <template v-slot:modal-title>
+                            View Jurnal Mengajar
+                        </template>
+                        <jurnal-form></jurnal-form>
+                    </b-modal>
                 </div>
             </div>
             <div class="panel-body">
@@ -30,13 +60,15 @@
                         {{ row.item.kompetensi_id ? row.item.kompetensi.kd_kode:'-' }}
                     </template>
                     <template v-slot:cell(actions)="row">
-                        <div class="btn-group">
-                            <button class="btn btn-success btn-sm" v-if="(authenticated.role==0 || authenticated.role==1) && row.item.jm_status == 0" @click="updateJMstatus(row.item,1)"><i class="far fa-check-circle"></i></button>
-                            <button class="btn btn-danger btn-sm" v-if="(authenticated.role==0 || authenticated.role==1) && row.item.jm_status == 0" @click="updateJMstatus(row.item,2)"><i class="fa fa-times"></i></button>
+                        <div class="btn-group" v-if="row.item.jm_status != 2 && (authenticated.role==1 || authenticated.role==0)" >
+                            <button class="btn btn-warning btn-sm"  v-if="(row.item.jm_status == 1)" @click="updateJMstatus(row.item,0)"><i class="far fa-clock"></i></button>
+                            <button class="btn btn-success btn-sm" v-if="(row.item.jm_status == 0)" @click="updateJMstatus(row.item,1)"><i class="far fa-check-circle"></i></button>
+                            <button class="btn btn-danger btn-sm" v-if="(row.item.jm_status != 2)" @click="updateJMstatus(row.item,2)"><i class="fa fa-times"></i></button>
                         </div>
                         <div class="btn-group"> 
-                            <router-link :to="{ name: 'jurnal.view', params: {id: row.item.jm_kode} }" class="btn btn-success btn-sm" v-if="row.item.jm_status == 1"><i class="fa fa-eye"></i></router-link> 
-                            <router-link :to="{ name: 'jurnal.edit', params: {id: row.item.jm_kode} }" class="btn btn-warning btn-sm" v-if="row.item.jm_status != 1 || authenticated.role==0"><i class="fa fa-edit"></i></router-link>
+                            <!--router-link :to="{ name: 'jurnal.view', params: {id: row.item.jm_kode} }" class="btn btn-success btn-sm" v-if="row.item.jm_status == 1"><i class="fa fa-eye"></i></router-link-->
+                            <button class="btn btn-success btn-sm" @click="viewJM(row.item.jm_kode)" v-if="row.item.jm_status == 1 || authenticated.role==0"><i class="fa fa-eye"></i></button>
+                            <button class="btn btn-warning btn-sm" @click="editJM(row.item.jm_kode)" v-if="row.item.jm_status != 1 || authenticated.role==0"><i class="fa fa-edit"></i></button>
                             <button class="btn btn-danger btn-sm" @click="deleteJurnal(row.item.id)" v-if="row.item.jm_status != 1 || authenticated.role==0"><i class="fa fa-trash"></i></button>
                         </div>
                     </template>
@@ -65,20 +97,20 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import FormJurnal from './Form.vue'
 
 export default {
     name: 'DataJurnal',
     created() {
-        //SEBELUM COMPONENT DI-LOAD, REQUEST DATA DARI SERVER
-        this.getJurnal()
+        this.getJurnal({
+                search : this.search,
+                status : this.status
+            })
     },
     data() {
         return {
-            //FIELD UNTUK B-TABLE, PASTIKAN KEY NYA SESUAI DENGAN FIELD DATABASE
-            //AGAR OTOMATIS DI-RENDER
             
             fields: [
-                //{ key: 'jm_kode', label: 'Kode' },
                 { key: 'user_id', label: 'Guru', sortable: true },
                 { key: 'jm_tanggal', label: 'Tanggal', sortable: true },
                 { key: 'kelas_id', label: 'Kelas', sortable: true },
@@ -88,42 +120,55 @@ export default {
                 { key: 'jm_status', label: 'Status', sortable: true },
                 { key: 'actions', label: 'Aksi' }
             ],
-            search: ''
+            status_options: [
+                { value: '', text: '' },
+                { value: '0', text: 'Waiting' },
+                { value: '1', text: 'Approved' },
+                { value: '2', text: 'Reject' },
+            ],
+            search: '',
+            status: ''
         }
     },
     computed: {
-        //MENGAMBIL DATA OUTLETS DARI STATE OUTLETS
         ...mapState('jurnal', {
-            jurnals: state => state.jurnals
+            jurnals: state => state.jurnals,
+            jurnal: state => state.jurnal
         }),
         ...mapState('user', {
             authenticated: state => state.authenticated
         }),
         page: {
             get() {
-                //MENGAMBIL VALUE PAGE DARI VUEX MODULE jurnal
                 return this.$store.state.jurnal.page
             },
             set(val) {
-                //APABILA TERJADI PERUBAHAN VALUE DARI PAGE, MAKA STATE PAGE
-                //DI VUEX JUGA AKAN DIUBAH
                 this.$store.commit('jurnal/SET_PAGE', val)
             }
         }
     },
     watch: {
         page() {
-            //APABILA VALUE DARI PAGE BERUBAH, MAKA AKAN MEMINTA DATA DARI SERVER
-            this.getJurnal()
+            this.getJurnal({
+                search : this.search,
+                status : this.status
+            })
         },
         search() {
-            //APABILA VALUE DARI SEARCH BERUBAH MAKA AKAN MEMINTA DATA
-            //SESUAI DENGAN DATA YANG SEDANG DICARI
-            this.getJurnal(this.search)
+            this.getJurnal({
+                search : this.search,
+                status : this.status
+            })
+        },
+        status() {
+            this.getJurnal({
+                search : this.search,
+                status : this.status
+            })
         }
     },
     methods: {
-        ...mapActions('jurnal', ['getJurnal', 'removeJurnal','checkJurnal','updateStatus']),
+        ...mapActions('jurnal', ['editJurnal','updateJurnal','getJurnal', 'removeJurnal','checkJurnal','updateStatus']),
         approveJurnal(id){
             this.checkJurnal(id)
         },
@@ -131,10 +176,34 @@ export default {
             this.updateStatus({
                 jurnal: jurnal,
                 status: status
-            })//.then(()=>{jurnal.jm_status = status })
+            }),
+            this.getJurnal({
+                search: this.search,
+                status: this.status
+            })
+        },
+        editJMsaja(){
+            this.updateJurnal().then(() => {
+                this.$bvModal.hide('edit-modal'),
+                this.getJurnal({
+                    search: this.search,
+                    status: this.status
+                })
+            })
+        },
+        viewJM(kode){
+            this.editJurnal({
+                kode: kode
+            }),
+            this.$bvModal.show('view-modal')
+        },
+        editJM(kode){
+            this.editJurnal({
+                kode: kode
+            }),
+            this.$bvModal.show('edit-modal')
         },
         deleteJurnal(id) {
-            //AKAN MENAMPILKAN JENDELA KONFIRMASI
             this.$swal({
                 title: 'Kamu Yakin?',
                 text: "Tindakan ini akan menghapus secara permanent!",
@@ -144,13 +213,18 @@ export default {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Iya, Lanjutkan!'
             }).then((result) => {
-                //JIKA DISETUJUI
                 if (result.value) {
-                    //MAKA FUNGSI removeJurnal AKAN DIJALANKAN
-                    this.removeJurnal(id)
+                    this.removeJurnal(id),
+                    this.getJurnal({
+                        search: this.search,
+                        status: this.status
+                    })
                 }
             })
         }
+    },
+    components: {
+        'jurnal-form': FormJurnal
     }
 }
 </script>
