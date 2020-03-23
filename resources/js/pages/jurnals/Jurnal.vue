@@ -61,12 +61,11 @@
                     </template>
                     <template v-slot:cell(actions)="row">
                         <div class="btn-group" v-if="row.item.jm_status != 2 && (authenticated.role==1 || authenticated.role==0)" >
-                            <button class="btn btn-warning btn-sm"  v-if="(row.item.jm_status == 1)" @click="updateJMstatus(row.item,0)"><i class="far fa-clock"></i></button>
-                            <button class="btn btn-success btn-sm" v-if="(row.item.jm_status == 0)" @click="updateJMstatus(row.item,1)"><i class="far fa-check-circle"></i></button>
+                            <button class="btn btn-warning btn-sm"  v-if="(row.item.jm_status == 1)" @click="updateJMstatus(row.item,0)"><i class="fa fa-clock"></i></button>
+                            <button class="btn btn-success btn-sm" v-if="(row.item.jm_status == 0)" @click="updateJMstatus(row.item,1)"><i class="fa fa-check-circle"></i></button>
                             <button class="btn btn-danger btn-sm" v-if="(row.item.jm_status != 2)" @click="updateJMstatus(row.item,2)"><i class="fa fa-times"></i></button>
                         </div>
                         <div class="btn-group"> 
-                            <!--router-link :to="{ name: 'jurnal.view', params: {id: row.item.jm_kode} }" class="btn btn-success btn-sm" v-if="row.item.jm_status == 1"><i class="fa fa-eye"></i></router-link-->
                             <button class="btn btn-success btn-sm" @click="viewJM(row.item.jm_kode)" v-if="row.item.jm_status == 1 || authenticated.role==0"><i class="fa fa-eye"></i></button>
                             <button class="btn btn-warning btn-sm" @click="editJM(row.item.jm_kode)" v-if="row.item.jm_status != 1 || authenticated.role==0"><i class="fa fa-edit"></i></button>
                             <button class="btn btn-danger btn-sm" @click="deleteJurnal(row.item.id)" v-if="row.item.jm_status != 1 || authenticated.role==0"><i class="fa fa-trash"></i></button>

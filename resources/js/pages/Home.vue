@@ -58,7 +58,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Jurnal Mengajar</span>
-                <span class="info-box-number">{{statistiks.data.jurnaltoday.length}} / {{statistiks.data.jurnaltotal}}</span>
+                <span class="info-box-number">{{statistiks.data.jurnaltoday.total}} / {{statistiks.data.jurnaltotal}}</span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -71,7 +71,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Kerusakan Sarpras</span>
-                <span class="info-box-number">Uakeh</span>
+                <span class="info-box-number">{{statistiks.data.jumlahKerusakan}}</span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -98,7 +98,7 @@
               <div class="table-responsive">
                 <b-table striped hover :items="statistiks.data.absensitoday" :fields="fieldsabsensi" show-empty>                	
                     <template v-slot:cell(siswa_id)="row">
-                        {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
+                        {{row.item.siswa.siswa_nama}} / <b>{{row.item.siswa.siswa_kelas}}</b>
                     </template>
                     <template v-slot:cell(absensi_jenis)="row">
                         <span class="badge badge-danger" v-if="row.item.absensi_jenis == 'Sakit'">Sakit</span>
@@ -158,7 +158,7 @@
             <!-- /.card-header --> 
             <div id="jurnal" class="card-body p-0 collapse">
               <div class="table-responsive ">
-                <b-table striped hover :items="statistiks.data.jurnaltoday" :fields="fieldsjurnal" show-empty>                	
+                <b-table striped hover :items="statistiks.data.jurnaltoday.data" :fields="fieldsjurnal" show-empty>                	
                     <template v-slot:cell(kelas_id)="row">
                         {{ row.item.kelas_id ? row.item.kelas.kelas_nama:'-' }}
                     </template>
@@ -167,8 +167,19 @@
                         <span class="badge badge-danger" v-else-if="row.item.jm_status == 2">Reject</span>
                         <span class="badge badge-warning" v-else-if="row.item.jm_status == 0">Waiting</span>
                     </template>
-                </b-table>
+                </b-table> 
+                  <span class="float-right">
+                      <b-pagination
+                          v-model="page"
+                          :total-rows="statistiks.data.jurnaltoday.total"
+                          :per-page="statistiks.data.jurnaltoday.data.per_page"
+                          aria-controls="jurnals"
+                          v-if="statistiks.data.jurnaltoday && statistiks.data.jurnaltoday.data.length > 0"
+                          ></b-pagination>
+                  </span>              
               </div>
+              
+              
               <!-- /.table-responsive -->
             </div>
             <!-- /.card-body -->
@@ -181,20 +192,20 @@
               <h3 class="card-title">Daftar Kerusakan Sarpras</h3>
 
               <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="expand">
-                  <i class="fas fa-minus"></i>
+                <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#kerusakan">
+                  <i class="fas fa-plus"></i>
                 </button>
               </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body p-0 collapse">
+            <div id="kerusakan" class="card-body p-0 collapse">
               <div class="table-responsive">
-                <table class="table m-0">
-                  <thead>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                </table>
+                <b-table striped hover :items="statistiks.data.kerusakanDetail" :fields="fieldskerusakan" show-empty>
+                    <template v-slot:cell(ls_status)="row">
+                        <span class="badge badge-info" v-if="row.item.ls_status == 1">Proses</span>
+                        <span class="badge badge-warning" v-else-if="row.item.ls_status == 0">Tunggu</span>
+                    </template>
+                </b-table>
               </div>
               <!-- /.table-responsive -->
             </div>
@@ -232,6 +243,10 @@
                 { key: 'jm_jampel', label: 'Jam' },
                 { key: 'jm_status', label: 'Status' }
             ],
+            fieldskerusakan: [
+                { key: 'ls_sarpras', label: 'Sarana' },
+                { key: 'ls_status', label: 'Status' }
+            ],
             search: ''
         }
       },
@@ -239,6 +254,19 @@
         ...mapState('home', {
             statistiks: state => state.statistiks
         }),
+        page: {
+            get() {
+                return this.$store.state.home.page
+            },
+            set(val) {
+                this.$store.commit('home/SET_PAGE', val)
+            }
+        }
+      },
+      watch: {
+        page() {
+            this.getData()
+        },
       },
       methods: {
         ...mapActions('home', ['getData'])

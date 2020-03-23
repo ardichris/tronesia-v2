@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Absensi;
 use App\Pelanggaran;
 use App\Jurnal;
+use App\Kelas;
+use App\LaporSarpras;
 use Carbon\Carbon;
 use App\Http\Resources\FrontCollection;
 
@@ -25,8 +27,14 @@ class FrontController extends Controller
         $pelanggarantoday = Pelanggaran::where('pelanggaran_tanggal', Carbon::today())
                                          ->with('siswa')->get();
         $jurnaltotal = Jurnal::count();
-        $jurnaltoday = Jurnal::where('jm_tanggal', Carbon::today())
-                                ->with('kelas')->get();
+        $jurnaltoday = Jurnal::where([['jm_tanggal', Carbon::today()],['jm_status','!=',2]])
+                                ->with('kelas')
+                                ->join('kelas','jurnals.kelas_id','=','kelas.id')
+                                ->orderBy('kelas.kelas_nama','ASC')
+                                ->orderBy('jm_jampel','ASC')
+                                ->paginate(9);
+        $jumlahKerusakan = LaporSarpras::where([['ls_kategori','Kerusakan'],['ls_status','!=',2]])->count();
+        $kerusakanDetail = LaporSarpras::where([['ls_kategori','Kerusakan'],['ls_status','!=',2]])->get();
 
         $statistik['absensitotal'] = $absensitotal;
         $statistik['absensitoday'] = $absensitoday;
@@ -34,6 +42,8 @@ class FrontController extends Controller
         $statistik['pelanggarantoday'] = $pelanggarantoday;
         $statistik['jurnaltotal'] = $jurnaltotal;
         $statistik['jurnaltoday'] = $jurnaltoday;
+        $statistik['jumlahKerusakan'] = $jumlahKerusakan;
+        $statistik['kerusakanDetail'] =$kerusakanDetail;
 
         return response()->json(['status' => 'success', 'data' => $statistik], 200);
     }

@@ -106,7 +106,10 @@ export default {
     },
     watch: {
         page() {            
-            this.getSiswas()
+            this.getSiswas({
+                search: this.search,
+                status: this.status
+            })
         },
         search() {
             this.getSiswas({

@@ -69,15 +69,13 @@ class JurnalController extends Controller
             }
 
             if($rowCount==0) {
-                $kode = "JM".date('y').date('m').date('d')."0001";    
+                $kode = "JM".date('y').date('m').date('d')."001";    
             } else {
                 if(substr($lastId->jm_kode,2,6) == date('y').date('m').date('d')) {
-                $counter = (int)substr($lastId->jm_kode,-4) + 1 ;
+                $counter = (int)substr($lastId->jm_kode,-3) + 1 ;
                     if($counter < 10) {
-                        $kode = "JM".date('y').date('m').date('d')."000".$counter;
-                    } elseif ($counter < 100) {
                         $kode = "JM".date('y').date('m').date('d')."00".$counter;
-                    } elseif ($counter < 1000) {
+                    } elseif ($counter < 100) {
                         $kode = "JM".date('y').date('m').date('d')."0".$counter;
                     } else {
                         $kode = "JM".date('y').date('m').date('d').$counter;
@@ -185,7 +183,7 @@ class JurnalController extends Controller
                     ]);
                 }            
             }
-            
+
         return response()->json(['status' => 'success'], 200);
     }
 

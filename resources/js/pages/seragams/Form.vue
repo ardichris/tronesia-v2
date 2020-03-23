@@ -7,7 +7,7 @@
                 @search="onSearchSiswa" 
                 label="siswa_nama"
                 placeholder="Masukkan Kata Kunci" 
-                :disabled="$route.name == 'seragams.view'"
+                :disabled="seragam.siswa_id != null"
                 :filterable="false">
                 <template slot="no-options">
                     Masukkan Kata Kunci
