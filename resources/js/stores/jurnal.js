@@ -141,10 +141,9 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.post(`/jurnal`, state.jurnal)
             .then((response) => {
-                dispatch('getJurnal').then(() => {
-                    resolve(response.data)
-                })
-            })
+                commit('CLEAR_FORM')
+                resolve(response.data)
+        })
             .catch((error) => {
                 if (error.response.status == 422) {
                     commit('SET_ERRORS', error.response.data.errors, { root: true })

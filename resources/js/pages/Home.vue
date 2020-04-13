@@ -172,7 +172,7 @@
                       <b-pagination
                           v-model="page"
                           :total-rows="statistiks.data.jurnaltoday.total"
-                          :per-page="statistiks.data.jurnaltoday.data.per_page"
+                          :per-page="statistiks.data.jurnaltoday.per_page"
                           aria-controls="jurnals"
                           v-if="statistiks.data.jurnaltoday && statistiks.data.jurnaltoday.data.length > 0"
                           ></b-pagination>

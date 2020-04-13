@@ -35,7 +35,7 @@
                             </b-button>
                         </template>
                     </b-modal>
-                    <b-modal id="view-modal" scrollable size="xl" hide-footer="true">
+                    <b-modal id="view-modal" scrollable size="xl" hide-footer>
                         <template v-slot:modal-title>
                             View Jurnal Mengajar
                         </template>
