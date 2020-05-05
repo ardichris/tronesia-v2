@@ -90,11 +90,11 @@ export default {
     data() {
         return {
             fields: [
-                { key: 'absensi_kode', label: 'Kode' },
                 { key: 'siswa_id', label: 'Nama Lengkap' },
                 { key: 'absensi_tanggal', label: 'Tanggal' },
                 { key: 'absensi_jenis', label: 'Jenis' },
                 { key: 'absensi_keterangan', label: 'Keterangan' },
+                { key: 'ab_status', label: 'Status'},
                 { key: 'actions', label: 'Aksi' }
             ],
             search: ''

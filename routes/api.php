@@ -48,6 +48,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/laporsarpras', 'API\LaporSarprasController');
     Route::put('/laporsarpras/changestatus/{kode}','API\LaporSarprasController@changeStatus');
     Route::resource('/kitirsiswa', 'API\KitirSiswaController');
+    Route::put('/kitirsiswa/changestatus/{kode}','API\KitirSiswaController@changeStatus');
 });
 
 

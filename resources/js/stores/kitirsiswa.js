@@ -5,11 +5,11 @@ const state = () => ({
     siswas: [],
     
     kitir: {
-        absensi_kode: '',
+        kitir_kode: '',
         siswa_id: '',
-        absensi_tanggal: '',
-        absensi_jenis: '',
-        absensi_keterangan: ''
+        kitir_tanggal: '',
+        kitir_jenis: '',
+        kitir_keterangan: ''
     },
     page: 1
 })
@@ -19,32 +19,43 @@ const mutations = {
         state.siswas = payload
     },
     ASSIGN_DATA(state, payload) {
-        state.absensis = payload
+        state.kitirs = payload
     },
     SET_PAGE(state, payload) {
         state.page = payload
     },
     ASSIGN_FORM(state, payload) {
-        state.absensi = {
-            absensi_kode: payload.absensi_kode,
+        state.kitir = {
+            ks_kode: payload.ks_kode,
             siswa_id: payload.siswa,
-            absensi_tanggal: payload.absensi_tanggal,
-            absensi_jenis: payload.absensi_jenis,
-            absensi_keterangan: payload.absensi_keterangan
+            ks_tanggal: payload.ks_tanggal,
+            ks_waktu: payload.ks_waktu,
+            ks_jenis: payload.ks_jenis,
+            ks_keterangan: payload.ks_keterangan
         }
     },
     CLEAR_FORM(state) {
-        state.absensi = {
-            absensi_kode: '',
+        state.kitir = {
+            kitir_kode: '',
             siswa_id: '',
-            absensi_tanggal: '',
-            absensi_jenis: '',
-            absensi_keterangan: ''
+            kitir_tanggal: '',
+            kitir_jenis: '',
+            kitir_keterangan: ''
         }
     }
 }
 
 const actions = {
+    updateStatus({ dispatch }, payload) {
+        let kode = payload.ks.ks_kode
+        return new Promise((resolve, reject) => {
+            $axios.put(`/kitirsiswa/changestatus/${kode}`, payload)
+            .then((response) => {
+                resolve(response.data)
+            })
+            
+        })
+    },
     getSiswas({ commit, state }, payload) {
         let search = payload.search
         payload.loading(true)
@@ -57,31 +68,31 @@ const actions = {
             })
         })
     },
-    getAbsensi({ commit, state }, payload) {
+    getKitir({ commit, state }, payload) {
         let search = typeof payload != 'undefined' ? payload:''
         return new Promise((resolve, reject) => {            
-            $axios.get(`/absensi?page=${state.page}&q=${search}`)
+            $axios.get(`/kitirsiswa?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
                 resolve(response.data)
             })
         })
     },
-    editAbsensi({ commit }, payload) {
+    editKitir({ commit }, payload) {
         let kode = payload.kode
         return new Promise((resolve, reject) => {
-            $axios.get(`/absensi/${kode}/edit`)
+            $axios.get(`/kitirsiswa/${kode}/edit`)
             .then((response) => {
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
             })
         })
     },
-    submitAbsensi({ dispatch, commit, state }) {
+    submitKitir({ dispatch, commit, state }) {
         return new Promise((resolve, reject) => {
-            $axios.post(`/absensi`, state.absensi)
+            $axios.post(`/kitirsiswa`, state.kitir)
             .then((response) => {
-                dispatch('getAbsensi').then(() => {
+                dispatch('getKitir').then(() => {
                     commit('CLEAR_FORM')
                     resolve(response.data)
                 })
@@ -93,10 +104,10 @@ const actions = {
             })
         })
     },
-    updateAbsensi({ state, commit }, payload) {
-        let kode = state.absensi.absensi_kode
+    updateKitir({ state, commit }, payload) {
+        let kode = state.kitir.kitir_kode
         return new Promise((resolve, reject) => {
-            $axios.put(`/absensi/${kode}`, state.absensi)
+            $axios.put(`/kitirsiswa/${kode}`, state.kitir)
             .then((response) => {
                 commit('CLEAR_FORM')
                 resolve(response.data)
@@ -108,20 +119,20 @@ const actions = {
             })
         })
     },
-    viewAbsensi({ commit }, payload) {
+    viewKitir({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            $axios.get(`/absensi/${payload}/edit`)
+            $axios.get(`/kitirsiswa/${payload}/edit`)
             .then((response) => {
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
             })
         })
     },
-    removeAbsensi({ dispatch }, payload) {
+    removeKitir({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
-            $axios.delete(`/absensi/${payload}`)
+            $axios.delete(`/kitirsiswa/${payload}`)
             .then((response) => {
-                dispatch('getAbsensi').then(() => resolve())
+                dispatch('getKitir').then(() => resolve())
             })
         })
     }

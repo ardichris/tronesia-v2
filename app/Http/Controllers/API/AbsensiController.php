@@ -7,19 +7,25 @@ use Illuminate\Http\Request;
 use App\Http\Resources\AbsensiCollection;
 use App\Absensi;
 use App\Siswa;
+use App\User;
 
 class AbsensiController extends Controller
 {
     public function index(Request $request)
     {
-        if (request()->q != '') {
+        /*if (request()->q != '') {
             $q = $request->q; 
-            $absensis = Absensi::with('siswa')->whereHas('siswa', function($query) use($q){
+            $absensis = Absensi::with(['siswa','user','approve'])->whereHas('siswa', function($query) use($q){
                 $query->where('siswa_nama','like','%'.$q.'%');
             });                   
-        } else {
+        } else {*/
             $absensis = Absensi::with('siswa')->orderBy('created_at', 'DESC');
-        }
+        //}
+        
+        /*$user = $request->user();
+        if($user->role != 0){
+            $absensis = $absensis->where('user_id',$user->id);
+        }*/
         return new AbsensiCollection($absensis->paginate(10));
     }
 

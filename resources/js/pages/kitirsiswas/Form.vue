@@ -3,11 +3,11 @@
         <div class="form-group" :class="{ 'has-error': errors.siswa_id }">
             <label for="">Nama Siswa</label>
             <v-select :options="siswas.data"
-                v-model="absensi.siswa_id"
+                v-model="kitir.siswa_id"
                 @search="onSearch" 
                 label="siswa_nama"
                 placeholder="Masukkan Kata Kunci" 
-                :disabled="$route.name == 'absensi.view'"
+                :disabled="$route.name == 'kitir.view'"
                 :filterable="false">
                 <template slot="no-options">
                     Masukkan Kata Kunci
@@ -18,25 +18,25 @@
             </v-select>
             <p class="text-danger" v-if="errors.siswa_id">Siswa belum dipilih</p>
         </div>
-        <div class="form-group" :class="{ 'has-error': errors.absensi_tanggal }">
+        <div class="form-group" :class="{ 'has-error': errors.ks_tanggal }">
             <label for="">Tanggal</label>
-            <input type="date" class="form-control" v-model="absensi.absensi_tanggal" :readonly="$route.name == 'absensi.view'">
-            <p class="text-danger" v-if="errors.absensi_tanggal">Tanggal belum diisi</p>
+            <input type="date" class="form-control" v-model="kitir.ks_tanggal" :readonly="$route.name == 'kitir.view'">
+            <p class="text-danger" v-if="errors.ks_tanggal">Tanggal belum diisi</p>
         </div>
-        <div class="form-group" :class="{ 'has-error': errors.absensi_jenis }">
-            <label for="">Jenis Absensi</label>
-            <v-select :options="['Sakit', 'Ijin', 'Alpha']"
-                        v-model="absensi.absensi_jenis"
-                        :disabled="$route.name == 'absensi.view'"
-                        :value="absensi.absensi_jenis"
+        <div class="form-group" :class="{ 'has-error': errors.ks_jenis }">
+            <label for="">Jenis Kitir</label>
+            <v-select :options="['Masuk Kelas', 'Keluar Kelas', 'Pulang Sekolah']"
+                        v-model="kitir.ks_jenis"
+                        :disabled="$route.name == 'kitir.view'"
+                        :value="kitir.ks_jenis"
                         >
             </v-select>
-            <p class="text-danger" v-if="errors.absensi_jenis">Absensi belum dipilih</p>
+            <p class="text-danger" v-if="errors.ks_jenis">Kitir belum dipilih</p>
         </div>
-        <div class="form-group" :class="{ 'has-error': errors.absensi_keterangan }">
+        <div class="form-group" :class="{ 'has-error': errors.ks_keterangan }">
             <label for="">Keterangan</label>
-            <input type="text" class="form-control" v-model="absensi.absensi_keterangan" :readonly="$route.name == 'absensi.view'">
-            <p class="text-danger" v-if="errors.absensi_keterangan">Keterangan wajib diisi</p>
+            <input type="text" class="form-control" v-model="kitir.ks_keterangan" :readonly="$route.name == 'kitir.view'">
+            <p class="text-danger" v-if="errors.ks_keterangan">Keterangan wajib diisi</p>
         </div>
     </div>
 </template>
@@ -46,17 +46,17 @@ import { mapState, mapMutations, mapActions } from 'vuex'
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 export default {
-    name: 'FormAbsensi',
+    name: 'FormKitir',
     computed: {
         ...mapState(['errors']),
-        ...mapState('absensi', {
+        ...mapState('kitirsiswa', {
             siswas: state => state.siswas,
-            absensi: state => state.absensi
+            kitir: state => state.kitir
         })
     },
     methods: {
-        ...mapActions('absensi', ['getSiswas', 'editAbsensi']),
-        ...mapMutations('absensi', ['CLEAR_FORM']),
+        ...mapActions('kitirsiswa', ['getSiswas', 'editKitir']),
+        ...mapMutations('kitirsiswa', ['CLEAR_FORM']),
         onSearch(search, loading) {
             this.getSiswas({
                 search: search,
