@@ -26,7 +26,7 @@
         </div>
         <div class="form-group" :class="{ 'has-error': errors.pelanggaran_jenis }">
             <label for="">Jenis Pelanggaran</label>
-            <v-select :options="['Terlambat', 'Escape', 'Atribut', 'Seragam', 'Sepatu', 'Kaos Kaki', 'Rambut', 'Berkelahi']"
+            <v-select :options="['Terlambat', 'Escape', 'Atribut', 'Seragam', 'Sepatu', 'Kaos Kaki', 'Rambut', 'Berkelahi', 'Bermain Game', 'Mendengarkan Musik', 'Berkata Kotor']"
                         v-model="pelanggaran.pelanggaran_jenis"
                         :disabled="$route.name == 'pelanggaran.view'"
                         :value="pelanggaran.pelanggaran_jenis"

@@ -50,8 +50,10 @@
                     <template v-slot:cell(siswa_id)="row">
                         {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
                     </template>
-                    <template v-slot:cell(user_id)="row">
-                        {{row.item.user.name}}
+                    <template v-slot:cell(guru)="row">
+                        <h5><span class="badge badge-secondary">{{row.item.user.name}}</span></h5>
+                        <h5><span class="badge badge-warning" v-if="(row.item.jurnal != null)" >{{ row.item.siswa.siswa_kelas }} <span class="badge badge-danger">{{ row.item.jurnal ? row.item.jurnal.jm_jampel:'-' }}</span></span></h5>
+                        <span class="badge badge-info">{{ row.item.pelanggaran_tanggal ? row.item.pelanggaran_tanggal:'-' }}</span>
                     </template>
                     <template v-slot:cell(actions)="row">
                         <button class="btn btn-warning btn-sm" @click="editPL(row.item.pelanggaran_kode)"><i class="fa fa-edit"></i></button>
@@ -93,12 +95,10 @@ export default {
     data() {
         return {
             fields: [
-                { key: 'pelanggaran_kode', label: 'Kode' },
-                { key: 'siswa_id', label: 'Nama Lengkap' },
-                { key: 'pelanggaran_tanggal', label: 'Tanggal' },
-                { key: 'pelanggaran_jenis', label: 'Jenis' },
+                { key: 'guru', label: 'Guru', sortable: true },
+                { key: 'siswa_id', label: 'Nama Siswa', sortable: true },
+                { key: 'pelanggaran_jenis', label: 'Pelanggaran' },
                 { key: 'pelanggaran_keterangan', label: 'Keterangan' },
-                { key: 'user_id', label: 'User' },
                 { key: 'actions', label: 'Aksi' }
             ],
             search: ''

@@ -65,6 +65,8 @@ import IndexKitirSiswa from './pages/kitirsiswas/Index.vue'
 import DataKitirSiswa from './pages/kitirsiswas/KitirSiswa.vue'
 import IndexRekapJurnal from './pages/rekapjurnals/Index.vue'
 import DataRekapJurnal from './pages/rekapjurnals/RekapJurnal.vue'
+import IndexPresensi from './pages/presensis/Index.vue'
+import DataPresensi from './pages/presensis/Presensi.vue'
 
 
 Vue.use(Router)
@@ -107,6 +109,19 @@ const router = new Router({
                     name: 'rekapjurnal.data',
                     component: DataRekapJurnal,
                     meta: { title: 'Rekap Jurnal' }
+                }                               
+            ]
+        },
+        {
+            path: '/presensi',
+            component: IndexPresensi,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'presensi.data',
+                    component: DataPresensi,
+                    meta: { title: 'Presensi' }
                 }                               
             ]
         },

@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\LaporSarprasCollection;
 use App\LaporSarpras;
+use Carbon\Carbon;
 
 class LaporSarprasController extends Controller
 {
     public function index(Request $request)
     {
+        //return response()->json(['data' => $request], 200);
         $user = $request->user();
         $laporsarpras = LaporSarpras::with(['creator','updater'])->orderBy('created_at', 'DESC');
         if (request()->k != '') {
@@ -28,6 +30,7 @@ class LaporSarprasController extends Controller
 
     public function store(Request $request)
     {
+        
         $this->validate($request, [
             'ls_kategori' => 'required',
             'ls_sarpras' => 'required|string|max:150',
@@ -59,6 +62,7 @@ class LaporSarprasController extends Controller
             'ls_kategori' => $request->ls_kategori,
             'ls_sarpras' => $request->ls_sarpras,
             'ls_keterangan' => $request->ls_keterangan,
+            'ls_tanggal' => Carbon::now(),
             'ls_status' => 0,
             'creator_id' => $user->id
             
@@ -91,6 +95,7 @@ class LaporSarprasController extends Controller
         $lapor->update(['ls_kategori' => $request->ls_kategori,
                         'ls_sarpras' => $request->ls_sarpras,
                         'ls_keterangan' => $request->ls_keterangan,
+                        'ls_penanganan' => $request->ls_penanganan,
                         'updater_id' => $user->id]);
         return response()->json(['status' => 'success']);
     }
@@ -106,6 +111,7 @@ class LaporSarprasController extends Controller
         $user = $request->user();
         $ls = LaporSarpras::whereLs_kode($kode)->first();
             $ls->update(['ls_status' => $request->status,
+                         'ls_penanganan' => $request->ls['ls_penanganan'],
                          'updater_id' => $user->id]);    
         return response()->json(['status' => 'success'], 200);
     }

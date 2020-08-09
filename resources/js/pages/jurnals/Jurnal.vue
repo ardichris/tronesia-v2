@@ -20,6 +20,24 @@
                                 ></b-form-select>
                         </span>
                     </div>
+                    <b-modal id="reject-modal">
+                        <template v-slot:modal-title>
+                            Keterangan Reject
+                        </template>
+                        <div class="form-group">
+                            <label for="">Keterangan</label>
+                            <textarea cols="6" rows="5" class="form-control" v-model="jurnal.jm_catatan"></textarea>
+                        </div>
+                        <template v-slot:modal-footer>
+                            <b-button
+                                variant="success"
+                                class="mt-3"                                    
+                                block  @click="updateJMstatus(jurnal,2)"
+                            >
+                                Simpan
+                            </b-button>
+                        </template>
+                    </b-modal>
                     <b-modal id="edit-modal" scrollable size="xl">
                         <template v-slot:modal-title>
                             Edit Jurnal Mengajar
@@ -45,16 +63,22 @@
             </div>
             <div class="panel-body">
                 <b-table striped hover bordered :items="jurnals.data" :fields="fields" show-empty>
-                    <template v-slot:cell(jm_status)="row">
-                        <span class="badge badge-success" v-if="row.item.jm_status == 1">Approved</span>
-                        <span class="badge badge-danger" v-else-if="row.item.jm_status == 2">Reject</span>
-                        <span class="badge badge-warning" v-else-if="row.item.jm_status == 0">Waiting</span>
+                    <template v-slot:cell(jm_detail)="row">
+                        <span class="badge badge-warning" v-if="row.item.detail.length >= 1">{{ row.item.detail.length}} Siswa</span>
+                        <span class="badge badge-danger" v-if="row.item.pelanggaran.length >= 1">{{ row.item.pelanggaran.length}} Siswa</span>
                     </template>
                     <template v-slot:cell(user_id)="row">
-                        {{ row.item.user_id ? row.item.user.name:'-' }}
+                        <h5><span class="badge badge-secondary">{{ row.item.user_id ? row.item.user.name:'-' }}</span></h5>
+                        <span class="badge badge-success">{{ row.item.mapel_id ? row.item.mapel.mapel_kode:'WKM' }}</span>
+                        <span class="badge badge-info">{{ row.item.jm_tanggal}}</span><br>
+                        <span class="badge badge-success" v-if="row.item.jm_status == 1">Approved</span>
+                        <span class="badge badge-danger" v-else-if="row.item.jm_status == 2">Rejected</span>
+                        <span class="badge badge-warning" v-else-if="row.item.jm_status == 0">Submited</span>
+                        
                     </template>
                     <template v-slot:cell(kelas_id)="row">
-                        {{ row.item.kelas_id ? row.item.kelas.kelas_nama:'-' }}
+                        <h5><span class="badge badge-warning">{{ row.item.kelas_id ? row.item.kelas.kelas_nama:'-' }} <span class="badge badge-danger">{{ row.item.jm_jampel}}</span></span></h5>
+                        
                     </template>
                     <template v-slot:cell(kompetensi_id)="row">
                         {{ row.item.kompetensi_id ? row.item.kompetensi.kd_kode:'-' }}
@@ -63,7 +87,7 @@
                         <div class="btn-group" v-if="row.item.jm_status != 2 && (authenticated.role==1 || authenticated.role==0)" >
                             <button class="btn btn-warning btn-sm"  v-if="(row.item.jm_status == 1)" @click="updateJMstatus(row.item,0)"><i class="fa fa-clock"></i></button>
                             <button class="btn btn-success btn-sm" v-if="(row.item.jm_status == 0)" @click="updateJMstatus(row.item,1)"><i class="fa fa-check-circle"></i></button>
-                            <button class="btn btn-danger btn-sm" v-if="(row.item.jm_status != 2)" @click="updateJMstatus(row.item,2)"><i class="fa fa-times"></i></button>
+                            <button class="btn btn-danger btn-sm" v-if="(row.item.jm_status != 2)" @click="rejectJM(row.item.jm_kode)"><i class="fa fa-times"></i></button>
                         </div>
                         <div class="btn-group"> 
                             <button class="btn btn-success btn-sm" @click="viewJM(row.item.jm_kode)" v-if="row.item.jm_status == 1 || authenticated.role==0"><i class="fa fa-eye"></i></button>
@@ -111,12 +135,11 @@ export default {
             
             fields: [
                 { key: 'user_id', label: 'Guru', sortable: true },
-                { key: 'jm_tanggal', label: 'Tanggal', sortable: true },
                 { key: 'kelas_id', label: 'Kelas', sortable: true },
-                { key: 'jm_jampel', label: 'Jam' },
                 { key: 'kompetensi_id', label: 'KD' },
                 { key: 'jm_materi', label: 'Materi' },
-                { key: 'jm_status', label: 'Status', sortable: true },
+                { key: 'jm_keterangan', label: 'Catatan'},
+                { key: 'jm_detail', label: 'Presensi / Pelanggaran' },
                 { key: 'actions', label: 'Aksi' }
             ],
             status_options: [
@@ -168,6 +191,12 @@ export default {
     },
     methods: {
         ...mapActions('jurnal', ['editJurnal','updateJurnal','getJurnal', 'removeJurnal','checkJurnal','updateStatus']),
+        rejectJM(kode){
+            this.editJurnal({
+                kode: kode
+            }),
+            this.$bvModal.show('reject-modal')
+        },
         approveJurnal(id){
             this.checkJurnal(id)
         },
@@ -176,6 +205,7 @@ export default {
                 jurnal: jurnal,
                 status: status
             }),
+            this.$bvModal.hide('reject-modal'),
             this.getJurnal({
                 search: this.search,
                 status: this.status

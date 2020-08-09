@@ -11,7 +11,14 @@ import 'sweetalert2/dist/sweetalert2.min.css'
 import Permissions from './mixins/Permission.js'
 Vue.mixin(Permissions)
 import { mapActions, mapGetters } from 'vuex'
+Vue.use(require('vue-moment'))
+import moment from 'moment'
 
+Vue.filter('formatDate', function(value) {
+    if (value) {
+      return moment(String(value)).format('D MMMM YYYY')
+    }
+  });
 
 new Vue({
     el: '#dw',

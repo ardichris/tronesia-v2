@@ -37,4 +37,9 @@ class Jurnal extends Model
     {
         return $this->hasMany(DetailJurnal::class);
     }
+
+    public function pelanggaran()
+    {
+        return $this->hasMany(Pelanggaran::class);
+    }
 }

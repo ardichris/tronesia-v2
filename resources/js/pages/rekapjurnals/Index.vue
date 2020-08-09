@@ -5,30 +5,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-12">
-                            <center><h1>Tugas Siswa</h1></center>
-                            <div class="col-sm-4">
-                                <label for="">Kelas</label>
-                                <v-select :options="kelass.data"
-                                    v-model="rekapjurnal.kelas"
-                                    @search="onSearchh"
-                                    :value="$store.myValue"
-                                    label="kelas_nama"
-                                    placeholder="Masukkan Kata Kunci" 
-                                    :disabled="$route.name == 'jurnal.view'"
-                                    :filterable="false">
-                                    <template slot="no-options">
-                                        Masukkan Kata Kunci
-                                    </template>
-                                    <template slot="option" slot-scope="option">
-                                        {{ option.kelas_nama }}
-                                    </template>
-                                </v-select>
-                            </div>
-                            <div class="col-sm-4">
-                                <label for="">Tanggal</label>
-                                <input type="date" class="form-control" v-model="rekapjurnal.tanggal" :readonly="$route.name == 'jurnal.view'">
-                            </div>
-                            
+                            <center><h1>Rekap Jurnal Mengajar</h1></center>                           
                         </div>
                     </div>
                 </div>

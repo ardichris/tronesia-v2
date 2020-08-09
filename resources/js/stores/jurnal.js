@@ -20,7 +20,8 @@ const state = () => ({
         jm_catatan: null,
         jm_keterangan: '',
         jm_status: '',
-        detail: []
+        detail: [],
+        pelanggaran: [],
     },
     page: 1 
 })
@@ -55,6 +56,7 @@ const mutations = {
             jm_materi: payload.jm_materi,
             user_id: payload.user,
             detail: payload.detail,
+            pelanggaran: payload.pelanggaran,
             jm_status: payload.jm_status,
             jm_keterangan: payload.jm_keterangan,
             jm_catatan: payload.jm_catatan
@@ -72,7 +74,9 @@ const mutations = {
             user_id: '',
             jm_status: '',
             jm_keterangan: '',
-            detail: []
+            jm_catatan: null,
+            detail: [],
+            pelanggaran: [],
         }
     }
 }
@@ -174,7 +178,6 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.put(`/jurnal/${kode}`, state.jurnal)
             .then((response) => {
-                console.log(state.jurnal)
                 commit('CLEAR_FORM')
                 resolve(response.data)
             })
@@ -202,6 +205,9 @@ const actions = {
         let status = payload.status
         return new Promise((resolve, reject) => {
             $axios.put(`/jurnal/changestatus/${kode}`, payload)
+            .then((response) => {
+                resolve(response.data)
+            })
         })
     },
     removeJurnal({ dispatch },payload) {

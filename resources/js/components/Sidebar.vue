@@ -29,7 +29,7 @@
             <!-- Add icons to the links using the .nav-icon class
                 with font-awesome or any other icon font library -->
                 <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==4">
-                    <a class="nav-link active">
+                    <a class="nav-link">
                     <i class="nav-icon fas fa-database"></i>
                     <p>
                         Master
@@ -38,37 +38,37 @@
                     </a>
                     <ul class="nav nav-treeview">
                     <li class="nav-item" v-if="authenticated.role==0">
-                        <a class="nav-link">
+                        <a class="nav-link ml-3">
                         <i class="fas fa-users nav-icon"></i>
                         <p><router-link :to="{ name: 'siswas.data' }">Master Siswa</router-link></p>
                         </a>
                     </li>
                     <li class="nav-item" v-if="authenticated.role==0">
-                        <a class="nav-link">
+                        <a class="nav-link ml-3">
                         <i class="fas fa-chalkboard-teacher nav-icon"></i>
                         <p><router-link :to="{ name: 'teachers.data' }">Master Guru</router-link></p>
                         </a>
                     </li>
                     <li class="nav-item" v-if="authenticated.role==0">
-                        <a class="nav-link">
+                        <a class="nav-link ml-3">
                         <i class="fas fa-book nav-icon"></i>
                         <p><router-link :to="{ name: 'mapel.data' }">Master Mapel</router-link></p>
                         </a>
                     </li>
                     <li class="nav-item" v-if="authenticated.role==0">
-                        <a class="nav-link">
+                        <a class="nav-link ml-3">
                         <i class="fas fa-address-card nav-icon"></i>
                         <p><router-link :to="{ name: 'kelas.data' }">Master Kelas</router-link></p>
                         </a>
                     </li>
                     <li class="nav-item" v-if="authenticated.role==0">
-                        <a class="nav-link">
+                        <a class="nav-link ml-3">
                         <i class="fas fa-running nav-icon"></i>
                         <p><router-link :to="{ name: 'kompetensi.data' }">Master Kompetensi</router-link></p>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link">
+                        <a class="nav-link ml-3">
                         <i class="fas fa-dolly nav-icon"></i>
                         <p><router-link :to="{ name: 'barang.data' }">Master Barang</router-link></p>
                         </a>
@@ -76,7 +76,7 @@
                     </ul>
                 </li>
                 <li class="nav-item has-treeview">
-                    <a class="nav-link active">
+                    <a class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                             <p>
                                 Kesiswaan
@@ -85,18 +85,24 @@
                     </a>
                     <ul class="nav nav-treeview" >
                         <li class="nav-item">
-                            <a class="nav-link" v-if="authenticated.role!=2">
+                            <a class="nav-link ml-3" v-if="authenticated.role!=2">
                                 <i class="fas fa-user-injured nav-icon"></i>
                                 <p><router-link :to="{ name: 'absensi.data' }">Absensi</router-link></p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link">
+                            <a class="nav-link ml-3">
+                                <i class="fas fa-search-minus nav-icon"></i>
+                                <p><router-link :to="{ name: 'presensi.data' }">Presensi</router-link></p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link ml-3">
                                 <i class="fas fa-exclamation-triangle nav-icon"></i>
                                 <p><router-link :to="{ name: 'pelanggarans.data' }">Pelanggaran</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item ml-3">
                             <a class="nav-link">
                                 <i class="fas fa-ticket-alt nav-icon"></i>
                                 <p><router-link :to="{ name: 'kitirsiswa.data' }">Kitir Siswa</router-link></p>
@@ -104,8 +110,32 @@
                         </li>
                     </ul>
                 </li>
+                
+                <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==2 || authenticated.role==1">
+                    <a class="nav-link">
+                        <i class="nav-icon fas fa-book-reader"></i>
+                            <p>
+                                Kurikulum
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item ml-3">
+                            <a class="nav-link">
+                                <i class="fas fa-tasks nav-icon"></i>
+                                <p><router-link :to="{ name: 'jurnal.data' }">Jurnal Mengajar</router-link></p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link ml-3">
+                                <i class="fas fa-tasks nav-icon"></i>
+                                <p><router-link :to="{ name: 'rekapjurnal.data' }">Rekap Jurnal</router-link></p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item has-treeview">
-                    <a class="nav-link active">
+                    <a class="nav-link">
                         <i class="nav-icon fas fa-building"></i>
                             <p>
                                 Sarpras
@@ -113,57 +143,34 @@
                             </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item ml-3">
                             <a class="nav-link">
                                 <i class="fas fa-bullhorn nav-icon"></i>
                                 <p><router-link :to="{ name: 'laporsarpras.data' }">Lapor</router-link></p>
                             </a>
                         </li>
                         <li class="nav-item" v-if="authenticated.role==0 || authenticated.role==4">
-                            <a class="nav-link">
+                            <a class="nav-link ml-3">
                                 <i class="fas fa-house-damage nav-icon"></i>
                                 <p><router-link :to="{ name: 'pelanggarans.data' }">Kerusakan</router-link></p>
                             </a>
                         </li>
                         <li class="nav-item" v-if="authenticated.role==0 || authenticated.role==4">
-                            <a class="nav-link">
+                            <a class="nav-link ml-3">
                                 <i class="fas fa-sign-in-alt nav-icon"></i>
                                 <p><router-link :to="{ name: 'barangmasuk.data' }">Barang Masuk</router-link></p>
                             </a>
                         </li>
                         <li class="nav-item" v-if="authenticated.role==0 || authenticated.role==4">
-                            <a class="nav-link">
+                            <a class="nav-link ml-3">
                                 <i class="fas fa-toilet-paper nav-icon"></i>
                                 <p><router-link :to="{ name: 'pemakaianbarang.data' }">Permintaan Barang</router-link></p>
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==2 || authenticated.role==1">
-                    <a class="nav-link active">
-                        <i class="nav-icon fas fa-book-reader"></i>
-                            <p>
-                                Kurikulum
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                    </a>
-                    <ul class="nav nav-treeview" >
-                        <li class="nav-item">
-                            <a class="nav-link">
-                                <i class="fas fa-tasks nav-icon"></i>
-                                <p><router-link :to="{ name: 'jurnal.data' }">Jurnal Mengajar</router-link></p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link">
-                                <i class="fas fa-tasks nav-icon"></i>
-                                <p><router-link :to="{ name: 'rekapjurnal.data' }">Rekap Jurnal</router-link></p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
                 <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==4">
-                    <a class="nav-link active">
+                    <a class="nav-link">
                         <i class="nav-icon fas fa-mail-bulk"></i>
                             <p>
                                 Tata Usaha
@@ -171,7 +178,7 @@
                             </p>
                     </a>
                     <ul class="nav nav-treeview" >
-                        <li class="nav-item">
+                        <li class="nav-item ml-3">
                             <a class="nav-link">
                                 <i class="fas fa-tshirt nav-icon"></i>
                                 <p><router-link :to="{ name: 'seragam.data' }">Seragam</router-link></p>
@@ -180,7 +187,7 @@
                     </ul>
                 </li>
                 <li class="nav-item has-treeview" v-if="authenticated.role==0">
-                    <a class="nav-link active">
+                    <a class="nav-link">
                         <i class="nav-icon fas fa-cog"></i>
                             <p>
                                 Setting
@@ -188,7 +195,7 @@
                             </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        <li class="nav-item ml-3">
                             <a class="nav-link">
                                 <i class="fas fa-users-cog"></i>
                                 <p><router-link :to="{ name: 'role.permissions' }">Role Permissions</router-link></p>

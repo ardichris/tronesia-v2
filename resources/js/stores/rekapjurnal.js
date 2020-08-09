@@ -3,8 +3,8 @@ import $axios from '../api.js'
 const state = () => ({
     jurnals: [],
     jurnal: {
-        kelas: '',
-        tanggal: ''
+        tanggalmulai: '',
+        tanggalakhir: ''
     },
     kelas: []
 })
@@ -21,16 +21,8 @@ const mutations = {
     },
     ASSIGN_FORM(state, payload) {
         state.jurnal = {
-            jm_kode: payload.jm_kode,
-            mapel_id: payload.mapel,
-            jm_tanggal: payload.jm_tanggal,
-            jm_jampel: payload.jm_jampel,
-            kelas_id: payload.kelas,
-            kompetensi_id: payload.kompetensi,
-            jm_materi: payload.jm_materi,
-            user_id: payload.user,
-            detail: payload.detail,
-            jm_catatan: payload.jm_catatan,
+            tanggalmulai: payload.tanggalmulai,
+            tanggalakhir: payload.tanggalakhir
         }
     },
     CLEAR_FORM(state) {
@@ -42,27 +34,17 @@ const mutations = {
 }
 
 const actions = {
-    getJurnal({ commit, state }) {
+    getJurnal({commit, state }) {
         return new Promise((resolve, reject) => {
-            $axios.get(`/jurnal/rekap?kls=${state.jurnal.kelas.id}&tgl=${state.jurnal.tanggal}`, state.jurnal)
+            //$axios.get(`/jurnal/rekap`, state.jurnal)
+            $axios.get(`/jurnal/rekap?start=${state.jurnal.tanggalmulai}&finish=${state.jurnal.tanggalakhir}`, state.jurnal)
             .then((response) => {
+                console.log(response.data)
                 commit('ASSIGN_DATA', response.data)
                 resolve(response.data)
             })
         })
-    },
-    getKelas({ commit, state }, payload) {
-        let search = payload.search
-        payload.loading(true)
-        return new Promise((resolve, reject) => {
-            $axios.get(`/kelas?page=${state.page}&q=${search}`)
-            .then((response) => {
-                commit('KELAS_DATA', response.data)
-                payload.loading(false)
-                resolve(response.data)
-            })
-        })
-    },
+    }
 }
 
 export default {

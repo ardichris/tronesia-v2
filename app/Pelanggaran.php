@@ -17,4 +17,9 @@ class Pelanggaran extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function jurnal()
+    {
+        return $this->belongsTo(Jurnal::class);
+    }
 }

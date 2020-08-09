@@ -7,7 +7,8 @@ const state = () => ({
         ls_kategori: '',
         ls_sarpras: '',
         ls_tanggal: '',
-        ls_keterangan: ''
+        ls_keterangan: '',
+        ls_penanganan: ''
     },
     page: 1
 })
@@ -25,7 +26,8 @@ const mutations = {
             ls_kategori: payload.ls_kategori,
             ls_sarpras: payload.ls_sarpras,
             ls_tanggal: payload.ls_tanggal,
-            ls_keterangan: payload.ls_keterangan
+            ls_keterangan: payload.ls_keterangan,
+            ls_penanganan: payload.ls_penanganan
         }
     },
     CLEAR_FORM(state) {
@@ -34,7 +36,8 @@ const mutations = {
             ls_kategori: '',
             ls_sarpras: '',
             ls_tanggal: '',
-            ls_keterangan: ''
+            ls_keterangan: '',
+            ls_penanganan: ''
         }
     }
 }
@@ -56,6 +59,7 @@ const actions = {
         return new Promise((resolve, reject) => {            
             $axios.get(`/laporsarpras?page=${state.page}&q=${search}&k=${kategori}`)
             .then((response) => {
+                console.log(response.data)
                 commit('ASSIGN_DATA', response.data)
                 resolve(response.data)
             })
@@ -72,6 +76,7 @@ const actions = {
         })
     },
     submitLaporSarpras({ dispatch, commit, state }) {
+        console.log(state.laporsarpras)
         return new Promise((resolve, reject) => {
             $axios.post(`/laporsarpras`, state.laporsarpras)
             .then((response) => {
@@ -103,9 +108,6 @@ const actions = {
     removeLaporSarpras({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
             $axios.delete(`/laporsarpras/${payload}`)
-            .then((response) => {
-                dispatch('getLaporSarpras').then(() => resolve())
-            })
         })
     }
 }
