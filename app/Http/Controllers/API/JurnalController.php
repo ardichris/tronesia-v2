@@ -86,23 +86,27 @@ class JurnalController extends Controller
         $this->validate($request, [
             'jm_tanggal' => 'required',
             'jm_materi' => 'required|string',
+            'jm_keterangan' => 'required|string',
             'kelas_id' => 'required',
+            'jm_jampel' => 'required',
             //'mapel_id' => 'required'
         ]);
         
-        DB::enableQueryLog();
+        //DB::enableQueryLog();
         foreach ($request->jm_jampel as $rowJP) {
             $getJM = Jurnal::orderBy('id', 'DESC');
             $rowCount = $getJM->count();
             $lastId = $getJM->first();
             $konflik = 0;
-            if($request->mapel_id['id']!=23 && $request->mapel_id['id']!=24){
-                $cekkonflik = Jurnal::where([['jm_jampel', $rowJP],
-                                            ['kelas_id', $request->kelas_id['id']],
-                                            ['jm_tanggal', $request->jm_tanggal],
-                                            ['jm_status','!=',2]]);
-                $konflik = $cekkonflik->count();                         
-                $konflikwith = $cekkonflik->with('user')->first();
+            if($request->mapel_id!=null){
+                if($request->mapel_id['id']!=23 && $request->mapel_id['id']!=24){
+                    $cekkonflik = Jurnal::where([['jm_jampel', $rowJP],
+                                                ['kelas_id', $request->kelas_id['id']],
+                                                ['jm_tanggal', $request->jm_tanggal],
+                                                ['jm_status','!=',2]]);
+                    $konflik = $cekkonflik->count();                         
+                    $konflikwith = $cekkonflik->with('user')->first();
+                }
             }
             if($konflik!=0){
                 $catatan="Konflik dengan ".$konflikwith->user->name;
@@ -130,11 +134,11 @@ class JurnalController extends Controller
 
             $new_jurnal=Jurnal::create([
                             'jm_kode' => $kode,
-                            'mapel_id' => $request->mapel_id['id'],
+                            'mapel_id' => $request->mapel_id ? $request->mapel_id['id']:null,
                             'jm_tanggal' => $request->jm_tanggal,
                             'jm_jampel' => $rowJP,
                             'kelas_id' => $request->kelas_id['id'],
-                            'kompetensi_id' => $request->kompetensi_id['id'],
+                            'kompetensi_id' => $request->kompetensi_id ? $request->kompetensi_id['id']:null,
                             'jm_materi' => $request->jm_materi,
                             'user_id' => $user->id,
                             'jm_status' => $konflik != 0 ? 2:0,
@@ -218,7 +222,7 @@ class JurnalController extends Controller
             'jm_tanggal' => 'required',
             'jm_materi' => 'required|string',
             'kelas_id' => 'required',
-            'mapel_id' => 'required'
+            //'mapel_id' => 'required'
         ]);
         
         $jurnal = Jurnal::whereJm_kode($id)->first();

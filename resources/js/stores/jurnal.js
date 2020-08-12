@@ -146,6 +146,7 @@ const actions = {
             $axios.post(`/jurnal`, state.jurnal)
             .then((response) => {
                 commit('CLEAR_FORM')
+                console.log(response.data)
                 resolve(response.data)
         })
             .catch((error) => {
