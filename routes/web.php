@@ -13,4 +13,5 @@
 Route::get('/', function () {
     return view('welcome');
 });*/
+Route::get('/laporan/cetak_pdf', 'API\JurnalController@rekapJurnalPDF');
 Route::get('/{any}', 'FrontController@index')->where('any', '.*');

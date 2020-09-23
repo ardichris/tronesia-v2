@@ -18,24 +18,27 @@ class JurnalController extends Controller
         $user = $request->user();
         $mulai = date($request->start);
         $akhir = date($request->finish);
-        $listjurnal = Jurnal::with(['mapel','kelas','kompetensi'])
-                    ->whereBetween('jm_tanggal', [$mulai, $akhir])
+        $jurnals = Jurnal::with(['mapel','kelas','kompetensi'])
+                    //->whereBetween('jm_tanggal', [$mulai, $akhir])
                     ->where('jm_status','=',1)
                     ->orderBy('jm_tanggal', 'ASC')
-                    ->orderBy('jm_jampel', 'ASC');
-        $listjurnal = $jurnals->where('user_id',$user->id);
+                    ->orderBy('jm_jampel', 'ASC')
+                    ->where('user_id',27)
+                    ->get();
 
-        $jurnals['start'] = $mulai;
+        //$listjurnal = $listjurnal->where('user_id',$user->id);
+
+        /*$jurnals['start'] = $mulai;
         $jurnals['end'] = $akhir;
         $jurnals['guru'] = $user->name;
-        $jurnals['list'] = $listjurnal;
+        $jurnals['list'] = $listjurnal;*/
 
         
         //GET DATA BERDASARKAN ID
         //$invoice = Invoice::with(['customer', 'detail', 'detail.product'])->find($id);
         //LOAD PDF YANG MERUJUK KE VIEW PRINT.BLADE.PHP DENGAN MENGIRIMKAN DATA DARI INVOICE
         //KEMUDIAN MENGGUNAKAN PENGATURAN LANDSCAPE A4
-        $pdf = PDF::loadView('rekapJurnal.print', compact('jurnals'))->setPaper('a4', 'landscape');
+        $pdf = PDF::loadView('print', compact('jurnals'))->setPaper('a4', 'landscape');
         return $pdf->stream();
     }
     

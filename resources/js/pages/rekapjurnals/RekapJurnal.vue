@@ -54,6 +54,7 @@
                         Yurui, S.Pd., M.M.
                     </b-col>
                 </b-row>
+                <b-button variant="success"  href="/laporan/cetak_pdf">Cetak PDF</b-button>
             </div>
         </div>
     </div>

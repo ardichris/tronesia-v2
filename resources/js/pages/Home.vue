@@ -82,137 +82,239 @@
         <!-- /.row -->
       </div><!--/. container-fluid -->
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-9">
           <div class="card">
-            <div class="card-header border-transparent">
-              <h3 class="card-title">Siswa Absen Hari Ini</h3>
-
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-bullhorn mr-1"></i>
+                Pengumuman
+              </h3>
               <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#absensi">
-                  <i class="fas fa-plus"></i>
-                </button>
               </div>
-            </div>
-            <!-- /.card-header -->
-            <div id="absensi" class="card-body p-0 collapse">
-              <div class="table-responsive">
-                <b-table striped hover :items="statistiks.data.absensitoday" :fields="fieldsabsensi" show-empty>                	
-                    <template v-slot:cell(siswa_id)="row">
-                        {{row.item.siswa.siswa_nama}} / <b>{{row.item.siswa.siswa_kelas}}</b>
-                    </template>
-                    <template v-slot:cell(absensi_jenis)="row">
-                        <span class="badge badge-danger" v-if="row.item.absensi_jenis == 'Sakit'">Sakit</span>
-                        <span class="badge badge-success" v-if="row.item.absensi_jenis == 'Ijin'">Ijin</span>
-                        <span class="badge badge-warning" v-if="row.item.absensi_jenis == 'Alpha'">Alpha</span>
-                    </template>
-                </b-table>
-              </div>
-              <!-- /.table-responsive -->
-            </div>
-            <!-- /.card-body -->
-          </div>
-            <!-- /.card -->
-        </div>
-        <div class="col-md-3">
-          <div class="card">
-            <div class="card-header border-transparent">
-              <h3 class="card-title">Pelanggaran Siswa Hari Ini</h3>
+            </div><!-- /.card-header -->
+            <div class="card-body">
+              <!-- The time line -->
+              <div class="timeline">
+                <!-- timeline time label -->
+                <div class="time-label">
+                  <span class="bg-green">Pengumuman Terakhir</span>
+                </div>
+                <!-- /.timeline-label -->
+                <!-- timeline item -->
+                <div>
+                  <i class="fas fa-envelope bg-blue"></i>
+                  <div class="timeline-item">
+                    <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                    <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
 
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#pelanggaran">
-                  <i class="fas fa-plus"></i>
-                </button>
-              </div>
-            </div>
-            <!-- /.card-header -->
-            <div id="pelanggaran" class="card-body p-0 collapse">
-              <div class="table-responsive">
-                <b-table striped hover :items="statistiks.data.pelanggarantoday" :fields="fields" show-empty>                	
-                    <template v-slot:cell(siswa_id)="row">
-                        {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
-                    </template>
-                    <template v-slot:cell(pelanggaran_jenis)="row">
-                        <span class="badge badge-danger" v-if="row.item.pelanggaran_jenis == 'Berkelahi'">Berkelahi</span>
-                        <span class="badge badge-success" v-else-if="row.item.pelanggaran_jenis == 'Terlambat'">Terlambat</span>
-                        <span class="badge badge-warning" v-else>{{row.item.pelanggaran_jenis}}</span>
-                    </template>
-                </b-table>
-              </div>
-              <!-- /.table-responsive -->
-            </div>
-            <!-- /.card-body -->
-          </div>
-            <!-- /.card -->
-        </div>
-        <div class="col-md-3">
-          <div class="card">
-            <div class="card-header border-transparent">
-              <h3 class="card-title">Jurnal Mengajar Hari Ini</h3>
+                    <div class="timeline-body">
+                      Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                      weebly ning heekya handango imeem plugg dopplr jibjab, movity
+                      jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
+                      quora plaxo ideeli hulu weebly balihoo...
+                    </div>
+                    <div class="timeline-footer">
+                      <a class="btn btn-primary btn-sm">Read more</a>
+                      <a class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- END timeline item -->
+                <!-- timeline item -->
+                <div>
+                  <i class="fas fa-user bg-green"></i>
+                  <div class="timeline-item">
+                    <span class="time"><i class="fas fa-clock"></i> 5 mins ago</span>
+                    <h3 class="timeline-header no-border"><a href="#">Sarah Young</a> accepted your friend request</h3>
+                  </div>
+                </div>
+                <!-- END timeline item -->
+                <!-- timeline item -->
+                <div>
+                  <i class="fas fa-comments bg-yellow"></i>
+                  <div class="timeline-item">
+                    <span class="time"><i class="fas fa-clock"></i> 27 mins ago</span>
+                    <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+                    <div class="timeline-body">
+                      Take me to your leader!
+                      Switzerland is small and neutral!
+                      We are more like Germany, ambitious and misunderstood!
+                    </div>
+                    <div class="timeline-footer">
+                      <a class="btn btn-warning btn-sm">View comment</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- END timeline item -->
+                <!-- timeline time label -->
+                <div class="time-label">
+                  <span class="bg-green">3 Jan. 2014</span>
+                </div>
+                <!-- /.timeline-label -->
+                <!-- timeline item -->
+                <div>
+                  <i class="fa fa-camera bg-purple"></i>
+                  <div class="timeline-item">
+                    <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>
+                    <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
+                    <div class="timeline-body">
+                      <img src="http://placehold.it/150x100" alt="...">
+                      <img src="http://placehold.it/150x100" alt="...">
+                      <img src="http://placehold.it/150x100" alt="...">
+                      <img src="http://placehold.it/150x100" alt="...">
+                      <img src="http://placehold.it/150x100" alt="...">
+                    </div>
+                  </div>
+                </div>
+                <!-- END timeline item -->
+                <!-- timeline item -->
+                <div>
+                  <i class="fas fa-video bg-maroon"></i>
 
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#jurnal">
-                  <i class="fas fa-plus"></i>
-                </button>
-              </div>
-            </div>
-            <!-- /.card-header --> 
-            <div id="jurnal" class="card-body p-0 collapse">
-              <div class="table-responsive ">
-                <b-table striped hover :items="statistiks.data.jurnaltoday.data" :fields="fieldsjurnal" show-empty>                	
-                    <template v-slot:cell(kelas_id)="row">
-                        {{ row.item.kelas_id ? row.item.kelas.kelas_nama:'-' }}
-                    </template>
-                    <template v-slot:cell(jm_status)="row">
-                        <span class="badge badge-success" v-if="row.item.jm_status == 1">Approved</span>
-                        <span class="badge badge-danger" v-else-if="row.item.jm_status == 2">Reject</span>
-                        <span class="badge badge-warning" v-else-if="row.item.jm_status == 0">Waiting</span>
-                    </template>
-                </b-table> 
-                  <span class="float-right">
-                      <b-pagination
-                          v-model="page"
-                          :total-rows="statistiks.data.jurnaltoday.total"
-                          :per-page="statistiks.data.jurnaltoday.per_page"
-                          aria-controls="jurnals"
-                          v-if="statistiks.data.jurnaltoday && statistiks.data.jurnaltoday.data.length > 0"
-                          ></b-pagination>
-                  </span>              
-              </div>
-              
-              
-              <!-- /.table-responsive -->
-            </div>
-            <!-- /.card-body -->
-          </div>
-            <!-- /.card -->
-        </div>
-        <div class="col-md-3">
-          <div class="card">
-            <div class="card-header border-transparent">
-              <h3 class="card-title">Daftar Kerusakan Sarpras</h3>
+                  <div class="timeline-item">
+                    <span class="time"><i class="fas fa-clock"></i> 5 days ago</span>
 
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#kerusakan">
-                  <i class="fas fa-plus"></i>
-                </button>
+                    <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
+
+                    <div class="timeline-body">
+                      <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/tMWkeBIohBs" frameborder="0" allowfullscreen=""></iframe>
+                      </div>
+                    </div>
+                    <div class="timeline-footer">
+                      <a href="#" class="btn btn-sm bg-maroon">See comments</a>
+                    </div>
+                  </div>
+                </div>
+                <!-- END timeline item -->
+                <div>
+                  <i class="fas fa-clock bg-gray"></i>
+                </div>
+              </div>
               </div>
             </div>
-            <!-- /.card-header -->
-            <div id="kerusakan" class="card-body p-0 collapse">
-              <div class="table-responsive">
-                <b-table striped hover :items="statistiks.data.kerusakanDetail" :fields="fieldskerusakan" show-empty>
-                    <template v-slot:cell(ls_status)="row">
-                        <span class="badge badge-info" v-if="row.item.ls_status == 1">Proses</span>
-                        <span class="badge badge-warning" v-else-if="row.item.ls_status == 0">Tunggu</span>
-                    </template>
-                </b-table>
-              </div>
-              <!-- /.table-responsive -->
-            </div>
-            <!-- /.card-body -->
           </div>
-            <!-- /.card -->
-        </div>
+          <div class="col-md-3">
+            <div class="card">
+              <div class="card-header border-transparent">
+                <h3 class="card-title">Siswa Absen Hari Ini</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#absensi">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div id="absensi" class="card-body p-0 collapse">
+                <div class="table-responsive">
+                  <b-table striped hover :items="statistiks.data.absensitoday" :fields="fieldsabsensi" show-empty>                	
+                      <template v-slot:cell(siswa_id)="row">
+                          {{row.item.siswa.siswa_nama}} / <b>{{row.item.siswa.siswa_kelas}}</b>
+                      </template>
+                      <template v-slot:cell(absensi_jenis)="row">
+                          <span class="badge badge-danger" v-if="row.item.absensi_jenis == 'Sakit'">Sakit</span>
+                          <span class="badge badge-success" v-if="row.item.absensi_jenis == 'Ijin'">Ijin</span>
+                          <span class="badge badge-warning" v-if="row.item.absensi_jenis == 'Alpha'">Alpha</span>
+                      </template>
+                  </b-table>
+                </div>
+                <!-- /.table-responsive -->
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <div class="card">
+              <div class="card-header border-transparent">
+                <h3 class="card-title">Pelanggaran Siswa Hari Ini</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#pelanggaran">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div id="pelanggaran" class="card-body p-0 collapse">
+                <div class="table-responsive">
+                  <b-table striped hover :items="statistiks.data.pelanggarantoday" :fields="fields" show-empty>                	
+                      <template v-slot:cell(siswa_id)="row">
+                          {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
+                      </template>
+                      <template v-slot:cell(pelanggaran_jenis)="row">
+                          <span class="badge badge-danger" v-if="row.item.pelanggaran_jenis == 'Berkelahi'">Berkelahi</span>
+                          <span class="badge badge-success" v-else-if="row.item.pelanggaran_jenis == 'Terlambat'">Terlambat</span>
+                          <span class="badge badge-warning" v-else>{{row.item.pelanggaran_jenis}}</span>
+                      </template>
+                  </b-table>
+                </div>
+                <!-- /.table-responsive -->
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <div class="card">
+              <div class="card-header border-transparent">
+                <h3 class="card-title">Daftar Kerusakan Sarpras</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#kerusakan">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div id="kerusakan" class="card-body p-0 collapse">
+                <div class="table-responsive">
+                  <b-table striped hover :items="statistiks.data.kerusakanDetail" :fields="fieldskerusakan" show-empty>
+                      <template v-slot:cell(ls_status)="row">
+                          <span class="badge badge-info" v-if="row.item.ls_status == 1">Proses</span>
+                          <span class="badge badge-warning" v-else-if="row.item.ls_status == 0">Tunggu</span>
+                      </template>
+                  </b-table>
+                </div>
+                <!-- /.table-responsive -->
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <div class="card">
+              <div class="card-header border-transparent">
+                <h3 class="card-title">Jurnal Mengajar Hari Ini</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-toggle="collapse" data-target="#jurnal">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- /.card-header --> 
+              <div id="jurnal" class="card-body p-0 collapse">
+                <div class="table-responsive ">
+                  <b-table striped hover :items="statistiks.data.jurnaltoday.data" :fields="fieldsjurnal" show-empty>                	
+                      <template v-slot:cell(kelas_id)="row">
+                          {{ row.item.kelas_id ? row.item.kelas.kelas_nama:'-' }}
+                      </template>
+                      <template v-slot:cell(jm_status)="row">
+                          <span class="badge badge-success" v-if="row.item.jm_status == 1">Approved</span>
+                          <span class="badge badge-danger" v-else-if="row.item.jm_status == 2">Reject</span>
+                          <span class="badge badge-warning" v-else-if="row.item.jm_status == 0">Waiting</span>
+                      </template>
+                  </b-table> 
+                    <span class="float-right">
+                        <b-pagination
+                            v-model="page"
+                            :total-rows="statistiks.data.jurnaltoday.total"
+                            :per-page="statistiks.data.jurnaltoday.per_page"
+                            aria-controls="jurnals"
+                            v-if="statistiks.data.jurnaltoday && statistiks.data.jurnaltoday.data.length > 0"
+                            ></b-pagination>
+                    </span>              
+                </div>
+                
+                
+                <!-- /.table-responsive -->
+              </div>
+              <!-- /.card-body -->
+            </div>
+          </div>
       </div>
     </section>
     <!-- /.content -->

@@ -11,31 +11,32 @@
             font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
             color:#333;
             text-align:left;
-            font-size:18px;
+            font-size:10px;
             margin:0;
         }
         .container{
             margin:0 auto;
-            margin-top:35px;
-            padding:40px;
-            width:750px;
+            margin-top:5px;
+            padding:10px;
+            width:auto;
             height:auto;
             background-color:#fff;
         }
         caption{
-            font-size:28px;
+            font-size:18px;
+            margin-top:15px;
             margin-bottom:15px;
         }
         table{
             border:1px solid #333;
             border-collapse:collapse;
             margin:0 auto;
-            width:740px;
+            width: 100%;
         }
         td, tr, th{
             padding:12px;
             border:1px solid #333;
-            width:185px;
+            width:auto;
         }
         th{
             background-color: #f0f0f0;
@@ -48,9 +49,9 @@
 <body>
     <div class="container">
         <center><h1>Laporan Jurnal Mengajar</h1></center>
-        Nama Guru : <strong>{{$jurnals->guru}}</strong><br>
+        {{--Nama Guru : <strong>{{$jurnals->guru}}</strong><br>
         Tanggal :  <strong>{{$jurnals->start}}</strong>
-                 s/d  <strong>{{$jurnals->end}}</strong><br>
+                 s/d  <strong>{{$jurnals->end}}</strong><br>--}}
         <table>
             <thead>
             </thead>
@@ -63,12 +64,12 @@
                     <th>Materi</th>
                     <th>Catatan</th>
                 </tr>
-                @foreach ($jurnals->list as $row)
+                @foreach ($jurnals as $row)
                 <tr>
                     <td>{{ $row->jm_tanggal }}</td>
                     <td>{{ $row->jm_jampel }}</td>
                     <td>{{ $row->kelas->kelas_nama }}</td>
-                    <td>{{ $row->kompetensi->kd_kode }}</td>
+                    <td>{{ $row->kompetensi ? $row->kompetensi->kd_kode:'-' }}</td>
                     <td>{{ $row->jm_materi }}</td>
                     <td>{{ $row->jm_keterangan }}</td>
                 </tr>
@@ -77,7 +78,9 @@
             <tfoot>
             </tfoot>
         </table>
-        Surabaya, {{new Date() | formatDate}}
+        <br>
+        <br>
+        Surabaya, {{--new Date() | formatDate--}}
         <br>
         <br>
         <br>
