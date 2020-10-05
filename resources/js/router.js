@@ -32,6 +32,11 @@ import DataPelanggaran from './pages/pelanggarans/Pelanggaran.vue'
 import AddPelanggaran from './pages/pelanggarans/Add.vue'
 import EditPelanggaran from './pages/pelanggarans/Edit.vue'
 import ViewPelanggaran from './pages/pelanggarans/View.vue'
+import IndexMasterPelanggaran from './pages/masterpelanggarans/Index.vue'
+import DataMasterPelanggaran from './pages/masterpelanggarans/MasterPelanggaran.vue'
+import AddMasterPelanggaran from './pages/masterpelanggarans/Add.vue'
+import EditMasterPelanggaran from './pages/masterpelanggarans/Edit.vue'
+import ViewMasterPelanggaran from './pages/masterpelanggarans/View.vue'
 import IndexAbsensi from './pages/absensis/Index.vue'
 import DataAbsensi from './pages/absensis/Absensi.vue'
 import AddAbsensi from './pages/absensis/Add.vue'
@@ -340,6 +345,37 @@ const router = new Router({
                     path: 'view/:id',
                     name: 'pelanggarans.view',
                     component: ViewPelanggaran,
+                    meta: { title: 'Lihat Pelanggaran' }
+                },
+            ]
+        },
+        {
+            path: '/masterpelanggarans',
+            component: IndexMasterPelanggaran,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'masterpelanggarans.data',
+                    component: DataMasterPelanggaran,
+                    meta: { title: 'Daftar Pelanggaran' }
+                },
+                {
+                    path: 'add',
+                    name: 'masterpelanggarans.add',
+                    component: AddMasterPelanggaran,
+                    meta: { title: 'Tambah Pelanggaran' }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'masterpelanggarans.edit',
+                    component: EditMasterPelanggaran,
+                    meta: { title: 'Ganti Pelanggaran' }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'masterpelanggarans.view',
+                    component: ViewMasterPelanggaran,
                     meta: { title: 'Lihat Pelanggaran' }
                 },
             ]

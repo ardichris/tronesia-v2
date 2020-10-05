@@ -22,4 +22,9 @@ class Pelanggaran extends Model
     {
         return $this->belongsTo(Jurnal::class);
     }
+
+    public function masterpelanggaran()
+    {
+        return $this->belongsTo(MasterPelanggaran::class, 'mp_id', 'id');
+    }
 }

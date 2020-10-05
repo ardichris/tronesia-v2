@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">Edit Teacher</h3>
+                <h3 class="panel-title">Edit Account</h3>
             </div>
             <div class="panel-body">
                 <teacher-form ref="formTeacher"></teacher-form>

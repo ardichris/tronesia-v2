@@ -7,6 +7,7 @@ import home from './stores/home.js'
 import siswa from './stores/siswa.js'
 import teacher from './stores/teacher.js'
 import pelanggaran from './stores/pelanggaran.js'
+import masterpelanggaran from './stores/masterpelanggaran.js'
 import absensi from './stores/absensi.js'
 import mapel from './stores/mapel.js'
 import kelas from './stores/kelas.js'
@@ -33,6 +34,7 @@ const store = new Vuex.Store({
         siswa,
         teacher,
         pelanggaran,
+        masterpelanggaran,
         absensi,
         mapel,
         kelas,

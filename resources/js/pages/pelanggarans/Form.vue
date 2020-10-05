@@ -24,7 +24,25 @@
             <!--b-form-datepicker id="pelanggaran-datepicker" v-model="pelanggaran.pelanggaran_tanggal" class="mb-2"></b-form-datepicker-->
             <p class="text-danger" v-if="errors.pelanggaran_tanggal">Tanggal belum diisi</p>
         </div>
-        <div class="form-group" :class="{ 'has-error': errors.pelanggaran_jenis }">
+        <div class="form-group" :class="{ 'has-error': errors.mp_id }">
+            <label for="">Pelanggaran yang dilakukan</label>
+            <v-select :options="MPs.data"
+                v-model="pelanggaran.mp_id"
+                @search="onSearchMP"
+                label="mp_pelanggaran"
+                placeholder="Masukkan Kata Kunci" 
+                :disabled="$route.name == 'pelanggarans.view'"
+                :filterable="false">
+                <template slot="no-options">
+                    Masukkan Kata Kunci
+                </template>
+                <template slot="option" slot-scope="option">
+                    {{ option.mp_pelanggaran }}
+                </template>
+            </v-select>
+            <p class="text-danger" v-if="errors.mp_id">Pelanggaran belum diisi</p>
+        </div>
+        <!--div class="form-group" :class="{ 'has-error': errors.pelanggaran_jenis }">
             <label for="">Jenis Pelanggaran</label>
             <v-select :options="['Terlambat', 'Escape', 'Atribut', 'Seragam', 'Sepatu', 'Kaos Kaki', 'Rambut', 'Berkelahi', 'Bermain Game', 'Mendengarkan Musik', 'Berkata Kotor']"
                         v-model="pelanggaran.pelanggaran_jenis"
@@ -33,7 +51,7 @@
                         >
             </v-select>
             <p class="text-danger" v-if="errors.pelanggaran_jenis">Pelanggaran belum dipilih</p>
-        </div>
+        </div-->
         <div class="form-group" :class="{ 'has-error': errors.pelanggaran_keterangan }">
             <label for="">Keterangan</label>
             <input type="text" class="form-control" v-model="pelanggaran.pelanggaran_keterangan" :readonly="$route.name == 'pelanggarans.view'">
@@ -52,14 +70,22 @@ export default {
         ...mapState(['errors']),
         ...mapState('pelanggaran', {
             siswas: state => state.siswas,
+            MPs: state => state.MPs,
             pelanggaran: state => state.pelanggaran
         })
+        
     },
     methods: {
-        ...mapActions('pelanggaran', ['getSiswas', 'editPelanggaran']),
+        ...mapActions('pelanggaran', ['getSiswas', 'getMPs', 'editPelanggaran']),
         ...mapMutations('pelanggaran', ['CLEAR_FORM']),
         onSearch(search, loading) {
             this.getSiswas({
+                search: search,
+                loading: loading
+            })
+        },
+        onSearchMP(search, loading) {
+            this.getMPs({
                 search: search,
                 loading: loading
             })

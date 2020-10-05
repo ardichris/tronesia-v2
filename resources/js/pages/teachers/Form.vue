@@ -35,12 +35,9 @@
 import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
     name: 'FormTeacher',
-    created() {  
-        //KETIKA PAGE YANG SEDANG BERJALAN ADALAH PAGE EDIT
+    created() { 
         if (this.$route.name == 'teachers.edit' || this.$route.name == 'teachers.view') {
-            //MAKA FUNGSI UNTUK MENGAMBIL DATA YANG AKAN DIEDIT DIJALANKAN BERDASARKAN PARAMETER ID YANG ADA DI URL
             this.editTeacher(this.$route.params.id).then((res) => {
-                //RESPON YANG DITERIMA AKAN DIMASUKKAN KEDALAM ATTRIBTUE KURIR 
                 this.teacher = {
                     name: res.data.name,
                     email: res.data.email,

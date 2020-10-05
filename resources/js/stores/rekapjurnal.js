@@ -30,6 +30,7 @@ const mutations = {
             kelas: '',
             tanggal: ''
         }
+        state.jurnals=''
     }
 }
 

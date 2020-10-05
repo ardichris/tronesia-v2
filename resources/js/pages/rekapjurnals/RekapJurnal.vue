@@ -54,7 +54,7 @@
                         Yurui, S.Pd., M.M.
                     </b-col>
                 </b-row>
-                <b-button variant="success"  href="/laporan/cetak_pdf">Cetak PDF</b-button>
+                <b-button variant="success"  :href="'/laporan/cetak_pdf?user='+authenticated.id+'&start='+rekapjurnal.tanggalmulai+'&finish='+rekapjurnal.tanggalakhir">Cetak PDF</b-button>
             </div>
         </div>
     </div>

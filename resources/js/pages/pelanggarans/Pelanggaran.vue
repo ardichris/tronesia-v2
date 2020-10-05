@@ -50,6 +50,9 @@
                     <template v-slot:cell(siswa_id)="row">
                         {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
                     </template>
+                    <template v-slot:cell(pelanggaran)="row">
+                        {{ row.item.mp_id ? row.item.masterpelanggaran.mp_pelanggaran:'' }} {{ row.item.pelanggaran_jenis ? row.item.pelanggaran_jenis:'' }}
+                    </template>
                     <template v-slot:cell(guru)="row">
                         <h5><span class="badge badge-secondary">{{row.item.user.name}}</span></h5>
                         <h5><span class="badge badge-warning" v-if="(row.item.jurnal != null)" >{{ row.item.siswa.siswa_kelas }} <span class="badge badge-danger">{{ row.item.jurnal ? row.item.jurnal.jm_jampel:'-' }}</span></span></h5>
@@ -97,7 +100,7 @@ export default {
             fields: [
                 { key: 'guru', label: 'Guru', sortable: true },
                 { key: 'siswa_id', label: 'Nama Siswa', sortable: true },
-                { key: 'pelanggaran_jenis', label: 'Pelanggaran' },
+                { key: 'pelanggaran', label: 'Pelanggaran' },
                 { key: 'pelanggaran_keterangan', label: 'Keterangan' },
                 { key: 'actions', label: 'Aksi' }
             ],

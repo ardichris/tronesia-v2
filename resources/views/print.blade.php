@@ -16,43 +16,56 @@
         }
         .container{
             margin:0 auto;
-            margin-top:5px;
-            padding:10px;
+            margin-top:0px;
+            padding:5px;
             width:auto;
             height:auto;
             background-color:#fff;
         }
-        caption{
+        table.data caption{
             font-size:18px;
             margin-top:15px;
             margin-bottom:15px;
         }
-        table{
+        table.data {
             border:1px solid #333;
             border-collapse:collapse;
             margin:0 auto;
             width: 100%;
         }
-        td, tr, th{
+        table.data td, tr, th{
             padding:12px;
+            border-collapse:collapse;
             border:1px solid #333;
             width:auto;
         }
-        th{
+        table.data th{
             background-color: #f0f0f0;
+            border-collapse:collapse;
+            border:1px solid #333;
         }
-        h4, p{
+        table.data h4, p{
             margin:0px;
+        }
+        table.TTD {
+            width: 100%;  
+            margin:0 auto;  
+            border: none;
+        }
+        table.TTD td, tr, th{
+            padding:12px;
+            border:none;
+            width:auto;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <center><h1>Laporan Jurnal Mengajar</h1></center>
-        {{--Nama Guru : <strong>{{$jurnals->guru}}</strong><br>
-        Tanggal :  <strong>{{$jurnals->start}}</strong>
-                 s/d  <strong>{{$jurnals->end}}</strong><br>--}}
-        <table>
+        Nama Guru : <strong>{{$jurnals['guru'][0]}}</strong><br>
+        Tanggal :  <strong>{{$jurnals['start']}}</strong>
+        s/d  <strong>{{$jurnals['end']}}</strong><br>
+        <table class="data">
             <thead>
             </thead>
             <tbody>
@@ -64,12 +77,12 @@
                     <th>Materi</th>
                     <th>Catatan</th>
                 </tr>
-                @foreach ($jurnals as $row)
+                @foreach ($jurnals['list'] as $row)
                 <tr>
-                    <td>{{ $row->jm_tanggal }}</td>
-                    <td>{{ $row->jm_jampel }}</td>
-                    <td>{{ $row->kelas->kelas_nama }}</td>
-                    <td>{{ $row->kompetensi ? $row->kompetensi->kd_kode:'-' }}</td>
+                    <td><p style="text-align:center;">{{\Carbon\Carbon::parse($row->jm_tanggal)->format('d F Y')}}</p></td>
+                    <td><p style="text-align:center;">{{ $row->jm_jampel }}</p></td>
+                    <td><p style="text-align:center;">{{ $row->kelas->kelas_nama }}</p></td>
+                    <td><p style="text-align:center;">{{ $row->kompetensi ? $row->kompetensi->kd_kode:'-' }}</p></td>
                     <td>{{ $row->jm_materi }}</td>
                     <td>{{ $row->jm_keterangan }}</td>
                 </tr>
@@ -80,12 +93,30 @@
         </table>
         <br>
         <br>
-        Surabaya, {{--new Date() | formatDate--}}
-        <br>
-        <br>
-        <br>
-        <br>
-        Yurui, S.Pd., M.M.
+        <table class="TTD">
+            <thead>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <p style="text-align:center;"><b>Surabaya, {{$jurnals['tanggal']}}
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        Yurui, S.Pd., M.M.</b></p>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
     </div>
 </body>
 </html>

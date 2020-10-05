@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('/pelanggaran/{id}', 'API\PelanggaranController@update')->name('pelanggarans.update');
     Route::resource('/mapel', 'API\MapelController')->except(['create', 'show']);
     Route::resource('/kelas', 'API\KelasController')->except(['create', 'show']);
+    Route::resource('/masterpelanggaran', 'API\MasterPelanggaranController')->except(['create', 'show']);
     Route::resource('/barang', 'API\BarangController')->except(['create', 'show']);    
     Route::resource('/pemakaianbarang', 'API\PemakaianBarangController')->except(['create', 'show']);
     Route::get('/pemakaianbarang/list/{kode}','API\PemakaianBarangController@listPemakaian');
@@ -50,6 +51,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/kitirsiswa', 'API\KitirSiswaController');
     Route::put('/kitirsiswa/changestatus/{kode}','API\KitirSiswaController@changeStatus');
     Route::resource('/presensi', 'API\PresensiController');
+    Route::resource('/pengumuman', 'API\PengumumanController');
 });
 
 

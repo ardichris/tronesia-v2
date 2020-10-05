@@ -3,10 +3,12 @@ import $axios from '../api.js'
 const state = () => ({
     pelanggarans: [],
     siswas: [],
+    MPs: [],
 
     pelanggaran: {
         pelanggaran_kode: '',
         siswa_id: '',
+        mp_id: '',
         pelanggaran_tanggal: '',
         pelanggaran_jenis: '',
         pelanggaran_keterangan: ''
@@ -18,6 +20,9 @@ const mutations = {
     DATA_SISWA(state, payload) {
         state.siswas = payload
     },
+    DATA_MP(state, payload) {
+        state.MPs = payload
+    },
     ASSIGN_DATA(state, payload) {
         state.pelanggarans = payload
     },
@@ -28,6 +33,7 @@ const mutations = {
         state.pelanggaran = {
             pelanggaran_kode: payload.pelanggaran_kode,
             siswa_id: payload.siswa,
+            mp_id: payload.masterpelanggaran,
             pelanggaran_tanggal: payload.pelanggaran_tanggal,
             pelanggaran_jenis: payload.pelanggaran_jenis,
             pelanggaran_keterangan: payload.pelanggaran_keterangan
@@ -37,6 +43,7 @@ const mutations = {
         state.pelanggaran = {
             pelanggaran_kode: '',
             siswa_id: '',
+            mp_id: '',
             pelanggaran_tanggal: '',
             pelanggaran_jenis: '',
             pelanggaran_keterangan: ''
@@ -57,12 +64,25 @@ const actions = {
             })
         })
     },
+    getMPs({ commit, state }, payload) {
+        let search = payload.search
+        payload.loading(true)
+        return new Promise((resolve, reject) => {
+            $axios.get(`/masterpelanggaran?page=${state.page}&q=${search}`)
+            .then((response) => {
+                commit('DATA_MP', response.data)
+                payload.loading(false)
+                resolve(response.data)
+            })
+        })
+    },
     getPelanggarans({ commit, state }, payload) {
         let search = typeof payload != 'undefined' ? payload:''
         return new Promise((resolve, reject) => {
             $axios.get(`/pelanggaran?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
+                console.log(response.data)
                 resolve(response.data)
             })
         })

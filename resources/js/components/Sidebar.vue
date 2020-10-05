@@ -70,6 +70,12 @@
                     <li class="nav-item">
                         <a class="nav-link ml-3">
                         <i class="fas fa-dolly nav-icon"></i>
+                        <p><router-link :to="{ name: 'masterpelanggarans.data' }">Master Pelanggaran</router-link></p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ml-3">
+                        <i class="fas fa-dolly nav-icon"></i>
                         <p><router-link :to="{ name: 'barang.data' }">Master Barang</router-link></p>
                         </a>
                     </li>

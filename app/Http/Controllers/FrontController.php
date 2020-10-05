@@ -7,6 +7,7 @@ use App\Absensi;
 use App\Pelanggaran;
 use App\Jurnal;
 use App\Kelas;
+use App\Pengumumans;
 use App\LaporSarpras;
 use Carbon\Carbon;
 use App\Http\Resources\FrontCollection;
@@ -35,6 +36,7 @@ class FrontController extends Controller
                                 ->paginate(9);
         $jumlahKerusakan = LaporSarpras::where([['ls_kategori','Kerusakan'],['ls_status','!=',2]])->count();
         $kerusakanDetail = LaporSarpras::where([['ls_kategori','Kerusakan'],['ls_status','!=',2]])->get();
+        $pengumuman = Pengumumans::with('user')->get();
 
         $statistik['absensitotal'] = $absensitotal;
         $statistik['absensitoday'] = $absensitoday;
@@ -44,6 +46,7 @@ class FrontController extends Controller
         $statistik['jurnaltoday'] = $jurnaltoday;
         $statistik['jumlahKerusakan'] = $jumlahKerusakan;
         $statistik['kerusakanDetail'] =$kerusakanDetail;
+        $statistik['pengumuman'] = $pengumuman;
 
         return response()->json(['status' => 'success', 'data' => $statistik], 200);
     }

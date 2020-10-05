@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\PelanggaranCollection;
 use App\Pelanggaran;
 use App\Siswa;
+use App\MasterPelanggaran;
 use DB;
 
 class PelanggaranController extends Controller
@@ -14,7 +15,7 @@ class PelanggaranController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $pelanggarans = Pelanggaran::with(['siswa','user','jurnal'])->orderBy('created_at', 'DESC');
+        $pelanggarans = Pelanggaran::with(['siswa','user','jurnal','masterpelanggaran'])->orderBy('created_at', 'DESC');
         if (request()->q != '') { 
             $q = request()->q;
             $pelanggarans = $pelanggarans->whereHas('siswa', function($query) use($q){
@@ -37,7 +38,7 @@ class PelanggaranController extends Controller
         $this->validate($request, [
             'siswa_id' => 'required',
             'pelanggaran_tanggal' => 'required|date',
-            'pelanggaran_jenis' => 'required|string|max:150',
+            'mp_id' => 'required',
         ]);
         $getPL = Pelanggaran::orderBy('id', 'DESC');
         $rowCount = $getPL->count();
@@ -63,8 +64,8 @@ class PelanggaranController extends Controller
         Pelanggaran::create([
             'pelanggaran_kode' => $kode,
             'siswa_id' => $request->siswa_id['id'],
+            'mp_id' => $request->mp_id['id'],
             'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
-            'pelanggaran_jenis' => $request->pelanggaran_jenis,
             'pelanggaran_keterangan' => $request->pelanggaran_keterangan,
             'user_id' => $user->id
         ]);
@@ -93,8 +94,8 @@ class PelanggaranController extends Controller
         $user = $request->user();
         $pelanggaran = Pelanggaran::wherePelanggaran_kode($request->pelanggaran_kode);
         $pelanggaran->update(['siswa_id' => $request->siswa_id['id'],
+                              'mp_id' => $request->mp_id['id'],
                               'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
-                              'pelanggaran_jenis' => $request->pelanggaran_jenis,
                               'pelanggaran_keterangan' => $request->pelanggaran_keterangan,
                               'user_id' => $user->id
                             ]);
