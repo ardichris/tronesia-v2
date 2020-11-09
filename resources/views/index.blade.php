@@ -17,6 +17,7 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- Ionicons -->
     <link rel="stylesheet" href="{{ asset('bower_components/Ionicons/css/ionicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('lte/plugins/summernote/summernote-bs4.css') }}">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
   
@@ -35,5 +36,6 @@
     <!-- bootstrap datepicker -->
     <script src="{{ asset('bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('lte/plugins/summernote/summernote-bs4.min.js') }}"></script>
 </body>
 </html>

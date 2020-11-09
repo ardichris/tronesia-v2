@@ -5,54 +5,32 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\PengumumanCollection;
-use App\Pengumuman;
+use App\Pengumumans;
+use Carbon\Carbon;
 
 class PengumumanController extends Controller
 {
     public function index(Request $request)
     {
-        $pengumuman = Pengumuman::with('user');
+        $pengumuman = Pengumumans::with('user');
         return new PengumumanCollection($pengumuman->paginate(10));
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'siswa_id' => 'required',
-            'ks_keterangan' => 'required',
-            'ks_tanggal' => 'required|date',
-            'ks_jenis' => 'required|string|max:150'
+            'p_title' => 'required',
+            'p_isi' => 'required',
+            'p_kategori' => 'required'
         ]);
         $user = $request->user();
-        $getKS = KitirSiswa::orderBy('id', 'DESC');
-        $rowCount = $getKS->count();
-        $lastId = $getKS->first();
 
-        if($rowCount==0) {
-            $kode = "KS".date('y').date('m').date('d')."001";    
-        } else {
-            if(substr($lastId->ks_kode,2,6) == date('y').date('m').date('d')) {
-            $counter = (int)substr($lastId->ks_kode,-3) + 1 ;
-                if($counter < 10) {
-                    $kode = "KS".date('y').date('m').date('d')."00".$counter;
-                } elseif ($counter < 100) {
-                    $kode = "KS".date('y').date('m').date('d')."0".$counter;
-                } else {
-                    $kode = "KS".date('y').date('m').date('d').$counter;
-                }
-            } else {
-                $kode = "KS".date('y').date('m').date('d')."001";
-            } 
-        }
-        KitirSiswa::create([
-            'ks_kode' => $kode,
-            'siswa_id' => $request->siswa_id['id'],
-            'ks_tanggal' => $request->ks_tanggal,
-            'ks_jenis' => $request->ks_jenis,
-            'ks_keterangan' => $request->ks_keterangan,
-            'ks_status' => 0,
-            'creator_id' => $user->id,
-            'last_at' => date('d-m-y H:i')
+        Pengumumans::create([
+            'p_title' => $request->p_title,
+            'p_isi' => $request->p_isi,
+            'p_tanggal' => Carbon::now(),
+            'P_kategori' => $request->p_kategori,
+            'user_id' => $user->id
         ]);
         return response()->json(['status' => 'success']);
     }

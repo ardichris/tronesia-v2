@@ -72,6 +72,8 @@ import IndexRekapJurnal from './pages/rekapjurnals/Index.vue'
 import DataRekapJurnal from './pages/rekapjurnals/RekapJurnal.vue'
 import IndexPresensi from './pages/presensis/Index.vue'
 import DataPresensi from './pages/presensis/Presensi.vue'
+import IndexPengumuman from './pages/pengumumans/Index.vue'
+import DataPengumuman from './pages/pengumumans/Pengumuman.vue'
 
 
 Vue.use(Router)
@@ -127,6 +129,19 @@ const router = new Router({
                     name: 'presensi.data',
                     component: DataPresensi,
                     meta: { title: 'Presensi' }
+                }                               
+            ]
+        },
+        {
+            path: '/pengumuman',
+            component: IndexPengumuman,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'pengumuman.data',
+                    component: DataPengumuman,
+                    meta: { title: 'Pengumuman' }
                 }                               
             ]
         },

@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/kitirsiswa', 'API\KitirSiswaController');
     Route::put('/kitirsiswa/changestatus/{kode}','API\KitirSiswaController@changeStatus');
     Route::resource('/presensi', 'API\PresensiController');
-    Route::resource('/pengumuman', 'API\PengumumanController');
+    Route::resource('/pengumuman', 'API\PengumumanController')->except(['create', 'show']);
 });
 
 

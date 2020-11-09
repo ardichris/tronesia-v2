@@ -36,7 +36,7 @@ class FrontController extends Controller
                                 ->paginate(9);
         $jumlahKerusakan = LaporSarpras::where([['ls_kategori','Kerusakan'],['ls_status','!=',2]])->count();
         $kerusakanDetail = LaporSarpras::where([['ls_kategori','Kerusakan'],['ls_status','!=',2]])->get();
-        $pengumuman = Pengumumans::with('user')->get();
+        $pengumuman = Pengumumans::with('user')->orderBy('created_at','DESC')->get();
 
         $statistik['absensitotal'] = $absensitotal;
         $statistik['absensitoday'] = $absensitoday;

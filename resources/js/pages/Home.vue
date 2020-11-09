@@ -105,8 +105,9 @@
                 <!-- /.timeline-label -->
                 <!-- timeline item -->
                 <div v-for="item in statistiks.data.pengumuman">
-                  <i v-if="item.p_kategori=='SISWA'" class="fas fa-bullhorn bg-green"></i>
-                  <i v-if="item.p_kategori=='GURU'" class="fas fa-bell bg-yellow"></i>
+                  <i v-if="item.p_kategori=='Siswa'" class="fas fa-bullhorn bg-green"></i>
+                  <i v-if="item.p_kategori=='Guru'" class="fas fa-bell bg-yellow"></i>
+                  <i v-if="item.p_kategori=='Penting'" class="fas fa-exclamation bg-red"></i>
                   <div class="timeline-item">
                     <span class="time"><i class="fas fa-clock"></i> {{item.p_tanggal}}</span>
                     <h3 class="timeline-header no-border"><b>{{item.p_title}}</b></h3>

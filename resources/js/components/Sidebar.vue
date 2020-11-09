@@ -175,6 +175,25 @@
                         </li>
                     </ul>
                 </li>
+
+                <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==2 || authenticated.role==1">
+                    <a class="nav-link">
+                        <i class="nav-icon fas fa-handshake"></i>
+                            <p>
+                                Humas
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item ml-3">
+                            <a class="nav-link">
+                                <i class="fas fa-bullhorn nav-icon"></i>
+                                <p><router-link :to="{ name: 'pengumuman.data' }">Pengumuman</router-link></p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==4">
                     <a class="nav-link">
                         <i class="nav-icon fas fa-mail-bulk"></i>

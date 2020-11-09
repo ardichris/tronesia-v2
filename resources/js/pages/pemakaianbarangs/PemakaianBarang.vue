@@ -47,13 +47,13 @@
             <div class="panel-body">
                 <b-table striped hover bordered :items="pemakaianbarangs.data" :fields="fields" show-empty>
                     <template v-slot:cell(barang_id)="row">
-                        {{row.item.barang.barang_nama}}
+                        {{row.item.barang ? row.item.barang.barang_nama:''}}
                     </template>
                     <template v-slot:cell(user_id)="row">
                         {{row.item.user.name}}
                     </template>
                     <template v-slot:cell(pb_jumlah)="row">
-                        {{row.item.pb_jumlah}} {{row.item.barang.barang_satuan}}
+                        {{row.item.pb_jumlah}} {{row.item.barang ? row.item.barang.barang_satuan:''}}
                     </template>
                     <template v-slot:cell(pb_status)="row">
                         <span class="badge badge-success" v-if="row.item.pb_status == 1">Approved</span>
