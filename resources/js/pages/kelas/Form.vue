@@ -33,13 +33,57 @@
                 </v-select>
                 <p class="text-danger" v-if="errors.kelas_wali">{{ errors.kelas_wali[0] }}</p>
             </div>
+            <div class="form-group">
+                <label for="">Tambah Anggota</label>
+                <v-select :options="siswas.data"
+                    v-model="kelas.tambah"
+                    @search="onSearchSiswa" 
+                    label="siswa_nama"
+                    placeholder="Masukkan Kata Kunci" 
+                    :filterable="false">
+                    <template slot="no-options">
+                        Masukkan Kata Kunci
+                    </template>
+                    <template slot="option" slot-scope="option">
+                        {{ option.siswa_nis }} - {{ option.siswa_nama }}
+                    </template>
+                </v-select>
+                <span><button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addAnggota" :disabled="authenticated.role != 0">Tambah</button></span>
+            </div>
+            
         </div>
         <div class="col-md-6" v-if="$route.name == 'kelas.edit'">
-            <b-table striped hover bordered :items="anggota.data" :fields="fields" show-empty>
-                <template v-slot:cell(actions)="row">
-                    <button class="btn btn-danger btn-sm" @click="deleteSiswa(row.item.id,kelas.kelas_nama)"><i class="fa fa-trash"></i></button>
-                </template>
-            </b-table>
+            <label for="">Daftar Siswa</label>
+            <button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addSiswa" :disabled="authenticated.role != 0">Tambah</button>
+            <div class="table-responsive" style="height: 600px">
+                <table class="table" >
+                    <thead>
+                    </thead>
+                    <!-- TABLE INI BERGUNA UNTUK MENAMBAHKAN ITEM TRANSAKSI -->
+                    <tbody>
+                        <tr v-for="(row, index) in anggota.data" :key="index">
+                            <td>
+                                <v-select :options="siswas.data"
+                                    v-model="row.siswa"
+                                    @search="onSearchSiswa" 
+                                    label="siswa_nama"
+                                    placeholder="Masukkan Kata Kunci" 
+                                    :filterable="false">
+                                    <template slot="no-options">
+                                        Masukkan Kata Kunci
+                                    </template>
+                                    <template slot="option" slot-scope="option">
+                                        {{ option.siswa_nis }} - {{ option.siswa_nama }}
+                                    </template>
+                                </v-select>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger btn-flat" @click="removeSiswa(index)" :disabled="authenticated.role != 0"><i class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -61,19 +105,32 @@ export default {
                 { key: 'siswa_nama', label: 'Nama Siswa' },
                 { key: 'actions', label: 'Aksi' }
             ],
-            search: ''
+            search: '',
+            anggotas: [
+                    { siswa: null }
+            ]
         }
     },
     computed: {
+        ...mapState('user', {
+            authenticated: state => state.authenticated
+        }),
         ...mapState(['errors']),
         ...mapState('kelas', {
+            siswas: state => state.siswa,
             anggota: state=>state.anggotas,
             kelas: state => state.kelas, 
-            teachers: state => state.teachers
-        })
+            teachers: state => state.teachers,
+            tambah: state=> state.tambah
+        }),
+        filterSiswa() {
+            return _.filter(this.kelas.anggota, function(item) {
+                return item.siswa == null
+            })
+        },
     },
     methods: {
-        ...mapActions('kelas', ['getTeacher','getSiswa','removeAnggota','anggotaKelas']),
+        ...mapActions('kelas', ['getTeacher','getSiswa','removeAnggota','anggotaKelas','tambahAnggota']),
         ...mapMutations('kelas', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
         onSearch(search, loading) {
             //KITA AKAN ME-REQUEST DATA CUSTOMER BERDASARKAN KEYWORD YG DIMINTA
@@ -81,6 +138,25 @@ export default {
                 search: search,
                 loading: loading
             })
+        },
+        onSearchSiswa(search, loading) {
+            this.getSiswa({
+                search: search,
+                kelas: this.$route.params.id,
+                key: 'addAnggotaKelas',
+                loading: loading
+            })            
+        },
+        addSiswa() {
+            if (this.filterSiswa.length == 0) {
+                this.anggotakelas.push({ siswa_id: null, siswa_nama: null})
+            }
+        },
+        //KETIKA TOMBOL HAPUS PADA MASING-MASING ITEM DITEKAN, MAKA AKAN MENGHAPUS BERDASARKAN INDEX DATANYA
+        removeSiswa(index) {
+            if (this.anggotakelas.length > 0) {
+                this.anggotakelas.splice(index, 1)
+            }
         },
         deleteSiswa(id,kelas) {
             //AKAN MENAMPILKAN JENDELA KONFIRMASI
@@ -99,7 +175,14 @@ export default {
                     this.removeAnggota(id).then(()=>{ this.anggotaKelas(this.$route.params.id) });
                 }
             })
-        }
+        },
+        addAnggota(){
+            this.tambahAnggota({
+                siswa: this.kelas.tambah.id,
+                kelas: this.$route.params.id,
+                key: 'tambahAnggotaKelas',
+            }).then(()=>{ this.anggotaKelas(this.$route.params.id) });
+        },
     },
     //KETIKA PAGE INI DITINGGALKAN MAKA 
     destroyed() {

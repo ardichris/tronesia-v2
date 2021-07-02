@@ -89,9 +89,9 @@
                 <i class="fas fa-bullhorn mr-1"></i>
                 Pengumuman
               </h3>
-              <span class="float-right">
+              <!--span class="float-right">
                 <button type="button" class="btn btn-success btn-circle btn-sm"><i class="fa fa-plus"></i></button>
-              </span> 
+              </span--> 
               <div class="card-tools">
               </div>
             </div><!-- /.card-header -->
@@ -111,8 +111,8 @@
                   <div class="timeline-item">
                     <span class="time"><i class="fas fa-clock"></i> {{item.p_tanggal}}</span>
                     <h3 class="timeline-header no-border"><b>{{item.p_title}}</b></h3>
-                    <div class="timeline-body">
-                      {{item.p_isi}}
+                    <div class="timeline-body" v-html="item.p_isi">
+                      {{ item.p_isi }}
                     </div>
                     <div class="timeline-footer">
                       <span class="badge badge-info">{{item.user.name}}</span>

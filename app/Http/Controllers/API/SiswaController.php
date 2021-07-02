@@ -16,6 +16,10 @@ class SiswaController extends Controller
             $siswas = $siswas->where('siswa_kelas', '=' , request()->kelas);
                                 //->where('siswa_nama', 'LIKE', '%' . request()->q . '%');
         }
+        if (request()->key == 'addAnggotaKelas') {
+            $siswas = Siswa::orderBy('siswa_nama', 'ASC')
+                           ->where('siswa_kelas', '!=' , request()->kelas);
+        }
         if (request()->q != '') {
             $siswas = $siswas->where('siswa_nama', 'LIKE', '%' . request()->q . '%');
         }
@@ -25,6 +29,7 @@ class SiswaController extends Controller
         if (request()->seragam != '') {
             $siswas = $siswas->whereIn('s_keterangan',['SISWA BARU','AKTIF']);
         }
+        
         $siswas = $siswas->paginate(40);
         return new SiswaCollection($siswas);
     }
@@ -34,13 +39,12 @@ class SiswaController extends Controller
         $this->validate($request, [
             'siswa_kelamin' => 'required',
             'siswa_nama' => 'required|string',
-            'siswa_kelas' => 'required|string',
             'siswa_tempatlahir' => 'required|string',
             'siswa_tanggallahir' => 'required|date'
         ]);
 
         Siswa::create($request->all());
-        return response()->json(['status' => 'success'], 200);
+        return response()->json('sukses');
     }
 
     public function edit($id)
@@ -54,9 +58,10 @@ class SiswaController extends Controller
         $siswa = Siswa::whereSiswa_nis($id)->first();
         return response()->json(['status' => 'success', 'data' => $siswa], 200);
     }
-
+    
     public function update(Request $request, $id)
     {
+
         if(is_null($request['siswa_nama'])){
             $siswa = Siswa::whereId($id)->first();
             $siswa->update(['siswa_kelas'=> '-']);

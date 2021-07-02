@@ -29,7 +29,7 @@
                                 <b-button
                                     variant="success"
                                     class="mt-3"                                    
-                                    block @click="editPengumumanlama"
+                                    block @click="updateP"
                                 >
                                     Update
                                 </b-button>
@@ -55,11 +55,11 @@
                         <span class="badge badge-success" v-if="row.item.p_kategori == 'Siswa'">Siswa</span>
                         <span class="badge badge-warning" v-if="row.item.p_kategori == 'Guru'">Guru</span>
                     </template>
-                    <template v-slot:cell(p_isi)="row">
-                        {{ row.item.p_isi ? row.item.p_isi:'-'  }}
+                    <template v-slot:cell(p_title)="row">
+                        {{ row.item.p_title ? row.item.p_title:'-'  }}
                     </template>
                     <template v-slot:cell(actions)="row">
-                        <button class="btn btn-warning btn-sm" @click="editPengumuman(row.item.id)"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-warning btn-sm" @click="editP(row.item.id)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-danger btn-sm" @click="deletePengumuman(row.item.id)"><i class="fa fa-trash"></i></button>
                     </template>
                 </b-table>
@@ -100,7 +100,7 @@ export default {
             fields: [
                 { key: 'p_tanggal', label: 'Tanggal', sortable: true },
                 { key: 'p_kategori', label: 'Kategori', sortable: true },
-                { key: 'p_isi', label: 'Pengumuman' },
+                { key: 'p_title', label: 'Pengumuman' },
                 { key: 'actions', label: 'Aksi' }
             ],
             search: ''
@@ -135,13 +135,13 @@ export default {
                 this.getPengumuman()
             })
         },
-        editPengumumanlama(){
+        updateP(){
             this.updatePengumuman().then(() => {
                 this.$bvModal.hide('edit-modal'),
                 this.getPengumuman()
             })
         },
-        editPengumuman(kode){
+        editP(kode){
             this.editPengumuman({
                 kode: kode
             }),

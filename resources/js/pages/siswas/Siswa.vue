@@ -24,16 +24,17 @@
             <div class="panel-body">
                 <b-table striped hover bordered :items="siswas.data" :fields="fields" show-empty>
                     <template v-slot:cell(siswa_kelamin)="row">
-                        <span class="badge badge-info" v-if="row.item.siswa_kelamin == 'Laki-laki'">Laki-Laki</span>
-                        <span class="badge badge-danger" v-if="row.item.siswa_kelamin == 'Perempuan'">Perempuan</span>
+                        <span class="badge badge-info" v-if="row.item.siswa_kelamin == 'Laki-laki'">L</span>
+                        <span class="badge badge-danger" v-if="row.item.siswa_kelamin == 'Perempuan'">P</span>
                     </template>
                     <template v-slot:cell(s_keterangan)="row">
+                        <span class="badge badge-danger" v-if="row.item.s_keterangan == 'ALUMNI'">Alumni</span>
                         <span class="badge badge-primary" v-if="row.item.s_keterangan == 'SISWA BARU'">Siswa Baru</span>
                         <span class="badge badge-success" v-if="row.item.s_keterangan == 'AKTIF'">Aktif</span>
                     </template>
                     <template v-slot:cell(actions)="row">
-                        <router-link :to="{ name: 'siswas.view', params: {id: row.item.siswa_nis} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
-                        <router-link :to="{ name: 'siswas.edit', params: {id: row.item.siswa_nis} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
+                        <router-link :to="{ name: 'siswas.view', params: {id: row.item.id} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
+                        <router-link :to="{ name: 'siswas.edit', params: {id: row.item.id} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
                         <button class="btn btn-danger btn-sm" @click="deleteSiswa(row.item.id)"><i class="fa fa-trash"></i></button>
                     </template>
                 </b-table>
@@ -84,7 +85,7 @@ export default {
                 { key: 'actions', label: 'Aksi' }
             ],
             search: '',
-            status: ''
+            status: 'AKTIF'
         }
     },
     computed: {
@@ -143,6 +144,10 @@ export default {
                 if (result.value) {
                     //MAKA FUNGSI removeSiswa AKAN DIJALANKAN
                     this.removeSiswa(id)
+                    this.getSiswas({
+                        search: this.search,
+                        status: this.status
+                    })
                 }
             })
         }

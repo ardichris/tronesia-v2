@@ -7,6 +7,7 @@ const state = () => ({
         siswa_nis: '',
         siswa_nisn: '',
         siswa_nik: '',
+        siswa_code: '',
         siswa_nama: '',
         siswa_kelamin: '',
         siswa_kelas: '',
@@ -46,6 +47,7 @@ const mutations = {
             siswa_nis: payload.siswa_nis,
             siswa_nisn: payload.siswa_nisn,
             siswa_nik: payload.siswa_nik,
+            siswa_code: payload.siswa_code,
             siswa_nama: payload.siswa_nama,
             siswa_kelamin: payload.siswa_kelamin,
             siswa_kelas: payload.siswa_kelas,
@@ -76,6 +78,7 @@ const mutations = {
             siswa_nis: '',
             siswa_nisn: '',
             siswa_nik: '',
+            siswa_code: '',
             siswa_nama: '',
             siswa_kelamin: '',
             siswa_kelas: '',
@@ -119,9 +122,8 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.post(`/siswas`, state.siswa)
             .then((response) => {
-                dispatch('getSiswas').then(() => {
-                    resolve(response.data)
-                })
+                commit('CLEAR_FORM')
+                resolve(response.data)
             })
             .catch((error) => {
                 if (error.response.status == 422) {

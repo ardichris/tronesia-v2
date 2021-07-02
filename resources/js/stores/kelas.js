@@ -1,19 +1,25 @@
 import $axios from '../api.js'
 
 const state = () => ({
+    siswa: [],
     teachers: [],
     kelass: [],
     anggotas: [], 
     
     kelas: {
+        id: '',
         kelas_nama: '',
         kelas_jenjang: '',
-        kelas_wali: ''
+        kelas_wali: '',
+        tambah: '',
     },
     page: 1 
 })
 
 const mutations = {
+    SISWA_DATA(state, payload) {
+        state.siswa = payload
+    },
     TEACHER_DATA(state, payload) {
         state.teachers = payload
     },
@@ -42,17 +48,33 @@ const mutations = {
         state.kelas = {
             kelas_nama: '',
             kelas_jenjang: '',
-            kelas_wali: ''
+            kelas_wali: '',
+            kelas_anggota: []
         }
     }
 }
 
 const actions = {
+    getSiswa({ commit, state }, payload) {
+        let search = payload.search
+        let kelas = payload.kelas
+        let key = payload.key
+        payload.loading(true)
+        return new Promise((resolve, reject) => {
+            $axios.get(`/siswas?q=${search}&kelas=${kelas}&key=${key}`)
+            .then((response) => {
+                commit('SISWA_DATA', response.data)
+                payload.loading(false)
+                resolve(response.data)
+            })
+        })
+    },
     anggotaKelas({ commit }, payload) {
         return new Promise((resolve, reject) => {
             $axios.get(`/siswas?kelas=${payload}`)
             .then((response) => {
                 commit('ANGGOTA_DATA', response.data)
+                console.log(response.data)
                 resolve(response.data)
             })
         })
@@ -62,6 +84,17 @@ const actions = {
             $axios.put(`/siswas/${payload}`)
             .then((response) => {
                 resolve(response.data)
+            })
+        })
+    },
+    tambahAnggota({ dispatch }, payload) {
+        let kelas = payload.kelas
+        let key = payload.key
+        let siswa = payload.siswa
+        return new Promise((resolve, reject) => {
+            $axios.put(`/kelas/addanggota?kelas=${kelas}&key=${key}&siswa=${siswa}`)
+            .then((response) => {
+                dispatch('anggotaKelas').then(() => resolve())
             })
         })
     },

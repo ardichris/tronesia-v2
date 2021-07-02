@@ -12,7 +12,7 @@ class PengumumanController extends Controller
 {
     public function index(Request $request)
     {
-        $pengumuman = Pengumumans::with('user');
+        $pengumuman = Pengumumans::with('user')->orderBy('created_at','DESC');
         return new PengumumanCollection($pengumuman->paginate(10));
     }
 
@@ -29,7 +29,7 @@ class PengumumanController extends Controller
             'p_title' => $request->p_title,
             'p_isi' => $request->p_isi,
             'p_tanggal' => Carbon::now(),
-            'P_kategori' => $request->p_kategori,
+            'p_kategori' => $request->p_kategori,
             'user_id' => $user->id
         ]);
         return response()->json(['status' => 'success']);
@@ -43,32 +43,27 @@ class PengumumanController extends Controller
 
     public function edit($id)
     {
-        $kitirsiswas = KitirSiswa::with('siswa')->whereKs_kode($id)->first();
-        return response()->json(['status' => 'success', 'data' => $kitirsiswas], 200);
+        $pengumuman = Pengumumans::whereId($id)->first();
+        return response()->json(['status' => 'success', 'data' => $pengumuman], 200);
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'siswa_id' => 'required',
-            'ks_tanggal' => 'required|date',
-            'ks_keterangan' => 'required',
-            'ks_jenis' => 'required|string|max:150'
+            'p_title' => 'required',
+            'p_isi' => 'required',
+            'p_kategori' => 'required'
         ]);
-        
         $user = $request->user();
-        $kitirsiswa = KitirSiswa::whereKs_kode($request->ks_kode);
-        $kitirsiswa->update([
-                        'ks_tanggal' => $request->ks_tanggal,
-                        'ks_jenis' => $request->ks_jenis,
-                        'ks_keterangan' => $request->ks_keterangan,
-                        'ks_status' => 0,
-                        'creator_id' => $user->id,
-                        'last_at' => date('d-m-y H:i'),
-                        'approve_by' => null,
-                        'approve_at' => null
-                    ]);
-        return response()->json(['status' => 'success']);
+
+       $pengumuman = Pengumumans::whereId($request->id)->first();
+       $pengumuman->update([
+                            'p_title' => $request->p_title,
+                            'p_isi' => $request->p_isi,
+                            'p_kategori' => $request->p_kategori,
+                            'user_id' => $user->id
+                         ]);
+        return response()->json(['status' => 'success'], 200);
     }
 
     public function destroy($id)

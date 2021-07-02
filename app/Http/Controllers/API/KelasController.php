@@ -11,6 +11,16 @@ use App\Siswa;
 
 class KelasController extends Controller
 {
+    public function tambahAnggota(Request $request)
+    {
+        return response()->json(['status' => 'success1'], 200);
+        if (request()->key == 'tambahAnggotaKelas') {
+            $siswa = Siswa::whereId(request()->siswa)->first();
+            $siswa->update(['kelas_id'=> 11]);
+        }
+        return response()->json(['status' => 'success1'], 200);
+    }
+    
     public function index(Request $request) {
         $kelas = Kelas::with(['user'])->orderBy('kelas_nama', 'ASC');
         if (request()->q != '') {
@@ -36,7 +46,7 @@ class KelasController extends Controller
 
     public function edit($id)
     {
-        $kelas = Kelas::with(['user','siswa'])->whereKelas_nama($id)->first();
+        $kelas = Kelas::with(['user','siswa'])->whereId($id)->first();
         return response()->json(['status' => 'success', 'data' => $kelas], 200);
     }
 

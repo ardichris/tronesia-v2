@@ -21,7 +21,7 @@
                     <template v-slot:cell(actions)="row">
                         <div class="btn-group">
                             <router-link :to="{ name: 'kelas.view', params: {id: row.item.kelas_nama} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
-                            <router-link :to="{ name: 'kelas.edit', params: {id: row.item.kelas_nama} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
+                            <router-link :to="{ name: 'kelas.edit', params: {id: row.item.id} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
                             <button class="btn btn-danger btn-sm" @click="deleteKelas(row.item.id)"><i class="fa fa-trash"></i></button>
                       </div>
                     </template>

@@ -4,6 +4,7 @@ const state = () => ({
     p_data: [], 
 
     p_input: {
+        id:'',
         p_title: '',
         p_tanggal: '',
         p_isi: '',
@@ -21,6 +22,7 @@ const mutations = {
     },
     ASSIGN_FORM(state, payload) {
         state.p_input = {
+            id: payload.id,
             p_title: payload.p_title,
             p_tanggal: payload.p_tanggal,
             p_isi: payload.p_isi,
@@ -29,6 +31,7 @@ const mutations = {
     },
     CLEAR_FORM(state) {
         state.p_input = {
+            id: '',
             p_title: '',
             p_tanggal: '',
             p_isi: '',
@@ -44,7 +47,6 @@ const actions = {
             $axios.get(`/pengumuman?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
-                console.log(response.data)
                 resolve(response.data)
             })
         })

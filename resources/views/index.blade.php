@@ -18,6 +18,7 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="{{ asset('bower_components/Ionicons/css/ionicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('lte/plugins/summernote/summernote-bs4.css') }}">
+    <!--link rel="stylesheet" href="{{ asset('~vue-wysiwyg/dist/vueWysiwyg.css') }}"-->
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
   
@@ -37,5 +38,13 @@
     <script src="{{ asset('bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('lte/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{asset('assets/ckeditor/ckeditor.js')}}"></script>
+    <script>
+    var konten = document.getElementById("konten");
+        CKEDITOR.replace(konten,{
+        language:'en-gb'
+    });
+    CKEDITOR.config.allowedContent = true;
+    </script>
 </body>
 </html>

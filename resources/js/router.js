@@ -74,6 +74,11 @@ import IndexPresensi from './pages/presensis/Index.vue'
 import DataPresensi from './pages/presensis/Presensi.vue'
 import IndexPengumuman from './pages/pengumumans/Index.vue'
 import DataPengumuman from './pages/pengumumans/Pengumuman.vue'
+import IndexUnit from './pages/units/Index.vue'
+import DataUnit from './pages/units/Unit.vue'
+import AddUnit from './pages/units/Add.vue'
+import EditUnit from './pages/units/Edit.vue'
+import ViewUnit from './pages/units/View.vue'
 
 
 Vue.use(Router)
@@ -454,6 +459,37 @@ const router = new Router({
                     name: 'mapel.view',
                     component: ViewMapel,
                     meta: { title: 'Lihat Mapel' }
+                }
+            ]
+        },
+        {
+            path: '/unit',
+            component: IndexUnit,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'unit.data',
+                    component: DataUnit,
+                    meta: { title: 'Daftar Unit' }
+                },
+                {
+                    path: 'add',
+                    name: 'unit.add',
+                    component: AddUnit,
+                    meta: { title: 'Tambah Unit' }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'unit.edit',
+                    component: EditUnit,
+                    meta: { title: 'Ganti Unit' }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'unit.view',
+                    component: ViewUnit,
+                    meta: { title: 'Lihat Unit' }
                 }
             ]
         },

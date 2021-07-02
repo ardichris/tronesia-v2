@@ -15,7 +15,8 @@
         </div>
         <div class="form-group" :class="{ 'has-error': errors.p_isi }">
             <label for="">Pengumuman</label>
-            <textarea cols="6" rows="5" class="form-control" v-model="pengumuman.p_isi" :readonly="$route.name == 'pengumuman.edit' || $route.name == 'pengumuman.view'"></textarea>
+            <!--textarea id="konten" name="konten" cols="6" rows="5" class="form-control" v-model="pengumuman.p_isi" :readonly="$route.name == 'pengumuman.edit' || $route.name == 'pengumuman.view'"></textarea-->
+            <wysiwyg v-model="pengumuman.p_isi" />
             <p class="text-danger" v-if="errors.p_isi">{{ errors.p_isi[0] }}</p>
         </div>
     </div>
