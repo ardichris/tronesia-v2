@@ -4,10 +4,9 @@ const state = () => ({
     units: [],
     
     unit: {
-        unit_code: '',
-        unit_name: '',
-        unit_alamat: '',
-        unit_telp: ''
+        id: '',
+        unit_kode: '',
+        unit_nama: ''
     },
     page: 1
 })
@@ -21,18 +20,15 @@ const mutations = {
     },
     ASSIGN_FORM(state, payload) {
         state.unit = {
-            unit_code: payload.unit_code,
-            unit_name: payload.unit_name,
-            unit_alamat: payload.unit_alamat,
-            unit_telp: payload.unit_telp
+            id: payload.id,
+            unit_kode: payload.unit_kode,
+            unit_nama: payload.unit_nama
         }
     },
     CLEAR_FORM(state) {
         state.unit = {
-            unit_code: '',
-            unit_name: '',
-            unit_alamat: '',
-            unit_telp: ''
+            unit_kode: '',
+            unit_nama: ''
         }
     }
 }
@@ -65,7 +61,7 @@ const actions = {
     },
     editUnit({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            $axios.get(`/unit/${payload}/edit`)
+            $axios.get(`/unit/${payload.kode}/edit`)
             .then((response) => {
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
@@ -82,8 +78,9 @@ const actions = {
         })
     },
     updateUnit({ state, commit }, payload) {
+        let kode = state.unit.id
         return new Promise((resolve, reject) => {
-            $axios.put(`/unit/${payload}`, state.unit)
+            $axios.put(`/unit/${kode}`, state.unit)
             .then((response) => {
                 commit('CLEAR_FORM')
                 resolve(response.data)

@@ -22,7 +22,8 @@ class KelasController extends Controller
     }
     
     public function index(Request $request) {
-        $kelas = Kelas::with(['user'])->orderBy('kelas_nama', 'ASC');
+        $user = $request->user();
+        $kelas = Kelas::with(['user'])->orderBy('kelas_nama', 'ASC')->where('unit_id', $user->unit_id);
         if (request()->q != '') {
             $kelas = $kelas->where('kelas_nama', 'LIKE', '%' . request()->q . '%');
         }
@@ -35,11 +36,12 @@ class KelasController extends Controller
             'kelas_nama' => 'required|string|unique:kelas,kelas_nama',
             'kelas_jenjang' => 'required'
         ]);
-
+        $user = $request->user();
         Kelas::create([
             'kelas_nama' => $request->kelas_nama,
             'kelas_jenjang' => $request->kelas_jenjang,
-            'kelas_wali' => $request->kelas_wali['id']
+            'kelas_wali' => $request->kelas_wali['id'],
+            'unit_id' => $user->unit_id,
         ]);
         return response()->json(['status' => 'success'], 200);
     }

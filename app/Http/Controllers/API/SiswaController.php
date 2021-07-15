@@ -49,7 +49,7 @@ class SiswaController extends Controller
 
     public function edit($id)
     {
-        $siswa = Siswa::whereSiswa_nis($id)->first();
+        $siswa = Siswa::whereId($id)->first();
         return response()->json(['status' => 'success', 'data' => $siswa], 200);
     }
 
@@ -74,7 +74,7 @@ class SiswaController extends Controller
                 'siswa_tanggallahir' => 'required|date'
             ]);
     
-            $siswa = Siswa::whereSiswa_nis($id)->first();
+            $siswa = Siswa::whereId($id)->first();
             $siswa->update($request->except('Siswa_nis'));
         }
         return response()->json(['status' => 'success'], 200);

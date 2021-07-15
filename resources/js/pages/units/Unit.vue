@@ -4,7 +4,37 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <router-link :to="{ name: 'unit.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
+                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('add-modal')">Tambah</b-button>
+                        <b-modal id="add-modal">
+                            <template v-slot:modal-title>
+                                Tambah Unit
+                            </template>
+                            <unit-form></unit-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block @click="simpanUnitbaru"
+                                >
+                                    Simpan
+                                </b-button>
+                            </template>
+                        </b-modal>
+                        <b-modal id="edit-modal">
+                            <template v-slot:modal-title>
+                                Edit Unit
+                            </template>
+                            <unit-form></unit-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block @click="editUnitlama"
+                                >
+                                    Update
+                                </b-button>
+                            </template>
+                        </b-modal>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -16,8 +46,8 @@
             <div class="panel-body">
                 <b-table striped hover bordered :items="units.data" :fields="fields" show-empty>
                     <template v-slot:cell(actions)="row">
-                        <router-link :to="{ name: 'unit.view', params: {id: row.item.unit_code} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
-                        <router-link :to="{ name: 'unit.edit', params: {id: row.item.unit_code} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
+                        <router-link :to="{ name: 'unit.view', params: {id: row.item.unit_kode} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
+                        <button class="btn btn-warning btn-sm" @click="ubahUnit(row.item.id)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-danger btn-sm" @click="deleteUnit(row.item.id)"><i class="fa fa-trash"></i></button>
                     </template>
                 </b-table>
@@ -45,6 +75,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import FormUnit from './Form.vue'
 
 export default {
     name: 'DataUnit',
@@ -57,8 +88,8 @@ export default {
             //FIELD UNTUK B-TABLE, PASTIKAN KEY NYA SESUAI DENGAN FIELD DATABASE
             //AGAR OTOMATIS DI-RENDER
             fields: [
-                { key: 'unit_code', label: 'Kode' },
-                { key: 'unit_name', label: 'Mata Pelajaran' },
+                { key: 'unit_kode', label: 'Kode Unit' },
+                { key: 'unit_nama', label: 'Nama Unit' },
                 { key: 'actions', label: 'Aksi' }
             ],
             search: ''
@@ -93,11 +124,26 @@ export default {
         }
     },
     methods: {
-        //MENGAMBIL FUNGSI DARI VUEX MODULE unit
-        ...mapActions('unit', ['getUnit', 'removeUnit']),
-        //KETIKA TOMBOL HAPUS DICLICK, MAKA AKAN MENJALANKAN METHOD INI
+        ...mapActions('unit', ['submitUnit','updateUnit','editUnit','getUnit', 'removeUnit']),
+        simpanUnitbaru(){
+            this.submitUnit().then(() => {
+                this.$bvModal.hide('add-modal'),
+                this.getUnit()
+            })
+        },
+        editUnitlama(){
+            this.updateUnit().then(() => {
+                this.$bvModal.hide('edit-modal'),
+                this.getUnit()
+            })
+        },
+        ubahUnit(kode){
+            this.editUnit({
+                kode: kode
+            }),
+            this.$bvModal.show('edit-modal')
+        },
         deleteUnit(id) {
-            //AKAN MENAMPILKAN JENDELA KONFIRMASI
             this.$swal({
                 title: 'Kamu Yakin?',
                 text: "Tindakan ini akan menghapus secara permanent!",
@@ -107,13 +153,14 @@ export default {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Iya, Lanjutkan!'
             }).then((result) => {
-                //JIKA DISETUJUI
                 if (result.value) {
-                    //MAKA FUNGSI removeUnit AKAN DIJALANKAN
-                    this.removeUnit(id)
+                    this.removeUnit(id) //JIKA SETUJU MAKA PERMINTAAN HAPUS AKAN DI EKSEKUSI
                 }
             })
         }
+    },
+    components: {
+        'unit-form': FormUnit
     }
 }
 </script>

@@ -2,6 +2,7 @@ import $axios from '../api.js'
 
 const state = () => ({
     teachers: [],
+    unit: [],
     page: 1,
     id: ''
 })
@@ -15,10 +16,25 @@ const mutations = {
     },
     SET_ID_UPDATE(state, payload) {
         state.id = payload
+    },
+    UNIT_DATA(state, payload) {
+        state.unit = payload
     }
 }
 
 const actions = {
+    getUnit({ commit, state }, payload) {
+        let search = payload.search
+        payload.loading(true)
+        return new Promise((resolve, reject) => {
+            $axios.get(`/unit?page=${state.page}&q=${search}`)
+            .then((response) => {
+                commit('UNIT_DATA', response.data)
+                payload.loading(false)
+                resolve(response.data)
+            })
+        })
+    },
     getTeachers({ commit, state }, payload) {
         let search = typeof payload != 'undefined' ? payload:''
         return new Promise((resolve, reject) => {
@@ -30,6 +46,7 @@ const actions = {
         })
     },
     submitTeacher({ dispatch, commit }, payload) {
+        console.log(payload)
         return new Promise((resolve, reject) => {
             $axios.post(`/teachers`, payload, {
                 headers: {

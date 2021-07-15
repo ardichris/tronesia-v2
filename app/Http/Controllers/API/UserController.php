@@ -29,9 +29,10 @@ class UserController extends Controller
             'name' => 'required|string|max:150',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|string',
+            'unit_id' => 'required'
             //'photo' => 'image'
         ]);
-        DB::beginTransaction();
+        /*DB::beginTransaction();
         try {
             $name = NULL;
             //APABILA ADA FILE YANG DIKIRIMKAN
@@ -46,7 +47,8 @@ class UserController extends Controller
                     'email' => $request->email,
                     'password' => $request->password,
                     'photo' => $name,
-                    'role' => $request->role
+                    'role' => $request->role,
+                    'unit_id' => $request->unit_id['id']
             ]);
             //$user->assignRole('teacher');
             DB::commit();
@@ -54,7 +56,16 @@ class UserController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['status' => 'error', 'data' => $e->getMessage()], 200);
-        }
+        }*/
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password,
+            //'photo' => $name,
+            'role' => $request->role,
+            //'unit_id' => $request->unit_id['id']
+        ]);
+        return response()->json(['status' => 'success'], 200);
     }
     public function edit($id)
     {

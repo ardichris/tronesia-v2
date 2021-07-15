@@ -13,6 +13,9 @@ class CreateUnitaddsTable extends Migration
      */
     public function up()
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->unsignedBigInteger('unit_id')->nullable();
+        });
         Schema::table('siswas', function (Blueprint $table) {
             $table->unsignedBigInteger('unit_id')->nullable();
         });

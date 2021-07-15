@@ -9,6 +9,7 @@ use App\Jurnal;
 use App\User;
 use App\DetailJurnal;
 use App\Pelanggaran;
+use App\Unit;
 use Carbon\Carbon;
 use DB;
 use PDF;
@@ -68,7 +69,9 @@ class JurnalController extends Controller
     
     public function index(Request $request) {
         $user = $request->user();
-        $jurnals = Jurnal::with(['mapel','kelas','kompetensi','user','detail','pelanggaran'])->orderBy('updated_at', 'DESC');
+        $jurnals = Jurnal::with(['mapel','kelas','kompetensi','user','detail','pelanggaran','unit'])
+                    ->orderBy('updated_at', 'DESC')
+                    ->where('unit_id',$user->unit_id);
         if (request()->q != '') {
             $q = $request->q;
             $jurnals = $jurnals->where('jm_kode', 'LIKE', '%' . request()->q . '%')
@@ -150,9 +153,11 @@ class JurnalController extends Controller
                             'kompetensi_id' => $request->kompetensi_id ? $request->kompetensi_id['id']:null,
                             'jm_materi' => $request->jm_materi,
                             'user_id' => $user->id,
+                            'unit_id' => $user->unit_id,
                             'jm_status' => $konflik != 0 ? 2:0,
                             'jm_keterangan' => $request->jm_keterangan,
                             'jm_catatan' => $catatan
+                            
                         ]);
 
             foreach ($request->detail as $row) {

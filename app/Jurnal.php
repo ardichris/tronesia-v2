@@ -42,4 +42,9 @@ class Jurnal extends Model
     {
         return $this->hasMany(Pelanggaran::class);
     }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
 }
