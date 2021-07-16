@@ -11,17 +11,17 @@ class SiswaController extends Controller
 {
     public function index()
     {
-        $siswas = Siswa::orderBy('siswa_nama', 'ASC');
-        if (request()->kelas != '') {
-            $siswas = $siswas->where('siswa_kelas', '=' , request()->kelas);
-                                //->where('siswa_nama', 'LIKE', '%' . request()->q . '%');
+        $siswas = Siswa::orderBy('s_nama', 'ASC');
+       if (request()->kelas != '') {
+            $siswas = $siswas->where('s_kelas', '=' , request()->kelas);
+                                //->where('s_nama', 'LIKE', '%' . request()->q . '%');
         }
         if (request()->key == 'addAnggotaKelas') {
-            $siswas = Siswa::orderBy('siswa_nama', 'ASC')
-                           ->where('siswa_kelas', '!=' , request()->kelas);
+            $siswas = Siswa::orderBy('s_nama', 'ASC')
+                           ->where('s_kelas', '!=' , request()->kelas);
         }
         if (request()->q != '') {
-            $siswas = $siswas->where('siswa_nama', 'LIKE', '%' . request()->q . '%');
+            $siswas = $siswas->where('s_nama', 'LIKE', '%' . request()->q . '%');
         }
         if (request()->s != '') {
             $siswas = $siswas->where('s_keterangan', 'LIKE', '%' . request()->s . '%');
@@ -37,10 +37,10 @@ class SiswaController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'siswa_kelamin' => 'required',
-            'siswa_nama' => 'required|string',
-            'siswa_tempatlahir' => 'required|string',
-            'siswa_tanggallahir' => 'required|date'
+            's_kelamin' => 'required',
+            's_nama' => 'required|string',
+            's_tempatlahir' => 'required|string',
+            's_tanggallahir' => 'required|date'
         ]);
 
         Siswa::create($request->all());
@@ -62,20 +62,20 @@ class SiswaController extends Controller
     public function update(Request $request, $id)
     {
 
-        if(is_null($request['siswa_nama'])){
+        if(is_null($request['s_nama'])){
             $siswa = Siswa::whereId($id)->first();
-            $siswa->update(['siswa_kelas'=> '-']);
+            $siswa->update(['s_kelas'=> '-']);
         } else {
             $this->validate($request, [
-                'siswa_kelamin' => 'required',
-                'siswa_nama' => 'required|string',
-                'siswa_kelas' => 'required|string',
-                'siswa_tempatlahir' => 'required|string',
-                'siswa_tanggallahir' => 'required|date'
+                's_kelamin' => 'required',
+                's_nama' => 'required|string',
+                //'s_kelas' => 'required|string',
+                's_tempat_lahir' => 'required|string',
+                's_tanggal_lahir' => 'required|date'
             ]);
     
             $siswa = Siswa::whereId($id)->first();
-            $siswa->update($request->except('Siswa_nis'));
+            $siswa->update($request->all());
         }
         return response()->json(['status' => 'success'], 200);
         

@@ -23,9 +23,9 @@
             </div>
             <div class="panel-body">
                 <b-table striped hover bordered :items="siswas.data" :fields="fields" show-empty>
-                    <template v-slot:cell(siswa_kelamin)="row">
-                        <span class="badge badge-info" v-if="row.item.siswa_kelamin == 'Laki-laki'">L</span>
-                        <span class="badge badge-danger" v-if="row.item.siswa_kelamin == 'Perempuan'">P</span>
+                    <template v-slot:cell(s_kelamin)="row">
+                        <span class="badge badge-info" v-if="row.item.s_kelamin == 'Laki-laki'">L</span>
+                        <span class="badge badge-danger" v-if="row.item.s_kelamin == 'Perempuan'">P</span>
                     </template>
                     <template v-slot:cell(s_keterangan)="row">
                         <span class="badge badge-danger" v-if="row.item.s_keterangan == 'ALUMNI'">Alumni</span>
@@ -77,10 +77,10 @@ export default {
             //FIELD UNTUK B-TABLE, PASTIKAN KEY NYA SESUAI DENGAN FIELD DATABASE
             //AGAR OTOMATIS DI-RENDER
             fields: [
-                { key: 'siswa_kelas', label: 'Kelas' },
-                { key: 'siswa_nis', label: 'NIS' },
-                { key: 'siswa_nama', label: 'Nama Siswa' },
-                { key: 'siswa_kelamin', label: 'L/P' },
+                { key: 's_kelas', label: 'Kelas' },
+                { key: 's_nis', label: 'NIS' },
+                { key: 's_nama', label: 'Nama Siswa' },
+                { key: 's_kelamin', label: 'L/P' },
                 { key: 's_keterangan', label: 'Status' },
                 { key: 'actions', label: 'Aksi' }
             ],
