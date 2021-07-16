@@ -6,14 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\SiswaCollection;
 use App\Siswa;
+use DB;
 
 class SiswaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $siswas = Siswa::orderBy('s_nama', 'ASC');
+        $user = $request->user();
+        $siswas = Siswa::with('kelas')->orderBy('s_nama', 'ASC')->where('unit_id',$user->unit_id);
        if (request()->kelas != '') {
-            $siswas = $siswas->where('s_kelas', '=' , request()->kelas);
+            $siswas = $siswas->where('kelas_id', '=' , request()->kelas);
                                 //->where('s_nama', 'LIKE', '%' . request()->q . '%');
         }
         if (request()->key == 'addAnggotaKelas') {
@@ -21,7 +23,11 @@ class SiswaController extends Controller
                            ->where('s_kelas', '!=' , request()->kelas);
         }
         if (request()->q != '') {
-            $siswas = $siswas->where('s_nama', 'LIKE', '%' . request()->q . '%');
+            $q = $request->q;
+            $siswas = $siswas->where('s_nama', 'LIKE', '%' . request()->q . '%')
+                            ->orwhereHas('kelas', function($query) use($q){
+                                $query->where('kelas_nama','like','%'.$q.'%');
+                            });
         }
         if (request()->s != '') {
             $siswas = $siswas->where('s_keterangan', 'LIKE', '%' . request()->s . '%');
@@ -29,7 +35,6 @@ class SiswaController extends Controller
         if (request()->seragam != '') {
             $siswas = $siswas->whereIn('s_keterangan',['SISWA BARU','AKTIF']);
         }
-        
         $siswas = $siswas->paginate(40);
         return new SiswaCollection($siswas);
     }
@@ -49,7 +54,7 @@ class SiswaController extends Controller
 
     public function edit($id)
     {
-        $siswa = Siswa::whereId($id)->first();
+        $siswa = Siswa::whereId($id)->with('kelas')->first();
         return response()->json(['status' => 'success', 'data' => $siswa], 200);
     }
 

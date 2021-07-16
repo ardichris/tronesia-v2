@@ -8,9 +8,16 @@ use App\Http\Resources\KelasCollection;
 use App\Kelas;
 use App\User;
 use App\Siswa;
+use App\KelasAnggota;
 
 class KelasController extends Controller
 {
+    public function getAnggota($id)
+    {
+        $anggota = Siswa::whereKelas_id($id)->orderBy('s_nama', 'ASC');
+        return new KelasCollection($anggota->paginate(40));
+    }
+    
     public function tambahAnggota(Request $request)
     {
         return response()->json(['status' => 'success1'], 200);

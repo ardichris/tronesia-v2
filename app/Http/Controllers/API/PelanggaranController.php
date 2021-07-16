@@ -15,7 +15,7 @@ class PelanggaranController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $pelanggarans = Pelanggaran::with(['siswa','user','jurnal','masterpelanggaran'])->orderBy('created_at', 'DESC');
+        $pelanggarans = Pelanggaran::with(['siswa','user','jurnal','masterpelanggaran'])->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');
         if (request()->q != '') { 
             $q = request()->q;
             $pelanggarans = $pelanggarans->whereHas('siswa', function($query) use($q){
@@ -67,7 +67,8 @@ class PelanggaranController extends Controller
             'mp_id' => $request->mp_id['id'],
             'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
             'pelanggaran_keterangan' => $request->pelanggaran_keterangan,
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'unit_id' => $user->unit_id,
         ]);
         return response()->json(['status' => 'success']);
     }
@@ -97,7 +98,8 @@ class PelanggaranController extends Controller
                               'mp_id' => $request->mp_id['id'],
                               'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
                               'pelanggaran_keterangan' => $request->pelanggaran_keterangan,
-                              'user_id' => $user->id
+                              'user_id' => $user->id,
+                              'unit_id' => $user->unit_id,
                             ]);
         return response()->json(['status' => 'success'], 200);
     }

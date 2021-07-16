@@ -5,7 +5,7 @@
                 <h3 class="panel-title">View Siswa</h3>
             </div>
             <div class="panel-body">
-                <mapel-form></mapel-form>
+                <siswa-form></siswa-form>
                 <div class="form-group">
                     <button class="btn btn-danger btn-sm btn-flat" @click.prevent="back">
                         <i class="fa fa-angle-double-left"></i> Kembali
@@ -26,14 +26,14 @@
             this.viewSiswa(this.$route.params.id)
         },
         methods: {
-            ...mapActions('mapel', ['viewSiswa']),
+            ...mapActions('siswa', ['viewSiswa']),
             back() {
-                    this.$router.push({ name: 'mapels.data' })
+                    this.$router.push({ name: 'siswas.data' })
             }
            
         },
         components: {
-            'mapel-form': FormSiswas
+            'siswa-form': FormSiswas
         },
     }
 </script>

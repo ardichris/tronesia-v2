@@ -82,9 +82,23 @@ const mutations = {
 }
 
 const actions = {
+    /*getSiswa({ commit, state }, payload) {
+        let search = payload.search
+        let kelass = state.jurnal.kelas_id.id
+        payload.loading(true)
+        return new Promise((resolve, reject) => {
+            $axios.get(`/kelas/anggotakelas/${kelass}`)
+            .then((response) => {
+                console.log(response.data)
+                commit('SISWA_DATA', response.data)
+                payload.loading(false)
+                resolve(response.data)
+            })
+        })
+    },*/
     getSiswa({ commit, state }, payload) {
         let search = payload.search
-        let kelass = state.jurnal.kelas_id.kelas_nama
+        let kelass = state.jurnal.kelas_id.id
         payload.loading(true)
         return new Promise((resolve, reject) => {
             $axios.get(`/siswas?kelas=${kelass}&q=${search}`)

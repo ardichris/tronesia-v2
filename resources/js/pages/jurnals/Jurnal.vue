@@ -74,6 +74,7 @@
                         <span class="badge badge-success" v-if="row.item.jm_status == 1">Approved</span>
                         <span class="badge badge-danger" v-else-if="row.item.jm_status == 2">Rejected</span>
                         <span class="badge badge-warning" v-else-if="row.item.jm_status == 0">Submited</span>
+                        <span class="badge badge-dark" v-else-if="row.item.jm_status == 3">Archived</span>
                         
                     </template>
                     <template v-slot:cell(kelas_id)="row">
@@ -87,12 +88,12 @@
                         <div class="btn-group" v-if="row.item.jm_status != 2 && (authenticated.role==1 || authenticated.role==0)" >
                             <button class="btn btn-warning btn-sm"  v-if="(row.item.jm_status == 1)" @click="updateJMstatus(row.item,0)"><i class="fa fa-clock"></i></button>
                             <button class="btn btn-success btn-sm" v-if="(row.item.jm_status == 0)" @click="updateJMstatus(row.item,1)"><i class="fa fa-check-circle"></i></button>
-                            <button class="btn btn-danger btn-sm" v-if="(row.item.jm_status != 2)" @click="rejectJM(row.item.jm_kode)"><i class="fa fa-times"></i></button>
+                            <button class="btn btn-danger btn-sm" v-if="(row.item.jm_status != 3 && row.item.jm_status != 2)" @click="rejectJM(row.item.jm_kode)"><i class="fa fa-times"></i></button>
                         </div>
                         <div class="btn-group"> 
-                            <button class="btn btn-success btn-sm" @click="viewJM(row.item.jm_kode)" v-if="row.item.jm_status == 1 || authenticated.role==0"><i class="fa fa-eye"></i></button>
-                            <button class="btn btn-warning btn-sm" @click="editJM(row.item.jm_kode)" v-if="row.item.jm_status != 1 || authenticated.role==0"><i class="fa fa-edit"></i></button>
-                            <button class="btn btn-danger btn-sm" @click="deleteJurnal(row.item.id)" v-if="row.item.jm_status != 1 || authenticated.role==0"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-success btn-sm" @click="viewJM(row.item.jm_kode)" v-if="(row.item.jm_status == 1 && row.item.jm_status != 3) ||authenticated.role==0"><i class="fa fa-eye"></i></button>
+                            <button class="btn btn-warning btn-sm" @click="editJM(row.item.jm_kode)" v-if="(row.item.jm_status != 1 && row.item.jm_status != 3) || authenticated.role==0"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-danger btn-sm" @click="deleteJurnal(row.item.id)" v-if="(row.item.jm_status != 1 && row.item.jm_status != 3) || authenticated.role==0"><i class="fa fa-trash"></i></button>
                         </div>
                     </template>
                 </b-table>

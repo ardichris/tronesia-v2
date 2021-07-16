@@ -112,14 +112,14 @@
                             <v-select :options="siswas.data"
                                 v-model="row.siswa"
                                 @search="onSearchSiswa" 
-                                label="siswa_nama"
+                                label="s_nama"
                                 placeholder="Masukkan Kata Kunci" 
                                 :filterable="false">
                                 <template slot="no-options">
                                     Masukkan Kata Kunci
                                 </template>
                                 <template slot="option" slot-scope="option">
-                                    {{ option.siswa_nama }}
+                                    {{ option.s_nama }}
                                 </template>
                             </v-select>
                         </td>
@@ -155,14 +155,14 @@
                             <v-select :options="siswas.data"
                                 v-model="row.siswa"
                                 @search="onSearchSiswa" 
-                                label="siswa_nama"
+                                label="s_nama"
                                 placeholder="Masukkan Kata Kunci" 
                                 :filterable="false">
                                 <template slot="no-options">
                                     Masukkan Kata Kunci
                                 </template>
                                 <template slot="option" slot-scope="option">
-                                    {{ option.siswa_nama }}
+                                    {{ option.s_nama }}
                                 </template>
                             </v-select>
                         </td>

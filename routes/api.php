@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/mapel', 'API\MapelController')->except(['create', 'show']);
     Route::resource('/kelas', 'API\KelasController')->except(['create', 'show']);
     Route::put('/kelas/addanggota','API\KelasController@tambahAnggota');
+    Route::get('/kelas/anggotakelas/{kode}','API\KelasController@getAnggota');
     Route::resource('/masterpelanggaran', 'API\MasterPelanggaranController')->except(['create', 'show']);
     Route::resource('/barang', 'API\BarangController')->except(['create', 'show']);    
     Route::resource('/pemakaianbarang', 'API\PemakaianBarangController')->except(['create', 'show']);

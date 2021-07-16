@@ -28,7 +28,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
                 with font-awesome or any other icon font library -->
-                <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==4">
+                <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==4 || authenticated.role==2">
                     <a class="nav-link">
                     <i class="nav-icon fas fa-database"></i>
                     <p>
@@ -37,49 +37,49 @@
                     </p>
                     </a>
                     <ul class="nav nav-treeview">
-                    <li class="nav-item" v-if="authenticated.role==0">
+                    <li class="nav-item">
                         <a class="nav-link ml-3">
                         <i class="fas fa-users nav-icon"></i>
                         <p><router-link :to="{ name: 'siswas.data' }">Master Siswa</router-link></p>
                         </a>
                     </li>
-                    <li class="nav-item" v-if="authenticated.role==0">
+                    <li class="nav-item" v-if="authenticated.role!=2">
                         <a class="nav-link ml-3">
                         <i class="fas fa-chalkboard-teacher nav-icon"></i>
                         <p><router-link :to="{ name: 'teachers.data' }">Master Guru</router-link></p>
                         </a>
                     </li>
-                    <li class="nav-item" v-if="authenticated.role==0">
+                    <li class="nav-item" v-if="authenticated.role!=2">
                         <a class="nav-link ml-3">
                         <i class="fas fa-book nav-icon"></i>
                         <p><router-link :to="{ name: 'mapel.data' }">Master Mapel</router-link></p>
                         </a>
                     </li>
-                    <li class="nav-item" v-if="authenticated.role==0">
+                    <li class="nav-item" v-if="authenticated.role!=2">
                         <a class="nav-link ml-3">
                         <i class="fas fa-address-card nav-icon"></i>
                         <p><router-link :to="{ name: 'kelas.data' }">Master Kelas</router-link></p>
                         </a>
                     </li>
-                    <li class="nav-item" v-if="authenticated.role==0">
+                    <li class="nav-item" v-if="authenticated.role!=2">
                         <a class="nav-link ml-3">
                         <i class="fas fa-running nav-icon"></i>
                         <p><router-link :to="{ name: 'kompetensi.data' }">Master Kompetensi</router-link></p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="authenticated.role!=2">
                         <a class="nav-link ml-3">
                         <i class="fas fa-ban nav-icon"></i>
                         <p><router-link :to="{ name: 'masterpelanggarans.data' }">Master Pelanggaran</router-link></p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="authenticated.role!=2">
                         <a class="nav-link ml-3">
                         <i class="fas fa-dolly nav-icon"></i>
                         <p><router-link :to="{ name: 'barang.data' }">Master Barang</router-link></p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="authenticated.role!=2">
                         <a class="nav-link ml-3">
                         <i class="fas fa-university nav-icon"></i>
                         <p><router-link :to="{ name: 'unit.data' }">Master Unit</router-link></p>

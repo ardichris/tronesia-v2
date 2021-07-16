@@ -20,7 +20,7 @@ const actions = {
         return new Promise((resolve, reject) => {            
             $axios.get(`/presensi?page=${state.page}&q=${search}`)
             .then((response) => {
-                //console.log(response.data)
+                console.log(response.data)
                 commit('ASSIGN_DATA', response.data)
                 resolve(response.data)
             })

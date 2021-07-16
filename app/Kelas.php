@@ -22,4 +22,9 @@ class Kelas extends Model
     {
         return $this->belongsTo(Unit::class);
     }
+
+    public function kelasanggota()
+    {
+        return $this->belongsTo(KelasAnggota::class);
+    }
 }

@@ -66,6 +66,10 @@ const state = () => ({
         s_domisili_kelurahan: '',
         s_domisili_kecamatan: '',
         s_domisili_kota: '',
+        s_ayah_perusahaan: '',
+        s_ayah_jabatan: '',
+        s_ibu_perusahaan: '',
+        s_ibu_jabatan: '',
     },
     page: 1
 })
@@ -141,6 +145,10 @@ const mutations = {
             s_domisili_kelurahan: payload.s_domisili_kelurahan,
             s_domisili_kecamatan: payload.s_domisili_kecamatan,
             s_domisili_kota: payload.s_domisili_kota,
+            s_ayah_perusahaan: payload.s_ayah_perusahaan,
+            s_ayah_jabatan: payload.s_ayah_jabatan,
+            s_ibu_perusahaan: payload.s_ibu_perusahaan,
+            s_ibu_jabatan: payload.s_ibu_jabatan,
         }
     },
     CLEAR_FORM(state) {
@@ -207,6 +215,10 @@ const mutations = {
             s_domisili_kelurahan: '',
             s_domisili_kecamatan: '',
             s_domisili_kota: '',
+            s_ayah_perusahaan: '',
+            s_ayah_jabatan: '',
+            s_ibu_perusahaan: '',
+            s_ibu_jabatan: '',
         }
     }
 }

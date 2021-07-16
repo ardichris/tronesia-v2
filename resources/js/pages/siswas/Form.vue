@@ -225,6 +225,14 @@
                                 <label>Pekerjaan Ayah</label>
                                 <input type="text" class="form-control" v-model="siswa.s_ayah_pekerjaan" :readonly="$route.name == 'siswas.view'">
                             </div>
+                            <div class="form-group">
+                                <label>Perusahaan Ayah</label>
+                                <input type="text" class="form-control" v-model="siswa.s_ayah_perusahaan" :readonly="$route.name == 'siswas.view'">
+                            </div>
+                            <div class="form-group">
+                                <label>Jabatan Ayah</label>
+                                <input type="text" class="form-control" v-model="siswa.s_ayah_jabatan" :readonly="$route.name == 'siswas.view'">
+                            </div>
                             <div class="form-group validate">
                                 <label>Penghasilan Ayah</label>
                                 <select class="form-control form-control" aria-invalid="false" v-model="siswa.s_ayah_penghasilan" :readonly="$route.name == 'siswas.view'">
@@ -273,6 +281,14 @@
                             <div class="form-group">
                                 <label>Pekerjaan Ibu</label>
                                 <input type="text" class="form-control" v-model="siswa.s_ibu_pekerjaan" :readonly="$route.name == 'siswas.view'">
+                            </div>
+                            <div class="form-group">
+                                <label>Perusahaan Ibu</label>
+                                <input type="text" class="form-control" v-model="siswa.s_ibu_perusahaan" :readonly="$route.name == 'siswas.view'">
+                            </div>
+                            <div class="form-group">
+                                <label>Jabatan Ibu</label>
+                                <input type="text" class="form-control" v-model="siswa.s_ibu_jabatan" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
                                 <label>Penghasilan Ibu</label>

@@ -34,8 +34,8 @@
                     </template>
                     <template v-slot:cell(actions)="row">
                         <router-link :to="{ name: 'siswas.view', params: {id: row.item.id} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
-                        <router-link :to="{ name: 'siswas.edit', params: {id: row.item.id} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
-                        <button class="btn btn-danger btn-sm" @click="deleteSiswa(row.item.id)"><i class="fa fa-trash"></i></button>
+                        <router-link :to="{ name: 'siswas.edit', params: {id: row.item.id} }" class="btn btn-warning btn-sm" v-if="authenticated.id==row.item.kelas.kelas_wali || authenticated.role==0"><i class="fa fa-edit"></i></router-link>
+                        <button class="btn btn-danger btn-sm" @click="deleteSiswa(row.item.id)" v-if="authenticated.role==0"><i class="fa fa-trash"></i></button>
                     </template>
                 </b-table>
 
@@ -77,7 +77,7 @@ export default {
             //FIELD UNTUK B-TABLE, PASTIKAN KEY NYA SESUAI DENGAN FIELD DATABASE
             //AGAR OTOMATIS DI-RENDER
             fields: [
-                { key: 's_kelas', label: 'Kelas' },
+                { key: 'kelas.kelas_nama', label: 'Kelas' },
                 { key: 's_nis', label: 'NIS' },
                 { key: 's_nama', label: 'Nama Siswa' },
                 { key: 's_kelamin', label: 'L/P' },
@@ -90,6 +90,9 @@ export default {
     },
     computed: {
         //MENGAMBIL DATA OUTLETS DARI STATE OUTLETS
+        ...mapState('user', {
+            authenticated: state => state.authenticated
+        }),
         ...mapState('siswa', {
             siswas: state => state.siswas
         }),

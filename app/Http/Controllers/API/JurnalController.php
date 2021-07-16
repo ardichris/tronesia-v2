@@ -139,7 +139,7 @@ class JurnalController extends Controller
                         $kode = "JM".date('y').date('m').date('d').$counter;
                     }
                 } else {
-                    $kode = "JM".date('y').date('m').date('d')."0001";
+                    $kode = "JM".date('y').date('m').date('d')."001";
                 } 
             }
             $user = $request->user();
@@ -199,7 +199,8 @@ class JurnalController extends Controller
                     'pelanggaran_tanggal' => $request->jm_tanggal,
                     'pelanggaran_jenis' => $row['pelanggaran_jenis'],
                     'pelanggaran_keterangan' => $row['pelanggaran_keterangan'],
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'unit_id' => $user->unit_id
                 ]);
             }
             
@@ -264,6 +265,7 @@ class JurnalController extends Controller
             'kompetensi_id' => $request->kompetensi_id['id'],
             'jm_materi' => $request->jm_materi,
             'user_id' => $request->user_id['id'],
+            'unit_id' => $user->unit_id,
             'jm_status' => $konflik != 0 ? 2:0,
             'jm_keterangan' => $request->jm_keterangan,
             'jm_catatan' => $catatan
@@ -311,7 +313,8 @@ class JurnalController extends Controller
                     'pelanggaran_tanggal' => $request->jm_tanggal,
                     'pelanggaran_jenis' => $row['pelanggaran_jenis'],
                     'pelanggaran_keterangan' => $row['pelanggaran_keterangan'],
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'unit_id' => $user->unit_id
                 ]);
             }
         } 

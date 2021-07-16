@@ -16,14 +16,14 @@
               
               	<!-- TABLE UNTUK MENAMPILKAN LIST PELANGGARAN -->
                 <b-table striped hover bordered :items="presensis.data" :fields="fields" show-empty>                	
-                    <template v-slot:cell(siswa_id)="row">
-                        {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
+                    <template v-slot:cell(siswa)="row">
+                        {{ row.item.siswa_id ? row.item.siswa.s_nama:'-' }}
                     </template>
                     <template v-slot:cell(presensi_tanggal)="row">
                         <h5><span class="badge badge-info">{{ row.item.jurnal.jm_tanggal ? row.item.jurnal.jm_tanggal:'-' }}</span></h5>
                     </template>
                     <template v-slot:cell(jampel)="row">
-                        <h5><span class="badge badge-warning">{{ row.item.siswa.siswa_kelas }} <span class="badge badge-danger">{{ row.item.jurnal.jm_jampel}}</span></span></h5>
+                        <h5><span class="badge badge-warning">{{ row.item.siswa.kelas_id ? row.item.siswa.kelas.kelas_nama:'-' }} <span class="badge badge-danger">{{ row.item.jurnal.jm_jampel}}</span></span></h5>
                     </template>
                 </b-table>
               	<!-- TABLE UNTUK MENAMPILKAN LIST PELANGGARAN -->
@@ -62,7 +62,7 @@ export default {
             fields: [
                 { key: 'presensi_tanggal', label: 'Tanggal' },
                 { key: 'jampel', label: 'Kelas/JP' },
-                { key: 'siswa_id', label: 'Nama Lengkap' },
+                { key: 'siswa', label: 'Nama Lengkap' },
                 { key: 'alasan', label: 'Alasan' }
             ],
             search: ''
