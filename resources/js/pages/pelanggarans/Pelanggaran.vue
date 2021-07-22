@@ -48,14 +48,14 @@
               	<!-- TABLE UNTUK MENAMPILKAN LIST PELANGGARAN -->
                 <b-table striped hover bordered :items="pelanggarans.data" :fields="fields" show-empty>                	
                     <template v-slot:cell(siswa_id)="row">
-                        {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
+                        {{ row.item.siswa_id ? row.item.siswa.s_nama:'-' }}
                     </template>
                     <template v-slot:cell(pelanggaran)="row">
                         {{ row.item.mp_id ? row.item.masterpelanggaran.mp_pelanggaran:'' }} {{ row.item.pelanggaran_jenis ? row.item.pelanggaran_jenis:'' }}
                     </template>
                     <template v-slot:cell(guru)="row">
                         <h5><span class="badge badge-secondary">{{row.item.user.name}}</span></h5>
-                        <h5><span class="badge badge-warning" v-if="(row.item.jurnal != null)" >{{ row.item.siswa.siswa_kelas }} <span class="badge badge-danger">{{ row.item.jurnal ? row.item.jurnal.jm_jampel:'-' }}</span></span></h5>
+                        <h5><span class="badge badge-warning" v-if="(row.item.jurnal != null)" >{{ row.item.jurnal.kelas.kelas_nama }} <span class="badge badge-danger">{{ row.item.jurnal ? row.item.jurnal.jm_jampel:'-' }}</span></span></h5>
                         <span class="badge badge-info">{{ row.item.pelanggaran_tanggal ? row.item.pelanggaran_tanggal:'-' }}</span>
                     </template>
                     <template v-slot:cell(actions)="row">

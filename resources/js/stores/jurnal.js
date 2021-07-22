@@ -78,17 +78,10 @@ const mutations = {
             detail: [],
             pelanggaran: [],
         },
-<<<<<<< HEAD
-        state.siswa= [],
-        state.kelas= [],
-        state.kompetensi= [],
-        state.mapel= []
-=======
         state.siswa = [],
         state.kelas = [],
         state.kompetensi = [],
         state.mapel = []
->>>>>>> da5e61431cf17e81d1408f4eae629567f203127a
     }
 }
 
@@ -161,7 +154,6 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.get(`/jurnal?page=${state.page}&q=${search}&s=${status}`)
             .then((response) => {
-                console.log(response.data)
                 commit('ASSIGN_DATA', response.data)
                 resolve(response.data)
             })
