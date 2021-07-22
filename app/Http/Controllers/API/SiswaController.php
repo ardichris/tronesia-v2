@@ -35,7 +35,7 @@ class SiswaController extends Controller
         if (request()->seragam != '') {
             $siswas = $siswas->whereIn('s_keterangan',['SISWA BARU','AKTIF']);
         }
-        if ($user->role != 0){
+        if ($user->role != 0 && request()->kelas == ''){
             $siswas = $siswas->whereHas('kelas', function($query) use($user){
                 $query->where('kelas_wali', $user->id);
                })->orwhereHas('kelas', function($query) use($user){
