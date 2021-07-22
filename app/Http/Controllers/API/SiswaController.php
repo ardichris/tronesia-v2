@@ -35,6 +35,11 @@ class SiswaController extends Controller
         if (request()->seragam != '') {
             $siswas = $siswas->whereIn('s_keterangan',['SISWA BARU','AKTIF']);
         }
+        if ($user->role != 0){
+            $siswas = $siswas->whereHas('kelas', function($query) use($user){
+                $query->where('kelas_wali', $user->id);
+               });
+        }
         $siswas = $siswas->paginate(40);
         return new SiswaCollection($siswas);
     }
