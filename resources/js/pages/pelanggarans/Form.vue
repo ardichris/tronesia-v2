@@ -5,7 +5,7 @@
             <v-select :options="siswas.data"
                 v-model="pelanggaran.siswa_id"
                 @search="onSearch" 
-                label="siswa_nama"
+                label="s_nama"
                 placeholder="Masukkan Kata Kunci" 
                 :disabled="$route.name == 'pelanggarans.view'"
                 :filterable="false">
@@ -13,7 +13,7 @@
                     Masukkan Kata Kunci
                 </template>
                 <template slot="option" slot-scope="option">
-                    {{ option.siswa_nama }} - {{ option.siswa_kelas }}
+                    {{ option.s_nama }} - {{option.kelas ? option.kelas.kelas_nama:''}}
                 </template>
             </v-select>
             <p class="text-danger" v-if="errors.siswa_id">Siswa belum dipilih</p>

@@ -4,7 +4,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('add-modal')">Tambah</b-button>
+                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('add-modal')"  v-if="authenticated.role==0">Tambah</b-button>
                         <b-modal id="add-modal">
                             <template v-slot:modal-title>
                                 Tambah Pelanggaran
@@ -55,7 +55,7 @@
                     </template>
                     <template v-slot:cell(guru)="row">
                         <h5><span class="badge badge-secondary">{{row.item.user.name}}</span></h5>
-                        <h5><span class="badge badge-warning" v-if="(row.item.jurnal != null)" >{{ row.item.jurnal.kelas.kelas_nama }} <span class="badge badge-danger">{{ row.item.jurnal ? row.item.jurnal.jm_jampel:'-' }}</span></span></h5>
+                        <h5><span class="badge badge-warning">{{ row.item.siswa.kelas ? row.item.siswa.kelas.kelas_nama:'' }} <span class="badge badge-danger">{{ row.item.jurnal ? row.item.jurnal.jm_jampel:'' }}</span></span></h5>
                         <span class="badge badge-info">{{ row.item.pelanggaran_tanggal ? row.item.pelanggaran_tanggal:'-' }}</span>
                     </template>
                     <template v-slot:cell(actions)="row">
@@ -110,6 +110,9 @@ export default {
     computed: {
         ...mapState('pelanggaran', {
             pelanggarans: state => state.pelanggarans
+        }),
+        ...mapState('user', {
+            authenticated: state => state.authenticated
         }),
         page: {
             get() {

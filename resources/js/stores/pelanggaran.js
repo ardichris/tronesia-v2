@@ -47,7 +47,9 @@ const mutations = {
             pelanggaran_tanggal: '',
             pelanggaran_jenis: '',
             pelanggaran_keterangan: ''
-        }
+        },
+        siswas= [],
+        MPs= []
     }
 }
 

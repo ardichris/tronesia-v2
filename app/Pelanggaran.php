@@ -13,6 +13,11 @@ class Pelanggaran extends Model
         return $this->belongsTo(Siswa::class);
     }
 
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

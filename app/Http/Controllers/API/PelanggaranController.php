@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\PelanggaranCollection;
 use App\Pelanggaran;
-use App\Siswa;
 use App\MasterPelanggaran;
 use DB;
 
@@ -15,18 +14,22 @@ class PelanggaranController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $pelanggarans = Pelanggaran::with(['siswa','user','jurnal','jurnal.kelas','masterpelanggaran'])->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');
+        $pelanggarans = Pelanggaran::with(['siswa','user','jurnal','siswa.kelas','masterpelanggaran'])->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');
         if (request()->q != '') { 
             $q = request()->q;
             $pelanggarans = $pelanggarans->whereHas('siswa', function($query) use($q){
-                                        $query->where('siswa_nama','like','%'.$q.'%');
+                                        $query->where('s_nama','like','%'.$q.'%');
                                         })
-                                        ->orwhereHas('user', function($query) use($q){
-                                        $query->where('name','like','%'.$q.'%');
-                                        });                   
+                                        ->orWhere('pelanggaran_jenis','like','%'.$q.'%')
+                                        ->orWhere('pelanggaran_keterangan','like','%'.$q.'%');                   
         }
         if($user->role==2){
-            $pelanggarans = $pelanggarans->where('user_id',$user->id);
+            $pelanggarans = $pelanggarans->whereHas('siswa.kelas', function($query) use($user){
+                                            $query->where('kelas_wali',$user->id);
+                                            })
+                                        ->orwhereHas('siswa.kelas', function($query) use($user){
+                                            $query->where('k_mentor', $user->id);
+                                            });
         }
         
         return new PelanggaranCollection($pelanggarans->paginate(10));
