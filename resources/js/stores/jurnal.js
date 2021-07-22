@@ -78,18 +78,10 @@ const mutations = {
             detail: [],
             pelanggaran: [],
         },
-<<<<<<< HEAD
         state.siswa= [],
         state.kelas= [],
         state.kompetensi= [],
         state.mapel= []
-=======
-        state.siswa = [],
-        state.kelas = [],
-        state.kompetensi = [],
-        state.mapel = [],
-        state.jurnals = []
->>>>>>> 982d563191afcdf6481387027d1a7623f104ade7
     }
 }
 
