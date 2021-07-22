@@ -15,7 +15,7 @@ class PelanggaranController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $pelanggarans = Pelanggaran::with(['siswa','user','jurnal','masterpelanggaran'])->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');
+        $pelanggarans = Pelanggaran::with(['siswa','user','jurnal','jurnal.kelas','masterpelanggaran'])->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');
         if (request()->q != '') { 
             $q = request()->q;
             $pelanggarans = $pelanggarans->whereHas('siswa', function($query) use($q){
