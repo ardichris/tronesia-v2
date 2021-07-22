@@ -35,6 +35,13 @@ class SiswaController extends Controller
         if (request()->seragam != '') {
             $siswas = $siswas->whereIn('s_keterangan',['SISWA BARU','AKTIF']);
         }
+        if ($user->role != 0){
+            $siswas = $siswas->whereHas('kelas', function($query) use($user){
+                $query->where('kelas_wali', $user->id);
+               })->orwhereHas('kelas', function($query) use($user){
+                $query->where('k_mentor', $user->id);
+               });
+        }
         $siswas = $siswas->paginate(40);
         return new SiswaCollection($siswas);
     }
@@ -72,11 +79,11 @@ class SiswaController extends Controller
             $siswa->update(['s_kelas'=> '-']);
         } else {
             $this->validate($request, [
-                's_kelamin' => 'required',
+                //'s_kelamin' => 'required',
                 's_nama' => 'required|string',
                 //'s_kelas' => 'required|string',
-                's_tempat_lahir' => 'required|string',
-                's_tanggal_lahir' => 'required|date'
+                //'s_tempat_lahir' => 'required|string',
+                //'s_tanggal_lahir' => 'required|date'
             ]);
     
             $siswa = Siswa::whereId($id)->first();

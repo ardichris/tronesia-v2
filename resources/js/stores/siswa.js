@@ -4,7 +4,7 @@ const state = () => ({
     siswas: [],
 
     siswa: {
-        s_nis: null,
+        s_nis: '',
         s_nisn: '',
         s_nik: '',
         s_code: '',
@@ -70,6 +70,8 @@ const state = () => ({
         s_ayah_jabatan: '',
         s_ibu_perusahaan: '',
         s_ibu_jabatan: '',
+        s_keterangan: '',
+        kelas: []
     },
     page: 1
 })
@@ -149,6 +151,8 @@ const mutations = {
             s_ayah_jabatan: payload.s_ayah_jabatan,
             s_ibu_perusahaan: payload.s_ibu_perusahaan,
             s_ibu_jabatan: payload.s_ibu_jabatan,
+            s_keterangan: payload.s_keterangan,
+            kelas: payload.kelas
         }
     },
     CLEAR_FORM(state) {
@@ -219,6 +223,8 @@ const mutations = {
             s_ayah_jabatan: '',
             s_ibu_perusahaan: '',
             s_ibu_jabatan: '',
+            s_keterangan: '',
+            kelas: []
         }
     }
 }

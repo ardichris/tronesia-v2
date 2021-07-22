@@ -7,11 +7,11 @@
                     <div class="row">
                     <div class="col-12 col-sm-6">
                         <div class="form-group">
-                            <label>Nama</label>
+                            <label>Nama</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                             <input type="text" class="form-control" v-model="siswa.s_nama" :readonly="$route.name == 'siswas.view'">
                         </div>
                         <div class="form-group">
-                            <label>NIS/NISN/Student Code</label>
+                            <label>NIS/NISN/Student Code</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                             <div class="row">
                                 <div class="col">
                                     <input type="text" class="form-control" v-model="siswa.s_nis" :readonly="$route.name == 'siswas.edit' || $route.name == 'siswas.view'">
@@ -25,7 +25,7 @@
                             </div>
                         </div>
                             <div class="form-group">
-                                <label>Tempat Tanggal Lahir</label>
+                                <label>Tempat Tanggal Lahir</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <div class="row">
                                     <div class="col">
                                         <input type="text" class="form-control" placeholder="Tempat lahir" v-model="siswa.s_tempat_lahir" :readonly="$route.name == 'siswas.view'">
@@ -36,7 +36,7 @@
                                 </div>
                             </div>
                             <div class="form-group validate">
-                                <label>J. Kelamin/Anak ke/Status Anak</label>
+                                <label>J. Kelamin/Anak ke/Status Anak</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <div class="row">
                                     <div class="col">
                                         <select type="text" class="form-control" aria-invalid="false" v-model="siswa.s_kelamin" :readonly="$route.name == 'siswas.view'">
@@ -58,7 +58,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>NIK</label>
+                                <label>NIK</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="text" class="form-control" v-model="siswa.s_nik" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
@@ -143,11 +143,11 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="inputTelpon">No. Telpon</label>
+                                <label for="inputTelpon">No. Telpon</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="text" class="form-control" v-model="siswa.s_notelp" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
-                                <label for="inputHandphone">No. Handphone</label>
+                                <label for="inputHandphone">No. Handphone</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="text" class="form-control" v-model="siswa.s_nohandphone" :readonly="$route.name == 'siswas.view'">
                             </div>
 
@@ -194,15 +194,15 @@
                     <div class="row">
                         <div class="col-12 col-sm-6">
                             <div class="form-group">
-                                <label for="inputAyah">Nama Ayah</label>
+                                <label for="inputAyah">Nama Ayah</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="text" class="form-control" v-model="siswa.s_ayah_nama" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
-                                <label for="inputLahirAyah">Tanggal Lahir Ayah</label>
+                                <label for="inputLahirAyah">Tanggal Lahir Ayah</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="date" class="form-control" v-model="siswa.s_ayah_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
-                                <label for="inputNIKAyah">NIK Ayah</label>
+                                <label for="inputNIKAyah">NIK Ayah</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="text" class="form-control" v-model="siswa.s_ayah_nik" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
@@ -245,21 +245,21 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>No. KK(Kartu Keluarga)</label>
+                                <label>No. KK(Kartu Keluarga)</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="text" class="form-control" v-model="siswa.s_kk_nomor" :readonly="$route.name == 'siswas.view'">
                             </div>
                         </div>
                         <div class="col-12 col-sm-6">
                             <div class="form-group">
-                                <label for="inputIbu">Nama Ibu</label>
+                                <label for="inputIbu">Nama Ibu</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="text" class="form-control" v-model="siswa.s_ibu_nama" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
-                                <label for="inputLahirIbu">Tanggal Lahir Ibu</label>
+                                <label for="inputLahirIbu">Tanggal Lahir Ibu</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="date" class="form-control" v-model="siswa.s_ibu_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
-                                <label for="inputNIKIbu">NIK Ibu</label>
+                                <label for="inputNIKIbu">NIK Ibu</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="text" class="form-control" v-model="siswa.s_ibu_nik" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
@@ -446,22 +446,22 @@
                         <div class="col-12 col-sm-6">
 
                             <div class="form-group">
-                                <label >Status Siswa</label>
-                                <input type="text" class="form-control" disabled="">
-                            </div>
-                            <div class="form-group">
-                                <label>Jenjang</label>
-                                <input type="text" class="form-control" disabled="">
+                                <label >Status Siswa    </label>
+                                <h4>
+                                <span class="badge badge-danger" v-if="siswa.s_keterangan == 'ALUMNI'">Alumni</span>
+                                <span class="badge badge-primary" v-if="siswa.s_keterangan == 'SISWA BARU'">Siswa Baru</span>
+                                <span class="badge badge-success" v-if="siswa.s_keterangan == 'AKTIF'">Aktif</span>
+                                </h4>
                             </div>
                         </div>
                         <div class="col-12 col-sm-6">
                             <div class="form-group">
-                                <label>Jurusan</label>
-                                <input type="text" class="form-control" disabled="">
-                            </div>
-                            <div class="form-group">
-                                <label>Kelas</label>
-                                <input type="text" class="form-control" disabled="">
+                                <label>Kelas     </label>
+                                <h4>
+                                <span class="badge badge-danger" v-if="siswa.kelas.kelas_jenjang == '8'">{{siswa.kelas.kelas_nama}}</span>
+                                <span class="badge badge-primary" v-if="siswa.kelas.kelas_jenjang == '9'">{{siswa.kelas.kelas_nama}}</span>
+                                <span class="badge badge-warning" v-if="siswa.kelas.kelas_jenjang == '7'">{{siswa.kelas.kelas_nama}}</span>
+                                </h4>
                             </div>
                         </div>
                     </div>

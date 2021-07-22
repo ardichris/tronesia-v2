@@ -4,7 +4,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <router-link :to="{ name: 'siswas.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
+                        <router-link :to="{ name: 'siswas.add' }" class="btn btn-primary btn-sm btn-flat" v-if="authenticated.role==0">Tambah</router-link>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -34,7 +34,7 @@
                     </template>
                     <template v-slot:cell(actions)="row">
                         <router-link :to="{ name: 'siswas.view', params: {id: row.item.id} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
-                        <router-link :to="{ name: 'siswas.edit', params: {id: row.item.id} }" class="btn btn-warning btn-sm" v-if="authenticated.id==row.item.kelas.kelas_wali || authenticated.role==0"><i class="fa fa-edit"></i></router-link>
+                        <router-link :to="{ name: 'siswas.edit', params: {id: row.item.id} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
                         <button class="btn btn-danger btn-sm" @click="deleteSiswa(row.item.id)" v-if="authenticated.role==0"><i class="fa fa-trash"></i></button>
                     </template>
                 </b-table>
