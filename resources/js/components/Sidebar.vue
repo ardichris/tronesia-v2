@@ -85,6 +85,12 @@
                         <p><router-link :to="{ name: 'unit.data' }">Master Unit</router-link></p>
                         </a>
                     </li>
+                    <li class="nav-item" v-if="authenticated.role!=2">
+                        <a class="nav-link ml-3">
+                        <i class="fas fa-barcode nav-icon"></i>
+                        <p>Master Inventaris</p>
+                        </a>
+                    </li>
                     </ul>
                 </li>
                 <li class="nav-item has-treeview">
@@ -177,6 +183,12 @@
                             <a class="nav-link ml-3">
                                 <i class="fas fa-toilet-paper nav-icon"></i>
                                 <p><router-link :to="{ name: 'pemakaianbarang.data' }">Permintaan Barang</router-link></p>
+                            </a>
+                        </li>
+                        <li class="nav-item" v-if="authenticated.role!=2">
+                            <a class="nav-link ml-3">
+                            <i class="fas fa-barcode nav-icon"></i>
+                            <p>Inventaris</p>
                             </a>
                         </li>
                     </ul>
