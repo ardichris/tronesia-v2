@@ -77,7 +77,12 @@ const mutations = {
             jm_catatan: null,
             detail: [],
             pelanggaran: [],
-        }
+        },
+        state.siswa = [],
+        state.kelas = [],
+        state.kompetensi = [],
+        state.mapel = [],
+        state.jurnals = []
     }
 }
 
