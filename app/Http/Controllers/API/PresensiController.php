@@ -34,6 +34,14 @@ class PresensiController extends Controller
                                         $query->where('s_nama','like','%'.$q.'%');
                                     });
         }
+        if($user->role==2){
+            $presensis = $presensis->whereHas('siswa.kelas', function($query) use($user){
+                                            $query->where('kelas_wali',$user->id);
+                                            })
+                                        ->orwhereHas('siswa.kelas', function($query) use($user){
+                                            $query->where('k_mentor', $user->id);
+                                            });
+        }
         return new PresensiCollection($presensis->paginate(10));
     }
 }
