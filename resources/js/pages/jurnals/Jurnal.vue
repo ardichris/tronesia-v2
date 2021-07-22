@@ -64,8 +64,16 @@
             <div class="panel-body">
                 <b-table striped hover bordered :items="jurnals.data" :fields="fields" show-empty>
                     <template v-slot:cell(jm_detail)="row">
-                        <span class="badge badge-warning" v-if="row.item.detail.length >= 1">{{ row.item.detail.length}} Siswa</span>
-                        <span class="badge badge-danger" v-if="row.item.pelanggaran.length >= 1">{{ row.item.pelanggaran.length}} Siswa</span>
+                        <div v-if="row.item.detail.length >= 1">
+                            <div v-for="item in row.item.detail" :key="item.siswa.s_nama">
+                                <div class="badge badge-warning">{{ item.siswa.s_nama }}</div>
+                            </div>
+                        </div>
+                        <div v-if="row.item.pelanggaran.length >= 1">
+                            <div v-for="item in row.item.pelanggaran" :key="item.siswa.s_nama">
+                                <div class="badge badge-danger">{{ item.siswa.s_nama }}</div>
+                            </div>
+                        </div>
                     </template>
                     <template v-slot:cell(user_id)="row">
                         <h5><span class="badge badge-secondary">{{ row.item.user_id ? row.item.user.name:'-' }}</span></h5>

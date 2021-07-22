@@ -69,7 +69,7 @@ class JurnalController extends Controller
     
     public function index(Request $request) {
         $user = $request->user();
-        $jurnals = Jurnal::with(['mapel','kelas','kompetensi','user','detail','pelanggaran','unit'])
+        $jurnals = Jurnal::with(['mapel','kelas','kompetensi','user','detail','detail.siswa','pelanggaran','pelanggaran.siswa','unit'])
                     ->orderBy('updated_at', 'DESC')
                     ->where('unit_id',$user->unit_id);
         if (request()->q != '') {
