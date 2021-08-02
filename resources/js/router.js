@@ -79,6 +79,16 @@ import DataUnit from './pages/units/Unit.vue'
 import AddUnit from './pages/units/Add.vue'
 import EditUnit from './pages/units/Edit.vue'
 import ViewUnit from './pages/units/View.vue'
+import DataNilaiSiswa from './pages/nilaisiswa/NilaiSiswa.vue'
+import IndexNilaiSiswa from './pages/nilaisiswa/Index.vue'
+import AddNilaiSiswa from './pages/nilaisiswa/Add.vue'
+import EditNilaiSiswa from './pages/nilaisiswa/Edit.vue'
+import ViewNilaiSiswa from './pages/nilaisiswa/View.vue'
+import IndexJamMengajar from './pages/jammengajar/Index.vue'
+import DataJamMengajar from './pages/jammengajar/JamMengajar.vue'
+import AddJamMengajar from './pages/jammengajar/Add.vue'
+import EditJamMengajar from './pages/jammengajar/Edit.vue'
+import ViewJamMengajar from './pages/jammengajar/View.vue'
 
 
 Vue.use(Router)
@@ -583,6 +593,68 @@ const router = new Router({
                     name: 'jurnal.view',
                     component: ViewJurnal,
                     meta: { title: 'Lihat Jurnal' }
+                }
+            ]
+        },
+        {
+            path: '/nilaisiswa',
+            component: IndexNilaiSiswa,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'nilaisiswa.data',
+                    component: DataNilaiSiswa,
+                    meta: { title: 'Daftar Nilai Siswa' }
+                },
+                {
+                    path: 'add',
+                    name: 'nilaisiswa.add',
+                    component: AddNilaiSiswa,
+                    meta: { title: 'Tambah Nilai Siswa' }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'nilaisiswa.edit',
+                    component: EditNilaiSiswa,
+                    meta: { title: 'Ganti Nilai Siswa' }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'nilaisiswa.view',
+                    component: ViewNilaiSiswa,
+                    meta: { title: 'Lihat Nilai Siswa' }
+                }
+            ]
+        },
+        {
+            path: '/jammengajar',
+            component: IndexJamMengajar,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'jammengajar.data',
+                    component: DataJamMengajar,
+                    meta: { title: 'Daftar Jam Mengajar' }
+                },
+                {
+                    path: 'add',
+                    name: 'jammengajar.add',
+                    component: AddJamMengajar,
+                    meta: { title: 'Tambah Jam Mengajar' }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'jammengajar.edit',
+                    component: EditJamMengajar,
+                    meta: { title: 'Ganti Jam Mengajar' }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'jammengajar.view',
+                    component: ViewJamMengajar,
+                    meta: { title: 'Lihat Jam Mengajar' }
                 }
             ]
         },     

@@ -17,6 +17,11 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

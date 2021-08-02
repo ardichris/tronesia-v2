@@ -21,6 +21,15 @@
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                             <p class="text-danger" v-if="errors.password">{{ errors.password[0] }}</p>
                         </div>
+                        <div class="form-group has-feedback">
+                            <select class="form-control" v-model="data.periode">
+                                <option value="1">Semester 1 Tahun Ajaran 2020/2021</option>
+                                <option value="2">Semester 2 Tahun Ajaran 2020/2021</option>
+                                <option value="3">Semester 1 Tahun Ajaran 2021/2022</option>                                         
+                            </select>
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                            <p class="text-danger" v-if="errors.periode">{{ errors.periode[0] }}</p>
+                        </div>                        
                         <div class="alert alert-danger" v-if="errors.invalid">{{ errors.invalid }}</div>
                         <div class="row">
                             <div class="col-8">
@@ -53,6 +62,7 @@ export default {
             data: {
                 email: '',
                 password: '',
+                periode: '',
                 remember_me: false
             }
         }

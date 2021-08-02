@@ -150,6 +150,24 @@
                                 <p><router-link :to="{ name: 'rekapjurnal.data' }">Rekap Jurnal</router-link></p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link ml-3">
+                                <i class="fas fa-chalkboard-teacher nav-icon"></i>
+                                <p><router-link :to="{ name: 'jammengajar.data' }">Mengajar</router-link></p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link ml-3">
+                                <i class="fas fa-spell-check nav-icon"></i>
+                                <p><router-link :to="{ name: 'nilaisiswa.data' }">Penilaian</router-link></p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link ml-3">
+                                <i class="fas fa-award nav-icon"></i>
+                                <p>Rapor</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item has-treeview">

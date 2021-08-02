@@ -55,6 +55,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/presensi', 'API\PresensiController');
     Route::resource('/pengumuman', 'API\PengumumanController')->except(['create', 'show']);
     Route::resource('/unit', 'API\UnitController')->except(['create', 'show']);
+    Route::resource('/jammengajar', 'API\JamMengajarController');
+    Route::resource('/nilaisiswa', 'API\NilaiSiswaController');
 });
 
 
