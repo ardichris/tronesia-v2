@@ -38,7 +38,14 @@
     <script src="{{ asset('bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('lte/plugins/summernote/summernote-bs4.min.js') }}"></script>
-    <script src="{{asset('assets/ckeditor/ckeditor.js')}}"></script>
+    <script src="{{ asset('assets/ckeditor/ckeditor.js')}}"></script>
+    <!-- fullCalendar 2.2.5 -->
+    <script src="{{ asset('lte/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('lte/plugins/fullcalendar/main.min.js') }}"></script>
+    <script src="{{ asset('lte/plugins/fullcalendar-daygrid/main.min.js') }}"></script>
+    <script src="{{ asset('lte/plugins/fullcalendar-timegrid/main.min.js') }}"></script>
+    <script src="{{ asset('lte/plugins/fullcalendar-interaction/main.min.js') }}"></script>
+    <script src="{{ asset('lte/plugins/fullcalendar-bootstrap/main.min.js') }}"></script>
     <script>
     var konten = document.getElementById("konten");
         CKEDITOR.replace(konten,{

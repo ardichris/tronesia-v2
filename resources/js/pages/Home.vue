@@ -80,8 +80,7 @@
           <!-- /.col -->
         </div>
         <!-- /.row -->
-      </div><!--/. container-fluid -->
-      <div class="row">
+        <div class="row">
         <div class="col-md-9">
           <div class="card">
             <div class="card-header">
@@ -126,6 +125,8 @@
               </div>
               </div>
             </div>
+            <FullCalendar :options="calendarOptions" />
+            <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=Asia%2FJakarta&amp;src=YXJkaS5jaHJpc0BpdC5wcHBrcGV0cmEub3IuaWQ&amp;src=YWRkcmVzc2Jvb2sjY29udGFjdHNAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;src=aWQuaW5kb25lc2lhbiNob2xpZGF5QGdyb3VwLnYuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;src=ZW4uaW5kb25lc2lhbiNob2xpZGF5QGdyb3VwLnYuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;color=%23039BE5&amp;color=%2333B679&amp;color=%230B8043&amp;color=%230B8043" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>
           </div>
           <div class="col-md-3">
             <div class="card">
@@ -249,14 +250,23 @@
             </div>
           </div>
       </div>
+      </div><!--/. container-fluid -->
     </section>
     <!-- /.content -->
   </div>
     
 </template>
 <script>
+  
   import Breadcrumb from '../components/Breadcrumb.vue'
   import { mapActions, mapState } from 'vuex'
+  import '@fullcalendar/core/vdom'
+  import FullCalendar from '@fullcalendar/vue'
+  import DayGridPlugin from '@fullcalendar/daygrid'
+  import TimeGridPlugin from '@fullcalendar/timegrid'
+  import InteractionPlugin from '@fullcalendar/interaction'
+  import ListPlugin from '@fullcalendar/list'
+
   export default {
       name: 'Home',
       created() {
@@ -288,7 +298,17 @@
                 {key: 'p_isi', label: ''},
                 {key: 'user_id', label: ''},
             ],
-            search: ''
+            calendarOptions: {
+              plugins: [ DayGridPlugin, InteractionPlugin, TimeGridPlugin, ListPlugin ],
+              initialView: 'dayGridMonth',
+              dateClick: this.handleDateClick,
+              dayMaxEvents: true,
+              events: [
+                  { title: 'event 1', start: '2021-08-01 01:00', end: '2021-08-05 03:00', backgroundColor: '#f56954' },
+                  { title: 'event 2', date: '2021-07-31' }
+                ]
+              },
+            search: '',
         }
       },
       computed: {
@@ -310,10 +330,14 @@
         },
       },
       methods: {
-        ...mapActions('home', ['getData'])
+        ...mapActions('home', ['getData']),
+        handleDateClick: function(arg) {
+          alert('date click! ' + arg.dateStr)
+        }
       },
       components: {
-          'breadcrumb': Breadcrumb
+          'breadcrumb': Breadcrumb,
+          FullCalendar // make the <FullCalendar> tag available
       }
   }
 </script>
