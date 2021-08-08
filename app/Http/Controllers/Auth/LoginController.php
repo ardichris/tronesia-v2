@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\User;
 
 
 class LoginController extends Controller
@@ -50,21 +51,23 @@ class LoginController extends Controller
 
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
-            'password' => 'required'
+            'password' => 'required',
+            'periode' => 'required'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->messages(), 'status' => 400], 200);
-        } 
+            return response()->json(['errors' => $validator->messages(), 'status' => 422], 200);
+        }
         //ADA 3 VALUE YANG DIKIRIMKAN, YAKNI: EMAIL, PASSWORD DAN REMEMBER_ME
         //AMBIL SEMUA REQUEST TERSEBUT KECUALI REMEMBER ME KARENA YANG DIBUTUHKAN 
         //UNTUK OTENTIKASI ADALAH EMAIL DAN PASSWORD
-        $auth = $request->except(['remember_me']);
+        $auth = $request->except(['remember_me','periode']);
         
         //MELAKUKAN PROSES OTENTIKASI
         if (auth()->attempt($auth, $request->remember_me)) {
             //APABILA BERHASIL, GENERATE API_TOKEN MENGGUNAKAN STRING RANDOM
-            auth()->user()->update(['api_token' => Str::random(40)]);
-        
+            auth()->user()->update(['api_token' => Str::random(40),'periode' => $request->periode]);
+            //$periode = User::whereEmail($request->email)->first();
+            //$periode = $periode->update('periode',$request->periode);
             //KEMUDIAN KIRIM RESPONSENYA KE CLIENT UNTUK DIPROSES LEBIH LANJUT
             return response()->json(['status' => 'success', 'data' => auth()->user()->api_token], 200);
         }

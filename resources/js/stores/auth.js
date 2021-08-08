@@ -28,7 +28,7 @@ const actions = {
                     localStorage.setItem('token', response.data.data)
                     commit('SET_TOKEN', response.data.data, { root: true })
                 } else {
-                    commit('SET_ERRORS', { invalid: 'Email/Password Salah' }, { root: true })
+                    commit('SET_ERRORS', { invalid: 'Gagal Login' }, { root: true })
                 }
                 //JANGAN LUPA UNTUK MELAKUKAN RESOLVE AGAR DIANGGAP SELESAI
                 resolve(response.data)

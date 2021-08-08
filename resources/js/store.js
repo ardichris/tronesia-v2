@@ -24,6 +24,8 @@ import rekapjurnal from './stores/rekapjurnal.js'
 import presensi from './stores/presensi.js'
 import pengumuman from './stores/pengumuman.js'
 import unit from './stores/unit.js'
+import nilaisiswa from './stores/nilaisiswa'
+import jammengajar from './stores/jammengajar'
 
 Vue.use(Vuex)
 
@@ -52,7 +54,9 @@ const store = new Vuex.Store({
         rekapjurnal,
         presensi,
         pengumuman,
-        unit
+        unit,
+        nilaisiswa,
+        jammengajar
     },
   	//STATE HAMPIR SERUPA DENGAN PROPERTY DATA DARI COMPONENT HANYA SAJA DAPAT DIGUNAKAN SECARA GLOBAL
     state: {

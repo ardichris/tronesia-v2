@@ -71,7 +71,8 @@ class JurnalController extends Controller
         $user = $request->user();
         $jurnals = Jurnal::with(['mapel','kelas','kompetensi','user','detail','detail.siswa','pelanggaran','pelanggaran.siswa','unit'])
                     ->orderBy('updated_at', 'DESC')
-                    ->where('unit_id',$user->unit_id);
+                    ->where('unit_id',$user->unit_id)
+                    ->where('periode_id',$user->periode);
         if (request()->q != '') {
             $q = $request->q;
             $jurnals = $jurnals->where('jm_kode', 'LIKE', '%' . request()->q . '%')
@@ -154,6 +155,7 @@ class JurnalController extends Controller
                             'jm_materi' => $request->jm_materi,
                             'user_id' => $user->id,
                             'unit_id' => $user->unit_id,
+                            'periode_id' => $user->periode,
                             'jm_status' => $konflik != 0 ? 2:0,
                             'jm_keterangan' => $request->jm_keterangan,
                             'jm_catatan' => $catatan
@@ -200,7 +202,8 @@ class JurnalController extends Controller
                     'pelanggaran_jenis' => $row['pelanggaran_jenis'],
                     'pelanggaran_keterangan' => $row['pelanggaran_keterangan'],
                     'user_id' => $user->id,
-                    'unit_id' => $user->unit_id
+                    'unit_id' => $user->unit_id,
+                    'periode_id' => $user->periode
                 ]);
             }
             
@@ -314,7 +317,8 @@ class JurnalController extends Controller
                     'pelanggaran_jenis' => $row['pelanggaran_jenis'],
                     'pelanggaran_keterangan' => $row['pelanggaran_keterangan'],
                     'user_id' => $user->id,
-                    'unit_id' => $user->unit_id
+                    'unit_id' => $user->unit_id,
+                    'periode_id' => $user->periode
                 ]);
             }
         } 
