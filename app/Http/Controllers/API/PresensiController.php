@@ -21,6 +21,9 @@ class PresensiController extends Controller
                                     ->whereHas('jurnal', function($query) use($user){
                                         $query->where('unit_id',$user->unit_id);
                                     })
+                                    ->whereHas('jurnal', function($query) use($user){
+                                        $query->where('periode_id',$user->periode);
+                                    })
                                     ->whereHas('jurnal', function($query){
                                                     $query->where('jm_status','<=', 1);
                                                 })
