@@ -73,9 +73,12 @@ class JurnalController extends Controller
                     ->orderBy('updated_at', 'DESC')
                     ->where('unit_id',$user->unit_id)
                     ->where('periode_id',$user->periode);
+<<<<<<< HEAD
         if($user->role==2){
             $jurnals = $jurnals->where('user_id',$user->id);
         }
+=======
+>>>>>>> 97b73ced2c6e008bda7d1dfeb1dd057d3b8eb831
         if (request()->q != '') {
             $q = request()->q;
             $jurnals = $jurnals->where(function ($query) use ($q) {

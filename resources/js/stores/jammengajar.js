@@ -46,8 +46,12 @@ const mutations = {
             kelas: [],
             mapel: [],
             guru: [],
+<<<<<<< HEAD
             pengajar: [],
             mengajar: []
+=======
+            pengajar: []
+>>>>>>> 97b73ced2c6e008bda7d1dfeb1dd057d3b8eb831
         }
     }
 }

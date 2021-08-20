@@ -52,12 +52,20 @@
     <script src="{{ asset('lte/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <script src="{{ asset('assets/ckeditor/ckeditor.js')}}"></script>
     <!-- fullCalendar 2.2.5 -->
+<<<<<<< HEAD
     <!-- <script src="{{ asset('lte/plugins/moment/moment.min.js') }}"></script>
+=======
+    <script src="{{ asset('lte/plugins/moment/moment.min.js') }}"></script>
+>>>>>>> 97b73ced2c6e008bda7d1dfeb1dd057d3b8eb831
     <script src="{{ asset('lte/plugins/fullcalendar/main.min.js') }}"></script>
     <script src="{{ asset('lte/plugins/fullcalendar-daygrid/main.min.js') }}"></script>
     <script src="{{ asset('lte/plugins/fullcalendar-timegrid/main.min.js') }}"></script>
     <script src="{{ asset('lte/plugins/fullcalendar-interaction/main.min.js') }}"></script>
+<<<<<<< HEAD
     <script src="{{ asset('lte/plugins/fullcalendar-bootstrap/main.min.js') }}"></script> -->
+=======
+    <script src="{{ asset('lte/plugins/fullcalendar-bootstrap/main.min.js') }}"></script>
+>>>>>>> 97b73ced2c6e008bda7d1dfeb1dd057d3b8eb831
     <script>
     var konten = document.getElementById("konten");
         CKEDITOR.replace(konten,{

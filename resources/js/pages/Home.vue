@@ -125,6 +125,7 @@
               </div>
               </div>
             </div>
+            <iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=Asia%2FJakarta&amp;src=YXJkaS5jaHJpc0BpdC5wcHBrcGV0cmEub3IuaWQ&amp;src=YWRkcmVzc2Jvb2sjY29udGFjdHNAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;src=aWQuaW5kb25lc2lhbiNob2xpZGF5QGdyb3VwLnYuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;src=ZW4uaW5kb25lc2lhbiNob2xpZGF5QGdyb3VwLnYuY2FsZW5kYXIuZ29vZ2xlLmNvbQ&amp;color=%23039BE5&amp;color=%2333B679&amp;color=%230B8043&amp;color=%230B8043" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>
           </div>
           <div class="col-md-3">
             <div class="card">
@@ -258,6 +259,15 @@
   
   import Breadcrumb from '../components/Breadcrumb.vue'
   import { mapActions, mapState } from 'vuex'
+<<<<<<< HEAD
+=======
+  import '@fullcalendar/core/vdom'
+  import FullCalendar from '@fullcalendar/vue'
+  import DayGridPlugin from '@fullcalendar/daygrid'
+  import TimeGridPlugin from '@fullcalendar/timegrid'
+  import InteractionPlugin from '@fullcalendar/interaction'
+  import ListPlugin from '@fullcalendar/list'
+>>>>>>> 97b73ced2c6e008bda7d1dfeb1dd057d3b8eb831
 
   export default {
       name: 'Home',
@@ -328,7 +338,8 @@
         }
       },
       components: {
-          'breadcrumb': Breadcrumb
+          'breadcrumb': Breadcrumb,
+          FullCalendar // make the <FullCalendar> tag available
       }
   }
 </script>
