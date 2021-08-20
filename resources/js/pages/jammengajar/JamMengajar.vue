@@ -4,7 +4,8 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('add-modal')">Tambah</b-button>
+                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('add-modal')">Tambah by-kelas</b-button>
+                        <b-button variant="success" size="sm" v-b-modal="'add-modal-guru'" @click="$bvModal.show('add-modal-guru')">Tambah by-guru</b-button>
                         <b-modal id="add-modal" size="lg">
                             <template v-slot:modal-title>
                                 Tambah Jam Mengajar
@@ -20,6 +21,21 @@
                                 </b-button>
                             </template>
                         </b-modal>
+                        <b-modal id="add-modal-guru" size="lg">
+                            <template v-slot:modal-title>
+                                Tambah Jam Mengajar
+                            </template>
+                            <jammengajar-form-add></jammengajar-form-add>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block @click="simpanJMbaru"
+                                >
+                                    Simpan
+                                </b-button>
+                            </template>
+                        </b-modal>                        
                         <b-modal id="edit-modal">
                             <template v-slot:modal-title>
                                 Edit Jam Mengajar
@@ -79,6 +95,7 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import FormJM from './Form.vue'
+import FormJMadd from './FormAdd.vue'
 import FormJMedit from './FormEdit.vue'
 
 export default {
@@ -123,6 +140,7 @@ export default {
         ...mapActions('jammengajar', ['submitJM','updateJM','editJM','getJM', 'removeJM']),
         simpanJMbaru(){
             this.submitJM().then(() => {
+                this.$bvModal.hide('add-modal-guru'),
                 this.$bvModal.hide('add-modal'),
                 this.getJM()
             })
@@ -157,6 +175,7 @@ export default {
     },
     components: {
         'jammengajar-form': FormJM,
+        'jammengajar-form-add': FormJMadd,
         'editJM-form': FormJMedit
     }
 }

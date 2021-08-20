@@ -12,7 +12,7 @@ class JamMengajarController extends Controller
 {
     public function index(Request $request) {
         $user = $request->user();
-        $jammengajars = JamMengajar::with('kelas','mapel','guru')->where('unit_id',$user->unit_id)/*->orderBy('kelas.kelas_nama', 'ASC')*/;
+        $jammengajars = JamMengajar::with('kelas','mapel','guru')->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');
         if ($user->role != 0){
             $jammengajars= $jammengajars->where('guru_id',$user->id);
         }
@@ -29,19 +29,43 @@ class JamMengajarController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'kelas' => 'required',
-            'pengajar' => 'required',
-        ]);
+        // $this->validate($request, [
+        //     'kelas' => 'required',
+        //     'pengajar' => 'required',
+        // ]);
         $user = $request->user();
-        foreach ($request->pengajar as $row) {
-            JamMengajar::create(['kelas_id' => $request->kelas['id'],
-                                'mapel_id' => $row['mapel']['id'],
-                                'guru_id' => $row['guru']['id'],
-                                'periode_id' => $user->periode,
-                                'unit_id' => $user->unit_id,
-                                'user_id' => $user->id,
-                                ]);
+        if($request->mengajar == []) {
+            foreach ($request->pengajar as $row) {
+                $konflik = JamMengajar::where('guru_id', $row['guru']['id'])
+                                        ->where('kelas_id', $request->kelas['id'])
+                                        ->where('periode_id', $user->periode)
+                                        ->count();
+                if($konflik == 0){
+                    JamMengajar::create(['kelas_id' => $request->kelas['id'],
+                                        'mapel_id' => $row['mapel']['id'],
+                                        'guru_id' => $row['guru']['id'],
+                                        'periode_id' => $user->periode,
+                                        'unit_id' => $user->unit_id,
+                                        'user_id' => $user->id,
+                                        ]);
+                }
+            }
+        } else {
+            foreach ($request->mengajar as $row) {
+                $konflik = JamMengajar::where('guru_id', $request->guru['id'])
+                                        ->where('kelas_id', $row['kelas']['id'])
+                                        ->where('periode_id', $user->periode)
+                                        ->count();
+                if($konflik == 0){
+                    JamMengajar::create(['guru_id' => $request->guru['id'],
+                                        'mapel_id' => $row['mapel']['id'],
+                                        'kelas_id' => $row['kelas']['id'],
+                                        'periode_id' => $user->periode,
+                                        'unit_id' => $user->unit_id,
+                                        'user_id' => $user->id,
+                                        ]);
+                }
+            }
         }
         return response()->json(['status' => 'success'], 200);
     }

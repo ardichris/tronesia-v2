@@ -3,6 +3,12 @@ import $axios from '../api.js'
 const state = () => ({
     nilaisiswas: [],
     jammengajars: [],
+    nilaiselect: {
+        kelas: '',
+        mapel: '',
+        jenis: '',
+        kd: ''
+    },
     
     mapel: {
         mapel_kode: '',
@@ -12,6 +18,10 @@ const state = () => ({
 })
 
 const mutations = {
+    JM_SELECT(state, payload){
+        state.nilaiselect.kelas = payload.kelas_id,
+        state.nilaiselect.mapel = payload.mapel_id
+    },
     JAMMENGAJAR_DATA(state, payload) {
         state.jammengajars = payload
     },
@@ -46,14 +56,16 @@ const actions = {
             })
         })
     },
-    getNilai({ commit, state }, payload) {
-        let search = typeof payload != 'undefined' ? payload:''
+    getNilaiSiswa({ commit, state }) {
+        let kelas = state.nilaiselect.kelas
+        let mapel = state.nilaiselect.mapel
+        let jenis = state.nilaiselect.jenis
         return new Promise((resolve, reject) => {
-            $axios.get(`/nilaisiswa?page=${state.page}`)
+            $axios.get(`/nilaisiswa?kelas=${kelas}&mapel=${mapel}&jenis=${jenis}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data.data)
                 console.log(response.data.data)
-                resolve(response.data)
+                resolve(response)
             })
         })
     },

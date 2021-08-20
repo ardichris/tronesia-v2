@@ -12,6 +12,7 @@ const state = () => ({
         mapel: [],
         guru: [],
         pengajar: [],
+        mengajar: [],
     },
     page: 1
 })
@@ -44,7 +45,9 @@ const mutations = {
         state.jammengajar = {
             kelas: [],
             mapel: [],
-            guru: []
+            guru: [],
+            pengajar: [],
+            mengajar: []
         }
     }
 }
@@ -91,7 +94,6 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.get(`/jammengajar?page=${state.page}&q=${search}`)
             .then((response) => {
-                console.log(response.data)
                 commit('ASSIGN_DATA', response.data)
                 resolve(response.data)
             })
@@ -99,7 +101,6 @@ const actions = {
     },
     submitJM({ dispatch, commit, state }) {
         return new Promise((resolve, reject) => {
-            console.log(state.jammengajar)
             $axios.post(`/jammengajar`, state.jammengajar)
             .then((response) => {
                 dispatch('getJM').then(() => {

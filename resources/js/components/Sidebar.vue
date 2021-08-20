@@ -144,25 +144,25 @@
                                 <p><router-link :to="{ name: 'jurnal.data' }">Jurnal Mengajar</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item"  v-if="authenticated.role==0">
                             <a class="nav-link ml-3">
                                 <i class="fas fa-tasks nav-icon"></i>
                                 <p><router-link :to="{ name: 'rekapjurnal.data' }">Rekap Jurnal</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="authenticated.role==0">
                             <a class="nav-link ml-3">
                                 <i class="fas fa-chalkboard-teacher nav-icon"></i>
                                 <p><router-link :to="{ name: 'jammengajar.data' }">Mengajar</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="authenticated.role==0">
                             <a class="nav-link ml-3">
                                 <i class="fas fa-spell-check nav-icon"></i>
                                 <p><router-link :to="{ name: 'nilaisiswa.data' }">Penilaian</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="authenticated.role==0">
                             <a class="nav-link ml-3">
                                 <i class="fas fa-award nav-icon"></i>
                                 <p>Rapor</p>

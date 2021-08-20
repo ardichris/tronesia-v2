@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\SiswaCollection;
 use App\Siswa;
+use App\JamMengajar;
 use DB;
 
 class SiswaController extends Controller
@@ -35,12 +36,15 @@ class SiswaController extends Controller
         if (request()->seragam != '') {
             $siswas = $siswas->whereIn('s_keterangan',['SISWA BARU','AKTIF']);
         }
+        $gurubk = JamMengajar::where('mapel_id',22)->where('guru_id',$user->id)->pluck('kelas_id');
         if ($user->role != 0 && request()->kelas == ''){
             $siswas = $siswas->whereHas('kelas', function($query) use($user){
-                $query->where('kelas_wali', $user->id);
-               })->orwhereHas('kelas', function($query) use($user){
-                $query->where('k_mentor', $user->id);
-               });
+                                $query->where('kelas_wali', $user->id);
+                                })
+                            ->orwhereHas('kelas', function($query) use($user){
+                                $query->where('k_mentor', $user->id);
+                                })
+                            ->orwhereIn('kelas_id', $gurubk);
         }
         $siswas = $siswas->paginate(40);
         return new SiswaCollection($siswas);

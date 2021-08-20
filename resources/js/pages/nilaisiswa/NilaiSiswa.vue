@@ -8,9 +8,21 @@
                             <h3 class="card-title">Daftar Kelas Yang Diampu</h3>
                         </div>
                         <div class="card-body">
-                            <a class="btn btn-app" v-for="(row, index) in jammengajars" :key="index">
+                            <a class="btn btn-app" v-for="(row, index) in jammengajars" :key="index"  @click="JMSelected(row)">
                             <i class="fas fa-spell-check"></i>{{row.mapel.mapel_kode}} - {{row.kelas.kelas_nama}}
                             </a>
+                            <div>
+                                <b-form-select v-model="nilaiselect.jenis" class="mb-3" @change="getNilai">
+                                    <b-form-select-option :value="null"></b-form-select-option>
+                                    <b-form-select-option value="PHS">PH</b-form-select-option>
+                                    <b-form-select-option value="TGS">Tugas</b-form-select-option>
+                                    <b-form-select-option value="PTSPAS">PTS / PAS</b-form-select-option>
+                                    <b-form-select-option value="PRK">Praktik</b-form-select-option>
+                                    <b-form-select-option value="PRY">Proyek</b-form-select-option>
+                                    <b-form-select-option value="PRD">Produk</b-form-select-option>
+                                    <b-form-select-option value="PRT">Portofolio</b-form-select-option>
+                                </b-form-select>
+                            </div>
                         </div>
                         <!-- /.card-body -->
                     </div>
@@ -18,6 +30,35 @@
             </div>
             <div class="panel-body" id="form-nilai">
                 <div class="row">
+                    <div class="card col-md-12">
+                        <div class="card-header">
+                            <h3 class="card-title">Daftar Nilai Siswa</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" >
+                                    <thead>
+                                        <tr>
+                                            <th width="400px">Nama Siswa</th>
+                                            <th width="100px" v-for="(row, index) in nilaisiswas.kompetensi" :key="index">{{row.kd_kode?row.kd_kode:row}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in nilaisiswas.siswa" :key="index">
+                                            <td>
+                                                {{row.s_nama}}
+                                            </td>
+                                            <td v-for="(row, index) in row.nilai" :key="index">
+                                                <!-- <input type="text" class="form-control" v-model="row.ns_nilai"> -->
+                                                <b-form-input size="sm" v-model="row.ns_nilai"></b-form-input>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>    
                     <nilaisiswa-form></nilaisiswa-form>
                 </div>
             </div>
@@ -26,7 +67,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 import FormNilaiSiswa from './Form.vue'
 
 export default {
@@ -45,6 +86,7 @@ export default {
     computed: {
         //MENGAMBIL DATA OUTLETS DARI STATE OUTLETS
         ...mapState('nilaisiswa', {
+            nilaiselect: state => state.nilaiselect,
             nilaisiswas: state => state.nilaisiswas,
             jammengajars: state => state.jammengajars
         }),
@@ -72,7 +114,14 @@ export default {
         }
     },
     methods: {
-        ...mapActions('nilaisiswa', ['getJamMengajar','submitNilaiSiswa','updateNilaiSiswa','editNilaiSiswa','getNilaiSiswa', 'removeNilaiSiswa']),
+        ...mapActions('nilaisiswa', ['getJamMengajar','submitNilaiSiswa','updateNilaiSiswa','editNilaiSiswa','getNilaiSiswa', 'removeNilaiSiswa','setJM']),
+        ...mapMutations('nilaisiswa', ['JM_SELECT']),
+        JMSelected(JMset){
+            this.JM_SELECT(JMset)
+        },
+        getNilai(){
+            this.getNilaiSiswa()
+        },
         simpanNilaiSiswabaru(){
             this.submitNilaiSiswa().then(() => {
                 this.$bvModal.hide('add-modal'),
