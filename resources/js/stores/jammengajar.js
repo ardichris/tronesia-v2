@@ -12,6 +12,7 @@ const state = () => ({
         mapel: [],
         guru: [],
         pengajar: [],
+        mengajar: [],
     },
     page: 1
 })
@@ -45,7 +46,8 @@ const mutations = {
             kelas: [],
             mapel: [],
             guru: [],
-            pengajar: []
+            pengajar: [],
+            mengajar: []
         }
     }
 }

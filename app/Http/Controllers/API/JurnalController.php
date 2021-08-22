@@ -73,23 +73,25 @@ class JurnalController extends Controller
                     ->orderBy('updated_at', 'DESC')
                     ->where('unit_id',$user->unit_id)
                     ->where('periode_id',$user->periode);
+        if($user->role==2){
+            $jurnals = $jurnals->where('user_id',$user->id);
+        }
         if (request()->q != '') {
-            $q = $request->q;
-            $jurnals = $jurnals->where('jm_kode', 'LIKE', '%' . request()->q . '%')
-                             ->orWhere('jm_materi', 'LIKE', '%' . request()->q . '%')
-                             ->orwhereHas('kelas', function($query) use($q){
-                                $query->where('kelas_nama','like','%'.$q.'%');
-                               })
-                             ->orwhereHas('user', function($query) use($q){
-                                $query->where('name','like','%'.$q.'%');
-                               });
+            $q = request()->q;
+            $jurnals = $jurnals->where(function ($query) use ($q) {
+                                    $query->where('jm_kode', 'LIKE', '%' . $q . '%')
+                                        ->orWhere('jm_materi', 'LIKE', '%' . $q . '%')
+                                        ->orwhereHas('kelas', function($query) use($q){
+                                                $query->where('kelas_nama','like','%'.$q.'%');
+                                            })
+                                        ->orwhereHas('user', function($query) use($q){
+                                                $query->where('name','like','%'.$q.'%');
+                                            });
+                                });
         }
         if (request()->s != '') {
             $s = $request->s;
             $jurnals = $jurnals->where('jm_status',$s);
-        }
-        if($user->role==2){
-            $jurnals = $jurnals->where('user_id',$user->id);
         }
         return new JurnalCollection($jurnals->paginate(20));
     }

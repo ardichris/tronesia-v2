@@ -8,6 +8,10 @@ use App\Http\Resources\PelanggaranCollection;
 use App\Pelanggaran;
 use App\MasterPelanggaran;
 use App\JamMengajar;
+<<<<<<< HEAD
+use App\User;
+=======
+>>>>>>> 97b73ced2c6e008bda7d1dfeb1dd057d3b8eb831
 use DB;
 
 class PelanggaranController extends Controller
@@ -19,16 +23,35 @@ class PelanggaranController extends Controller
                                     ->where('unit_id',$user->unit_id)
                                     ->where('periode_id',$user->periode)
                                     ->orderBy('created_at', 'DESC');
+<<<<<<< HEAD
+                                    
+=======
+>>>>>>> 97b73ced2c6e008bda7d1dfeb1dd057d3b8eb831
         if (request()->q != '') { 
             $q = request()->q;
-            $pelanggarans = $pelanggarans->whereHas('siswa', function($query) use($q){
-                                        $query->where('s_nama','like','%'.$q.'%');
-                                        })
-                                        ->orWhere('pelanggaran_jenis','like','%'.$q.'%')
-                                        ->orWhere('pelanggaran_keterangan','like','%'.$q.'%');                   
+            $pelanggarans = $pelanggarans->where(function ($query) use ($q) {
+                                            $query  ->whereHas('siswa', function($query) use($q){
+                                                        $query->where('s_nama','like','%'.$q.'%');
+                                                        })
+                                                    ->orWhere('pelanggaran_jenis','like','%'.$q.'%')
+                                                    ->orWhere('pelanggaran_keterangan','like','%'.$q.'%');
+                                                });                   
         }
         $gurubk = JamMengajar::where('mapel_id',22)->where('guru_id',$user->id)->pluck('kelas_id');
         if($user->role==2){
+<<<<<<< HEAD
+            $pelanggarans = $pelanggarans->where(function ($query) use ($gurubk, $user) {
+                                            $query  ->whereHas('siswa.kelas', function($query) use($user){
+                                                        $query->where('kelas_wali',$user->id);
+                                                        })
+                                                    ->orwhereHas('siswa.kelas', function($query) use($user){
+                                                        $query->where('k_mentor', $user->id);
+                                                        })
+                                                    ->orwhereHas('siswa', function($query) use($gurubk){
+                                                        $query->whereIn('kelas_id', $gurubk);
+                                                        });
+                                        });
+=======
             $pelanggarans = $pelanggarans->whereHas('siswa.kelas', function($query) use($user){
                                             $query->where('kelas_wali',$user->id);
                                             })
@@ -39,6 +62,7 @@ class PelanggaranController extends Controller
                                             $query->whereIn('kelas_id', $gurubk);
                                             })
                                         ;
+>>>>>>> 97b73ced2c6e008bda7d1dfeb1dd057d3b8eb831
         }
         
         return new PelanggaranCollection($pelanggarans->paginate(10));

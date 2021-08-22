@@ -3,6 +3,14 @@ import $axios from '../api.js'
 const state = () => ({
     nilaisiswas: [],
     jammengajars: [],
+    nilaiselect: {
+        kelas: '',
+        kelasnama: '',
+        mapel: [],
+        mapelkode: '',
+        jenis: '',
+        kd: ''
+    },
     
     mapel: {
         mapel_kode: '',
@@ -12,6 +20,13 @@ const state = () => ({
 })
 
 const mutations = {
+    JM_SELECT(state, payload){
+        state.nilaiselect.kelas = payload.kelas_id,
+        state.nilaiselect.mapel = payload.mapel_id
+    },
+    JENIS_SELECT(state, payload){
+        state.nilaiselect.jenis = payload
+    },
     JAMMENGAJAR_DATA(state, payload) {
         state.jammengajars = payload
     },
@@ -39,31 +54,35 @@ const actions = {
     getJamMengajar({ commit, state }, payload) {
         let search = typeof payload != 'undefined' ? payload:''
         return new Promise((resolve, reject) => {
-            $axios.get(`/jammengajar?page=${state.page}`)
+            $axios.get(`/jammengajar?jm=nilai`)
             .then((response) => {
                 commit('JAMMENGAJAR_DATA', response.data.data)
                 resolve(response.data)
             })
         })
     },
-    getNilai({ commit, state }, payload) {
-        let search = typeof payload != 'undefined' ? payload:''
+    getNilaiSiswa({ commit, state }) {
+        let kelas = state.nilaiselect.kelas
+        let mapel = state.nilaiselect.mapel
+        let jenis = state.nilaiselect.jenis
         return new Promise((resolve, reject) => {
-            $axios.get(`/nilaisiswa?page=${state.page}`)
+            $axios.get(`/nilaisiswa?kelas=${kelas}&mapel=${mapel}&jenis=${jenis}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data.data)
                 console.log(response.data.data)
-                resolve(response.data)
+                resolve(response)
             })
         })
     },
-    submitMapel({ dispatch, commit, state }) {
+    submitNilaiSiswa({ dispatch, commit, state }) {
         return new Promise((resolve, reject) => {
-            $axios.post(`/mapel`, state.mapel)
+            $axios.post(`/nilaisiswa`, state.nilaisiswas)
             .then((response) => {
-                dispatch('getMapel').then(() => {
-                    resolve(response.data)
-                })
+                console.log(response.data.status)
+            //     dispatch('getNilaiSiswa').then(() => {
+            //         commit('ASSIGN_DATA', response.data.data)
+            //         resolve(response)
+            //     })
             })
             .catch((error) => {
                 if (error.response.status == 422) {
