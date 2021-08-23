@@ -61,6 +61,7 @@ class JurnalController extends Controller
                 $rowkelas['jam'.$rowjampel] = Jurnal::where('jm_tanggal',$tanggal)
                                             ->where('jm_jampel',$rowjampel)
                                             ->where('kelas_id',$rowkelas->id)
+                                            ->where('periode_id',$user->periode)
                                             ->select('jm_status')->first();
             }
         }

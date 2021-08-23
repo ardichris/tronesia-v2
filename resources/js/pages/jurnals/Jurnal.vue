@@ -5,7 +5,7 @@
                 <div class="row" style="margin-bottom:10px">
                     <div class="col-sm-12 col-md-6">
                         <router-link :to="{ name: 'jurnal.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
-                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-jurnal-roster')">Rekap Jurnal</b-button>
+                        <b-button v-if="authenticated.role==0" variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-jurnal-roster')">Rekap Jurnal</b-button>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -21,7 +21,7 @@
                                 ></b-form-select>
                         </span>
                     </div>
-                    <b-modal id="modal-jurnal-roster" size="lg">
+                    <b-modal id="modal-jurnal-roster" size="xl">
                             <template v-slot:modal-title>
                                 Roster Jurnal Mengajar
                             </template>
