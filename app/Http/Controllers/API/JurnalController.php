@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\JurnalCollection;
 use App\Jurnal;
+use App\Kelas;
 use App\User;
 use App\DetailJurnal;
 use App\Pelanggaran;
@@ -50,6 +51,21 @@ class JurnalController extends Controller
     }
     
     
+    public function roster(Request $request) {
+        $user = $request->user();
+        $tanggal = date($request->tanggal);
+        $roster = Kelas::where('unit_id',$user->unit_id)->orderBy('kelas_nama','ASC')->get();
+        $jampel = array(0,1,2,3,4,5,6,7,8,9);
+        foreach($roster as $rowkelas){
+            foreach($jampel as $rowjampel){
+                $rowkelas['jam'.$rowjampel] = Jurnal::where('jm_tanggal',$tanggal)
+                                            ->where('jm_jampel',$rowjampel)
+                                            ->where('kelas_id',$rowkelas->id)
+                                            ->select('jm_status')->first();
+            }
+        }
+        return new JurnalCollection($roster);
+    }
     
     public function rekap(Request $request) {
         //return response()->json(['data' => $request->start], 200);

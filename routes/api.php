@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/seragam', 'API\SeragamController')->except(['create', 'show']);
     Route::put('/jurnal/changestatus/{kode}','API\JurnalController@changeJMstatus');
     Route::get('/jurnal/rekap','API\JurnalController@rekap');
+    Route::get('/jurnal/roster','API\JurnalController@roster');
     Route::resource('/jurnal', 'API\JurnalController')->except(['create', 'show']);
     Route::get('roles', 'API\RolePermissionController@getAllRole')->name('roles');
     Route::resource('/absensi', 'API\AbsensiController')->except(['create', 'show']);

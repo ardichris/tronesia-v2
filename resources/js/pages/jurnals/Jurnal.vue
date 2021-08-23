@@ -2,9 +2,10 @@
     <div class="col-md-12">
         <div class="panel">
             <div class="panel-heading">
-                <div class="row">
+                <div class="row" style="margin-bottom:10px">
                     <div class="col-sm-12 col-md-6">
                         <router-link :to="{ name: 'jurnal.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
+                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-jurnal-roster')">Rekap Jurnal</b-button>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -20,6 +21,100 @@
                                 ></b-form-select>
                         </span>
                     </div>
+                    <b-modal id="modal-jurnal-roster" size="lg">
+                            <template v-slot:modal-title>
+                                Roster Jurnal Mengajar
+                            </template>
+                            <div class="col-lg-3">
+                            <input type="date" class="form-control" v-model="rekapjurnal.tanggal" @change="getRoster">
+                            <table class="table" width="auto">
+                                    <thead>
+                                        <tr>
+                                            <th>Kelas</th>
+                                            <th style="text-align:center; width:100px">0</th>
+                                            <th style="text-align:center">1</th>
+                                            <th style="text-align:center">2</th>
+                                            <th style="text-align:center">3</th>
+                                            <th style="text-align:center">4</th>
+                                            <th style="text-align:center">5</th>
+                                            <th style="text-align:center">6</th>
+                                            <th style="text-align:center">7</th>
+                                            <th style="text-align:center">8</th>
+                                            <th style="text-align:center">9</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in rekapjurnal.jurnal" :key="index">
+                                            <td>
+                                                {{row.kelas_nama}}
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam0 != null">
+                                                    <span class="badge badge-success" v-if="row.jam0.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam0.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam1 != null">
+                                                    <span class="badge badge-success" v-if="row.jam1.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam1.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam2 != null">
+                                                    <span class="badge badge-success" v-if="row.jam2.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam2.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam3 != null">
+                                                    <span class="badge badge-success" v-if="row.jam3.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam3.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam4 != null">
+                                                    <span class="badge badge-success" v-if="row.jam4.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam4.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam5 != null">
+                                                    <span class="badge badge-success" v-if="row.jam5.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam5.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam6 != null">
+                                                    <span class="badge badge-success" v-if="row.jam6.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam6.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam7 != null">
+                                                    <span class="badge badge-success" v-if="row.jam7.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam7.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam8 != null">
+                                                    <span class="badge badge-success" v-if="row.jam8.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam8.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span v-if="row.jam9 != null">
+                                                    <span class="badge badge-success" v-if="row.jam9.jm_status == 1">Approve</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam9.jm_status == 0">Waiting</span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <template v-slot:modal-footer>
+                            </template>
+                        </b-modal>
                     <b-modal id="reject-modal">
                         <template v-slot:modal-title>
                             Keterangan Reject
@@ -164,7 +259,8 @@ export default {
     computed: {
         ...mapState('jurnal', {
             jurnals: state => state.jurnals,
-            jurnal: state => state.jurnal
+            jurnal: state => state.jurnal,
+            rekapjurnal: state => state.rekapjurnal
         }),
         ...mapState('user', {
             authenticated: state => state.authenticated
@@ -199,7 +295,10 @@ export default {
         }
     },
     methods: {
-        ...mapActions('jurnal', ['editJurnal','updateJurnal','getJurnal', 'removeJurnal','checkJurnal','updateStatus']),
+        ...mapActions('jurnal', ['editJurnal','updateJurnal','getJurnal', 'removeJurnal','checkJurnal','updateStatus','getRosterJurnal']),
+        getRoster(){
+            this.getRosterJurnal();
+        },
         rejectJM(kode){
             this.editJurnal({
                 kode: kode
