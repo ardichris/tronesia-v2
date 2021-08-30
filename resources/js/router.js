@@ -89,6 +89,7 @@ import DataJamMengajar from './pages/jammengajar/JamMengajar.vue'
 import AddJamMengajar from './pages/jammengajar/Add.vue'
 import EditJamMengajar from './pages/jammengajar/Edit.vue'
 import ViewJamMengajar from './pages/jammengajar/View.vue'
+import DataJadwalPelajaran from './pages/jammengajar/JadwalPelajaran.vue'
 
 
 Vue.use(Router)
@@ -564,7 +565,7 @@ const router = new Router({
                     meta: { title: 'Lihat Kelas' }
                 }
             ]
-        }, 
+        },
         {
             path: '/jurnal',
             component: IndexJurnal,
@@ -637,6 +638,12 @@ const router = new Router({
                     name: 'jammengajar.data',
                     component: DataJamMengajar,
                     meta: { title: 'Daftar Jam Mengajar' }
+                },
+                {
+                    path: 'jadwalpelajaran',
+                    name: 'jammengajar.jadwalpelajaran',
+                    component: DataJadwalPelajaran,
+                    meta: { title: 'Jadwal Pelajaran' }
                 },
                 {
                     path: 'add',

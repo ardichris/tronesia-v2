@@ -5,7 +5,17 @@ const state = () => ({
     kelas:[],
     mapel:[],
     guru:[],
+    jadwalkelas: [],
+    jadwalpelajaran: [],
     
+    jadwal: {
+        kelas: '',
+        mapel: '',
+        guru: '',
+        jampel: '',
+        hari: ''
+    },
+
     jammengajar: {
         id: '',
         kelas: [],
@@ -18,6 +28,9 @@ const state = () => ({
 })
 
 const mutations = {
+    JP_DATA(state,payload) {
+        state.jadwalpelajaran = payload
+    },
     KELAS_DATA(state, payload) {
         state.kelas = payload
     },
@@ -53,6 +66,32 @@ const mutations = {
 }
 
 const actions = {
+    getJP({ commit, state}) {
+        let search = state.jadwal.kelas.id
+        return new Promise((resolve,reject) => {
+            $axios.get(`/jadwalpelajaran?kelas=${search}`)
+            .then((response) => {
+                commit('JP_DATA', response.data.data)
+                console.log(response.data)
+                resolve(response.data)
+            })
+        })
+    },
+    submitJP({ dispatch, commit, state }) {
+        return new Promise((resolve, reject) => {
+            $axios.post(`/jadwalpelajaran`, state.jammengajar)
+            .then((response) => {
+                dispatch('getJM').then(() => {
+                    resolve(response.data)
+                })
+            })
+            .catch((error) => {
+                if (error.response.status == 422) {
+                    commit('SET_ERRORS', error.response.data.errors, { root: true })
+                }
+            })
+        })
+    },
     getGuru({ commit, state }, payload) {
         let search = payload.search
         payload.loading(true)

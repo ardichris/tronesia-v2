@@ -6,10 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\JamMengajarCollection;
 use App\JamMengajar;
+use App\JadwalPelajaran;
 use App\User;
 
 class JamMengajarController extends Controller
 {
+
+    public function jadwal(Request $request){
+        return response()->json(['status' => 'success', 'data' => 'tes'], 200);
+
+    }
+
     public function index(Request $request) {
         $user = $request->user();
         $jammengajars = JamMengajar::with('kelas','mapel','guru')->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');

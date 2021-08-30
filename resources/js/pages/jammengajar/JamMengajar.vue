@@ -6,6 +6,7 @@
                     <div class="col-sm-12 col-md-6">
                         <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('add-modal')">Tambah by-kelas</b-button>
                         <b-button variant="success" size="sm" v-b-modal="'add-modal-guru'" @click="$bvModal.show('add-modal-guru')">Tambah by-guru</b-button>
+                        <router-link :to="{ name: 'jammengajar.jadwalpelajaran' }" class="btn btn-warning btn-sm">Jadwal Pelajaran</router-link>
                         <b-modal id="add-modal" size="lg">
                             <template v-slot:modal-title>
                                 Tambah Jam Mengajar
