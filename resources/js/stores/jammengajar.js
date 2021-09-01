@@ -72,16 +72,15 @@ const actions = {
             $axios.get(`/jadwalpelajaran?kelas=${search}`)
             .then((response) => {
                 commit('JP_DATA', response.data.data)
-                console.log(response.data)
                 resolve(response.data)
             })
         })
     },
     submitJP({ dispatch, commit, state }) {
         return new Promise((resolve, reject) => {
-            $axios.post(`/jadwalpelajaran`, state.jammengajar)
+            $axios.post(`/jadwalpelajaran`, state.jadwal)
             .then((response) => {
-                dispatch('getJM').then(() => {
+                dispatch('getJP').then(() => {
                     resolve(response.data)
                 })
             })

@@ -34,11 +34,11 @@
                     </div>
                     <div class="form-group">
                         <label>Hari</label>
-                        <b-form-input v-model="jp.hari"  :disabled='true'></b-form-input>
+                        <b-form-input v-model="jp.hari" :disabled='true'></b-form-input>
                     </div>
                     <div class="form-group">
                         <label>Jam Pelajaran</label>
-                        <b-form-input v-model="jp.jampel"  :disabled='true'></b-form-input>
+                        <b-form-input v-model="jp.jampel"></b-form-input>
                     </div>
                     <div class="form-group">
                         <label>Mapel</label>
@@ -71,7 +71,7 @@
                         <div class="card-header">
                                 <h3 class="card-title">{{indexday}}</h3>
                                 <span class="float-right">
-                                    <button class="btn btn-warning btn-sm" v-b-modal="'add-modal'" @click="addJP(indexday)"><i class="fa fa-plus"></i></button>
+                                    <!-- <button class="btn btn-warning btn-sm" v-b-modal="'add-modal'" @click="addJP(indexday)"><i class="fa fa-plus"></i></button> -->
                                 </span>
                         </div>
                         <div class="card-body">
@@ -89,10 +89,13 @@
                                             </td>
                                             <td>
                                                 <div v-for="(rowjam, indexjam) in row" :key="indexjam">
+                                                    <span class="badge badge-info">{{rowjam.mapel.mapel_kode}}</span>
                                                     <span class="badge badge-success">{{rowjam.guru.name}}</span>
                                                 </div>
                                             </td>
-                                            
+                                            <td>
+                                                <button class="btn btn-warning btn-sm" v-b-modal="'add-modal'" @click="addJP(indexday,index)"><i class="fa fa-plus"></i></button>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -138,14 +141,15 @@ export default {
     },
     methods: {
         ...mapActions('jammengajar', ['getMapel','getKelas','getJP','submitJP']),
-        addJP(hari){
+        addJP(hari,jam){
             this.jp.hari = hari,
+            this.jp.jampel = jam,
             this.$bvModal.show('add-modal')
         },
         simpanJPbaru(){
             this.submitJP().then(() => {
                 this.$bvModal.hide('add-modal'),
-                this.submitJP()
+                this.jp.mapel = ''
             })
         },
         SearchKelas(search, loading) {

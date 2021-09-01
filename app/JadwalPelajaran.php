@@ -12,4 +12,9 @@ class JadwalPelajaran extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function mapel()
+    {
+        return $this->belongsTo(Mapel::class);
+    }
 }
