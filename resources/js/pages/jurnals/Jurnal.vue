@@ -5,7 +5,7 @@
                 <div class="row" style="margin-bottom:10px">
                     <div class="col-sm-12 col-md-6">
                         <router-link :to="{ name: 'jurnal.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
-                        <b-button v-if="authenticated.role==0" variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-jurnal-roster')">Rekap Jurnal</b-button>
+                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-jurnal-roster')">Rekap Jurnal</b-button>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -26,8 +26,10 @@
                                 Roster Jurnal Mengajar
                             </template>
                             <div class="col-lg-3">
-                            <input type="date" class="form-control" v-model="rekapjurnal.tanggal" @change="getRoster">
-                            <table class="table" width="auto">
+                                <input type="date" class="form-control" v-model="rekapjurnal.tanggal" @change="getRoster">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table" width="auto">
                                     <thead>
                                         <tr>
                                             <th>Kelas</th>
@@ -55,52 +57,76 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <span v-if="row.jam1 != null">
+                                                <span v-if="row.jam1.jm_status != null">
                                                     <span class="badge badge-success" v-if="row.jam1.jm_status == 1">Approve</span>
                                                     <span  class="badge badge-warning" v-if="row.jam1.jm_status == 0">Waiting</span>
                                                 </span>
+                                                <div v-else v-for="(rowjam, indexjam) in row.jam1" :key="indexjam">
+                                                    <span class="badge badge-dark">{{rowjam.guru.name}}</span>                                                  
+                                                </div>
                                             </td>
                                             <td>
-                                                <span v-if="row.jam2 != null">
+                                                <span v-if="row.jam2.jm_status != null">
                                                     <span class="badge badge-success" v-if="row.jam2.jm_status == 1">Approve</span>
                                                     <span  class="badge badge-warning" v-if="row.jam2.jm_status == 0">Waiting</span>
                                                 </span>
+                                                <div v-else v-for="(rowjam, indexjam) in row.jam2" :key="indexjam">
+                                                    <span class="badge badge-dark">{{rowjam.guru.name}}</span>                                                  
+                                                </div>
                                             </td>
                                             <td>
-                                                <span v-if="row.jam3 != null">
+                                                <span v-if="row.jam3.jm_status != null">
                                                     <span class="badge badge-success" v-if="row.jam3.jm_status == 1">Approve</span>
                                                     <span  class="badge badge-warning" v-if="row.jam3.jm_status == 0">Waiting</span>
                                                 </span>
+                                                <div v-else v-for="(rowjam, indexjam) in row.jam3" :key="indexjam">
+                                                    <span class="badge badge-dark">{{rowjam.guru.name}}</span>                                                  
+                                                </div>
                                             </td>
                                             <td>
-                                                <span v-if="row.jam4 != null">
+                                                <span v-if="row.jam4.jm_status != null">
                                                     <span class="badge badge-success" v-if="row.jam4.jm_status == 1">Approve</span>
                                                     <span  class="badge badge-warning" v-if="row.jam4.jm_status == 0">Waiting</span>
                                                 </span>
+                                                <div v-else v-for="(rowjam, indexjam) in row.jam4" :key="indexjam">
+                                                    <span class="badge badge-dark">{{rowjam.guru.name}}</span>                                                  
+                                                </div>
                                             </td>
                                             <td>
-                                                <span v-if="row.jam5 != null">
+                                                <span v-if="row.jam5.jm_status != null">
                                                     <span class="badge badge-success" v-if="row.jam5.jm_status == 1">Approve</span>
                                                     <span  class="badge badge-warning" v-if="row.jam5.jm_status == 0">Waiting</span>
                                                 </span>
+                                                <div v-else v-for="(rowjam, indexjam) in row.jam5" :key="indexjam">
+                                                    <span class="badge badge-dark">{{rowjam.guru.name}}</span>                                                  
+                                                </div>
                                             </td>
                                             <td>
-                                                <span v-if="row.jam6 != null">
+                                                <span v-if="row.jam6.jm_status != null">
                                                     <span class="badge badge-success" v-if="row.jam6.jm_status == 1">Approve</span>
                                                     <span  class="badge badge-warning" v-if="row.jam6.jm_status == 0">Waiting</span>
                                                 </span>
+                                                <div v-else v-for="(rowjam, indexjam) in row.jam6" :key="indexjam">
+                                                    <span class="badge badge-dark">{{rowjam.guru.name}}</span>                                                  
+                                                </div>
                                             </td>
                                             <td>
-                                                <span v-if="row.jam7 != null">
+                                                <span v-if="row.jam7.jm_status != null">
                                                     <span class="badge badge-success" v-if="row.jam7.jm_status == 1">Approve</span>
                                                     <span  class="badge badge-warning" v-if="row.jam7.jm_status == 0">Waiting</span>
                                                 </span>
+                                                <div v-else v-for="(rowjam, indexjam) in row.jam7" :key="indexjam">
+                                                    <span class="badge badge-dark">{{rowjam.guru.name}}</span>                                                  
+                                                </div>
                                             </td>
                                             <td>
-                                                <span v-if="row.jam8 != null">
+                                                <span v-if="row.jam8.jm_status != null">
                                                     <span class="badge badge-success" v-if="row.jam8.jm_status == 1">Approve</span>
                                                     <span  class="badge badge-warning" v-if="row.jam8.jm_status == 0">Waiting</span>
                                                 </span>
+                                                <div v-else v-for="(rowjam, indexjam) in row.jam8" :key="indexjam">
+                                                    <span class="badge badge-dark">{{rowjam.guru.name}}</span>                                                  
+                                                </div>
                                             </td>
                                             <td>
                                                 <span v-if="row.jam9 != null">

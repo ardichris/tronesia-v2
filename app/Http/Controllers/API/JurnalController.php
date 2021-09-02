@@ -11,6 +11,7 @@ use App\User;
 use App\DetailJurnal;
 use App\Pelanggaran;
 use App\Unit;
+use App\JadwalPelajaran;
 use Carbon\Carbon;
 use DB;
 use PDF;
@@ -54,6 +55,8 @@ class JurnalController extends Controller
     public function roster(Request $request) {
         $user = $request->user();
         $tanggal = date($request->tanggal);
+        //$hari = new DateTime($tanggal);
+        $hari = Carbon::parse($tanggal)->format('l');
         $roster = Kelas::where('unit_id',$user->unit_id)->orderBy('kelas_nama','ASC')->get();
         $jampel = array(0,1,2,3,4,5,6,7,8,9);
         foreach($roster as $rowkelas){
@@ -63,6 +66,15 @@ class JurnalController extends Controller
                                             ->where('kelas_id',$rowkelas->id)
                                             ->where('periode_id',$user->periode)
                                             ->select('jm_status')->first();
+
+                if(is_null($rowkelas['jam'.$rowjampel])) {
+                    $rowkelas['jam'.$rowjampel] = JadwalPelajaran::with('guru')
+                                                                ->where('jp_hari',$hari)
+                                                                ->where('jp_jampel',$rowjampel)
+                                                                ->where('kelas_id',$rowkelas->id)
+                                                                ->where('periode_id',$user->periode)
+                                                                ->get();
+                }
             }
         }
         return new JurnalCollection($roster);
