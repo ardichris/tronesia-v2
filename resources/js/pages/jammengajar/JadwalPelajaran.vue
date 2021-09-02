@@ -91,6 +91,7 @@
                                                 <div v-for="(rowjam, indexjam) in row" :key="indexjam">
                                                     <span class="badge badge-info">{{rowjam.mapel.mapel_kode}}</span>
                                                     <span class="badge badge-success">{{rowjam.guru.name}}</span>
+                                                    <button type ="button" class ="btn btn-danger btn-circle btn-xs" @click="deleteJP(rowjam.id)"><i class="fa fa-minus"></i></button>
                                                 </div>
                                             </td>
                                             <td>
@@ -140,7 +141,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions('jammengajar', ['getMapel','getKelas','getJP','submitJP']),
+        ...mapActions('jammengajar', ['getMapel','getKelas','getJP','submitJP','removeJP']),
         addJP(hari,jam){
             this.jp.hari = hari,
             this.jp.jampel = jam,
@@ -150,6 +151,21 @@ export default {
             this.submitJP().then(() => {
                 this.$bvModal.hide('add-modal'),
                 this.jp.mapel = ''
+            })
+        },
+        deleteJP(id){
+            this.$swal({
+                title: 'Kamu Yakin?',
+                text: "Tindakan ini akan menghapus secara permanent!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Iya, Lanjutkan!'
+            }).then((result) => {
+                if (result.value) {
+                    this.removeJP(id)
+                }
             })
         },
         SearchKelas(search, loading) {

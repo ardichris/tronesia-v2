@@ -91,6 +91,14 @@ const actions = {
             })
         })
     },
+    removeJP({ dispatch }, payload) {
+        return new Promise((resolve, reject) => {
+            $axios.delete(`/jadwalpelajaran/${payload}`)
+            .then((response) => {
+                dispatch('getJP').then(() => resolve())
+            })
+        })
+    },
     getGuru({ commit, state }, payload) {
         let search = payload.search
         payload.loading(true)

@@ -57,4 +57,12 @@ class JadwalPelajaranController extends Controller
 
         return response()->json(['status' => 'sukses','data' => $cek],200);
     }
+
+    public function destroy($id)
+    {
+        //return response()->json(['status' => 'success', 'data' => $id], 200);
+        $jadwalpelajaran = JadwalPelajaran::find($id);
+        $jadwalpelajaran->delete();
+        return response()->json(['status' => 'success'], 200);
+    }
 }
