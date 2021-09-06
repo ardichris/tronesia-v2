@@ -10,7 +10,8 @@ const state = () => ({
         mapel: [],
         mapelkode: '',
         jenis: '',
-        kd: ''
+        kd: '',
+        nilai: ''
     },
     
     mapel: {
@@ -23,6 +24,9 @@ const state = () => ({
 const mutations = {
     KOMPETENSI_DATA(state, payload){
         state.kompetensi = payload
+    },
+    SET_NILAI(state, payload){
+        state.nilaiselect.nilai = payload
     },
     JM_SELECT(state, payload){
         state.nilaiselect.kelas = payload.kelas_id,
@@ -50,7 +54,8 @@ const mutations = {
         state.mapel = {
             mapel_kode: '',
             mapel_nama: ''
-        }
+        },
+        state.nilaisiswas = []
     }
 }
 
@@ -63,7 +68,6 @@ const actions = {
             $axios.get(`/kompetensi?m=${mapels}&j=${jenjangs}&t=${jenis}`)
             .then((response) => {
                 commit('KOMPETENSI_DATA', response.data)
-                console.log(state.response.data)
                 resolve(response.data)
             })
         })
@@ -85,7 +89,7 @@ const actions = {
         let mapel = state.nilaiselect.kelas.mapel.id
         let kelas = state.nilaiselect.kelas.kelas.id
         let jenis = state.nilaiselect.jenis.value
-        let kd = state.nilaiselect.kd.id
+        let kd = state.nilaiselect.kd.id?state.nilaiselect.kd.id:''
         return new Promise((resolve, reject) => {
             $axios.get(`/nilaisiswa?kelas=${kelas}&mapel=${mapel}&jenis=${jenis}&kd=${kd}`)
             .then((response) => {
@@ -94,8 +98,22 @@ const actions = {
             })
         })
     },
-    submitNilaiSiswa({ dispatch, commit, state }, payload) {
-        console.log(state.nilaisiswas)
+    submitNilaiSiswa({ dispatch, commit, state}, payload) {
+        return new Promise((resolve, reject) => {
+            $axios.post(`/nilaisiswa`, state.nilaiselect)
+            .then((response) => {
+                console.log(response.data)
+                dispatch('getNilaiSiswa').then(() => {
+                    commit('ASSIGN_DATA', response.data.data)
+                    resolve(response)
+                })
+            })
+            .catch((error) => {
+                if (error.response.status == 422) {
+                    commit('SET_ERRORS', error.response.data.errors, { root: true })
+                }
+            })
+        })
         // return new Promise((resolve, reject) => {
         //     $axios.post(`/nilaisiswa`, state.nilaisiswas)
         //     .then((response) => {

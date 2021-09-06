@@ -24,10 +24,13 @@ class NilaiSiswaController extends Controller
             $nilai = NilaiSiswa::where('siswa_id',$row->id)
                                 ->where('mapel_id', request()->mapel)
                                 ->where('ns_jenis_nilai', request()->jenis)
-                                ->where('kompetensi_id', request()->kd)
-                                ->where('periode_id', $user->periode)
-                                ->value('ns_nilai');
-            $nilaisiswa[$key]['nilai'] = $nilai;
+                                //->where('kompetensi_id', request()->kd)
+                                ->where('periode_id', $user->periode);
+            if($request->kd != ''){
+                $nilai = $nilai->where('kompetensi_id', request()->kd);
+            }
+            $nilaisiswa[$key]['nilai'] = $nilai->value('ns_nilai');
+            $nilaisiswa[$key]['id_nilai'] = $nilai->value('id');
             //$row = array("nilai" => $nilai->ns_nilai);
         }
         //return response()->json(['status' => 'success', 'data' => 'data'], 200);
@@ -106,65 +109,81 @@ class NilaiSiswaController extends Controller
     // }
     
     public function store(Request $request){
-
-        $this->validate($request, [
-                 'siswa' => 'required'
-             ]);
         $user = $request->user();
-        foreach( $request->siswa as $rowsiswa){
-            $count=0;
-            if ($request->jenis != 'PTSPAS') {
-                foreach( $rowsiswa['nilai'] as $rownilai){                
-                    $nilai = NilaiSiswa::where('siswa_id',$rowsiswa['id'])
-                                        ->where('mapel_id',$request->mapel['id'])
-                                        ->where('kompetensi_id',$request->kompetensi[$count]['id'])
-                                        ->where('ns_jenis_nilai',$request->jenis)
-                                        ->where('periode_id',$user->periode)
-                                        ;
-                    $cek = $nilai->count();
-                    if($cek == 0 && $rownilai['ns_nilai'] != ''){
-                    //return response()->json(['status' =>  $request->kompetensi[$count]['id']], 200);
-                        NilaiSiswa::create(['siswa_id' => $rowsiswa['id'],
-                                            'ns_nilai' => $rownilai['ns_nilai'],
-                                            'mapel_id' => $request->mapel['id'],
-                                            'kompetensi_id' => $request->kompetensi[$count]['id'],
-                                            'ns_jenis_nilai' => $request->jenis,
-                                            'periode_id' => $user->periode,
-                                            'user_id' => $user->id,
-                                            'unit_id' => $user->unit_id,]);
-
-                    } else {
-                        $nilai->update(['ns_nilai' => $rownilai['ns_nilai']]);
-                                                                    
-                    }
-                    $count = $count + 1;
-                }
-            } else {
-                foreach ($rowsiswa['nilai'] as $rownilai){
-                    $nilai = NilaiSiswa::where('siswa_id',$rowsiswa['id'])
-                                        ->where('mapel_id',$request->mapel['id'])
-                                        ->where('ns_jenis_nilai',$request->kompetensi[$count])
-                                        ->where('periode_id',$user->periode)
-                                        ;
-                    $cek = $nilai->count();
-                    // $cekPTS = $nilai->where('ns_jenis_nilai','PTS')->count();
-                    // $cekPAS = $nilai->where('ns_jenis_nilai','PAS')->count();
-                    if ($cek == 0 && $rowsiswa['nilai'][0]['ns_nilai'] != '') {
-                        NilaiSiswa::create(['siswa_id' => $rowsiswa['id'],
-                                            'ns_nilai' => $rownilai['ns_nilai'],
-                                            'mapel_id' => $request->mapel['id'],
-                                            'ns_jenis_nilai' => $request->kompetensi[$count],
-                                            'periode_id' => $user->periode,
-                                            'user_id' => $user->id,
-                                            'unit_id' => $user->unit_id,]);
-                    } else {
-                        $nilai->update(['ns_nilai' => $rownilai['ns_nilai']]);
-                    }
-                    $count = $count + 1;
-                }
-            }   
-               
+        foreach($request->nilai as $row){
+            if(!is_null($row[3])){
+                NilaiSiswa::where('id',$row[3])->update(['ns_nilai' => $row[1]]);
+            }
+            if(!is_null($row[1]) && is_null($row[3])){
+                NilaiSiswa::create(['siswa_id' => $row[2],
+                                    'mapel_id' => $request->kelas['mapel_id'],
+                                    'kompetensi_id' =>  $request->kd['id'],
+                                    'ns_jenis_nilai' => $request->jenis['value'],
+                                    'ns_nilai' => $row[1],
+                                    'periode_id' => $user->periode,
+                                    'user_id' => $user->id,
+                                    'unit_id' => $user->unit_id]);
+            }
         }
+
+        // $this->validate($request, [
+        //          'siswa' => 'required'
+        //      ]);
+        // $user = $request->user();
+        // foreach( $request->siswa as $rowsiswa){
+        //     $count=0;
+        //     if ($request->jenis != 'PTSPAS') {
+        //         foreach( $rowsiswa['nilai'] as $rownilai){                
+        //             $nilai = NilaiSiswa::where('siswa_id',$rowsiswa['id'])
+        //                                 ->where('mapel_id',$request->mapel['id'])
+        //                                 ->where('kompetensi_id',$request->kompetensi[$count]['id'])
+        //                                 ->where('ns_jenis_nilai',$request->jenis)
+        //                                 ->where('periode_id',$user->periode)
+        //                                 ;
+        //             $cek = $nilai->count();
+        //             if($cek == 0 && $rownilai['ns_nilai'] != ''){
+        //             //return response()->json(['status' =>  $request->kompetensi[$count]['id']], 200);
+        //                 NilaiSiswa::create(['siswa_id' => $rowsiswa['id'],
+        //                                     'ns_nilai' => $rownilai['ns_nilai'],
+        //                                     'mapel_id' => $request->mapel['id'],
+        //                                     'kompetensi_id' => $request->kompetensi[$count]['id'],
+        //                                     'ns_jenis_nilai' => $request->jenis,
+        //                                     'periode_id' => $user->periode,
+        //                                     'user_id' => $user->id,
+        //                                     'unit_id' => $user->unit_id,]);
+
+        //             } else {
+        //                 $nilai->update(['ns_nilai' => $rownilai['ns_nilai']]);
+                                                                    
+        //             }
+        //             $count = $count + 1;
+        //         }
+        //     } else {
+        //         foreach ($rowsiswa['nilai'] as $rownilai){
+        //             $nilai = NilaiSiswa::where('siswa_id',$rowsiswa['id'])
+        //                                 ->where('mapel_id',$request->mapel['id'])
+        //                                 ->where('ns_jenis_nilai',$request->kompetensi[$count])
+        //                                 ->where('periode_id',$user->periode)
+        //                                 ;
+        //             $cek = $nilai->count();
+        //             // $cekPTS = $nilai->where('ns_jenis_nilai','PTS')->count();
+        //             // $cekPAS = $nilai->where('ns_jenis_nilai','PAS')->count();
+        //             if ($cek == 0 && $rowsiswa['nilai'][0]['ns_nilai'] != '') {
+        //                 NilaiSiswa::create(['siswa_id' => $rowsiswa['id'],
+        //                                     'ns_nilai' => $rownilai['ns_nilai'],
+        //                                     'mapel_id' => $request->mapel['id'],
+        //                                     'ns_jenis_nilai' => $request->kompetensi[$count],
+        //                                     'periode_id' => $user->periode,
+        //                                     'user_id' => $user->id,
+        //                                     'unit_id' => $user->unit_id,]);
+        //             } else {
+        //                 $nilai->update(['ns_nilai' => $rownilai['ns_nilai']]);
+        //             }
+        //             $count = $count + 1;
+        //         }
+        //     }   
+               
+        // }
         return response()->json(['status' => 'success'], 200);
     }
 

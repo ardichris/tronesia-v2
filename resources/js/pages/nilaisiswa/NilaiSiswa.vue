@@ -12,7 +12,7 @@
                                 <label>Kelas</label>
                                 <v-select :options="jammengajars"
                                     v-model="nilaiselect.kelas"
-                                    label="kelas"
+                                    label="id"
                                     @input="searchkd">
                                     <template slot="option" slot-scope="option">
                                         {{option.mapel.mapel_kode}} - {{ option.kelas.kelas_nama }}
@@ -34,8 +34,7 @@
                                     v-model="nilaiselect.kd"
                                     label="kd_kode"
                                     placeholder="Masukkan Kata Kunci"                                     
-                                    :filterable="false"
-                                    @input="getNilai">                                
+                                    :filterable="false">                                
                                     <template slot="no-options">
                                         Masukkan Kata Kunci
                                     </template>
@@ -44,7 +43,7 @@
                                     </template>
                                 </v-select>
                             </div>
-                            <button type="button" class="btn btn-success" @click="cekNilai">Submit Filter</button>
+                            <button type="button" class="btn btn-success" @click="getNilai">Submit Filter</button>
 
                         </div>
                     </div>
@@ -54,8 +53,11 @@
                         </div>
                         <div class="card-body">
                             <div id="spreadsheet" ref="spreadsheet"></div>
-                            <button type="button" class="btn btn-info" @click="submitNilai">Submit Nilai</button>    
+                            <div>
+                                <button type="button" class="btn btn-info" @click="submitNilai(jExcelObj.getData())">Submit Nilai</button>    
+                            </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -120,12 +122,12 @@ export default {
         },
         jExcelOptions() {
             return {
-                tabelnilai: document.getElementById('spreadsheet').jexcel,
                 data: this.nilaisiswa,
                 columns: [
                 { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
                 { type: "text", name:'nilai', title: "Nilai", width: "250px" },
                 { type: "hidden", name:'id', title: "Nilai", width: "250px"},
+                { type: "hidden", name:'id_nilai', title: "Nilai", width: "250px"},
                 // {
                 //     type: "dropdown",
                 //     title: "Make",
@@ -160,7 +162,7 @@ export default {
     },
     methods: {
         ...mapActions('nilaisiswa', ['getJamMengajar','submitNilaiSiswa','updateNilaiSiswa','editNilaiSiswa','getNilaiSiswa', 'removeNilaiSiswa','setJM','getKD']),
-        ...mapMutations('nilaisiswa', ['JM_SELECT','JENIS_SELECT']),
+        ...mapMutations('nilaisiswa', ['JM_SELECT','JENIS_SELECT','SET_NILAI']),
         searchkd(){
             this.getKD()
         },
@@ -171,18 +173,16 @@ export default {
             this.JENIS_SELECT(JMset)
         },
         getNilai(){
-            this.getNilaiSiswa()
+            this.getNilaiSiswa().then(() => {
+                const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
+                Object.assign(this, { jExcelObj });
+            })
         },
-        cekNilai(){
-            console.log(JSON.stringify(this.nilaisiswa));
-            const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
-            Object.assign(this, { jExcelObj });
-        },
-        submitNilai(){
+        submitNilai(payload){
             //var tabelnilai = document.getElementById('spreadsheet').jexcel;
-            //this.submitNilaiSiswa();
+            this.SET_NILAI(payload)
+            this.submitNilaiSiswa().then(window.location.reload())
             
-            console.log(this.tabelnilai.getData())
         },
         simpanNilaiSiswabaru(){
             this.submitNilaiSiswa().then(() => {

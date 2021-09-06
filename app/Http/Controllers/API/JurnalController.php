@@ -55,25 +55,37 @@ class JurnalController extends Controller
     public function roster(Request $request) {
         $user = $request->user();
         $tanggal = date($request->tanggal);
-        //$hari = new DateTime($tanggal);
         $hari = Carbon::parse($tanggal)->format('l');
         $roster = Kelas::where('unit_id',$user->unit_id)->orderBy('kelas_nama','ASC')->get();
         $jampel = array(0,1,2,3,4,5,6,7,8,9);
+        $jurnal = Jurnal::where('jm_tanggal',$tanggal)
+                        ->where('periode_id',$user->periode)
+                        ->where('jm_status','<',2)
+                        ->get();
+        $jadwal = JadwalPelajaran::with('guru')
+                                    ->where('jp_hari',$hari)
+                                    ->where('periode_id',$user->periode)
+                                    ->get();
         foreach($roster as $rowkelas){
             foreach($jampel as $rowjampel){
-                $rowkelas['jam'.$rowjampel] = Jurnal::where('jm_tanggal',$tanggal)
-                                            ->where('jm_jampel',$rowjampel)
-                                            ->where('kelas_id',$rowkelas->id)
-                                            ->where('periode_id',$user->periode)
-                                            ->select('jm_status')->first();
-
-                if(is_null($rowkelas['jam'.$rowjampel])) {
-                    $rowkelas['jam'.$rowjampel] = JadwalPelajaran::with('guru')
-                                                                ->where('jp_hari',$hari)
-                                                                ->where('jp_jampel',$rowjampel)
-                                                                ->where('kelas_id',$rowkelas->id)
-                                                                ->where('periode_id',$user->periode)
-                                                                ->get();
+                $jurnalfind = null;
+                foreach($jurnal as $rowjurnal){
+                    if($rowjurnal->jm_jampel == $rowjampel){
+                        if($rowjurnal->kelas_id == $rowkelas->id){
+                            $jurnalfind = $rowjurnal->jm_status;
+                            $rowkelas['jam'.$rowjampel] = array('jm_status' => $jurnalfind);
+                        }
+                    }
+                }
+                if(is_null($jurnalfind)){
+                    $count = 0;
+                    $guru = array();
+                    foreach($jadwal as $rowjadwal){
+                        if($rowjadwal->jp_jampel == $rowjampel && $rowjadwal->kelas_id == $rowkelas->id){
+                            array_push($guru,$rowjadwal->guru->name);     
+                        }
+                    } 
+                    $rowkelas['jam'.$rowjampel] = $guru;   
                 }
             }
         }
