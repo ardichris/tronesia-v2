@@ -27,16 +27,16 @@
     <!-- <link rel="stylesheet" href="{{ asset('bower_components/Ionicons/css/ionicons.min.css') }}"> -->
     <link rel="stylesheet" href="{{ asset('lte/plugins/summernote/summernote-bs4.css') }}">
     <!--link rel="stylesheet" href="{{ asset('~vue-wysiwyg/dist/vueWysiwyg.css') }}"-->
-    <!-- <link rel="stylesheet" href="https://bossanova.uk/jexcel/v3/jexcel.css" type="text/css"/>
-    <link rel="stylesheet" href="https://bossanova.uk/jsuites/v2/jsuites.css" type="text/css"/> -->
+    <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v3/jexcel.css" type="text/css" />
+    <link rel="stylesheet" href="https://jsuites.net/v3/jsuites.css" type="text/css" />
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
   
     <div id="dw">
         <app></app>
     </div>
-    <!-- <script src="https://bossanova.uk/jexcel/v3/jexcel.js"></script>
-    <script src="https://bossanova.uk/jsuites/v2/jsuites.js"></script> -->
+    <script src="https://bossanova.uk/jspreadsheet/v3/jexcel.js"></script>
+    <script src="https://jsuites.net/v3/jsuites.js"></script>
     
     <!-- jQuery -->
     <script src="{{ asset('lte/plugins/jquery/jquery.min.js') }}"></script>

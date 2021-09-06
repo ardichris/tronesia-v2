@@ -19,6 +19,21 @@ class KompetensiController extends Controller
                                         ->where('kompetensi_jenjang', 'LIKE', '%' . request()->j . '%')
                                         ->orderBy('kd_kode', 'ASC');
         }
+        if (request()->t != '') {
+            $jenis = request()->t;
+            $pengetahuan = array('PHS','TGS');
+            $ketrampilan = array('PRK','PRD','PRY','PRT');
+            if(in_array($jenis,$pengetahuan)){
+                $sort = '3.';
+            } elseif(in_array($jenis,$ketrampilan)){
+                $sort = '4.';
+            } else {
+                $sort = null;
+            }
+            if(!is_null($sort)){
+                $kompetensis = $kompetensis->where('kd_kode', 'like', $sort.'%');
+            }
+        }
         return new KompetensiCollection($kompetensis->paginate(50));
     }
 

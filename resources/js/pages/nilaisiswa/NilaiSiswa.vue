@@ -3,92 +3,60 @@
         <div class="panel">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="card col-md-6">
+                    <div class="card col-md-2">
                         <div class="card-header">
-                            <h3 class="card-title">Daftar Kelas Yang Diampu</h3>
+                            <h3 class="card-title">Filter Nilai</h3>
                         </div>
                         <div class="card-body">
-                            <button type="button" class="btn btn-app" v-for="(row, index) in jammengajars" :key="index"  @click="JMSelected(row)">
-                                <i class="fas fa-chalkboard-teacher"></i>{{row.mapel.mapel_kode}} - {{row.kelas.kelas_nama}}
-                            </button>
-                            <!-- <a class="btn btn-app" v-for="(row, index) in jammengajars" :key="index"  @click="JMSelected(row)">
-                            <i class="fas fa-spell-check"></i>{{row.mapel.mapel_kode}} - {{row.kelas.kelas_nama}}
-                            </a> -->
-                        </div>                                               
-                        <!-- /.card-body -->
-                    </div>
-                    <div class="card col-md-6">
-                        <div class="card-header">
-                            <h3 class="card-title">Jenis Nilai</h3>
-                        </div>
-                        <div class="card-body">
-                            <div>
-                                <button type="button" class="btn btn-app" v-for="(row, index) in field" :key="index" @click="JenisSelected(row.value)" >
-                                    <i class="fas fa-spell-check"></i>{{row.text}}
-                                </button>
-                                <button type="button" class="btn btn-primary btn-lg btn-block" @click="getNilai">SUBMIT</button>
-                                <!-- <b-form-select v-model="nilaiselect.jenis" class="mb-3" @change="getNilai">
-                                    <b-form-select-option :value="null"></b-form-select-option>
-                                    <b-form-select-option value="PHS">PH</b-form-select-option>
-                                    <b-form-select-option value="TGS">Tugas</b-form-select-option>
-                                    <b-form-select-option value="PTSPAS">PTS / PAS</b-form-select-option>
-                                    <b-form-select-option value="PRK">Praktik</b-form-select-option>
-                                    <b-form-select-option value="PRY">Proyek</b-form-select-option>
-                                    <b-form-select-option value="PRD">Produk</b-form-select-option>
-                                    <b-form-select-option value="PRT">Portofolio</b-form-select-option>
-                                </b-form-select> -->
+                            <div class="form-group">
+                                <label>Kelas</label>
+                                <v-select :options="jammengajars"
+                                    v-model="nilaiselect.kelas"
+                                    label="kelas"
+                                    @input="searchkd">
+                                    <template slot="option" slot-scope="option">
+                                        {{option.mapel.mapel_kode}} - {{ option.kelas.kelas_nama }}
+                                    </template>
+                                </v-select>
                             </div>
+                            <div class="form-group">
+                                <label>Jenis Nilai</label>
+                                <v-select :options="field"
+                                    v-model="nilaiselect.jenis"
+                                    label="text"
+                                    @input="searchkd">                                    
+                                </v-select>
+                            </div>
+                            <div class="form-group">
+                                <label>Kompetensi</label>
+                                <v-select
+                                    :options="kompetensis.data"
+                                    v-model="nilaiselect.kd"
+                                    label="kd_kode"
+                                    placeholder="Masukkan Kata Kunci"                                     
+                                    :filterable="false"
+                                    @input="getNilai">                                
+                                    <template slot="no-options">
+                                        Masukkan Kata Kunci
+                                    </template>
+                                    <template slot="option" slot-scope="option">
+                                        {{ option.kd_kode }}
+                                    </template>
+                                </v-select>
+                            </div>
+                            <button type="button" class="btn btn-success" @click="cekNilai">Submit Filter</button>
+
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="panel-body" id="form-nilai">
-                <div class="row">
-                    <div class="card col-md-12" >
+                    <div class="card col-md-10">
                         <div class="card-header">
-                            <h3 class="card-title">Nilai Siswa</h3>
-                                <span class="float-right">
-                                <span class="badge badge-primary">{{nilaisiswas.kelasnama}}</span>
-                                <span class="badge badge-success">{{nilaisiswas.mapelkode}}</span>
-                                <span class="badge badge-warning" v-if="nilaisiswas.jenis == 'PHS'">PH</span>
-                                <span class="badge badge-warning" v-else-if="nilaisiswas.jenis == 'TGS'">Tugas</span>
-                                <span class="badge badge-warning" v-else-if="nilaisiswas.jenis == 'PTSPAS'">PTS-PAS</span>
-                                <span class="badge badge-warning" v-else-if="nilaisiswas.jenis == 'PRK'">Praktik</span>
-                                <span class="badge badge-warning" v-else-if="nilaisiswas.jenis == 'PRD'">Produk</span>
-                                <span class="badge badge-warning" v-else-if="nilaisiswas.jenis == 'PRY'">Proyek</span>
-                                <span class="badge badge-warning" v-else-if="nilaisiswas.jenis == 'PRT'">Portofolio</span>
-                                </span>
-                            
+                            <h3 class="card-title">Daftar Nilai</h3>
                         </div>
                         <div class="card-body">
-                            <div style="overflow-x:scroll;">
-                                <table class="table" width="auto">
-                                    <thead>
-                                        <tr>
-                                            <th>Nama Siswa</th>
-                                            <th width="100px"  style="text-align:center" v-for="(row, index) in nilaisiswas.kompetensi" :key="index">KD:{{row.kd_kode?row.kd_kode:row}}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(row, index) in nilaisiswas.siswa" :key="index">
-                                            <td>
-                                                {{row.s_nama}}
-                                            </td>
-                                            <td v-for="(row, index) in row.nilai" :key="index">
-                                                <!-- <input type="text" class="form-control" v-model="row.ns_nilai"> -->
-                                                <b-form-input size="sm" v-model="row.ns_nilai"></b-form-input>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <span class="float-right" style="margin-top:20px">
-                                <button type="button" class="btn btn-success" @click="submitNilai">SUBMIT NILAI</button>    
-                            </span>
+                            <div id="spreadsheet" ref="spreadsheet"></div>
+                            <button type="button" class="btn btn-info" @click="submitNilai">Submit Nilai</button>    
                         </div>
-                        <!-- /.card-body -->
-                    </div>    
-                    <!-- <nilaisiswa-form></nilaisiswa-form> -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,6 +66,7 @@
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex'
 import FormNilaiSiswa from './Form.vue'
+import vSelect from 'vue-select'
 
 export default {
     name: 'DataNilaiSiswa',
@@ -113,12 +82,19 @@ export default {
             field: [
                 { value: 'PHS', text: 'PH' },
                 { value: 'TGS', text: 'Tugas' },
-                { value: 'PTSPAS', text: 'PTS-PAS' },
+                { value: 'PTS', text: 'PTS' },
+                { value: 'PAS', text: 'PAS' },
                 { value: 'PRK', text: 'Praktik' },
                 { value: 'PRD', text: 'Produk' },
                 { value: 'PRY', text: 'Proyek' },
                 { value: 'PRT', text: 'Portofolio' },
-                ]
+                ],
+           
+            myNilai: JSON.stringify(this.nilaisiswa)
+            // myCars: [                
+            //     ["Civic", "Honda"],
+            //      ["Z4", "BMW"],
+            //  ]
         }
     },
     computed: {
@@ -126,7 +102,9 @@ export default {
         ...mapState('nilaisiswa', {
             nilaiselect: state => state.nilaiselect,
             nilaisiswas: state => state.nilaisiswas,
+            nilaisiswa: state => state.nilaisiswas,
             jammengajars: state => state.jammengajars,
+            kompetensis: state => state.kompetensi
             
         }),
         page: {
@@ -139,6 +117,34 @@ export default {
                 //DI VUEX JUGA AKAN DIUBAH
                 this.$store.commit('nilaisiswa/SET_PAGE', val)
             }
+        },
+        jExcelOptions() {
+            return {
+                tabelnilai: document.getElementById('spreadsheet').jexcel,
+                data: this.nilaisiswa,
+                columns: [
+                { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
+                { type: "text", name:'nilai', title: "Nilai", width: "250px" },
+                { type: "hidden", name:'id', title: "Nilai", width: "250px"},
+                // {
+                //     type: "dropdown",
+                //     title: "Make",
+                //     width: "250px",
+                //     source: ["Alfa Romeo", "Audi", "BMW", "Honda", "Porshe"]
+                // },
+                // { type: "calendar", title: "Available", width: "250px" },
+                // { type: "image", title: "Photo", width: "120px" },
+                // { type: "checkbox", title: "Stock", width: "80px" },
+                // {
+                //     type: "numeric",
+                //     title: "Price",
+                //     width: "120px",
+                //     mask: "$ #.##,00",
+                //     decimal: ","
+                // },
+                // { type: "color", width: "100px", render: "square" }
+                ]
+            };
         }
     },
     watch: {
@@ -153,8 +159,11 @@ export default {
         }
     },
     methods: {
-        ...mapActions('nilaisiswa', ['getJamMengajar','submitNilaiSiswa','updateNilaiSiswa','editNilaiSiswa','getNilaiSiswa', 'removeNilaiSiswa','setJM']),
+        ...mapActions('nilaisiswa', ['getJamMengajar','submitNilaiSiswa','updateNilaiSiswa','editNilaiSiswa','getNilaiSiswa', 'removeNilaiSiswa','setJM','getKD']),
         ...mapMutations('nilaisiswa', ['JM_SELECT','JENIS_SELECT']),
+        searchkd(){
+            this.getKD()
+        },
         JMSelected(JMset){
             this.JM_SELECT(JMset)
         },
@@ -164,8 +173,16 @@ export default {
         getNilai(){
             this.getNilaiSiswa()
         },
+        cekNilai(){
+            console.log(JSON.stringify(this.nilaisiswa));
+            const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
+            Object.assign(this, { jExcelObj });
+        },
         submitNilai(){
-            this.submitNilaiSiswa()
+            //var tabelnilai = document.getElementById('spreadsheet').jexcel;
+            //this.submitNilaiSiswa();
+            
+            console.log(this.tabelnilai.getData())
         },
         simpanNilaiSiswabaru(){
             this.submitNilaiSiswa().then(() => {
@@ -201,8 +218,17 @@ export default {
             })
         }
     },
+    // mounted: function() {
+    //     //console.log(this.jExcelOptions);
+    //     //console.log(this.$refs["spreadsheet"]);
+    //     const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
+    //     // Object.assign(this, jExcelObj); // pollutes component instance
+    //     Object.assign(this, { jExcelObj }); // tucks all methods under jExcelObj object in component instance
+    //     // console.log(this.jExcelObj);
+    // },
     components: {
-        'nilaisiswa-form': FormNilaiSiswa
+        'nilaisiswa-form': FormNilaiSiswa,
+        vSelect
     }
 }
 </script>
