@@ -93,7 +93,6 @@ class SiswaController extends Controller
     
     public function update(Request $request, $id)
     {
-
         if(is_null($request['s_nama'])){
             $siswa = Siswa::whereId($id)->first();
             $siswa->update(['s_kelas'=> '-']);
@@ -107,7 +106,69 @@ class SiswaController extends Controller
             ]);
     
             $siswa = Siswa::whereId($id)->first();
-            $siswa->update($request->all());
+            $siswa->update([
+                's_nama' => $request->s_nama,
+                's_nisn' => $request->s_nisn,
+                's_nik' => $request->s_nik,
+                's_kelamin' => $request->s_kelamin,
+                //'s_alamat' => $request->s_alamat,
+                's_tempat_lahir' => $request->s_tempat_lahir,
+                's_tanggal_lahir' => $request->s_tanggal_lahir,
+                's_status' => $request->s_status,
+                's_sekolahasal' => $request->s_sekolahasal,
+                's_notelp' => $request->s_notelp,
+                's_nohandphone' => $request->s_nohandphone,
+                's_poin' => $request->s_poin,
+                's_anak_ke' => $request->s_anak_ke,
+                's_ibu_nama' => $request->s_ibu_nama,
+                's_ibu_tanggal_lahir' => $request->s_ibu_tanggal_lahir,
+                's_ibu_nik' => $request->s_ibu_nik,
+                's_ibu_pekerjaan' => $request->s_ibu_pekerjaan,
+                's_ayah_nama' => $request->s_ayah_nama,
+                's_ayah_tanggal_lahir' => $request->s_ayah_tanggal_lahir,
+                's_ayah_nik' => $request->s_ayah_nik,
+                's_ayah_pekerjaan' => $request->s_ayah_pekerjaan,
+                's_kk_alamat' => $request->s_alamat,
+                's_wali_nama' => $request->s_wali_nama,
+                's_wali_pekerjaan' => $request->s_wali_pekerjaan,
+                's_agama' => $request->s_agama,
+                's_jarak_rumah' => $request->s_jarak_rumah,
+                's_jarak_rumah_km' => $request->s_jarak_rumah_km,
+                's_jenis_tinggal' => $request->s_jenis_tinggal,
+                's_transportasi' => $request->s_transportasi,
+                's_email' => $request->s_email,
+                's_akta_nama' => $request->s_akta_nama,
+                's_akta_nomor' => $request->s_akta_nomor,
+                's_akta_tempat_lahir' => $request->s_akta_tempat_lahir,
+                // 's_akta_tanggal_lahir' => $request->s_akta_tanggal_lahir,
+                's_akta_nama_ayah ' => $request->s_akta_nama_ayah,
+                's_akta_nama_ibu' => $request->s_akta_nama_ibu,
+                's_ayah_pendidikan' => $request->s_ayah_pendidikan,
+                's_ayah_penghasilan' => $request->s_ayah_penghasilan,
+                's_ibu_pendidikan' => $request->s_ibu_pendidikan,
+                's_ibu_penghasilan' => $request->s_ibu_penghasilan,
+                's_kk_nomor' => $request->s_kk_nomor,
+                's_wali_nik' => $request->s_wali_nik,
+                's_wali_pendidikan' => $request->s_wali_pendidikan,
+                's_wali_penghasilan' => $request->s_wali_penghasilan,
+                // 's_wali_tanggal_lahir' => $request->s_wali_tanggal_lahir,
+                's_kk_rt' => $request->s_kk_rt,
+                's_kk_rw' => $request->s_kk_rw,
+                's_kk_kodepos' => $request->s_kk_kodepos,
+                's_kk_kelurahan' => $request->s_kk_kelurahan,
+                's_kk_kecamatan' => $request->s_kk_kecamatan,
+                's_kk_kota' => $request->s_kk_kota,
+                's_domisili_rt' => $request->s_domisili_rt,
+                's_domisili_rw' => $request->s_domisili_rw,
+                's_domisili_kodepos' => $request->s_domisili_kodepos,
+                's_domisili_kelurahan' => $request->s_domisili_kelurahan,
+                's_domisili_kecamatan' => $request->s_domisili_kecamatan,
+                's_domisili_kota' => $request->s_domisili_kota,
+                's_ayah_perusahaan' => $request->s_ayah_perusahaan,
+                's_ayah_jabatan' => $request->s_ayah_jabatan,
+                's_ibu_perusahaan' => $request->s_ibu_perusahaan,
+                's_ibu_jabatan' => $request->s_ibu_jabatan
+            ]);
         }
         return response()->json(['status' => 'success'], 200);
         

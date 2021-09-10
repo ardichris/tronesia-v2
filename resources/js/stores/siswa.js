@@ -12,7 +12,6 @@ const state = () => ({
         s_nama: '',
         s_kelamin: '',
         s_kelas: '',
-        s_alamat: '',
         s_tempat_lahir: '',
         s_tanggal_lahir: '',
         s_tinggi: '',
@@ -59,8 +58,8 @@ const state = () => ({
         s_kk_rw: '',
         s_kk_kodepos: '',
         s_kk_kelurahan: '',
-        S_kk_kecamatan: '',
-        S_kk_kota: '',
+        s_kk_kecamatan: '',
+        s_kk_kota: '',
         s_domisili_rt: '',
         s_domisili_rw: '',
         s_domisili_kodepos: '',
@@ -96,7 +95,6 @@ const mutations = {
             s_nama: payload.s_nama,
             s_kelamin: payload.s_kelamin,
             s_kelas: payload.s_kelas,
-            s_alamat: payload.s_alamat,
             s_tempat_lahir: payload.s_tempat_lahir,
             s_tanggal_lahir: payload.s_tanggal_lahir,
             s_tinggi: payload.s_tinggi,
@@ -143,8 +141,8 @@ const mutations = {
             s_kk_rw: payload.s_kk_rw,
             s_kk_kodepos: payload.s_kk_kodepos,
             s_kk_kelurahan: payload.s_kk_kelurahan,
-            S_kk_kecamatan: payload.s_kk_kecamatan,
-            S_kk_kota: payload.s_kk_kota,
+            s_kk_kecamatan: payload.s_kk_kecamatan,
+            s_kk_kota: payload.s_kk_kota,
             s_domisili_rt: payload.s_domisili_rt,
             s_domisili_rw: payload.s_domisili_rw,
             s_domisili_kodepos: payload.s_domisili_kodepos,
@@ -168,7 +166,6 @@ const mutations = {
             s_nama: '',
             s_kelamin: '',
             s_kelas: '',
-            s_alamat: '',
             s_tempat_lahir: '',
             s_tanggal_lahir: '',
             s_tinggi: '',
@@ -215,8 +212,8 @@ const mutations = {
             s_kk_rw: '',
             s_kk_kodepos: '',
             s_kk_kelurahan: '',
-            S_kk_kecamatan: '',
-            S_kk_kota: '',
+            s_kk_kecamatan: '',
+            s_kk_kota: '',
             s_domisili_rt: '',
             s_domisili_rw: '',
             s_domisili_kodepos: '',
@@ -294,6 +291,7 @@ const actions = {
             $axios.put(`/siswas/${payload}`, state.siswa)
             .then((response) => {
                 commit('CLEAR_FORM')
+                console.log(response.data)
                 resolve(response.data)
             })
         })
