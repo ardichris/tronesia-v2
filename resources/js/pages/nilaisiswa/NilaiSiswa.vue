@@ -122,29 +122,12 @@ export default {
         },
         jExcelOptions() {
             return {
-                data: this.nilaisiswa,
+                data: JSON.stringify(this.siswaaktif),
                 columns: [
                 { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
                 { type: "text", name:'nilai', title: "Nilai", width: "250px" },
                 { type: "hidden", name:'id', title: "Nilai", width: "250px"},
                 { type: "hidden", name:'id_nilai', title: "Nilai", width: "250px"},
-                // {
-                //     type: "dropdown",
-                //     title: "Make",
-                //     width: "250px",
-                //     source: ["Alfa Romeo", "Audi", "BMW", "Honda", "Porshe"]
-                // },
-                // { type: "calendar", title: "Available", width: "250px" },
-                // { type: "image", title: "Photo", width: "120px" },
-                // { type: "checkbox", title: "Stock", width: "80px" },
-                // {
-                //     type: "numeric",
-                //     title: "Price",
-                //     width: "120px",
-                //     mask: "$ #.##,00",
-                //     decimal: ","
-                // },
-                // { type: "color", width: "100px", render: "square" }
                 ]
             };
         }

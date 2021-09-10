@@ -167,10 +167,6 @@ export default {
                 ],
            
             myNilai: JSON.stringify(this.nilaisiswas)
-            // myCars: [                
-            //     ["Civic", "Honda"],
-            //      ["Z4", "BMW"],
-            //  ]
         }
     },
     computed: {
@@ -199,24 +195,7 @@ export default {
                 data: this.myNilai,
                 columns: [
                 { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
-                { type: "text", name:'nilai', title: "Nilai", width: "250px" },
-                // {
-                //     type: "dropdown",
-                //     title: "Make",
-                //     width: "250px",
-                //     source: ["Alfa Romeo", "Audi", "BMW", "Honda", "Porshe"]
-                // },
-                // { type: "calendar", title: "Available", width: "250px" },
-                // { type: "image", title: "Photo", width: "120px" },
-                // { type: "checkbox", title: "Stock", width: "80px" },
-                // {
-                //     type: "numeric",
-                //     title: "Price",
-                //     width: "120px",
-                //     mask: "$ #.##,00",
-                //     decimal: ","
-                // },
-                // { type: "color", width: "100px", render: "square" }
+                { type: "text", name:'nilai', title: "Nilai", width: "250px" }
                 ]
             };
         }
@@ -248,7 +227,6 @@ export default {
             this.getNilaiSiswa()
             const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
             Object.assign(this, { jExcelObj });
-            console.log(this.nilaisiswa);
         },
         submitNilai(){
             this.submitNilaiSiswa()

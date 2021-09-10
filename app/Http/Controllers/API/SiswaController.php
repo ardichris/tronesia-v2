@@ -6,11 +6,27 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\SiswaCollection;
 use App\Siswa;
+use App\Kelas;
 use App\JamMengajar;
 use DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SiswasExport;
 
 class SiswaController extends Controller
 {
+    public function exportSiswa(Request $request) {
+        $siswa = Siswa::where('s_keterangan','AKTIF')->orderBy('s_nama')->get();
+        foreach($siswa as $row) {
+            $row['kelas'] = Kelas::where('id',$row->kelas_id)->value('kelas_nama');
+        }
+        //$siswa = collect($siswa)->sortBy('s_nama')->sortBy('kelas')->toArray();
+        $siswa = $siswa->toArray();
+        $nama = array_column($siswa, 's_nama');
+        $kelas = array_column($siswa, 'kelas');
+        array_multisort($kelas, SORT_ASC, $nama, SORT_ASC, $siswa);
+        return Excel::download(new SiswasExport($siswa), 'siswa-'.date('y').date('m').date('d').'.xlsx');
+    }
+    
     public function index(Request $request)
     {
         $user = $request->user();

@@ -2,6 +2,7 @@ import $axios from '../api.js'
 
 const state = () => ({
     siswas: [],
+    siswaaktif: [],
 
     siswa: {
         s_nis: '',
@@ -77,6 +78,9 @@ const state = () => ({
 })
 
 const mutations = {
+    SISWA_AKTIF(state, payload){
+        state.siswaaktif = payload
+    },
     ASSIGN_DATA(state, payload) {
         state.siswas = payload
     },
@@ -230,6 +234,18 @@ const mutations = {
 }
 
 const actions = {
+    siswaAktif({commit, state}){
+        return new Promise((resolve, reject) => {
+            $axios.get(`/siswas/rekap`)
+            .then((response) => {
+                commit('SISWA_AKTIF', response.data)
+                console.log(response.data)
+                resolve(response.data)
+                
+            })
+        })
+    },
+    
     getSiswas({ commit, state }, payload) {
         let search = typeof payload.search != 'undefined' ? payload.search:''
         let status = typeof payload.status != 'undefined' ? payload.status:''

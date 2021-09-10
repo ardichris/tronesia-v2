@@ -21,7 +21,6 @@ const actions = {
             $axios.get(`/?page=${state.page}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
-                console.log(response.data)
                 resolve(response.data)
             })
         })

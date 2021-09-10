@@ -93,7 +93,7 @@
                     </li>
                     </ul>
                 </li>
-                <li class="nav-item has-treeview">
+                <li class="nav-item has-treeview"  v-if="authenticated.role != null">
                     <a class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                             <p>
@@ -170,7 +170,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item has-treeview">
+                <li class="nav-item has-treeview" v-if="authenticated.role != null">
                     <a class="nav-link">
                         <i class="nav-icon fas fa-building"></i>
                             <p>

@@ -52,14 +52,14 @@
                                             </td>
                                             <td>
                                                 <span v-if="row.jam0.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam0.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam0.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam0.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam0.jm_status == 0">Submitted</span>
                                                 </span>
                                             </td>
                                             <td>
                                                 <span v-if="row.jam1.jm_status < 2" >
-                                                    <span class="badge badge-success" v-if="row.jam1.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam1.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam1.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam1.jm_status == 0">Submitted</span>
                                                 </span>
                                                 <div v-else v-for="(rowjam, indexjam) in row.jam1" :key="indexjam">
                                                     <span class="badge badge-dark">{{rowjam}}</span>                                                  
@@ -67,8 +67,8 @@
                                             </td>
                                             <td>
                                                 <span v-if="row.jam2.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam2.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam2.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam2.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam2.jm_status == 0">Submitted</span>
                                                 </span>
                                                 <div v-else v-for="(rowjam, indexjam) in row.jam2" :key="indexjam">
                                                     <span class="badge badge-dark">{{rowjam}}</span>                                                  
@@ -76,8 +76,8 @@
                                             </td>
                                             <td>
                                                 <span v-if="row.jam3.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam3.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam3.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam3.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam3.jm_status == 0">Submitted</span>
                                                 </span>
                                                 <div v-else v-for="(rowjam, indexjam) in row.jam3" :key="indexjam">
                                                     <span class="badge badge-dark">{{rowjam}}</span>                                                  
@@ -85,8 +85,8 @@
                                             </td>
                                             <td>
                                                 <span v-if="row.jam4.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam4.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam4.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam4.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam4.jm_status == 0">Submitted</span>
                                                 </span>
                                                 <div v-else v-for="(rowjam, indexjam) in row.jam4" :key="indexjam">
                                                     <span class="badge badge-dark">{{rowjam}}</span>                                                  
@@ -94,8 +94,8 @@
                                             </td>
                                             <td>
                                                 <span v-if="row.jam5.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam5.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam5.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam5.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam5.jm_status == 0">Submitted</span>
                                                 </span>
                                                 <div v-else v-for="(rowjam, indexjam) in row.jam5" :key="indexjam">
                                                     <span class="badge badge-dark">{{rowjam}}</span>                                                  
@@ -103,8 +103,8 @@
                                             </td>
                                             <td>
                                                 <span v-if="row.jam6.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam6.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam6.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam6.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam6.jm_status == 0">Submitted</span>
                                                 </span>
                                                 <div v-else v-for="(rowjam, indexjam) in row.jam6" :key="indexjam">
                                                     <span class="badge badge-dark">{{rowjam}}</span>                                                  
@@ -112,8 +112,8 @@
                                             </td>
                                             <td>
                                                 <span v-if="row.jam7.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam7.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam7.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam7.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam7.jm_status == 0">Submitted</span>
                                                 </span>
                                                 <div v-else v-for="(rowjam, indexjam) in row.jam7" :key="indexjam">
                                                     <span class="badge badge-dark">{{rowjam}}</span>                                                  
@@ -121,8 +121,8 @@
                                             </td>
                                             <td>
                                                 <span v-if="row.jam8.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam8.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam8.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam8.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam8.jm_status == 0">Submitted</span>
                                                 </span>
                                                 <div v-else v-for="(rowjam, indexjam) in row.jam8" :key="indexjam">
                                                     <span class="badge badge-dark">{{rowjam}}</span>                                                  
@@ -130,8 +130,8 @@
                                             </td>
                                             <td>
                                                 <span v-if="row.jam9.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam9.jm_status == 1">Approve</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam9.jm_status == 0">Waiting</span>
+                                                    <span class="badge badge-success" v-if="row.jam9.jm_status == 1">Approved</span>
+                                                    <span  class="badge badge-warning" v-if="row.jam9.jm_status == 0">Submitted</span>
                                                 </span>
                                             </td>
                                         </tr>
@@ -274,7 +274,7 @@ export default {
             ],
             status_options: [
                 { value: '', text: '' },
-                { value: '0', text: 'Waiting' },
+                { value: '0', text: 'Submitted' },
                 { value: '1', text: 'Approved' },
                 { value: '2', text: 'Reject' },
             ],

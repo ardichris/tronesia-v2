@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('user-authenticated', 'API\UserController@getUserLogin')->name('user.authenticated');
     Route::get('user-lists', 'API\UserController@userLists')->name('user.index');
     Route::resource('/siswas', 'API\SiswaController')->except(['show']);
+    Route::get('/siswas/rekap', 'API\SiswaController@siswaAktif');
     Route::resource('/laporsarpras', 'API\LaporSarprasController');
     Route::put('/laporsarpras/changestatus/{kode}','API\LaporSarprasController@changeStatus');
     Route::resource('/kitirsiswa', 'API\KitirSiswaController');
@@ -59,6 +60,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/jammengajar', 'API\JamMengajarController');
     Route::resource('/jadwalpelajaran','API\JadwalPelajaranController');
     Route::resource('/nilaisiswa', 'API\NilaiSiswaController');
+    Route::get('exportsiswa', 'API\SiswaController@exportSiswa');
 });
 
 

@@ -5,6 +5,17 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
                         <router-link :to="{ name: 'siswas.add' }" class="btn btn-primary btn-sm btn-flat" v-if="authenticated.role==0">Tambah</router-link>
+                        <b-button variant="success" size="sm" @click="exportSiswa" v-if="authenticated.role==0">Rekap Siswa</b-button>
+                        <b-modal id="modal-rekap" size="xl" hide-footer>
+                            <template v-slot:modal-title>
+                                Rekap Siswa
+                            </template>
+                            <div class="table-responsive">
+                                <div id="spreadsheet" ref="spreadsheet"></div>
+                            </div>
+                            <template v-slot:modal-footer>
+                            </template>
+                        </b-modal>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -94,8 +105,10 @@ export default {
             authenticated: state => state.authenticated
         }),
         ...mapState('siswa', {
-            siswas: state => state.siswas
+            siswas: state => state.siswas,
+            siswaaktif: state => state.siswaaktif
         }),
+        ...mapState(['token']),
         page: {
             get() {
                 //MENGAMBIL VALUE PAGE DARI VUEX MODULE siswa
@@ -106,6 +119,15 @@ export default {
                 //DI VUEX JUGA AKAN DIUBAH
                 this.$store.commit('siswa/SET_PAGE', val)
             }
+        },
+        jExcelOptions() {
+            return {
+                data:'', //JSON.stringify(this.siswaaktif),
+                columns: [
+                { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
+                { type: "text", name:'nilai', title: "Nilai", width: "250px" },
+                ]
+            };
         }
     },
     watch: {
@@ -130,8 +152,21 @@ export default {
     },
     methods: {
         //MENGAMBIL FUNGSI DARI VUEX MODULE siswa
-        ...mapActions('siswa', ['getSiswas', 'removeSiswa']),
+        ...mapActions('siswa', ['getSiswas', 'removeSiswa','siswaAktif']),
         //KETIKA TOMBOL HAPUS DICLICK, MAKA AKAN MENJALANKAN METHOD INI
+        exportSiswa() {
+            window.open(`/api/exportsiswa?api_token=${this.token}`)
+        },
+        
+        rekapSiswa(){
+            this.siswaAktif().then(() => {
+                const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions)
+                Object.assign(this, { jExcelObj })
+                $bvModal.show('modal-rekap')
+            })
+            
+            this.siswaAktif()
+        },
         deleteSiswa(id) {
             //AKAN MENAMPILKAN JENDELA KONFIRMASI
             this.$swal({
