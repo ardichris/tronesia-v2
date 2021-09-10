@@ -44,8 +44,8 @@
                         <span class="badge badge-success" v-if="row.item.s_keterangan == 'AKTIF'">Aktif</span>
                     </template>
                     <template v-slot:cell(actions)="row">
-                        <router-link :to="{ name: 'siswas.view', params: {id: row.item.id} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
-                        <router-link :to="{ name: 'siswas.edit', params: {id: row.item.id} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
+                        <router-link :to="{ name: 'siswas.view', params: {id: row.item.uuid} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
+                        <router-link :to="{ name: 'siswas.edit', params: {id: row.item.uuid} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
                         <button class="btn btn-danger btn-sm" @click="deleteSiswa(row.item.id)" v-if="authenticated.role==0"><i class="fa fa-trash"></i></button>
                     </template>
                 </b-table>

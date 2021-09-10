@@ -14,13 +14,13 @@
                             <label>NIS/NISN/Student Code</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                             <div class="row">
                                 <div class="col">
-                                    <input type="text" class="form-control" v-model="siswa.s_nis" :readonly="$route.name == 'siswas.edit' || $route.name == 'siswas.view'">
+                                    <input type="text" class="form-control" v-model="siswa.s_nis" :readonly="$route.name == 'siswas.view' || authenticated.role!=0">
                                 </div>
                                 <div class="col">
-                                    <input type="text" class="form-control" v-model="siswa.s_nisn" :readonly="$route.name == 'siswas.edit' || $route.name == 'siswas.view'">
+                                    <input type="text" class="form-control" v-model="siswa.s_nisn" :readonly="$route.name == 'siswas.view' || authenticated.role!=0">
                                 </div>
                                 <div class="col">
-                                    <input type="text" class="form-control" v-model="siswa.s_code" :readonly="$route.name == 'siswas.view'">
+                                    <input type="text" class="form-control" v-model="siswa.s_code" :readonly="$route.name == 'siswas.view' || authenticated.role!=0">
                                 </div>
                             </div>
                         </div>
@@ -480,6 +480,9 @@ export default {
         ...mapState(['errors']), //MENGAMBIL STATE ERRORS
         ...mapState('siswa', {
             siswa: state => state.siswa //MENGAMBIL STATE SISWA
+        }),
+        ...mapState('user', {
+            authenticated: state => state.authenticated //ME-LOAD STATE AUTHENTICATED
         })
     },
     methods: {

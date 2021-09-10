@@ -195,7 +195,6 @@ const actions = {
             $axios.get(`/jurnal/${payload.kode}/edit`)
             .then((response) => {
                 commit('ASSIGN_FORM', response.data.data)
-                console.log(response.data.data)
                 resolve(response.data)
             })
         })

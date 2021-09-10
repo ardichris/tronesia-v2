@@ -279,6 +279,7 @@ class JurnalController extends Controller
     }
 
     public function update(Request $request, $id) {
+        $user = $request->user();
         $this->validate($request, [
             'jm_tanggal' => 'required',
             'jm_materi' => 'required|string',

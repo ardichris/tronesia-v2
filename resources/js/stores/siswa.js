@@ -290,8 +290,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.put(`/siswas/${payload}`, state.siswa)
             .then((response) => {
-                commit('CLEAR_FORM')
-                console.log(response.data)
+                commit('CLEAR_FORM')                
                 resolve(response.data)
             })
         })

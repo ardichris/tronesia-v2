@@ -81,20 +81,20 @@ class SiswaController extends Controller
 
     public function edit($id)
     {
-        $siswa = Siswa::whereId($id)->with('kelas')->first();
+        $siswa = Siswa::whereUuid($id)->with('kelas')->first();
         return response()->json(['status' => 'success', 'data' => $siswa], 200);
     }
 
     public function view($id)
     {
-        $siswa = Siswa::whereSiswa_nis($id)->first();
+        $siswa = Siswa::whereUuid($id)->first();
         return response()->json(['status' => 'success', 'data' => $siswa], 200);
     }
     
     public function update(Request $request, $id)
     {
         if(is_null($request['s_nama'])){
-            $siswa = Siswa::whereId($id)->first();
+            $siswa = Siswa::whereUuid($id)->first();
             $siswa->update(['s_kelas'=> '-']);
         } else {
             $this->validate($request, [
@@ -105,13 +105,12 @@ class SiswaController extends Controller
                 //'s_tanggal_lahir' => 'required|date'
             ]);
     
-            $siswa = Siswa::whereId($id)->first();
+            $siswa = Siswa::whereUuid($id)->first();
             $siswa->update([
                 's_nama' => $request->s_nama,
                 's_nisn' => $request->s_nisn,
                 's_nik' => $request->s_nik,
                 's_kelamin' => $request->s_kelamin,
-                //'s_alamat' => $request->s_alamat,
                 's_tempat_lahir' => $request->s_tempat_lahir,
                 's_tanggal_lahir' => $request->s_tanggal_lahir,
                 's_status' => $request->s_status,
@@ -140,8 +139,8 @@ class SiswaController extends Controller
                 's_akta_nama' => $request->s_akta_nama,
                 's_akta_nomor' => $request->s_akta_nomor,
                 's_akta_tempat_lahir' => $request->s_akta_tempat_lahir,
-                // 's_akta_tanggal_lahir' => $request->s_akta_tanggal_lahir,
-                's_akta_nama_ayah ' => $request->s_akta_nama_ayah,
+                's_akta_tanggal_lahir' => $request->s_akta_tanggal_lahir,
+                's_akta_nama_ayah' => $request->s_akta_nama_ayah,
                 's_akta_nama_ibu' => $request->s_akta_nama_ibu,
                 's_ayah_pendidikan' => $request->s_ayah_pendidikan,
                 's_ayah_penghasilan' => $request->s_ayah_penghasilan,
@@ -151,7 +150,7 @@ class SiswaController extends Controller
                 's_wali_nik' => $request->s_wali_nik,
                 's_wali_pendidikan' => $request->s_wali_pendidikan,
                 's_wali_penghasilan' => $request->s_wali_penghasilan,
-                // 's_wali_tanggal_lahir' => $request->s_wali_tanggal_lahir,
+                's_wali_tanggal_lahir' => $request->s_wali_tanggal_lahir,
                 's_kk_rt' => $request->s_kk_rt,
                 's_kk_rw' => $request->s_kk_rw,
                 's_kk_kodepos' => $request->s_kk_kodepos,
