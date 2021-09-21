@@ -23,7 +23,8 @@ class SiswaController extends Controller
         $siswa = $siswa->toArray();
         $nama = array_column($siswa, 's_nama');
         $kelas = array_column($siswa, 'kelas');
-        array_multisort($kelas, SORT_ASC, $nama, SORT_ASC, $siswa);
+        $noinduk = array_column($siswa, 's_nis');
+        array_multisort($kelas, SORT_ASC, $nama, SORT_ASC, $noinduk, SORT_ASC, $siswa);
         return Excel::download(new SiswasExport($siswa), 'siswa-'.date('y').date('m').date('d').'.xlsx');
     }
     
