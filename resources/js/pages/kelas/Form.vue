@@ -32,25 +32,7 @@
                     </template>
                 </v-select>
                 <p class="text-danger" v-if="errors.kelas_wali">{{ errors.kelas_wali[0] }}</p>
-            </div>
-            <div class="form-group">
-                <label for="">Tambah Anggota</label>
-                <v-select :options="siswas.data"
-                    v-model="kelas.tambah"
-                    @search="onSearchSiswa" 
-                    label="siswa_nama"
-                    placeholder="Masukkan Kata Kunci" 
-                    :filterable="false">
-                    <template slot="no-options">
-                        Masukkan Kata Kunci
-                    </template>
-                    <template slot="option" slot-scope="option">
-                        {{ option.siswa_nis }} - {{ option.siswa_nama }}
-                    </template>
-                </v-select>
-                <span><button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addAnggota" :disabled="authenticated.role != 0">Tambah</button></span>
-            </div>
-            
+            </div>            
         </div>
         <div class="col-md-6" v-if="$route.name == 'kelas.edit'">
             <label for="">Daftar Siswa</label>
@@ -58,24 +40,32 @@
             <div class="table-responsive" style="height: 600px">
                 <table class="table" >
                     <thead>
+                        <tr>
+                        <th width="75%">Nama Siswa</th>
+                        <th width="25%">Absen</th>
+                        <th></th>
+                    </tr>
                     </thead>
                     <!-- TABLE INI BERGUNA UNTUK MENAMBAHKAN ITEM TRANSAKSI -->
                     <tbody>
-                        <tr v-for="(row, index) in anggota.data" :key="index">
+                        <tr v-for="(row, index) in kelas.anggota" :key="index">
                             <td>
                                 <v-select :options="siswas.data"
                                     v-model="row.siswa"
                                     @search="onSearchSiswa" 
-                                    label="siswa_nama"
+                                    label="s_nama"
                                     placeholder="Masukkan Kata Kunci" 
                                     :filterable="false">
                                     <template slot="no-options">
                                         Masukkan Kata Kunci
                                     </template>
                                     <template slot="option" slot-scope="option">
-                                        {{ option.siswa_nis }} - {{ option.siswa_nama }}
+                                        {{ option.s_nis }} - {{ option.s_nama }}
                                     </template>
                                 </v-select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" v-model="row.absen">
                             </td>
                             <td>
                                 <button class="btn btn-danger btn-flat" @click="removeSiswa(index)" :disabled="authenticated.role != 0"><i class="fa fa-trash"></i></button>
@@ -94,10 +84,6 @@ import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 export default {
     name: 'FormKelas',
-    created(){
-        this.anggotaKelas(this.$route.params.id)
-    },
-
     data() {
         return {
             fields: [
@@ -106,22 +92,22 @@ export default {
                 { key: 'actions', label: 'Aksi' }
             ],
             search: '',
-            anggotas: [
-                    { siswa: null }
+            anggotakelas: [
+                    { siswa: null, absen: null }
             ]
         }
     },
     computed: {
         ...mapState('user', {
-            authenticated: state => state.authenticated
+            authenticated: state => state.authenticated,
         }),
         ...mapState(['errors']),
         ...mapState('kelas', {
             siswas: state => state.siswa,
-            anggota: state=>state.anggotas,
+            anggotas: state => state.anggota,
             kelas: state => state.kelas, 
             teachers: state => state.teachers,
-            tambah: state=> state.tambah
+            tambah: state => state.tambah
         }),
         filterSiswa() {
             return _.filter(this.kelas.anggota, function(item) {
@@ -147,15 +133,16 @@ export default {
                 loading: loading
             })            
         },
+        
         addSiswa() {
             if (this.filterSiswa.length == 0) {
-                this.anggotakelas.push({ siswa_id: null, siswa_nama: null})
+                this.kelas.anggota.push({ siswa_id: null, absen: null, siswa: null})
             }
         },
         //KETIKA TOMBOL HAPUS PADA MASING-MASING ITEM DITEKAN, MAKA AKAN MENGHAPUS BERDASARKAN INDEX DATANYA
         removeSiswa(index) {
-            if (this.anggotakelas.length > 0) {
-                this.anggotakelas.splice(index, 1)
+            if (this.kelas.anggota.length > 0) {
+                this.kelas.anggota.splice(index, 1)
             }
         },
         deleteSiswa(id,kelas) {

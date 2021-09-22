@@ -20,12 +20,11 @@ class KelasController extends Controller
     
     public function tambahAnggota(Request $request)
     {
-        return response()->json(['status' => 'success1'], 200);
         if (request()->key == 'tambahAnggotaKelas') {
             $siswa = Siswa::whereId(request()->siswa)->first();
             $siswa->update(['kelas_id'=> 11]);
         }
-        return response()->json(['status' => 'success1'], 200);
+        return response()->json(['status' => 'success'], 200);
     }
     
     public function index(Request $request) {
@@ -55,7 +54,22 @@ class KelasController extends Controller
 
     public function edit($id)
     {
-        $kelas = Kelas::with(['user','siswa'])->whereId($id)->first();
+        $kelas = Kelas::with(['user'])->whereId($id)->first();
+        $anggota = KelasAnggota::where('kelas_id',$id)
+                                ->with('siswa')
+                                ->get()
+                                ->sortBy(function($urut){
+                                    return $urut->siswa->s_nama;
+                                });
+        
+        $kelas['anggota'] = $anggota;
+        // $kelas['anggota'] = KelasAnggota::where('kelas_id',$id)
+        //                                 ->with('siswa')
+        //                                 ->get()
+        //                                 ->sortBy(function($urut){
+        //                                     return $urut->siswa->s_nama;
+        //                                 });
+                                        
         return response()->json(['status' => 'success', 'data' => $kelas], 200);
     }
 
@@ -70,12 +84,46 @@ class KelasController extends Controller
         $this->validate($request, [
             'kelas_jenjang' => 'required|string',
         ]);
-
-        $kelas = Kelas::whereKelas_nama($id)->first();
+        $user = $request->user();
+        $kelas = Kelas::whereId($id)->first();
         $kelas->update([
                 'kelas_jenjang' => $request->kelas_jenjang,
                 'kelas_wali' => $request->kelas_wali['id']
         ]);
+        foreach($request->anggota as $key=>$row){
+            if(!is_null($row['siswa_id'])){
+                KelasAnggota::whereId($row['id'])
+                            ->where('periode_id',$user->periode)
+                            ->update(['absen' => $row['absen']]);
+            } else {
+                $cek = KelasAnggota::where('siswa_id',$row['siswa']['id']);
+                $cekcount = $cek->count();
+                if($cekcount>0){
+                    $cek->update(['kelas_id' => $id,
+                                'absen' => $row['absen']]);
+                } else {
+                    KelasAnggota::create(['kelas_id' => $id,
+                                        'siswa_id'=> $row['siswa']['id'],
+                                        'absen' => $row['absen'],
+                                        'periode_id' => $user->periode]);
+                }
+            }
+        }
+        
+        $anggota = KelasAnggota::where('kelas_id', $id)->get();        
+        foreach($anggota as $rowanggota){
+            $match = true;
+            foreach($request->anggota as $key=>$row){
+                if($rowanggota['siswa_id']==$row['siswa']['id']){
+                    $match = false;
+                }
+            }
+            if($match){
+                KelasAnggota::find($rowanggota['id'])->delete();
+            }
+
+        }
+
         return response()->json(['status' => 'success'], 200);
     }
 

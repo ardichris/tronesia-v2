@@ -11,6 +11,7 @@ use App\JamMengajar;
 use DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SiswasExport;
+use App\KelasAnggota;
 
 class SiswaController extends Controller
 {
@@ -37,8 +38,10 @@ class SiswaController extends Controller
                                 //->where('s_nama', 'LIKE', '%' . request()->q . '%');
         }
         if (request()->key == 'addAnggotaKelas') {
-            $siswas = Siswa::orderBy('s_nama', 'ASC')
-                           ->where('s_kelas', '!=' , request()->kelas);
+            $kelas = KelasAnggota::where('kelas_id',request()->kelas)->pluck('siswa_id');
+            $siswas = Siswa::whereNotIn('id',$kelas)
+                           ->where('s_keterangan','AKTIF')
+                           ->orderBy('s_nama', 'ASC');
         }
         if (request()->q != '') {
             $q = $request->q;

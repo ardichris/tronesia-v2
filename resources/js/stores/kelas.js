@@ -4,7 +4,7 @@ const state = () => ({
     siswa: [],
     teachers: [],
     kelass: [],
-    anggotas: [], 
+    anggota: [], 
     
     kelas: {
         id: '',
@@ -12,6 +12,7 @@ const state = () => ({
         kelas_jenjang: '',
         kelas_wali: '',
         tambah: '',
+        anggota: [],
     },
     page: 1 
 })
@@ -25,7 +26,7 @@ const mutations = {
     },
 
     ANGGOTA_DATA(state, payload) {
-        state.anggotas = payload
+        state.anggota = payload
     },
     
     ASSIGN_DATA(state, payload) {
@@ -40,7 +41,8 @@ const mutations = {
         state.kelas = {
             kelas_nama: payload.kelas_nama,
             kelas_jenjang: payload.kelas_jenjang,
-            kelas_wali: payload.user
+            kelas_wali: payload.user,
+            anggota: payload.anggota
         }
     },
 
@@ -74,7 +76,6 @@ const actions = {
             $axios.get(`/siswas?kelas=${payload}`)
             .then((response) => {
                 commit('ANGGOTA_DATA', response.data)
-                console.log(response.data)
                 resolve(response.data)
             })
         })
