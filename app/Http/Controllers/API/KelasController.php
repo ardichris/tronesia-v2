@@ -56,11 +56,12 @@ class KelasController extends Controller
     {
         $kelas = Kelas::with(['user'])->whereId($id)->first();
         $anggota = KelasAnggota::where('kelas_id',$id)
-                                ->with('siswa')
-                                ->get()
-                                ->sortBy(function($urut){
-                                    return $urut->siswa->s_nama;
-                                });
+                                ->with(array('siswa' => function($query) {
+                                    $query->select('id','s_nama');
+                                }))
+                                ->orderBy('absen')
+                                ->get();
+                                
         
         $kelas['anggota'] = $anggota;
         // $kelas['anggota'] = KelasAnggota::where('kelas_id',$id)

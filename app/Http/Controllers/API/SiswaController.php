@@ -16,23 +16,27 @@ use App\KelasAnggota;
 class SiswaController extends Controller
 {
     public function exportSiswa(Request $request) {
+        $user = $request->user();
         $siswa = Siswa::where('s_keterangan','AKTIF')->orderBy('s_nama')->get();
         foreach($siswa as $row) {
-            $row['kelas'] = Kelas::where('id',$row->kelas_id)->value('kelas_nama');
+            $kelas = KelasAnggota::where('siswa_id',$row->id)->where('periode_id',$user->periode)->first();
+            //return response()->json(['data' => $kelas['kelas_id']]);
+            $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
+            $row['absen'] = $kelas?$kelas['absen']:'-';
         }
         //$siswa = collect($siswa)->sortBy('s_nama')->sortBy('kelas')->toArray();
         $siswa = $siswa->toArray();
         $nama = array_column($siswa, 's_nama');
         $kelas = array_column($siswa, 'kelas');
-        $noinduk = array_column($siswa, 's_nis');
-        array_multisort($kelas, SORT_ASC, $noinduk, SORT_ASC, $nama, SORT_ASC, $siswa);
+        $absen = array_column($siswa, 'absen');
+        array_multisort($kelas, SORT_ASC, $absen, SORT_ASC, $nama, SORT_ASC, $siswa);
         return Excel::download(new SiswasExport($siswa), 'siswa-'.date('y').date('m').date('d').'.xlsx');
     }
     
     public function index(Request $request)
     {
         $user = $request->user();
-        $siswas = Siswa::with('kelas')->orderBy('s_nama', 'ASC')->where('unit_id',$user->unit_id);
+        $siswas = Siswa::orderBy('s_nama', 'ASC')->where('unit_id',$user->unit_id);
        if (request()->kelas != '') {
             $siswas = $siswas->where('kelas_id', '=' , request()->kelas);
                                 //->where('s_nama', 'LIKE', '%' . request()->q . '%');
@@ -67,6 +71,14 @@ class SiswaController extends Controller
                             ->orwhereIn('kelas_id', $gurubk);
         }
         $siswas = $siswas->paginate(40);
+        foreach($siswas as $row){
+            $kelas = KelasAnggota::where('siswa_id',$row['id'])
+                                    ->where('periode_id', $user->periode)
+                                    ->with('kelas')->first();
+            $row['kelas'] = $kelas?$kelas['kelas']['kelas_nama']:'-';
+            $row['absen'] = $kelas?$kelas['absen']:'-';
+        }
+
         return new SiswaCollection($siswas);
     }
 

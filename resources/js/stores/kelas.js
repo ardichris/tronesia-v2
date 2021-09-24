@@ -143,6 +143,7 @@ const actions = {
             $axios.get(`/kelas/${payload}/edit`)
             .then((response) => {
                 commit('ASSIGN_FORM', response.data.data)
+                console.log(response.data)
                 resolve(response.data)
             })
         })

@@ -37,12 +37,12 @@
         <div class="col-md-6" v-if="$route.name == 'kelas.edit'">
             <label for="">Daftar Siswa</label>
             <button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addSiswa" :disabled="authenticated.role != 0">Tambah</button>
-            <div class="table-responsive" style="height: 600px">
+            <div class="table-responsive" style="height: auto">
                 <table class="table" >
                     <thead>
                         <tr>
-                        <th width="75%">Nama Siswa</th>
-                        <th width="25%">Absen</th>
+                        <th width="85%">Nama Siswa</th>
+                        <th width="10%">Absen</th>
                         <th></th>
                     </tr>
                     </thead>

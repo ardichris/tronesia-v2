@@ -8,10 +8,10 @@
         </tr>
         <tr>
             <th>Kode</th>
-            <th>No. Induk</th>
-            <th>Nama Siswa</th>
-            <th>NISN</th>
             <th>Kelas</th>
+            <th>No. Induk</th>
+            <th>NISN</th>
+            <th>Nama Siswa</th>
             <th>P/L</th>
             <th>Tempat lahir</th>
             <th>Tanggal lahir</th>
@@ -33,11 +33,11 @@
         @foreach($siswa as $row)
             <tr>
                 <td>{{$row['s_code']}}</td>
+                <td>{{$row['kelas']}}/{{$row['absen']}}</td>
                 <td>{{$row['s_nis']}}</td>
-                <td>{{$row['s_nama']}}</td>
                 <td>{{$row['s_nisn']}}</td>
-                <td>{{$row['kelas']}}</td>
-                <td>{{$row['s_kelamin']}}</td>
+                <td>{{$row['s_nama']}}</td>
+                <td>{{substr($row['s_kelamin'],0,1)}}</td>
                 <td>{{$row['s_tempat_lahir']}}</td>
                 <td>{{\Carbon\Carbon::parse($row['s_tanggal_lahir'])->format('d/m/Y')}}</td>
                 <td>{{$row['s_agama']}}</td>
