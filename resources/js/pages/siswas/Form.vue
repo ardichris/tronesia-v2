@@ -96,13 +96,12 @@
                                 <div class="row">
                                     <div class="col">
                                         <select type="password" class="form-control" aria-invalid="false" v-model="siswa.s_agama" :readonly="$route.name == 'siswas.view'">
-                                            <option>Islam</option>
-                                            <option>Katholik</option>
+                                            <option>Kristen</option>
+                                            <option>Katolik</option>
                                             <option>Hindu</option>
                                             <option>Budha</option>
-                                            <option>Lainnya</option>
-                                            <option>Khonghucu</option>
-                                            <option>Kristen</option>
+                                            <option>Konghucu</option>
+                                            <option>Islam</option>
                                             <option>Kepercayaan Terhadap Tuhan YME</option>
                                         </select>
                                     </div>

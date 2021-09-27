@@ -9,12 +9,15 @@ use App\Siswa;
 use App\Kelas;
 use App\Kompetensi;
 use App\Mapel;
+use App\KelasAnggota;
 use App\Http\Resources\NilaiSiswaCollection;
 
 class NilaiSiswaController extends Controller
 {
     public function index(Request $request) {
         $user = $request->user();
+        $kelas = KelasAnggota::where('kelas_id', request()->kelas)->pluck('siswa_id');
+        ddd($kelas);
         $nilaisiswa = Siswa::where('kelas_id', request()->kelas)
                             ->select('s_nama','id')
                             ->orderBy('s_nama','ASC')
