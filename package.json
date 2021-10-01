@@ -39,6 +39,7 @@
     "vue-select": "^3.4.0",
     "vue-sweetalert2": "^2.1.5",
     "vue-wysiwyg": "^1.7.2",
+    "vuejs-datepicker": "^1.6.2",
     "vuex": "^3.6.2"
   }
 }

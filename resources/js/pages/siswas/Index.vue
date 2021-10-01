@@ -15,10 +15,8 @@
             </section>
 
             <section class="content">
-                <div class="row">
-                    
-                        <router-view></router-view>
-                    
+                <div class="row">                    
+                    <router-view></router-view>                    
                 </div>
             </section>
         </div>

@@ -31,7 +31,7 @@
                                         <input type="text" class="form-control" placeholder="Tempat lahir" v-model="siswa.s_tempat_lahir" :readonly="$route.name == 'siswas.view'">
                                     </div>
                                     <div class="col">
-                                        <input type="date" class="form-control" placeholder="ini datepicker" v-model="siswa.s_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
+                                        <input type="date" class="form-control" placeholder="dd-mm-yyyy" v-model="siswa.s_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
                                     </div>
                                 </div>
                             </div>
@@ -491,6 +491,7 @@ export default {
     destroyed() {
         //FORM DI BERSIHKAN
         this.CLEAR_FORM()
-    }
+    },
+    
 }
 </script>

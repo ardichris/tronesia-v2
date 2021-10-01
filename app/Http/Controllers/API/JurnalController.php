@@ -328,7 +328,7 @@ class JurnalController extends Controller
                 ]);
             }            
         }
-
+        //return response()->json(['status' => $request->pelanggaran], 200);
         Pelanggaran::whereJurnal_id($jurnal->id)->delete();
         foreach ($request->pelanggaran as $row) {
             if (!is_null($row['siswa'])) {
@@ -355,8 +355,8 @@ class JurnalController extends Controller
                 
                 Pelanggaran::create([
                     'pelanggaran_kode' => $kode,
-                    'jurnal_id' => $new_jurnal->id,
-                    'siswa_id' => $row['namasiswa']['id'],
+                    'jurnal_id' => $jurnal->id,
+                    'siswa_id' => $row['siswa']['id'],
                     'pelanggaran_tanggal' => $request->jm_tanggal,
                     'pelanggaran_jenis' => $row['pelanggaran_jenis'],
                     'pelanggaran_keterangan' => $row['pelanggaran_keterangan'],

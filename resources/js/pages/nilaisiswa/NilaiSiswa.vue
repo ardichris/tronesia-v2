@@ -74,7 +74,10 @@ export default {
     name: 'DataNilaiSiswa',
     created() {
         //SEBELUM COMPONENT DI-LOAD, REQUEST DATA DARI SERVER
-        this.getJamMengajar()
+        this.getJamMengajar().then(() => {
+                const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
+                Object.assign(this, { jExcelObj });
+            })
     },
     data() {
         return {
@@ -82,7 +85,7 @@ export default {
             //AGAR OTOMATIS DI-RENDER
             search: '',
             field: [
-                { value: 'PHS', text: 'PH' },
+                { value: 'PHS', text: 'UH' },
                 { value: 'TGS', text: 'Tugas' },
                 { value: 'PTS', text: 'PTS' },
                 { value: 'PAS', text: 'PAS' },
@@ -122,12 +125,13 @@ export default {
         },
         jExcelOptions() {
             return {
-                data: JSON.stringify(this.siswaaktif),
+                data: this.nilaisiswa,
                 columns: [
                 { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
-                { type: "text", name:'nilai', title: "Nilai", width: "250px" },
+                { type: "text", name:'nilai', title: "Nilai", width: "100px" },
                 { type: "hidden", name:'id', title: "Nilai", width: "250px"},
                 { type: "hidden", name:'id_nilai', title: "Nilai", width: "250px"},
+                { type: "dropdown", name:'sisipan', title: "Sisipan", width: "100px", source:["PH1", "PH2", "PH3"] },
                 ]
             };
         }
@@ -145,7 +149,7 @@ export default {
     },
     methods: {
         ...mapActions('nilaisiswa', ['getJamMengajar','submitNilaiSiswa','updateNilaiSiswa','editNilaiSiswa','getNilaiSiswa', 'removeNilaiSiswa','setJM','getKD']),
-        ...mapMutations('nilaisiswa', ['JM_SELECT','JENIS_SELECT','SET_NILAI']),
+        ...mapMutations('nilaisiswa', ['JM_SELECT','JENIS_SELECT','SET_NILAI','CLEAR_FORM']),
         searchkd(){
             this.getKD()
         },
@@ -156,15 +160,22 @@ export default {
             this.JENIS_SELECT(JMset)
         },
         getNilai(){
-            this.getNilaiSiswa().then(() => {
-                const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
-                Object.assign(this, { jExcelObj });
-            })
+            this.getNilaiSiswa().then(() => {this.jExcelObj.setData(this.nilaisiswa)})
+            // .then(() => {
+            //     const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
+            //     Object.assign(this, { jExcelObj });
+            // })
         },
         submitNilai(payload){
             //var tabelnilai = document.getElementById('spreadsheet').jexcel;
             this.SET_NILAI(payload)
-            this.submitNilaiSiswa().then(window.location.reload())
+            this.submitNilaiSiswa().then(this.$swal({
+                position: 'top-end',
+                title: 'Nilai tersimpan',
+                type: 'success',
+                showConfirmButton: false,
+                timer: 1500
+                }))
             
         },
         simpanNilaiSiswabaru(){
@@ -212,6 +223,9 @@ export default {
     components: {
         'nilaisiswa-form': FormNilaiSiswa,
         vSelect
+    },
+    destroyed() {
+        this.CLEAR_FORM()
     }
 }
 </script>

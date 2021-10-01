@@ -16,13 +16,13 @@ class NilaiSiswaController extends Controller
 {
     public function index(Request $request) {
         $user = $request->user();
+        
         $kelas = KelasAnggota::where('kelas_id', request()->kelas)->pluck('siswa_id');
-        ddd($kelas);
-        $nilaisiswa = Siswa::where('kelas_id', request()->kelas)
+        $nilaisiswa = Siswa::whereIn('id', $kelas)
                             ->select('s_nama','id')
                             ->orderBy('s_nama','ASC')
                             ->get();
-        
+
         foreach($nilaisiswa as $key=>$row){
             $nilai = NilaiSiswa::where('siswa_id',$row->id)
                                 ->where('mapel_id', request()->mapel)
@@ -34,6 +34,7 @@ class NilaiSiswaController extends Controller
             }
             $nilaisiswa[$key]['nilai'] = $nilai->value('ns_nilai');
             $nilaisiswa[$key]['id_nilai'] = $nilai->value('id');
+            $nilaisiswa[$key]['sisipan'] = $nilai->value('ns_sisipan');
             //$row = array("nilai" => $nilai->ns_nilai);
         }
         //return response()->json(['status' => 'success', 'data' => 'data'], 200);
@@ -115,7 +116,7 @@ class NilaiSiswaController extends Controller
         $user = $request->user();
         foreach($request->nilai as $row){
             if(!is_null($row[3])){
-                NilaiSiswa::where('id',$row[3])->update(['ns_nilai' => $row[1]]);
+                NilaiSiswa::where('id',$row[3])->update(['ns_nilai' => $row[1], 'ns_sisipan' => $row[4]]);
             }
             if(!is_null($row[1]) && is_null($row[3])){
                 NilaiSiswa::create(['siswa_id' => $row[2],
@@ -123,6 +124,7 @@ class NilaiSiswaController extends Controller
                                     'kompetensi_id' =>  $request->kd['id'],
                                     'ns_jenis_nilai' => $request->jenis['value'],
                                     'ns_nilai' => $row[1],
+                                    'ns_sisipan' => $row[4],
                                     'periode_id' => $user->periode,
                                     'user_id' => $user->id,
                                     'unit_id' => $user->unit_id]);

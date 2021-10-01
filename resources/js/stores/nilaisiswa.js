@@ -51,11 +51,10 @@ const mutations = {
         }
     },
     CLEAR_FORM(state) {
-        state.mapel = {
-            mapel_kode: '',
-            mapel_nama: ''
-        },
-        state.nilaisiswas = []
+        state.nilaisiswas = [],
+        state.nilaiselect = [],
+        state.kompetensi = [],
+        state.jammengajars = []
     }
 }
 
@@ -102,7 +101,6 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.post(`/nilaisiswa`, state.nilaiselect)
             .then((response) => {
-                console.log(response.data)
                 dispatch('getNilaiSiswa').then(() => {
                     commit('ASSIGN_DATA', response.data.data)
                     resolve(response)
@@ -129,41 +127,6 @@ const actions = {
         //         }
         //     })
         // })
-    },
-    editMapel({ commit }, payload) {
-        return new Promise((resolve, reject) => {
-            $axios.get(`/mapel/${payload}/edit`)
-            .then((response) => {
-                commit('ASSIGN_FORM', response.data.data)
-                resolve(response.data)
-            })
-        })
-    },
-    viewMapel({ commit }, payload) {
-        return new Promise((resolve, reject) => {
-            $axios.get(`/mapel/${payload}/edit`)
-            .then((response) => {
-                commit('ASSIGN_FORM', response.data.data)
-                resolve(response.data)
-            })
-        })
-    },
-    updateMapel({ state, commit }, payload) {
-        return new Promise((resolve, reject) => {
-            $axios.put(`/mapel/${payload}`, state.mapel)
-            .then((response) => {
-                commit('CLEAR_FORM')
-                resolve(response.data)
-            })
-        })
-    } ,
-    removeMapel({ dispatch }, payload) {
-        return new Promise((resolve, reject) => {
-            $axios.delete(`/mapel/${payload}`)
-            .then((response) => {
-                dispatch('getMapel').then(() => resolve())
-            })
-        })
     }
 }
 

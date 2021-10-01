@@ -90,6 +90,11 @@ import AddJamMengajar from './pages/jammengajar/Add.vue'
 import EditJamMengajar from './pages/jammengajar/Edit.vue'
 import ViewJamMengajar from './pages/jammengajar/View.vue'
 import DataJadwalPelajaran from './pages/jammengajar/JadwalPelajaran.vue'
+import DataRapor from './pages/rapor/Rapor.vue'
+import IndexRapor from './pages/rapor/Index.vue'
+import AddRapor from './pages/rapor/Add.vue'
+import EditRapor from './pages/rapor/Edit.vue'
+import ViewRapor from './pages/rapor/View.vue'
 
 
 Vue.use(Router)
@@ -664,7 +669,38 @@ const router = new Router({
                     meta: { title: 'Lihat Jam Mengajar' }
                 }
             ]
-        },     
+        },
+        {
+            path: '/rapor',
+            component: IndexRapor,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'rapor.data',
+                    component: DataRapor,
+                    meta: { title: 'Daftar Rapor' }
+                },
+                {
+                    path: 'add',
+                    name: 'rapor.add',
+                    component: AddRapor,
+                    meta: { title: 'Tambah Rapor' }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'rapor.edit',
+                    component: EditRapor,
+                    meta: { title: 'Ganti Rapor' }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'rapor.view',
+                    component: ViewRapor,
+                    meta: { title: 'Lihat Rapor' }
+                }
+            ]
+        }     
     ]
 });
 

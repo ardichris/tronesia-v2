@@ -143,7 +143,6 @@ const actions = {
             $axios.get(`/kelas/${payload}/edit`)
             .then((response) => {
                 commit('ASSIGN_FORM', response.data.data)
-                console.log(response.data)
                 resolve(response.data)
             })
         })
@@ -166,6 +165,11 @@ const actions = {
             .then((response) => {
                 commit('CLEAR_FORM')
                 resolve(response.data)
+            })
+            .catch((error) => {
+                if (error.response.status == 422) {
+                    commit('SET_ERRORS', error.response.data.errors, { root: true })
+                }
             })
         })
     } ,

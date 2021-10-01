@@ -12,6 +12,7 @@ use DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SiswasExport;
 use App\KelasAnggota;
+use Ramsey\Uuid\Uuid;
 
 class SiswaController extends Controller
 {
@@ -52,7 +53,8 @@ class SiswaController extends Controller
             $siswas = $siswas->where('s_nama', 'LIKE', '%' . request()->q . '%')
                             ->orwhereHas('kelas', function($query) use($q){
                                 $query->where('kelas_nama','like','%'.$q.'%');
-                            });
+                            })
+                            ->select(['id','s_nama','s_nis','s_kelamin','s_keterangan','uuid']);
         }
         if (request()->s != '') {
             $siswas = $siswas->where('s_keterangan', 'LIKE', '%' . request()->s . '%');
@@ -84,14 +86,19 @@ class SiswaController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user();
         $this->validate($request, [
             's_kelamin' => 'required',
             's_nama' => 'required|string',
-            's_tempatlahir' => 'required|string',
-            's_tanggallahir' => 'required|date'
+            's_code' => 'required'
         ]);
 
-        Siswa::create($request->all());
+        Siswa::create([ 'uuid' => Uuid::Uuid4(),
+                        's_nama' => $request->s_nama,
+                        's_code' => $request->s_code,
+                        's_kelamin' => $request->s_kelamin,
+                        'unit_id' => $user->unit_id,
+                        's_keterangan' => 'AKTIF']);
         return response()->json('sukses');
     }
 

@@ -84,6 +84,7 @@ class KelasController extends Controller
     {
         $this->validate($request, [
             'kelas_jenjang' => 'required|string',
+            'kelas_wali' => 'required'
         ]);
         $user = $request->user();
         $kelas = Kelas::whereId($id)->first();
@@ -91,6 +92,7 @@ class KelasController extends Controller
                 'kelas_jenjang' => $request->kelas_jenjang,
                 'kelas_wali' => $request->kelas_wali['id']
         ]);
+        
         foreach($request->anggota as $key=>$row){
             if(!is_null($row['siswa_id'])){
                 KelasAnggota::whereId($row['id'])
