@@ -9,15 +9,15 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 export default {
-    name: 'FormUnit',
+    name: 'FormCatatan',
     computed: {
         ...mapState(['errors']), //MENGAMBIL STATE ERRORS
-        ...mapState('unit', {
-            unit: state => state.unit //MENGAMBIL STATE SISWA
+        ...mapState('rapor', {
+            rapor: state => state.rapor //MENGAMBIL STATE SISWA
         })
     },
     methods: {
-        ...mapMutations('unit', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
+        ...mapMutations('rapor', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
     },
     //KETIKA PAGE INI DITINGGALKAN MAKA 
     destroyed() {

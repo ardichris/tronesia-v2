@@ -5,7 +5,6 @@
                 <h3 class="panel-title">Edit Mapel</h3>
             </div>
             <div class="panel-body">
-                <mapel-form></mapel-form>
                 <div class="form-group">
                     <button class="btn btn-primary btn-sm btn-flat" @click.prevent="submit">
                         <i class="fa fa-save"></i> Update
@@ -22,7 +21,6 @@
 </template>
 <script>
     import { mapActions, mapState } from 'vuex'
-    import FormMapel from './Form.vue'
     export default {
         name: 'EditMapel',
         created() {
@@ -44,9 +42,6 @@
             back() {
                     this.$router.push({ name: 'mapel.data' })
             }
-        },
-        components: {
-            'mapel-form': FormMapel
         },
     }
 </script>

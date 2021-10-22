@@ -1,6 +1,6 @@
 <template>
     <div class="content-wrapper">
-        <div class="container-fluid">
+        <div class="container">
             <section class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">

@@ -60,7 +60,9 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/jammengajar', 'API\JamMengajarController');
     Route::resource('/jadwalpelajaran','API\JadwalPelajaranController');
     Route::resource('/nilaisiswa', 'API\NilaiSiswaController');
+    Route::post('/nilaisiswa/nilaiki12', 'API\NilaiSiswaController@nilaiki12');
     Route::get('exportsiswa', 'API\SiswaController@exportSiswa');
+    Route::resource('/rapor', 'API\RaporController');
 });
 
 

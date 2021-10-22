@@ -13,8 +13,11 @@ class CreateRaporsTable extends Migration
      */
     public function up()
     {
-        Schema::create('rapors', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('rapor_sisipans', function (Blueprint $table) {
+            $table->string('id', 36)->primary();
+            $table->unsignedBigInteger('siswa_id');
+            $table->unsignedBigInteger('periode_id');
+            $table->unsignedBigInteger('unit_id');
             $table->timestamps();
         });
     }

@@ -1,132 +1,66 @@
 import $axios from '../api.js'
 
 const state = () => ({
-    nilaisiswas: [],
-    jammengajars: [],
-    kompetensi: [],
-    nilaiselect: {
+    raporki1: {
         kelas: '',
-        kelasnama: '',
-        mapel: [],
-        mapelkode: '',
-        jenis: '',
-        kd: '',
-        nilai: ''
+        nilai: []
     },
-    
-    mapel: {
-        mapel_kode: '',
-        mapel_nama: ''
-    },
+    raporki2: [],
+
     page: 1
 })
 
 const mutations = {
-    KOMPETENSI_DATA(state, payload){
-        state.kompetensi = payload
+    ASSIGN_KI1(state, payload) {
+        state.raporki1.nilai = payload
     },
-    SET_NILAI(state, payload){
-        state.nilaiselect.nilai = payload
-    },
-    JM_SELECT(state, payload){
-        state.nilaiselect.kelas = payload.kelas_id,
-        state.nilaiselect.mapel = payload.mapel_id
-    },
-    JENIS_SELECT(state, payload){
-        state.nilaiselect.jenis = payload
-    },
-    JAMMENGAJAR_DATA(state, payload) {
-        state.jammengajars = payload
-    },
-    ASSIGN_DATA(state, payload) {
-        state.nilaisiswas = payload
+    ASSIGN_KI2(state, payload) {
+        state.raporki2 = payload
     },
     SET_PAGE(state, payload) {
         state.page = payload
     },
     ASSIGN_FORM(state, payload) {
-        state.mapel = {
-            mapel_kode: payload.mapel_kode,
-            mapel_nama: payload.mapel_nama
-        }
+        state.rapor = payload
     },
     CLEAR_FORM(state) {
-        state.nilaisiswas = [],
-        state.nilaiselect = [],
-        state.kompetensi = [],
-        state.jammengajars = []
+        state.rapor = []
     }
 }
 
 const actions = {
-    getKD({ commit, state }, payload) {
-        let mapels = state.nilaiselect.kelas.mapel.mapel_kode
-        let jenjangs = state.nilaiselect.kelas.kelas.kelas_jenjang
-        let jenis = state.nilaiselect.jenis.value
+    getNilaiSpiritual({ commit, state }) {
         return new Promise((resolve, reject) => {
-            $axios.get(`/kompetensi?m=${mapels}&j=${jenjangs}&t=${jenis}`)
+            $axios.get(`/nilaisiswa?&jenis=KI1`)
             .then((response) => {
-                commit('KOMPETENSI_DATA', response.data)
-                resolve(response.data)
-            })
-        })
-    },
-    getJamMengajar({ commit, state }, payload) {
-        let search = typeof payload != 'undefined' ? payload:''
-        return new Promise((resolve, reject) => {
-            $axios.get(`/jammengajar?jm=nilai`)
-            .then((response) => {
-                commit('JAMMENGAJAR_DATA', response.data.data)
-                resolve(response.data)
-            })
-        })
-    },
-    getNilaiSiswa({ commit, state }) {
-        // let kelas = state.nilaiselect.kelas
-        // let mapel = state.nilaiselect.mapel
-        // let jenis = state.nilaiselect.jenis
-        let mapel = state.nilaiselect.kelas.mapel.id
-        let kelas = state.nilaiselect.kelas.kelas.id
-        let jenis = state.nilaiselect.jenis.value
-        let kd = state.nilaiselect.kd.id?state.nilaiselect.kd.id:''
-        return new Promise((resolve, reject) => {
-            $axios.get(`/nilaisiswa?kelas=${kelas}&mapel=${mapel}&jenis=${jenis}&kd=${kd}`)
-            .then((response) => {
-                commit('ASSIGN_DATA', response.data.data)
+                commit('ASSIGN_KI1', response.data.data)
+                console.log(response.data.data)
                 resolve(response)
             })
         })
     },
-    submitNilaiSiswa({ dispatch, commit, state}, payload) {
+    getNilaiSosial({ commit, state }) {
         return new Promise((resolve, reject) => {
-            $axios.post(`/nilaisiswa`, state.nilaiselect)
+            $axios.get(`/nilaisiswa?&jenis=KI2`)
             .then((response) => {
-                dispatch('getNilaiSiswa').then(() => {
-                    commit('ASSIGN_DATA', response.data.data)
-                    resolve(response)
-                })
+                commit('ASSIGN_KI2', response.data.data)
+                console.log(response.data.data)
+                resolve(response)
             })
-            .catch((error) => {
+        })
+    },
+    putNilaiSpiritual({ dispatch, commit, state}, payload) {
+        return new Promise((resolve, reject) => {
+            console.log(state.raporki1)
+            $axios.post(`/nilaisiswa/nilaiki12`, state.raporki1)
+            .then((response) => {
+                console.log(response.data.data)
+            }).catch((error) => {
                 if (error.response.status == 422) {
                     commit('SET_ERRORS', error.response.data.errors, { root: true })
                 }
             })
         })
-        // return new Promise((resolve, reject) => {
-        //     $axios.post(`/nilaisiswa`, state.nilaisiswas)
-        //     .then((response) => {
-        //         console.log(response.data.status)
-        //     //     dispatch('getNilaiSiswa').then(() => {
-        //     //         commit('ASSIGN_DATA', response.data.data)
-        //     //         resolve(response)
-        //     //     })
-        //     })
-        //     .catch((error) => {
-        //         if (error.response.status == 422) {
-        //             commit('SET_ERRORS', error.response.data.errors, { root: true })
-        //         }
-        //     })
-        // })
     }
 }
 

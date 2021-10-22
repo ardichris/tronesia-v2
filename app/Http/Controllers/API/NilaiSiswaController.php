@@ -14,28 +14,71 @@ use App\Http\Resources\NilaiSiswaCollection;
 
 class NilaiSiswaController extends Controller
 {
+    public function nilaiki12(Request $request) {
+        $user = $request->user();
+        foreach($request->nilai as $row){
+            if(!is_null($row[3])){
+                NilaiSiswa::where('id',$row[3])->update(['ns_nilai' => $row[1], 'ns_sisipan' => $row[4]]);
+            }
+            if(!is_null($row[1]) && is_null($row[3])){
+                NilaiSiswa::create(['siswa_id' => $row[2],
+                                    'mapel_id' => $request->kelas['mapel_id'],
+                                    'kompetensi_id' =>  $request->kd['id'],
+                                    'ns_jenis_nilai' => $request->jenis['value'],
+                                    'ns_nilai' => $row[1],
+                                    'ns_sisipan' => $row[4],
+                                    'periode_id' => $user->periode,
+                                    'user_id' => $user->id,
+                                    'unit_id' => $user->unit_id]);
+            }
+        }
+        return response()->json(['status' => 'success', 'data' => $data], 200);
+    }
+
     public function index(Request $request) {
         $user = $request->user();
-        
-        $kelas = KelasAnggota::where('kelas_id', request()->kelas)->pluck('siswa_id');
+
+        if(is_null(request()->kelas)){
+            $ampu = Kelas::where('kelas_wali',$user->id)->value('id');
+        } else {
+            $ampu = request()->kelas;
+        }
+
+        $kelas = KelasAnggota::where('kelas_id', $ampu)->orderBy('absen')->pluck('siswa_id');
         $nilaisiswa = Siswa::whereIn('id', $kelas)
                             ->select('s_nama','id')
-                            ->orderBy('s_nama','ASC')
+                            //->orderBy('s_nama','ASC')
                             ->get();
 
-        foreach($nilaisiswa as $key=>$row){
-            $nilai = NilaiSiswa::where('siswa_id',$row->id)
-                                ->where('mapel_id', request()->mapel)
-                                ->where('ns_jenis_nilai', request()->jenis)
-                                //->where('kompetensi_id', request()->kd)
-                                ->where('periode_id', $user->periode);
-            if($request->kd != ''){
-                $nilai = $nilai->where('kompetensi_id', request()->kd);
+        if(request()->jenis=='KI1' || request()->jenis=='KI2') {
+            foreach($nilaisiswa as $key=>$row){
+                $nilai = NilaiSiswa::where('siswa_id',$row->id)
+                                    ->where('periode_id', $user->periode);
+                $jenis = request()->jenis;
+                $nilaisiswa[$key][$jenis.'1'] = $nilai->where('ns_jenis_nilai',$jenis.'1')->value('ns_nilai');
+                $nilaisiswa[$key][$jenis.'2'] = $nilai->where('ns_jenis_nilai',$jenis.'2')->value('ns_nilai');
+                $nilaisiswa[$key][$jenis.'3'] = $nilai->where('ns_jenis_nilai',$jenis.'3')->value('ns_nilai');
+                $nilaisiswa[$key][$jenis.'4'] = $nilai->where('ns_jenis_nilai',$jenis.'4')->value('ns_nilai');
+                $nilaisiswa[$key][$jenis.'5'] = $nilai->where('ns_jenis_nilai',$jenis.'5')->value('ns_nilai');
+                $nilaisiswa[$key][$jenis.'6'] = $nilai->where('ns_jenis_nilai',$jenis.'6')->value('ns_nilai');
+                $nilaisiswa[$key][$jenis.'7'] = $nilai->where('ns_jenis_nilai',$jenis.'7')->value('ns_nilai');
+
             }
-            $nilaisiswa[$key]['nilai'] = $nilai->value('ns_nilai');
-            $nilaisiswa[$key]['id_nilai'] = $nilai->value('id');
-            $nilaisiswa[$key]['sisipan'] = $nilai->value('ns_sisipan');
-            //$row = array("nilai" => $nilai->ns_nilai);
+        } else {
+            foreach($nilaisiswa as $key=>$row){
+                $nilai = NilaiSiswa::where('siswa_id',$row->id)
+                                    ->where('mapel_id', request()->mapel)
+                                    ->where('ns_jenis_nilai', request()->jenis)
+                                    //->where('kompetensi_id', request()->kd)
+                                    ->where('periode_id', $user->periode);
+                if($request->kd != ''){
+                    $nilai = $nilai->where('kompetensi_id', request()->kd);
+                }
+                $nilaisiswa[$key]['nilai'] = $nilai->value('ns_nilai');
+                $nilaisiswa[$key]['id_nilai'] = $nilai->value('id');
+                $nilaisiswa[$key]['sisipan'] = $nilai->value('ns_sisipan');
+                //$row = array("nilai" => $nilai->ns_nilai);
+            }
         }
         //return response()->json(['status' => 'success', 'data' => 'data'], 200);
 
