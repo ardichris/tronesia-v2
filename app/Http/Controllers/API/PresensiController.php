@@ -10,10 +10,33 @@ use App\Siswa;
 use App\User;
 use App\Kelas;
 use App\JamMengajar;
+use App\KelasAnggota;
 use DB;
 
 class PresensiController extends Controller
 {
+    public function rekap(Request $request){
+        $user = $request->user();
+        $tanggalawal = date($request->tanggalawal);
+        $tanggalakhir = date($request->tanggalakhir);
+        $kelasanggota = KelasAnggota::where('kelas_id',$request->kelas)->where('periode_id',$user->periode)->orderBy('absen','ASC')->pluck('siswa_id');
+        $siswa = Siswa::whereIn('id',$kelasanggota)->where('s_keterangan','AKTIF')->select(['id','s_nama'])->get();
+        foreach($siswa as $row) {
+            $presensi = DetailJurnal::with('jurnal')
+                                    ->where('siswa_id',$row->id)
+                                    ->whereHas('jurnal', function($query) use($tanggalawal,$tanggalakhir){
+                                        $query->whereBetween('jm_tanggal',[$tanggalawal, $tanggalakhir]);
+                                    });
+            //return response()->json(['status' => $presensi], 200);
+                                    
+            $row['sakit'] = floor($presensi->where('alasan','Sakit')->count()/4);//$kelas?$kelas['absen']:'-';
+            $row['ijin'] = floor($presensi->where('alasan','Urusan Pribadi')->count()/4);//$kelas?$kelas['absen']:'-';
+            $row['alpha'] = floor($presensi->where('alasan','Alpha')->count()/4);//$kelas?$kelas['absen']:'-';
+        }
+        return new PresensiCollection($siswa);
+
+    }
+    
     public function index(Request $request)
     {
         $user = $request->user();

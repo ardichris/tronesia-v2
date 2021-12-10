@@ -146,8 +146,8 @@
                                 <input type="text" class="form-control" v-model="siswa.s_notelp" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
-                                <label for="inputHandphone">No. Handphone</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
-                                <input type="text" class="form-control" v-model="siswa.s_nohandphone" :readonly="$route.name == 'siswas.view'">
+                                <label for="inputSekolahAsal">Sekolah Asal</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
+                                <input type="text" class="form-control" v-model="siswa.s_sekolahasal" :readonly="$route.name == 'siswas.view'">
                             </div>
 
                             <div class="form-group">
@@ -300,7 +300,10 @@
                                     <option>Diatas Rp.5 Juta</option>
                                 </select>
                             </div>
-
+                            <div class="form-group">
+                                <label for="inputHandphone">No. Kontak Orang Tua</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
+                                <input type="text" class="form-control" v-model="siswa.s_nohandphone" :readonly="$route.name == 'siswas.view'">
+                            </div>
                         </div>
                     </div>
                     <br>
@@ -318,6 +321,10 @@
                             <div class="form-group">
                                 <label>Pekerjaan Wali</label>
                                 <input type="text" class="form-control" v-model="siswa.s_wali_pekerjaan" :readonly="$route.name == 'siswas.view'">
+                            </div>
+                            <div class="form-group">
+                                <label>Alamat Rumah Wali </label>
+                                <input type="text" class="form-control" v-model="siswa.s_wali_alamat" :readonly="$route.name == 'siswas.view'">
                             </div>
                         </div>
                         <div class="col-12 col-sm-6">
@@ -352,6 +359,10 @@
                                     <option>Diatas Rp.5 Juta</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="inputTelpon">No. Telpon Wali</label>
+                                <input type="text" class="form-control" v-model="siswa.s_wali_notelp" :readonly="$route.name == 'siswas.view'">
+                            </div>
                         </div>
                     </div>
                     <br>
@@ -383,11 +394,11 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Kelurahan</label>
-                                <input type="text" class="form-control" v-model="siswa.s_kk_kelurahan" :readonly="$route.name == 'siswas.view'">
+                                <div class="form-group">
+                                    <label>Kelurahan</label>
+                                    <input type="text" class="form-control" v-model="siswa.s_kk_kelurahan" :readonly="$route.name == 'siswas.view'">
                                 </div>
+                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                             <div class="form-group">
@@ -457,9 +468,10 @@
                             <div class="form-group">
                                 <label>Kelas     </label>
                                 <h4>
-                                <span class="badge badge-danger" v-if="siswa.kelas.kelas_jenjang == '8'">{{siswa.kelas.kelas_nama}}</span>
+                                <span class="badge badge-warning">{{siswa.kelas}}</span>
+                                <!-- <span class="badge badge-danger" v-if="siswa.kelas.kelas_jenjang == '8'">{{siswa.kelas.kelas_nama}}</span>
                                 <span class="badge badge-primary" v-if="siswa.kelas.kelas_jenjang == '9'">{{siswa.kelas.kelas_nama}}</span>
-                                <span class="badge badge-warning" v-if="siswa.kelas.kelas_jenjang == '7'">{{siswa.kelas.kelas_nama}}</span>
+                                <span class="badge badge-warning" v-if="siswa.kelas.kelas_jenjang == '7'">{{siswa.kelas.kelas_nama}}</span> -->
                                 </h4>
                             </div>
                         </div>

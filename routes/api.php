@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::put('/jurnal/changestatus/{kode}','API\JurnalController@changeJMstatus');
     Route::get('/jurnal/rekap','API\JurnalController@rekap');
     Route::get('/jurnal/roster','API\JurnalController@roster');
+    Route::get('/presensi/rekap', 'API\PresensiController@rekap');
     Route::resource('/jurnal', 'API\JurnalController')->except(['create', 'show']);
     Route::get('roles', 'API\RolePermissionController@getAllRole')->name('roles');
     Route::resource('/absensi', 'API\AbsensiController')->except(['create', 'show']);

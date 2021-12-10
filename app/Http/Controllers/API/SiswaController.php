@@ -39,8 +39,11 @@ class SiswaController extends Controller
         $user = $request->user();
         $siswas = Siswa::orderBy('s_nama', 'ASC')->where('unit_id',$user->unit_id);
        if (request()->kelas != '') {
-            $siswas = $siswas->where('kelas_id', '=' , request()->kelas);
+            $siswas = $siswas->//where('kelas_id', '=' , request()->kelas);
                                 //->where('s_nama', 'LIKE', '%' . request()->q . '%');
+                                where('kelas', function($query) use($user){
+                                    $query->where('id', request()->kelas);
+                                    });
         }
         if (request()->key == 'addAnggotaKelas') {
             $kelas = KelasAnggota::where('kelas_id',request()->kelas)->pluck('siswa_id');
@@ -104,7 +107,8 @@ class SiswaController extends Controller
 
     public function edit($id)
     {
-        $siswa = Siswa::whereUuid($id)->with('kelas')->first();
+        $siswa = Siswa::whereUuid($id)->first();
+        $siswa->kelas=$siswa->kelas_id?Kelas::where('id',$siswa->kelas_id)->value('kelas_nama'):"-";
         return response()->json(['status' => 'success', 'data' => $siswa], 200);
     }
 
@@ -140,6 +144,7 @@ class SiswaController extends Controller
                 's_sekolahasal' => $request->s_sekolahasal,
                 's_notelp' => $request->s_notelp,
                 's_nohandphone' => $request->s_nohandphone,
+                's_sekolahasal' => $request->s_sekolahasal,
                 's_poin' => $request->s_poin,
                 's_anak_ke' => $request->s_anak_ke,
                 's_ibu_nama' => $request->s_ibu_nama,
@@ -150,7 +155,6 @@ class SiswaController extends Controller
                 's_ayah_tanggal_lahir' => $request->s_ayah_tanggal_lahir,
                 's_ayah_nik' => $request->s_ayah_nik,
                 's_ayah_pekerjaan' => $request->s_ayah_pekerjaan,
-                's_kk_alamat' => $request->s_alamat,
                 's_wali_nama' => $request->s_wali_nama,
                 's_wali_pekerjaan' => $request->s_wali_pekerjaan,
                 's_agama' => $request->s_agama,
@@ -169,17 +173,21 @@ class SiswaController extends Controller
                 's_ayah_penghasilan' => $request->s_ayah_penghasilan,
                 's_ibu_pendidikan' => $request->s_ibu_pendidikan,
                 's_ibu_penghasilan' => $request->s_ibu_penghasilan,
-                's_kk_nomor' => $request->s_kk_nomor,
                 's_wali_nik' => $request->s_wali_nik,
                 's_wali_pendidikan' => $request->s_wali_pendidikan,
                 's_wali_penghasilan' => $request->s_wali_penghasilan,
                 's_wali_tanggal_lahir' => $request->s_wali_tanggal_lahir,
+                's_wali_alamat' => $request->s_wali_alamat,
+                's_wali_notelp' => $request->s_wali_notelp,
+                's_kk_nomor' => $request->s_kk_nomor,
+                's_kk_alamat' => $request->s_kk_alamat,
                 's_kk_rt' => $request->s_kk_rt,
                 's_kk_rw' => $request->s_kk_rw,
                 's_kk_kodepos' => $request->s_kk_kodepos,
                 's_kk_kelurahan' => $request->s_kk_kelurahan,
                 's_kk_kecamatan' => $request->s_kk_kecamatan,
                 's_kk_kota' => $request->s_kk_kota,
+                's_domisili_alamat' => $request->s_domisili_alamat,
                 's_domisili_rt' => $request->s_domisili_rt,
                 's_domisili_rw' => $request->s_domisili_rw,
                 's_domisili_kodepos' => $request->s_domisili_kodepos,
@@ -198,7 +206,7 @@ class SiswaController extends Controller
 
     public function destroy($id)
     {
-        $siswa = Siswa::find($id);
+        $siswa = Siswa::whereUuid($id);
         $siswa->delete();
         return response()->json(['status' => 'success'], 200);
     }
