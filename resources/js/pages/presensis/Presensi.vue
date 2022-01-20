@@ -163,7 +163,7 @@ export default {
     },
     watch: {
         page() {
-            this.getPresensi()
+            this.getPresensi(this.search)
         },
         search() {
             this.getPresensi(this.search)
@@ -184,6 +184,9 @@ export default {
     },
     components: {
         vSelect
-    }
+    },
+    destroyed() {
+        this.CLEAR_FORM()
+    },
 }
 </script>

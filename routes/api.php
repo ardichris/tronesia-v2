@@ -64,6 +64,9 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('/nilaisiswa/nilaiki12', 'API\NilaiSiswaController@nilaiki12');
     Route::get('exportsiswa', 'API\SiswaController@exportSiswa');
     Route::resource('/rapor', 'API\RaporController');
+    Route::resource('/raporakhir', 'API\RaporAkhirController');
+    Route::post('/raporakhir/import', 'API\RaporAkhirController@import');
+
 });
 
 

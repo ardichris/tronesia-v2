@@ -46,7 +46,6 @@ const actions = {
         })
     },
     submitTeacher({ dispatch, commit }, payload) {
-        console.log(payload)
         return new Promise((resolve, reject) => {
             $axios.post(`/teachers`, payload, {
                 headers: {

@@ -95,6 +95,8 @@ import IndexRapor from './pages/rapor/Index.vue'
 import AddRapor from './pages/rapor/Add.vue'
 import EditRapor from './pages/rapor/Edit.vue'
 import ViewRapor from './pages/rapor/View.vue'
+import DataRaporAkhir from './pages/raporakhir/RaporAkhir.vue'
+import IndexRaporAkhir from './pages/raporakhir/Index.vue'
 
 
 Vue.use(Router)
@@ -700,6 +702,20 @@ const router = new Router({
                     meta: { title: 'Lihat Rapor' }
                 }
             ]
+        },
+        {
+            path: '/raporakhir',
+            component: IndexRaporAkhir,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'raporakhir.data',
+                    component: DataRaporAkhir,
+                    meta: { title: 'Rapor Akhir' }
+                }
+            ]
+            
         }     
     ]
 });

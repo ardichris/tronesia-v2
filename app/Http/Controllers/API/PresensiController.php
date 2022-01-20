@@ -19,19 +19,27 @@ class PresensiController extends Controller
         $user = $request->user();
         $tanggalawal = date($request->tanggalawal);
         $tanggalakhir = date($request->tanggalakhir);
-        $kelasanggota = KelasAnggota::where('kelas_id',$request->kelas)->where('periode_id',$user->periode)->orderBy('absen','ASC')->pluck('siswa_id');
-        $siswa = Siswa::whereIn('id',$kelasanggota)->where('s_keterangan','AKTIF')->select(['id','s_nama'])->get();
+        $kelasanggota = KelasAnggota::where('kelas_id',$request->kelas)->where('periode_id',$user->periode)->orderBy('absen')->pluck('siswa_id');
+        $siswa = Siswa::whereIn('id',$kelasanggota)->where('s_keterangan','AKTIF')->select(['id','s_nama'])->orderBy('s_nama')->get();
         foreach($siswa as $row) {
+            $sakit = 0;
+            $ijin = 0;
+            $alpha = 0;
             $presensi = DetailJurnal::with('jurnal')
                                     ->where('siswa_id',$row->id)
                                     ->whereHas('jurnal', function($query) use($tanggalawal,$tanggalakhir){
-                                        $query->whereBetween('jm_tanggal',[$tanggalawal, $tanggalakhir]);
-                                    });
+                                        $query->whereBetween('jm_tanggal',[$tanggalawal, $tanggalakhir])
+                                              ->whereIn('jm_jampel',[1,2,7,8]);
+                                    })->get();
             //return response()->json(['status' => $presensi], 200);
-                                    
-            $row['sakit'] = floor($presensi->where('alasan','Sakit')->count()/4);//$kelas?$kelas['absen']:'-';
-            $row['ijin'] = floor($presensi->where('alasan','Urusan Pribadi')->count()/4);//$kelas?$kelas['absen']:'-';
-            $row['alpha'] = floor($presensi->where('alasan','Alpha')->count()/4);//$kelas?$kelas['absen']:'-';
+            foreach($presensi as $rowpresensi) {
+                if($rowpresensi->alasan=="Sakit") $sakit++;
+                if($rowpresensi->alasan=="Urusan Pribadi") $ijin++;
+                if($rowpresensi->alasan=="Alpha") $alpha++;
+            }
+            $row['ijin'] = floor($ijin/4);                     
+            $row['sakit'] = floor($sakit/4);
+            $row['alpha'] = floor($alpha/4);
         }
         return new PresensiCollection($siswa);
 

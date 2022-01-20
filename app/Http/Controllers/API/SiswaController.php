@@ -37,13 +37,15 @@ class SiswaController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $siswas = Siswa::orderBy('s_nama', 'ASC')->where('unit_id',$user->unit_id);
+        $siswas = Siswa::orderBy('s_nama', 'ASC')->where('unit_id',$user->unit_id)->select('id','uuid','s_nama','s_nis','s_kelamin','s_keterangan');
        if (request()->kelas != '') {
-            $siswas = $siswas->//where('kelas_id', '=' , request()->kelas);
+           $anggota = KelasAnggota::where('periode_id',$user->periode)->where('kelas_id',request()->kelas)->pluck('siswa_id');
+            $siswas = $siswas->whereIn('id',$anggota);
+                                //where('kelas_id', '=' , request()->kelas);
                                 //->where('s_nama', 'LIKE', '%' . request()->q . '%');
-                                where('kelas', function($query) use($user){
-                                    $query->where('id', request()->kelas);
-                                    });
+                                // where('kelas', function($query) use($user){
+                                //     $query->where('id', request()->kelas);
+                                //     });
         }
         if (request()->key == 'addAnggotaKelas') {
             $kelas = KelasAnggota::where('kelas_id',request()->kelas)->pluck('siswa_id');

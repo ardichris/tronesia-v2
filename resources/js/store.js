@@ -27,6 +27,7 @@ import unit from './stores/unit.js'
 import nilaisiswa from './stores/nilaisiswa'
 import jammengajar from './stores/jammengajar'
 import rapor from './stores/rapor'
+import raporakhir from './stores/raporakhir'
 
 Vue.use(Vuex)
 
@@ -58,7 +59,8 @@ const store = new Vuex.Store({
         unit,
         nilaisiswa,
         jammengajar,
-        rapor
+        rapor,
+        raporakhir
     },
   	//STATE HAMPIR SERUPA DENGAN PROPERTY DATA DARI COMPONENT HANYA SAJA DAPAT DIGUNAKAN SECARA GLOBAL
     state: {

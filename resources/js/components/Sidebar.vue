@@ -168,6 +168,12 @@
                                 <p><router-link :to="{ name: 'rapor.data' }">Rapor</router-link></p>
                             </a>
                         </li>
+                        <li class="nav-item" v-if="authenticated.role!=null">
+                            <a class="nav-link ml-3">
+                                <i class="fas fa-award nav-icon"></i>
+                                <p><router-link :to="{ name: 'raporakhir.data' }">Upload Ledger</router-link></p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item has-treeview" v-if="authenticated.role != null">

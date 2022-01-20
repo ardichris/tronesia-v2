@@ -25,6 +25,14 @@ const mutations = {
     KELAS_DATA(state, payload) {
         state.kelas = payload
     },
+    CLEAR_FORM(state) {
+        state.rekappresensi = {
+            kelas: '',
+            tanggalawal: '',
+            tanggalakhir: '',
+            presensi: []
+        }
+    }
 }
 
 const actions = {
