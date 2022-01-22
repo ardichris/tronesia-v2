@@ -97,6 +97,8 @@ import EditRapor from './pages/rapor/Edit.vue'
 import ViewRapor from './pages/rapor/View.vue'
 import DataRaporAkhir from './pages/raporakhir/RaporAkhir.vue'
 import IndexRaporAkhir from './pages/raporakhir/Index.vue'
+import DataSiswaPTM from './pages/siswaptm/SiswaPTM.vue'
+import IndexSiswaPTM from './pages/siswaptm/Index.vue'
 
 
 Vue.use(Router)
@@ -713,6 +715,20 @@ const router = new Router({
                     name: 'raporakhir.data',
                     component: DataRaporAkhir,
                     meta: { title: 'Rapor Akhir' }
+                }
+            ]
+            
+        },
+        {
+            path: '/siswaptm',
+            component: IndexSiswaPTM,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'siswaptm.data',
+                    component: DataSiswaPTM,
+                    meta: { title: 'Siswa PTM' }
                 }
             ]
             

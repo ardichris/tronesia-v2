@@ -126,6 +126,12 @@
                                 <p><router-link :to="{ name: 'kitirsiswa.data' }">Kitir Siswa</router-link></p>
                             </a>
                         </li>
+                        <li class="nav-item ml-3">
+                            <a class="nav-link">
+                                <i class="fas fa-child nav-icon"></i>
+                                <p><router-link :to="{ name: 'siswaptm.data' }">Siswa PTM</router-link></p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 
