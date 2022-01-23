@@ -4,7 +4,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-6">
-                        <!-- <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-import')">Tambah Siswa</b-button> -->
+                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-add')">Tambah Siswa</b-button>
                     </div>
                     <div class="col-sm-6">
                         <span class="float-right">                            
@@ -26,6 +26,54 @@
                         </span>
                     </div>
                 </div>
+                <b-modal id="modal-add" scrollable size="md">
+                    <template v-slot:modal-title>
+                        Tambah Siswa PTM
+                    </template>
+                    <button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addSiswa">Tambah</button>
+                    <div class="table-responsive" style="height: 300px">
+                        <table class="table" >
+                            <thead>
+                                <tr>
+                                    <th width="100%">Nama Siswa</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(row, index) in siswaptm.ptm" :key="index">
+                                    <td>
+                                        <v-select :options="siswas.data"
+                                            v-model="row.siswa"
+                                            @search="SearchSiswa"
+                                            :value="$store.myValue"
+                                            label="s_nama"
+                                            placeholder="Masukkan Kata Kunci" 
+                                            :filterable="false">
+                                            <template slot="no-options">
+                                                Masukkan Kata Kunci
+                                            </template>
+                                            <template slot="option" slot-scope="option">
+                                                {{ option.s_nama }}
+                                            </template>
+                                        </v-select>    
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-flat" @click="removeSiswa(index)"><i class="fa fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"                                    
+                            block  @click="submitSiswaPtm()"
+                        >
+                            Submit
+                        </b-button>
+                    </template>
+                </b-modal>
                 <b-modal id="modal-absen-datang" scrollable size="sm">
                     <template v-slot:modal-title>
                         Suhu Datang
@@ -102,6 +150,8 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import vSelect from 'vue-select'
+import 'vue-select/dist/vue-select.css'
 
 export default {
     name: 'DataSiswaPtm',
@@ -131,6 +181,9 @@ export default {
             siswaid: '',
             import_file: '',
             error: {},
+            isForm: false,
+            isSuccess: false,
+            siswasptm: [{ siswa: null }]
         }
     },
     computed: {
@@ -139,6 +192,8 @@ export default {
         }),
         ...mapState('siswaptm', {
             siswaptms: state => state.siswaptms,
+            siswas: state => state.siswa,
+            siswaptm: state => state.siswaptm
         }),
         ...mapState(['token']),
         page: {
@@ -148,7 +203,12 @@ export default {
             set(val) {
                 this.$store.commit('siswaptm/SET_PAGE', val)
             }
-        }
+        },
+        filterSiswa() {
+            return _.filter(this.siswaptm.ptm, function(item) {
+                return item.siswa == null
+            })
+        },
     },
     watch: {
         page() {
@@ -165,9 +225,31 @@ export default {
         // }
     },
     methods: {
-        ...mapActions('siswaptm', ['getSiswaPtm','uploadLedger','absenDatang','dijemput','submitsuhupulang']),
-        onFileChange(e) {
-            this.import_file = e.target.files[0];
+        ...mapActions('siswaptm', ['getSiswaPtm','uploadLedger','absenDatang','dijemput','submitsuhupulang','getSiswa','submitPTM']),
+        submitSiswaPtm(){
+            this.submitPTM().then(() => {
+                this.$bvModal.hide('modal-add')
+                this.getSiswaPtm({
+                    search: this.search,
+                    kelas: this.kelas
+                })                
+            })
+        },
+        removeSiswa(index) {
+            if (this.siswaptm.ptm.length > 0) {
+                this.siswaptm.ptm.splice(index, 1)
+            }
+        },
+        SearchSiswa(search, loading) {
+            this.getSiswa({
+                search: search,
+                loading: loading
+            })
+        },
+        addSiswa() {
+            if (this.filterSiswa.length == 0) {
+                this.siswaptm.ptm.push({ siswa_id: null, siswa: null})
+            }
         },
         cari(){
             this.getSiswaPtm({
@@ -218,6 +300,9 @@ export default {
         }
         
     },
+    components: {
+        vSelect
+    }
     
 }
 </script>

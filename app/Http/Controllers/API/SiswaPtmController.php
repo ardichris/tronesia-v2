@@ -59,8 +59,8 @@ class SiswaPtmController extends Controller
         if (request()->kelas != '') {
             $k = request()->kelas;
             $filterkelas = Kelas::where('kelas_nama',$k)->value('id');
-            $anggotakelas = KelasAnggota::where('kelas_id',$filterkelas)->pluck('siswa_id');
-            $siswaptms = $siswaptms->whereIn('id',$anggotakelas);
+            $anggotakelas = KelasAnggota::where('kelas_id',$filterkelas)->where('periode_id',$user->periode)->pluck('siswa_id');
+            $siswaptms = $siswaptms->whereIn('siswa_id',$anggotakelas);
         }
         
         $siswaptms=$siswaptms->paginate(10);
@@ -76,5 +76,21 @@ class SiswaPtmController extends Controller
         
 
         return new SiswaPtmCollection($siswaptms);
+    }
+
+    public function store(Request $request){
+        $user = $request->user();
+        foreach($request->ptm as $row){
+            $cek = SiswaPtm::where('siswa_id',$row['siswa']['id'])->where('periode_id',$user->periode)->first();
+            if(is_null($cek)){
+                $ptm = SiswaPtm::create(['siswa_id' => $row['siswa']['id'],
+                                         'periode_id' => $user->periode,
+                                         'unit_id' => $user->unit_id,
+                                         'user_id' => $user->id]);
+                
+            }
+        }
+        return response()->json('sukses');
+
     }
 }

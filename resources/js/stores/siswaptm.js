@@ -1,16 +1,19 @@
 import $axios from '../api.js'
 
 const state = () => ({
+    siswa: [],
     siswaptms: [],
     
     siswaptm: {
-        siswaptm_kode: '',
-        siswaptm_nama: ''
+        ptm:[]
     },
     page: 1
 })
 
 const mutations = {
+    SISWA_DATA(state, payload) {
+        state.siswa = payload
+    },
     ASSIGN_DATA(state, payload) {
         state.siswaptms = payload
     },
@@ -25,14 +28,39 @@ const mutations = {
     },
     CLEAR_FORM(state) {
         state.siswaptm = {
-            siswaptm_kode: '',
-            siswaptm_nama: ''
+            ptm:[]
         }
     }
 }
 
 const actions = {
-
+    submitPTM({ dispatch, commit, state }) {
+        console.log(state.siswaptm)
+        return new Promise((resolve, reject) => {
+            $axios.post(`/siswaptm`, state.siswaptm)
+            .then((response) => {
+                resolve(response.data)
+                commit('CLEAR_FORM')
+            })
+            .catch((error) => {
+                if (error.response.status == 422) {
+                    commit('SET_ERRORS', error.response.data.errors, { root: true })
+                }
+            })
+        })
+    },
+    getSiswa({ commit, state }, payload) {
+        let search = payload.search
+        payload.loading(true)
+        return new Promise((resolve, reject) => {
+            $axios.get(`/siswas?q=${search}`)
+            .then((response) => {
+                commit('SISWA_DATA', response.data)
+                payload.loading(false)
+                resolve(response.data)
+            })
+        })
+    },
     absenDatang({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
             $axios.post(`/siswaptm/absenmasuk`, payload)
