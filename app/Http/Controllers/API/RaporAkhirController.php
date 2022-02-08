@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Imports\RaporAkhirsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\RaporAkhirCollection;
+use App\RaporAkhir;
+use App\Kelas;
+use App\KelasAnggota;
+use App\Siswa;
 
 class RaporAkhirController extends Controller
 {
@@ -16,17 +20,35 @@ class RaporAkhirController extends Controller
         // $request->validate([
         //     'import_file' => 'required|file|mimes:xls,xlsx'
         // ]);
-
+        $user = $request->user();
         $path = $request->file('import_file');
-        $data = Excel::import(new RaporAkhirsImport, $path);
+        $rapor['periode'] = $user->periode;
+        $rapor['user'] = $user->id;
+        $rapor['unit'] = $user->unit_id;
+        $data = Excel::import(new RaporAkhirsImport($rapor), $path);
 
         return response()->json(['message' => 'uploaded successfully'], 200);
     }
 
     public function index(Request $request) {
-        $raporakhirs = RaporAkhir::orderBy('id', 'ASC');
+        $user = $request->user();
+                                    
+        $raporakhirs = RaporAkhir::where('periode_id',$user->periode)
+                                    ->where('unit_id',$user->unit_id)
+                                    ->orderBy('ra_walikelas', 'ASC')
+                                    ->select('id','ra_tanggal','ra_walikelas','siswa_id')
+                                    ->with(['siswa' => function ($query) {
+                                        $query->select('id','s_nama');
+                                    }]);
+                                    
+        $raporakhirs=$raporakhirs->paginate(40);
+        foreach ($raporakhirs as $row){
+            $kelas = KelasAnggota::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->first();
+            $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
+            $row['absen'] = $kelas?$kelas['absen']:'-';
+        }
         
-        return new RaporAkhirCollection($raporakhirs->paginate(10));
+        return new RaporAkhirCollection($raporakhirs);
     }
 
     // public function store(Request $request)

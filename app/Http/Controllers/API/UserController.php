@@ -15,7 +15,8 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::with('unit')->orderBy('created_at', 'DESC');//->teacher();
+        $user = $request->user();
+        $users = User::with('unit')->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');//->teacher();
         if (request()->q != '') {
             $users = $users->where('name', 'LIKE', '%' . request()->q . '%');
         }

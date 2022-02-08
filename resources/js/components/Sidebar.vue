@@ -6,9 +6,9 @@
             style="opacity: .8">
         </a-->
         <a href="/" class="brand-link">
-        <img src="/storage/TRONESIA.png" alt="TRONESIA Logo" class="brand-image img-circle elevation-3"
+        <img src="/storage/SIAP.png" alt="SIAP Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
-        <span class="brand-text font-weight-light">TRONESIA</span>
+        <span class="brand-text font-weight-light">S.I.A.P</span>
         </a>
         <!-- Sidebar -->
         <div class="sidebar">
@@ -168,16 +168,16 @@
                                 <p><router-link :to="{ name: 'nilaisiswa.data' }">Penilaian</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item" v-if="authenticated.role!=null">
+                        <!-- <li class="nav-item" v-if="authenticated.role!=null">
                             <a class="nav-link ml-3">
                                 <i class="fas fa-award nav-icon"></i>
                                 <p><router-link :to="{ name: 'rapor.data' }">Rapor</router-link></p>
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item" v-if="authenticated.role!=null">
                             <a class="nav-link ml-3">
                                 <i class="fas fa-award nav-icon"></i>
-                                <p><router-link :to="{ name: 'raporakhir.data' }">Upload Ledger</router-link></p>
+                                <p><router-link :to="{ name: 'raporakhir.data' }">Rapor</router-link></p>
                             </a>
                         </li>
                     </ul>

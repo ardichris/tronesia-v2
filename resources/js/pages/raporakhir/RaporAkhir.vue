@@ -30,6 +30,15 @@
             </div>
             <div class="panel-body">
                 <b-table striped hover bordered :items="raporakhirs.data" :fields="fields" show-empty>
+                    <template v-slot:cell(s_nama)="row">
+                        {{row.item.siswa.s_nama}}
+                    </template>
+                    <template v-slot:cell(kelas)="row">
+                        {{row.item.kelas}}/{{row.item.absen}}
+                    </template>
+                    <template v-slot:cell(walikelas)="row">
+                        {{row.item.ra_walikelas}}
+                    </template>
                 </b-table>
 
                 <div class="row">
@@ -60,16 +69,15 @@ export default {
     name: 'DataRaporAkhir',
     created() {
         this.getRaporAkhir({
-                search: this.search
+                search: ''
             })
     },
     data() {
         return {
             fields: [
                 { key: 'kelas', label: 'Kelas' },
-                { key: 's_nis', label: 'NIS' },
                 { key: 's_nama', label: 'Nama Siswa' },
-                { key: 's_kelamin', label: 'L/P' },
+                { key: 'walikelas', label: 'Walikelas' },
                 { key: 's_keterangan', label: 'Status' },
                 { key: 'actions', label: 'Aksi' }
             ],
@@ -112,7 +120,8 @@ export default {
             let formData = new FormData();
             formData.append('import_file', this.import_file);
             this.uploadLedger(formData).then(() => {
-                    this.import_file = '';
+                    this.import_file = '',
+                    this.$bvModal.hide('modal-import')
                     
             })
         }

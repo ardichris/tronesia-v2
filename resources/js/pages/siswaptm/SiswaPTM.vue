@@ -4,14 +4,16 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-6">
-                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-add')">Tambah Siswa</b-button>
+                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-add')" v-if="authenticated.role==0">Tambah Siswa</b-button>
+                        <b-button variant="warning" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-absen')" v-if="authenticated.role==0">Absen Masuk</b-button>
+                        <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-jemput')" v-if="authenticated.role==0">Penjemputan</b-button>
                     </div>
                     <div class="col-sm-6">
                         <span class="float-right">                            
                             <b-button variant="primary" size="sm" @click="cari()"><i class="fas fa-search"></i></b-button>
                         </span>
                         <span class="float-right">
-                            <b-form-input type="text" class="form-control form-control-sm" placeholder="Cari..." v-model="search"></b-form-input>
+                            <b-form-input type="text" class="form-control form-control-sm" placeholder="Cari..." v-model="search" ref="search"></b-form-input>
                         </span>
                         <span class="float-right">
                             <b-form-select 
@@ -74,11 +76,28 @@
                         </b-button>
                     </template>
                 </b-modal>
+                <b-modal id="modal-absen" scrollable size="sm">
+                    <template v-slot:modal-title>
+                        Scan QRCode
+                    </template>
+                    <p class="error">{{ error }}</p>
+                    <p class="decode-result">Last result: <b>{{ result }}</b></p>
+                    <qrcode-stream @decode="onDecode" @init="onInit"></qrcode-stream>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"                                    
+                            block  @click="submitabsenmasuk()"
+                        >
+                            Submit
+                        </b-button>
+                    </template>
+                </b-modal>
                 <b-modal id="modal-absen-datang" scrollable size="sm">
                     <template v-slot:modal-title>
                         Suhu Datang
                     </template>
-                    <b-form-input type="text" class="form-control form-control-sm" v-model="suhu"></b-form-input>
+                    <b-form-input type="text" class="form-control form-control-sm" v-model="suhu" ref="sm"></b-form-input>
                     <template v-slot:modal-footer>
                         <b-button
                             variant="success"
@@ -152,20 +171,17 @@
 import { mapActions, mapState } from 'vuex'
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
+import { QrcodeStream } from 'vue-qrcode-reader'
 
 export default {
     name: 'DataSiswaPtm',
+    mounted(){
+        this.$refs.search.$el.focus();
+    },
     created() {
         this.interval = setInterval(() =>
-            this.getSiswaPtm({
-                    search: this.search,
-                    kelas: this.kelas
-                }),
-        30000);
-        this.getSiswaPtm({
-                    search: this.search,
-                    kelas: this.kelas
-                })
+            this.refreshdata(), 30000);
+        this.refreshdata()
     },
     data() {
         return {
@@ -183,7 +199,9 @@ export default {
             error: {},
             isForm: false,
             isSuccess: false,
-            siswasptm: [{ siswa: null }]
+            siswasptm: [{ siswa: null }],
+            result: '',
+            error: ''
         }
     },
     computed: {
@@ -212,10 +230,10 @@ export default {
     },
     watch: {
         page() {
-            this.getSiswaPtm({
-                search: this.search,
-                kelas: this.kelas
-            })
+            this.refreshdata()
+        },
+        kelas() {
+            this.refreshdata()
         },
         // search() {
         //     this.getSiswaPtm({
@@ -226,13 +244,43 @@ export default {
     },
     methods: {
         ...mapActions('siswaptm', ['getSiswaPtm','uploadLedger','absenDatang','dijemput','submitsuhupulang','getSiswa','submitPTM']),
+        onDecode (result) {
+        this.result = result
+        },
+
+        async onInit (promise) {
+        try {
+            await promise
+        } catch (error) {
+            if (error.name === 'NotAllowedError') {
+            this.error = "ERROR: you need to grant camera access permission"
+            } else if (error.name === 'NotFoundError') {
+            this.error = "ERROR: no camera on this device"
+            } else if (error.name === 'NotSupportedError') {
+            this.error = "ERROR: secure context required (HTTPS, localhost)"
+            } else if (error.name === 'NotReadableError') {
+            this.error = "ERROR: is the camera already in use?"
+            } else if (error.name === 'OverconstrainedError') {
+            this.error = "ERROR: installed cameras are not suitable"
+            } else if (error.name === 'StreamApiNotSupportedError') {
+            this.error = "ERROR: Stream API is not supported in this browser"
+            } else if (error.name === 'InsecureContextError') {
+            this.error = 'ERROR: Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.';
+            } else {
+            this.error = `ERROR: Camera error (${error.name})`;
+            }
+        }
+        },
+        refreshdata(){
+            this.getSiswaPtm({
+                    search: this.search,
+                    kelas: this.kelas
+                })
+        },
         submitSiswaPtm(){
             this.submitPTM().then(() => {
                 this.$bvModal.hide('modal-add')
-                this.getSiswaPtm({
-                    search: this.search,
-                    kelas: this.kelas
-                })                
+                this.refreshdata()                
             })
         },
         removeSiswa(index) {
@@ -252,23 +300,19 @@ export default {
             }
         },
         cari(){
-            this.getSiswaPtm({
-                    search: this.search,
-                    kelas: this.kelas
-                })
+            this.page = 1
+            this.refreshdata()
         },
         absenmasuk(id){
             this.$bvModal.show('modal-absen-datang');
+            this.$refs.sm.$el.focus();
             this.siswaid = id;
         },
         submitabsenmasuk(){
             this.absenDatang({suhu: this.suhu, siswaid: this.siswaid})
             .then(() => {
                 this.$bvModal.hide('modal-absen-datang'),
-                this.getSiswaPtm({
-                    search: this.search,
-                    kelas: this.kelas
-                })
+                this.refreshdata()
                 this.suhu= ''
                 this.siswaid = ''
             });
@@ -276,10 +320,7 @@ export default {
         sudahdijemput(id){
             this.dijemput(id)
             .then(() => {
-                this.getSiswaPtm({
-                    search: this.search,
-                    kelas: this.kelas
-                })
+                this.refreshdata()
             });
         },
         absenpulang(id){
@@ -290,10 +331,7 @@ export default {
             this.submitsuhupulang({suhu: this.suhu, siswaid: this.siswaid})
             .then(() => {
                 this.$bvModal.hide('modal-absen-pulang'),
-                this.getSiswaPtm({
-                    search: this.search,
-                    kelas: this.kelas
-                })
+                this.refreshdata()
                 this.suhu= ''
                 this.siswaid = ''
             });
@@ -301,7 +339,8 @@ export default {
         
     },
     components: {
-        vSelect
+        vSelect,
+        QrcodeStream
     }
     
 }

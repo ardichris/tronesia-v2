@@ -70,6 +70,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('/siswaptm/absenmasuk', 'API\SiswaPtmController@absenmasuk');
     Route::put('/siswaptm/dijemput/{kode}', 'API\SiswaPtmController@dijemput');
     Route::put('/siswaptm/suhupulang/{kode}', 'API\SiswaPtmController@suhupulang');
+    Route::resource('/raporakhir', 'API\RaporAkhirController');
 
 
 });

@@ -4,7 +4,7 @@
 
         <div class="login-box">
             <div class="login-logo">
-                <router-link :to="{ name: 'home' }"><b>TRONE</b>SIA</router-link>
+                <router-link :to="{ name: 'home' }"><b>S.I.A.P</b></router-link>
             </div>
             <div class="card">
                 <div class="card-body login-card-body">
@@ -26,7 +26,7 @@
                                 <option value="1">Semester 1 Tahun Ajaran 2020/2021</option>
                                 <option value="2">Semester 2 Tahun Ajaran 2020/2021</option>
                                 <option value="3">Semester 1 Tahun Ajaran 2021/2022</option>                                         
-                                <option value="4">Semester 2 Tahun Ajaran 2021/2022</option>                                         
+                                <option value="4" selected>Semester 2 Tahun Ajaran 2021/2022</option>                                         
                             </select>
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                             <p class="text-danger" v-if="errors.periode">{{ errors.periode[0] }}</p>
@@ -63,7 +63,7 @@ export default {
             data: {
                 email: '',
                 password: '',
-                periode: '',
+                periode: 4,
                 remember_me: false
             }
         }

@@ -13,8 +13,10 @@ use App\ListBarangMasuk;
 class BarangMasukController extends Controller
 {    
     public function index(Request $request) {
+        $user = $request->user();
         $pbs = BarangMasuk::orderBy('created_at', 'DESC')
-                                ->with(['user']);
+                            ->where('unit_id',$user->unit_id)
+                            ->with(['user']);
         return new BarangMasukCollection($pbs->paginate(30)); 
     }
 

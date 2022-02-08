@@ -14,7 +14,7 @@ class LaporSarprasController extends Controller
     {
         //return response()->json(['data' => $request], 200);
         $user = $request->user();
-        $laporsarpras = LaporSarpras::with(['creator','updater'])->orderBy('created_at', 'DESC');
+        $laporsarpras = LaporSarpras::with(['creator','updater'])->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');
         if (request()->k != '') {
             $laporsarpras = $laporsarpras->where('ls_kategori', '=', request()->k);
         }

@@ -11,6 +11,10 @@
                             <input type="text" class="form-control" v-model="siswa.s_nama" :readonly="$route.name == 'siswas.view'">
                         </div>
                         <div class="form-group">
+                            <label>Nama Panggilan</label>
+                            <input type="text" class="form-control" v-model="siswa.s_nama_panggilan" :readonly="$route.name == 'siswas.view'">
+                        </div>
+                        <div class="form-group">
                             <label>NIS/NISN/Student Code</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                             <div class="row">
                                 <div class="col">
@@ -36,24 +40,48 @@
                                 </div>
                             </div>
                             <div class="form-group validate">
-                                <label>J. Kelamin/Anak ke/Status Anak</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <div class="row">
                                     <div class="col">
+                                        <label>J.Kelamin</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                         <select type="text" class="form-control" aria-invalid="false" v-model="siswa.s_kelamin" :readonly="$route.name == 'siswas.view'">
                                             <option>Laki-laki</option>
                                             <option>Perempuan</option>
                                         </select>
                                     </div>
                                     <div class="col">
+                                        <label>Anak ke-</label>
                                         <input type="text" class="form-control" aria-invalid="false" v-model="siswa.s_anak_ke" :readonly="$route.name == 'siswas.view'">
                                     </div>
                                     <div class="col">
+                                        <label>Status Ortu</label>
                                         <select type="text" class="form-control" aria-invalid="false" v-model="siswa.s_status" :readonly="$route.name == 'siswas.view'">
-                                            <option>KANDUNG</option>
-                                            <option>ANGKAT</option>
-                                            <option>TIRI</option>
-                                            <option>TITIPAN</option>
+                                            <option>Kandung</option>
+                                            <option>Angkat</option>
+                                            <option>Tiri</option>
+                                            <option>Titipan</option>
                                         </select>
+                                    </div>
+                                    <div class="col">
+                                        <label>Status Anak</label>
+                                        <select type="text" class="form-control" aria-invalid="false" v-model="siswa.s_status_anak" :readonly="$route.name == 'siswas.view'">
+                                            <option>Yatim</option>
+                                            <option>Piatu</option>
+                                            <option>Yatim Piatu</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah Saudara (Kandung/Tiri/Angkat)</label>
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="number" class="form-control" v-model="siswa.s_saudara_kandung" :readonly="$route.name == 'siswas.view'"> 
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" class="form-control" v-model="siswa.s_saudara_tiri" :readonly="$route.name == 'siswas.view'"> 
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" class="form-control" v-model="siswa.s_saudara_angkat" :readonly="$route.name == 'siswas.view'"> 
                                     </div>
                                 </div>
                             </div>
@@ -66,16 +94,20 @@
                                 <input type="text" class="form-control">
                             </div>
                             <div class="form-group">
-                                <label>Jarak Rumah Ke Sekolah</label>
-                                <select type="text" class="form-control" v-model="siswa.s_jarak_rumah" :readonly="$route.name == 'siswas.view'"> 
-                                    <option selected=""></option>
-                                    <option value="Dekat">Dekat</option>
-                                    <option value="Jauh">Jauh</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="inputJarak">Jarak ke Sekolah (km)</label>
-                                <input type="text" class="form-control" v-model="siswa.s_jarak_rumah_km" :readonly="$route.name == 'siswas.view'">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Jarak Rumah Ke Sekolah</label>
+                                        <select type="text" class="form-control" v-model="siswa.s_jarak_rumah" :readonly="$route.name == 'siswas.view'"> 
+                                            <option selected=""></option>
+                                            <option value="Dekat">Dekat</option>
+                                            <option value="Jauh">Jauh</option>
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <label for="inputJarak">Jarak ke Sekolah (km)</label>
+                                        <input type="text" class="form-control" v-model="siswa.s_jarak_rumah_km" :readonly="$route.name == 'siswas.view'">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12 col-sm-6">
@@ -121,12 +153,16 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputTinggi">Tinggi Badan (cm)</label>
-                                <input type="text" class="form-control" v-model="siswa.s_tinggi" :readonly="$route.name == 'siswas.view'">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputBerat">Berat Badan (kg)</label>
-                                <input type="text" class="form-control" v-model="siswa.s_berat" :readonly="$route.name == 'siswas.view'">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="inputTinggi">Tinggi Badan (cm)</label>
+                                        <input type="text" class="form-control" v-model="siswa.s_tinggi" :readonly="$route.name == 'siswas.view'">
+                                    </div>
+                                    <div class="col">
+                                        <label for="inputBerat">Berat Badan (kg)</label>
+                                        <input type="text" class="form-control" v-model="siswa.s_berat" :readonly="$route.name == 'siswas.view'">
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputTransportasi">Alat Transportasi</label>
@@ -153,6 +189,38 @@
                             <div class="form-group">
                                 <label for="inputEmail">Email</label>
                                 <input type="email" class="form-control" aria-describedby="emailHelp" v-model="siswa.s_email" :readonly="$route.name == 'siswas.view'">
+                            </div>
+                            <div class="form-group">
+                                <label>Golongan Darah</label>
+                                <select type="text" class="form-control" v-model="siswa.s_golongan_darah" :readonly="$route.name == 'siswas.view'">
+                                    <option>A+</option>
+                                    <option>B+</option>
+                                    <option>AB+</option>
+                                    <option>O+</option>
+                                    <option>A-</option>
+                                    <option>B-</option>
+                                    <option>AB-</option>
+                                    <option>O-</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Kewarganegaraan</label>
+                                        <select type="text" class="form-control" v-model="siswa.s_warga_negara" :readonly="$route.name == 'siswas.view'">
+                                            <option>Indonesia</option>
+                                            <option>Asing</option>
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <label>Bahasa Sehari-hari</label>
+                                        <select type="text" class="form-control" v-model="siswa.s_bahasa" :readonly="$route.name == 'siswas.view'">
+                                            <option>Indonesia</option>
+                                            <option>Inggris</option>
+                                            <option>Mandarin</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -197,28 +265,63 @@
                                 <input type="text" class="form-control" v-model="siswa.s_ayah_nama" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
-                                <label for="inputLahirAyah">Tanggal Lahir Ayah</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
-                                <input type="date" class="form-control" v-model="siswa.s_ayah_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Tempat Lahir Ayah</label>
+                                        <input type="text" class="form-control" v-model="siswa.s_ayah_tempat_lahir" :readonly="$route.name == 'siswas.view'">
+                                    </div>
+                                    <div class="col">
+                                        <label for="inputLahirAyah">Tanggal Lahir Ayah</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
+                                        <input type="date" class="form-control" v-model="siswa.s_ayah_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
+                                    </div>
+                                </div>    
                             </div>
                             <div class="form-group">
-                                <label for="inputNIKAyah">NIK Ayah</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
-                                <input type="text" class="form-control" v-model="siswa.s_ayah_nik" :readonly="$route.name == 'siswas.view'">
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="inputNIKAyah">NIK Ayah</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
+                                        <input type="text" class="form-control" v-model="siswa.s_ayah_nik" :readonly="$route.name == 'siswas.view'">
+                                    </div>
+                                    <div class="col">
+                                        <label>Kewarganegaraan</label>
+                                        <select type="text" class="form-control" v-model="siswa.s_ayah_warga_negara" :readonly="$route.name == 'siswas.view'">
+                                            <option>Indonesia</option>
+                                            <option>Asing</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label>Pendidikan Ayah</label>
-                                <select class="select2 form-control select2-hidden-accessible" v-model="siswa.s_ayah_pendidikan" :readonly="$route.name == 'siswas.view'" aria-hidden="true">
-                                    <option>SD/SEDERAJAT</option>
-                                    <option>SMP/SEDERAJAT</option>
-                                    <option>TIDAK/BELUM SEKOLAH</option>
-                                    <option>BELUM TAMAT SD/SEDERAJAT</option>
-                                    <option>SMA/SEDERAJAT</option>
-                                    <option>DIPLOMA I (D1)</option>
-                                    <option>DIPLOMA III (D3)</option>
-                                    <option>DIPLOMA IV (D4)/STRATA I (S1)</option>
-                                    <option>STRATA II (S2)</option>
-                                    <option>STRATA III (S3)</option>
-                                    <option>DIPLOMA II (D2)</option>
-                                </select>
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Agama Ayah</label>
+                                        <select type="text" class="form-control" aria-invalid="false" v-model="siswa.s_ayah_agama" :readonly="$route.name == 'siswas.view'">
+                                            <option>Kristen</option>
+                                            <option>Katolik</option>
+                                            <option>Hindu</option>
+                                            <option>Budha</option>
+                                            <option>Konghucu</option>
+                                            <option>Islam</option>
+                                            <option>Kepercayaan Terhadap Tuhan YME</option>
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <label>Pendidikan Ayah</label>
+                                        <select class="select2 form-control select2-hidden-accessible" v-model="siswa.s_ayah_pendidikan" :readonly="$route.name == 'siswas.view'" aria-hidden="true">
+                                            <option>SD/SEDERAJAT</option>
+                                            <option>SMP/SEDERAJAT</option>
+                                            <option>TIDAK/BELUM SEKOLAH</option>
+                                            <option>BELUM TAMAT SD/SEDERAJAT</option>
+                                            <option>SMA/SEDERAJAT</option>
+                                            <option>DIPLOMA I (D1)</option>
+                                            <option>DIPLOMA III (D3)</option>
+                                            <option>DIPLOMA IV (D4)/STRATA I (S1)</option>
+                                            <option>STRATA II (S2)</option>
+                                            <option>STRATA III (S3)</option>
+                                            <option>DIPLOMA II (D2)</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Pekerjaan Ayah</label>
@@ -247,6 +350,15 @@
                                 <label>No. KK(Kartu Keluarga)</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <input type="text" class="form-control" v-model="siswa.s_kk_nomor" :readonly="$route.name == 'siswas.view'">
                             </div>
+                            <div class="form-group">
+                                <label>Pengeluaran Per-bulan</label>
+                                <select class="form-control form-control" aria-invalid="false" v-model="siswa.s_pengeluaran" :readonly="$route.name == 'siswas.view'">
+                                    <option>Rp.0 - Rp.5 Juta</option>
+                                    <option>Rp.5 Juta - Rp.10 Juta</option>
+                                    <option>Rp.10 Juta - Rp.15 Juta</option>
+                                    <option>Diatas Rp.15 Juta</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-12 col-sm-6">
                             <div class="form-group">
@@ -254,28 +366,63 @@
                                 <input type="text" class="form-control" v-model="siswa.s_ibu_nama" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
-                                <label for="inputLahirIbu">Tanggal Lahir Ibu</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
-                                <input type="date" class="form-control" v-model="siswa.s_ibu_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Tempat Lahir Ibu</label>
+                                        <input type="text" class="form-control" v-model="siswa.s_ibu_tempat_lahir" :readonly="$route.name == 'siswas.view'">
+                                    </div>
+                                    <div class="col">
+                                        <label>Tanggal Lahir Ibu</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
+                                        <input type="date" class="form-control" v-model="siswa.s_ibu_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
+                                    </div>
+                                </div>    
                             </div>
                             <div class="form-group">
-                                <label for="inputNIKIbu">NIK Ibu</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
-                                <input type="text" class="form-control" v-model="siswa.s_ibu_nik" :readonly="$route.name == 'siswas.view'">
+                                <div class="row">
+                                    <div class="col">
+                                        <label>NIK Ibu</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
+                                        <input type="text" class="form-control" v-model="siswa.s_ibu_nik" :readonly="$route.name == 'siswas.view'">
+                                    </div>
+                                    <div class="col">
+                                        <label>Kewarganegaraan</label>
+                                        <select type="text" class="form-control" v-model="siswa.s_ibu_warga_negara" :readonly="$route.name == 'siswas.view'">
+                                            <option>Indonesia</option>
+                                            <option>Asing</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputPendidikanIbu">Pendidikan Ibu</label>
-                                <select class="select2 form-control form-control select2-hidden-accessible" aria-hidden="true" v-model="siswa.s_ibu_pendidikan" :readonly="$route.name == 'siswas.view'">
-                                    <option>SD/SEDERAJAT</option>
-                                    <option>SMP/SEDERAJAT</option>
-                                    <option>TIDAK/BELUM SEKOLAH</option>
-                                    <option>BELUM TAMAT SD/SEDERAJAT</option>
-                                    <option>SMA/SEDERAJAT</option>
-                                    <option>DIPLOMA I (D1)</option>
-                                    <option>DIPLOMA III (D3)</option>
-                                    <option>DIPLOMA IV (D4)/STRATA I (S1)</option>
-                                    <option>STRATA II (S2)</option>
-                                    <option>STRATA III (S3)</option>
-                                    <option>DIPLOMA II (D2)</option>                                           
-                                </select>
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Agama Ibu</label>
+                                        <select type="text" class="form-control" aria-invalid="false" v-model="siswa.s_ibu_agama" :readonly="$route.name == 'siswas.view'">
+                                            <option>Kristen</option>
+                                            <option>Katolik</option>
+                                            <option>Hindu</option>
+                                            <option>Budha</option>
+                                            <option>Konghucu</option>
+                                            <option>Islam</option>
+                                            <option>Kepercayaan Terhadap Tuhan YME</option>
+                                        </select>
+                                    </div>
+                                    <div class="col">
+                                        <label>Pendidikan Ibu</label>
+                                        <select class="select2 form-control select2-hidden-accessible" v-model="siswa.s_ibu_pendidikan" :readonly="$route.name == 'siswas.view'" aria-hidden="true">
+                                            <option>SD/SEDERAJAT</option>
+                                            <option>SMP/SEDERAJAT</option>
+                                            <option>TIDAK/BELUM SEKOLAH</option>
+                                            <option>BELUM TAMAT SD/SEDERAJAT</option>
+                                            <option>SMA/SEDERAJAT</option>
+                                            <option>DIPLOMA I (D1)</option>
+                                            <option>DIPLOMA III (D3)</option>
+                                            <option>DIPLOMA IV (D4)/STRATA I (S1)</option>
+                                            <option>STRATA II (S2)</option>
+                                            <option>STRATA III (S3)</option>
+                                            <option>DIPLOMA II (D2)</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Pekerjaan Ibu</label>

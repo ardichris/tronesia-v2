@@ -14,6 +14,7 @@ class PemakaianBarangController extends Controller
     public function index(Request $request) {
             $user = $request->user();
             $pbs = PemakaianBarang::orderBy('created_at', 'DESC')
+                                    ->where('unit_id',$user->unit_id)
                                     ->with(['barang','user']);
             if($user->role!=0 && $user->role!=4){
                 $pbs = $pbs->where('user_id',$user->id);

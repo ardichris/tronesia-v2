@@ -20,7 +20,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.get(`/?page=${state.page}`)
             .then((response) => {
-                commit('ASSIGN_DATA', response.data)
+                commit('ASSIGN_DATA', response.data.data)
                 resolve(response.data)
             })
         })

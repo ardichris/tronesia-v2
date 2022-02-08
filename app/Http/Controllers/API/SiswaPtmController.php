@@ -47,6 +47,7 @@ class SiswaPtmController extends Controller
         $siswaptms = SiswaPtm::with(['siswa' => function ($query) {
                                     $query->select('id', 's_nama', 'kelas_id');
                                 }])
+                                ->where('unit_id',$user->unit_id)
                                 ->orderBy('id', 'ASC');
         if (request()->q != '') {
             $q = request()->q;
@@ -63,7 +64,7 @@ class SiswaPtmController extends Controller
             $siswaptms = $siswaptms->whereIn('siswa_id',$anggotakelas);
         }
         
-        $siswaptms=$siswaptms->paginate(10);
+        $siswaptms=$siswaptms->paginate(40);
         foreach ($siswaptms as $row){
             $kelas = KelasAnggota::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->first();
             $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';

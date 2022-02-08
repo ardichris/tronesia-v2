@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>TRONESIA</title>
+    <title>S.I.A.P</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Toastr -->
@@ -24,8 +24,8 @@
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- Ionicons -->
-    <!-- <link rel="stylesheet" href="{{ asset('bower_components/Ionicons/css/ionicons.min.css') }}"> -->
-    <link rel="stylesheet" href="{{ asset('lte/plugins/summernote/summernote-bs4.css') }}">
+    <link rel="stylesheet" href="{{ asset('bower_components/Ionicons/css/ionicons.min.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('lte/plugins/summernote/summernote-bs4.css') }}"> -->
     <!--link rel="stylesheet" href="{{ asset('~vue-wysiwyg/dist/vueWysiwyg.css') }}"-->
     <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v3/jexcel.css" type="text/css" />
     <link rel="stylesheet" href="https://jsuites.net/v3/jsuites.css" type="text/css" />
@@ -49,8 +49,8 @@
     <!-- bootstrap datepicker -->
     <script src="{{ asset('bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ asset('lte/plugins/summernote/summernote-bs4.min.js') }}"></script>
-    <script src="{{ asset('assets/ckeditor/ckeditor.js')}}"></script>
+    <!-- <script src="{{ asset('lte/plugins/summernote/summernote-bs4.min.js') }}"></script> -->
+    <!-- <script src="{{ asset('assets/ckeditor/ckeditor.js')}}"></script> -->
     <script>
     var konten = document.getElementById("konten");
         CKEDITOR.replace(konten,{

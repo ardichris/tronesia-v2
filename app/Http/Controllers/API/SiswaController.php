@@ -18,7 +18,7 @@ class SiswaController extends Controller
 {
     public function exportSiswa(Request $request) {
         $user = $request->user();
-        $siswa = Siswa::where('s_keterangan','AKTIF')->orderBy('s_nama')->get();
+        $siswa = Siswa::where('s_keterangan','AKTIF')->where('unit_id',$user->unit_id)->orderBy('s_nama')->get();
         foreach($siswa as $row) {
             $kelas = KelasAnggota::where('siswa_id',$row->id)->where('periode_id',$user->periode)->first();
             //return response()->json(['data' => $kelas['kelas_id']]);
@@ -199,7 +199,22 @@ class SiswaController extends Controller
                 's_ayah_perusahaan' => $request->s_ayah_perusahaan,
                 's_ayah_jabatan' => $request->s_ayah_jabatan,
                 's_ibu_perusahaan' => $request->s_ibu_perusahaan,
-                's_ibu_jabatan' => $request->s_ibu_jabatan
+                's_ibu_jabatan' => $request->s_ibu_jabatan,
+                's_nama_panggilan' => $request->s_nama_panggilan,
+                's_golongan_darah' => $request->s_golongan_darah,
+                's_warga_negara' => $request->s_warga_negara,
+                's_saudara_kandung' => $request->s_saudara_kandung,
+                's_saudara_tiri' => $request->s_saudara_tiri,
+                's_saudara_angkat' => $request->s_saudara_angkat,
+                's_status_anak' => $request->s_status_anak,
+                's_bahasa' => $request->s_bahasa,
+                's_ibu_tempat_lahir' => $request->s_ibu_tempat_lahir,
+                's_ibu_agama' => $request->s_ibu_agama,
+                's_ibu_warga_negara' => $request->s_ibu_warga_negara,
+                's_ayah_tempat_lahir' => $request->s_ayah_tempat_lahir,
+                's_ayah_agama' => $request->s_ayah_agama,
+                's_ayah_warga_negara' => $request->s_ayah_warga_negara,
+                's_pengeluaran' => $request->s_pengeluaran
             ]);
         }
         return response()->json(['status' => 'success'], 200);
