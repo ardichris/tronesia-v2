@@ -288,12 +288,30 @@ const mutations = {
 }
 
 const actions = {
+    uploadSiswa({ dispatch, commit }, payload) {
+        return new Promise((resolve, reject) => {
+            $axios.post(`/siswa/import`, payload, {
+                headers: { 'content-type': 'multipart/form-data' }
+            })
+            .then((response) => {               
+                resolve(response.data)
+            })
+            .catch(() => {
+                reject()
+            })
+            // .catch((error) => {
+            //     if (error.response.status == 500) {
+            //         console.log(error.response.data)
+            //         commit('SET_ERRORS', error.response.data, { root: true })
+            //     }
+            // })
+        })
+    },
     siswaAktif({commit, state}){
         return new Promise((resolve, reject) => {
             $axios.get(`/siswas/rekap`)
             .then((response) => {
                 commit('SISWA_AKTIF', response.data)
-                console.log(response.data)
                 resolve(response.data)
                 
             })

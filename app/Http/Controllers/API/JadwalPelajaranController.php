@@ -25,6 +25,8 @@ class JadwalPelajaranController extends Controller
                                                         ->where('kelas_id',$kelas)
                                                         ->where('jp_hari',$key)
                                                         ->where('jp_jampel',$i)
+                                                        ->where('periode_id',$user->periode)
+                                                        ->where('unit_id',$user->unit_id)
                                                         ->get();
             }
         }

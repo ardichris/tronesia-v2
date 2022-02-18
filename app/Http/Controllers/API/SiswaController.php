@@ -13,9 +13,21 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SiswasExport;
 use App\KelasAnggota;
 use Ramsey\Uuid\Uuid;
+use App\Imports\SiswasImport;
 
 class SiswaController extends Controller
 {
+    public function import(Request $request)
+    {
+        $user = $request->user();
+        $path = $request->file('import_file');
+        $siswa['user'] = $user->id;
+        $siswa['unit'] = $user->unit_id;
+        $data = Excel::import(new SiswasImport($siswa), $path);
+
+        return response()->json(['status' => 'success'], 200);
+    }
+    
     public function exportSiswa(Request $request) {
         $user = $request->user();
         $siswa = Siswa::where('s_keterangan','AKTIF')->where('unit_id',$user->unit_id)->orderBy('s_nama')->get();

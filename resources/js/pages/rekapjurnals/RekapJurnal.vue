@@ -51,7 +51,8 @@
                         <br>
                         <br>
                         <br>
-                        Yurui, S.Pd., M.M.
+                        <a v-if="authenticated.unit_id == 1">Yurui, S.Pd., M.M.</a>
+                        <a v-if="authenticated.unit_id == 3">Arif Prianto, S.Pd., M.M.</a>
                     </b-col>
                 </b-row>
                 <b-button variant="success"  :href="'/laporan/cetak_pdf?user='+authenticated.id+'&start='+rekapjurnal.tanggalmulai+'&finish='+rekapjurnal.tanggalakhir">Cetak PDF</b-button>

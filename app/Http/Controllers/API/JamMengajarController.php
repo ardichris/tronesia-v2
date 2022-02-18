@@ -19,7 +19,9 @@ class JamMengajarController extends Controller
 
     public function index(Request $request) {
         $user = $request->user();
-        $jammengajars = JamMengajar::with('kelas','mapel','guru')->where('unit_id',$user->unit_id)->orderBy('created_at', 'DESC');
+        $jammengajars = JamMengajar::with('kelas','mapel','guru')->where('periode_id',$user->periode)
+                        ->where('unit_id',$user->unit_id)
+                        ->orderBy('created_at', 'DESC');
         if ($user->role != 0 || request()->jm == 'nilai'){
             $jammengajars= $jammengajars->where('guru_id',$user->id);
         }

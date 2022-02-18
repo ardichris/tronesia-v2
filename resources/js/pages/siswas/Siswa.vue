@@ -4,8 +4,36 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <router-link :to="{ name: 'siswas.add' }" class="btn btn-primary btn-sm btn-flat" v-if="authenticated.role==0">Tambah</router-link>
-                        <b-button variant="success" size="sm" @click="exportSiswa" v-if="authenticated.role==0">Rekap Siswa</b-button>
+                        <!-- <router-link :to="{ name: 'siswas.add' }" class="btn btn-primary btn-sm btn-flat" v-if="authenticated.role==0">Tambah</router-link>
+                        <b-button variant="success" size="sm" @click="exportSiswa" v-if="authenticated.role==0">Rekap Siswa</b-button> -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success" size="sm">Action</button>
+                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                            <div class="dropdown-menu" role="menu" style="">
+                                <a class="dropdown-item"><router-link :to="{ name: 'siswas.add' }" v-if="authenticated.role==0">Tambah</router-link></a>
+                                <a class="dropdown-item" @click="exportSiswa" v-if="authenticated.role==0">Rekap Siswa</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" @click="$bvModal.show('modal-import')">Upload Siswa</a>
+                            </div>
+                            </button>
+                        </div>
+                        <b-modal id="modal-import" scrollable size="md">
+                            <template v-slot:modal-title>
+                                Pilih File
+                            </template>
+                            <input type="file" class="form-control" :class="{ ' is-invalid' : error.message }" id="input-file-import" name="file_import" ref="import_file"  @change="onFileChange">
+                            <p class="text-danger" v-if="errors">{{errors.message}}</p>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"                                    
+                                    block  @click="submitfile()"
+                                >
+                                    Upload
+                                </b-button>
+                            </template>
+                        </b-modal>
                         <b-modal id="modal-rekap" size="xl" hide-footer>
                             <template v-slot:modal-title>
                                 Rekap Siswa
@@ -99,11 +127,14 @@ export default {
                 { key: 'actions', label: 'Aksi' }
             ],
             search: '',
-            status: 'AKTIF'
+            status: 'AKTIF',
+            import_file: '',
+            error: {},
         }
     },
     computed: {
         //MENGAMBIL DATA OUTLETS DARI STATE OUTLETS
+        ...mapState(['errors']),
         ...mapState('user', {
             authenticated: state => state.authenticated
         }),
@@ -155,12 +186,43 @@ export default {
     },
     methods: {
         //MENGAMBIL FUNGSI DARI VUEX MODULE siswa
-        ...mapActions('siswa', ['getSiswas', 'removeSiswa','siswaAktif']),
+        ...mapActions('siswa', ['getSiswas', 'removeSiswa','siswaAktif','uploadSiswa']),
         //KETIKA TOMBOL HAPUS DICLICK, MAKA AKAN MENJALANKAN METHOD INI
         exportSiswa() {
             window.open(`/api/exportsiswa?api_token=${this.token}`)
         },
-        
+        onFileChange(e) {
+            this.import_file = e.target.files[0];
+        },
+        submitfile(){
+            let formData = new FormData();
+            formData.append('import_file', this.import_file);
+            this.uploadSiswa(formData).then(() => {
+                this.import_file = ''
+                this.$bvModal.hide('modal-import')
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    type: 'success',
+                    title: 'Import Siswa Berhasil'
+                })
+                this.getSiswas({
+                    search: this.search,
+                    status: this.status
+                }) 
+            }).catch(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    type: 'error',
+                    title: 'Import Siswa Gagal'
+                })
+            })
+        },
         rekapSiswa(){
             this.siswaAktif().then(() => {
                 const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions)

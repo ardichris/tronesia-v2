@@ -8,7 +8,7 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Toastr -->
-    <!-- <link rel="stylesheet" href="{{ asset('lte/plugins/toastr/toastr.min.css') }}"> -->
+    <link rel="stylesheet" href="{{ asset('lte/plugins/toastr/toastr.min.css') }}">
     <!-- Tempusdominus Bbootstrap 4 -->
     <!-- <link rel="stylesheet" href="{{ asset('lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}"> -->
     <!-- iCheck -->
@@ -27,16 +27,16 @@
     <link rel="stylesheet" href="{{ asset('bower_components/Ionicons/css/ionicons.min.css') }}">
     <!-- <link rel="stylesheet" href="{{ asset('lte/plugins/summernote/summernote-bs4.css') }}"> -->
     <!--link rel="stylesheet" href="{{ asset('~vue-wysiwyg/dist/vueWysiwyg.css') }}"-->
-    <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v3/jexcel.css" type="text/css" />
-    <link rel="stylesheet" href="https://jsuites.net/v3/jsuites.css" type="text/css" />
+    <!-- <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v3/jexcel.css" type="text/css" /> -->
+    <!-- <link rel="stylesheet" href="https://jsuites.net/v3/jsuites.css" type="text/css" /> -->
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
   
     <div id="dw">
         <app></app>
     </div>
-    <script src="https://bossanova.uk/jspreadsheet/v3/jexcel.js"></script>
-    <script src="https://jsuites.net/v3/jsuites.js"></script>
+    <!-- <script src="https://bossanova.uk/jspreadsheet/v3/jexcel.js"></script> -->
+    <!-- <script src="https://jsuites.net/v3/jsuites.js"></script> -->
     
     <!-- jQuery -->
     <script src="{{ asset('lte/plugins/jquery/jquery.min.js') }}"></script>

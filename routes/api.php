@@ -66,6 +66,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/rapor', 'API\RaporController');
     Route::resource('/raporakhir', 'API\RaporAkhirController');
     Route::post('/raporakhir/import', 'API\RaporAkhirController@import');
+    Route::post('/siswa/import', 'API\SiswaController@import');
     Route::resource('/siswaptm', 'API\SiswaPtmController');
     Route::post('/siswaptm/absenmasuk', 'API\SiswaPtmController@absenmasuk');
     Route::put('/siswaptm/dijemput/{kode}', 'API\SiswaPtmController@dijemput');

@@ -52,13 +52,15 @@ class KelasController extends Controller
         return response()->json(['status' => 'success'], 200);
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+        //$user = $id->user();
         $kelas = Kelas::with(['user'])->whereId($id)->first();
         $anggota = KelasAnggota::where('kelas_id',$id)
                                 ->with(array('siswa' => function($query) {
                                     $query->select('id','s_nama');
                                 }))
+                                //->where('periode_id',$user->periode)
                                 ->orderBy('absen')
                                 ->get();
                                 
