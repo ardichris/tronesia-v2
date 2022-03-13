@@ -72,6 +72,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::put('/siswaptm/dijemput/{kode}', 'API\SiswaPtmController@dijemput');
     Route::put('/siswaptm/suhupulang/{kode}', 'API\SiswaPtmController@suhupulang');
     Route::resource('/raporakhir', 'API\RaporAkhirController');
+    Route::get('/laporan/rapor_sisipan', 'API\RaporAkhirController@raporSisipanPDF');
+    Route::get('/raporsisipan/view', 'API\RaporAkhirController@raporSisipanView');
 
 
 });

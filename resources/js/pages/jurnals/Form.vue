@@ -92,6 +92,15 @@
             <textarea cols="6" rows="5" class="form-control" v-model="jurnal.jm_keterangan" :readonly="jurnal.jm_status == 1 && authenticated.role != 0"></textarea>
             <p class="text-danger" v-if="errors.jm_keterangan">Catatan mengajar wajib diisi</p>
         </div>
+        <div class="form-group" :class="{ 'has-error': errors.jm_media }">
+            <label for="">Media</label>
+            <div class="input-group">
+                <input type="text" class="form-control" v-model="jurnal.jm_media" :readonly="jurnal.jm_status == 1 && authenticated.role != 0">
+                <div class="input-group-append" v-if="jurnal.jm_media">
+                    <button class="btn btn-success btn-flat" @click="mediaClick"><i class="fa fa-eye"></i></button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-md-6">
         <label for="">PRESENSI KEHADIRAN</label><br>
@@ -247,6 +256,9 @@ export default {
     methods: {
         ...mapActions('jurnal',['getMapel','getKelas','getKompetensi', 'getSiswa']),
         ...mapMutations('jurnal', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
+        mediaClick(){
+            window.open(this.jurnal.jm_media, "_blank");
+        },
         setSelected(value){
             this.getKompetensi()
         },

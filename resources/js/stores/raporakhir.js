@@ -2,6 +2,7 @@ import $axios from '../api.js'
 
 const state = () => ({
     raporakhirs: [],
+    raporsisipan: {},
     
     raporakhir: {
         raporakhir_kode: '',
@@ -11,6 +12,7 @@ const state = () => ({
 })
 
 const mutations = {
+    
     ASSIGN_DATA(state, payload) {
         state.raporakhirs = payload
     },
@@ -22,6 +24,9 @@ const mutations = {
             raporakhir_kode: payload.raporakhir_kode,
             raporakhir_nama: payload.raporakhir_nama
         }
+    },
+    SISIPAN_FORM(state, payload){
+        state.raporsisipan = payload
     },
     CLEAR_FORM(state) {
         state.raporakhir = {
@@ -56,7 +61,6 @@ const actions = {
             $axios.get(`/raporakhir?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
-                console.log(response.data)
                 resolve(response.data)
             })
         })
@@ -73,6 +77,17 @@ const actions = {
                 if (error.response.status == 422) {
                     commit('SET_ERRORS', error.response.data.errors, { root: true })
                 }
+            })
+        })
+    },
+    viewRaporSisipan({ commit, state }, payload) {
+        let uuid = payload.uuid
+        return new Promise((resolve, reject) => {
+            $axios.get(`/raporsisipan/view?uuid=${uuid}`)
+            .then((response) => {
+                commit('SISIPAN_FORM', response.data.data)
+                console.log(state.raporsisipan)
+                resolve(response.data)
             })
         })
     },

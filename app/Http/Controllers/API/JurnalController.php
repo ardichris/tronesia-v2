@@ -196,6 +196,7 @@ class JurnalController extends Controller
                             'kelas_id' => $request->kelas_id['id'],
                             'kompetensi_id' => $request->kompetensi_id ? $request->kompetensi_id['id']:null,
                             'jm_materi' => $request->jm_materi,
+                            'jm_media' => $request->jm_media,
                             'user_id' => $user->id,
                             'unit_id' => $user->unit_id,
                             'periode_id' => $user->periode,
@@ -287,7 +288,7 @@ class JurnalController extends Controller
             //'mapel_id' => 'required'
         ]);
         
-        $jurnal = Jurnal::whereJm_kode($id)->first();
+        $jurnal = Jurnal::where('jm_kode',$id)->first();
         $konflik = 0;
         if($request->mapel_id['id']!=23 && $request->mapel_id['id']!=24){
             $cekkonflik = Jurnal::where([['jm_kode','!=',$request->jm_kode],
@@ -309,8 +310,9 @@ class JurnalController extends Controller
             'jm_tanggal' => $request->jm_tanggal,
             'jm_jampel' => $request->jm_jampel,
             'kelas_id' => $request->kelas_id['id'],
-            'kompetensi_id' => $request->kompetensi_id['id'],
+            'kompetensi_id' => $request->kompetensi_id ? $request->kompetensi_id['id']:null,
             'jm_materi' => $request->jm_materi,
+            'jm_media' => $request->jm_media,
             'user_id' => $request->user_id['id'],
             'unit_id' => $user->unit_id,
             'jm_status' => $konflik != 0 ? 2:0,

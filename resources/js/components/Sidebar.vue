@@ -15,7 +15,8 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-            <img :src="'/storage/teachers/' + authenticated.photo" class="img-circle elevation-5" alt="User Image">
+            <img v-if="authenticated.photo" :src="'/storage/teachers/' + authenticated.photo" class="img-circle elevation-5" alt="User Image">
+            <img v-else :src="'https://ui-avatars.com/api/?name=s+i+a+p&length=4&background=random'" class="img-circle elevation-5">
             </div>
             <div class="info">
             <!--a href="/" class="d-block">{{ authenticated.name }}</a-->
