@@ -37,9 +37,9 @@ class PresensiController extends Controller
                 if($rowpresensi->alasan=="Urusan Pribadi") $ijin++;
                 if($rowpresensi->alasan=="Alpha") $alpha++;
             }
-            $row['ijin'] = floor($ijin/4);                     
-            $row['sakit'] = floor($sakit/4);
-            $row['alpha'] = floor($alpha/4);
+            $row['ijin'] = floor($ijin/6);                     
+            $row['sakit'] = floor($sakit/6);
+            $row['alpha'] = floor($alpha/6);
         }
         return new PresensiCollection($siswa);
 

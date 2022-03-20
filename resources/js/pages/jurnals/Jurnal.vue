@@ -4,8 +4,17 @@
             <div class="panel-heading">
                 <div class="row" style="margin-bottom:10px">
                     <div class="col-sm-12 col-md-6">
-                        <router-link :to="{ name: 'jurnal.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
-                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-jurnal-roster')">Rekap Jurnal</b-button>
+                        <router-link :to="{ name: 'jurnal.add' }" class="btn btn-primary btn-md btn-flat">Tambah</router-link>
+                        <div class="btn-group" size="sm">
+                            <button type="button" class="btn btn-success" size="sm">Rekap Jurnal</button>
+                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                            <div class="dropdown-menu" role="menu" style="">
+                                <a class="dropdown-item" @click="$bvModal.show('modal-jurnal-roster')">per-Tanggal</a>
+                                <a class="dropdown-item" @click="$bvModal.show('modal-jurnal-rekap')">per-Kelas</a>
+                            </div>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -21,123 +30,17 @@
                                 ></b-form-select>
                         </span>
                     </div>
-                    <b-modal id="modal-jurnal-roster" size="xl">
+                    <b-modal id="modal-jurnal-rekap" size="xl" hide-footer>
+                        <template v-slot:modal-title>
+                            Rekap Jurnal Mengajar
+                        </template>
+                        <jurnal-roster-kelas></jurnal-roster-kelas>
+                    </b-modal>
+                    <b-modal id="modal-jurnal-roster" size="xl" hide-footer>
                             <template v-slot:modal-title>
                                 Roster Jurnal Mengajar
                             </template>
-                            <div class="col-lg-3">
-                                <input type="date" class="form-control" v-model="rekapjurnal.tanggal" @change="getRoster">
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table" width="auto">
-                                    <thead>
-                                        <tr>
-                                            <th>Kelas</th>
-                                            <th style="text-align:center; width:100px">0</th>
-                                            <th style="text-align:center">1</th>
-                                            <th style="text-align:center">2</th>
-                                            <th style="text-align:center">3</th>
-                                            <th style="text-align:center">4</th>
-                                            <th style="text-align:center">5</th>
-                                            <th style="text-align:center">6</th>
-                                            <th style="text-align:center">7</th>
-                                            <th style="text-align:center">8</th>
-                                            <th style="text-align:center">9</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(row, index) in rekapjurnal.jurnal" :key="index">
-                                            <td>
-                                                {{row.kelas_nama}}
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam0.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam0.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam0.jm_status == 0">Submitted</span>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam1.jm_status < 2" >
-                                                    <span class="badge badge-success" v-if="row.jam1.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam1.jm_status == 0">Submitted</span>
-                                                </span>
-                                                <div v-else v-for="(rowjam, indexjam) in row.jam1" :key="indexjam">
-                                                    <span class="badge badge-dark">{{rowjam}}</span>                                                  
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam2.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam2.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam2.jm_status == 0">Submitted</span>
-                                                </span>
-                                                <div v-else v-for="(rowjam, indexjam) in row.jam2" :key="indexjam">
-                                                    <span class="badge badge-dark">{{rowjam}}</span>                                                  
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam3.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam3.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam3.jm_status == 0">Submitted</span>
-                                                </span>
-                                                <div v-else v-for="(rowjam, indexjam) in row.jam3" :key="indexjam">
-                                                    <span class="badge badge-dark">{{rowjam}}</span>                                                  
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam4.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam4.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam4.jm_status == 0">Submitted</span>
-                                                </span>
-                                                <div v-else v-for="(rowjam, indexjam) in row.jam4" :key="indexjam">
-                                                    <span class="badge badge-dark">{{rowjam}}</span>                                                  
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam5.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam5.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam5.jm_status == 0">Submitted</span>
-                                                </span>
-                                                <div v-else v-for="(rowjam, indexjam) in row.jam5" :key="indexjam">
-                                                    <span class="badge badge-dark">{{rowjam}}</span>                                                  
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam6.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam6.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam6.jm_status == 0">Submitted</span>
-                                                </span>
-                                                <div v-else v-for="(rowjam, indexjam) in row.jam6" :key="indexjam">
-                                                    <span class="badge badge-dark">{{rowjam}}</span>                                                  
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam7.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam7.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam7.jm_status == 0">Submitted</span>
-                                                </span>
-                                                <div v-else v-for="(rowjam, indexjam) in row.jam7" :key="indexjam">
-                                                    <span class="badge badge-dark">{{rowjam}}</span>                                                  
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam8.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam8.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam8.jm_status == 0">Submitted</span>
-                                                </span>
-                                                <div v-else v-for="(rowjam, indexjam) in row.jam8" :key="indexjam">
-                                                    <span class="badge badge-dark">{{rowjam}}</span>                                                  
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span v-if="row.jam9.jm_status < 2">
-                                                    <span class="badge badge-success" v-if="row.jam9.jm_status == 1">Approved</span>
-                                                    <span  class="badge badge-warning" v-if="row.jam9.jm_status == 0">Submitted</span>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <jurnal-roster-tanggal></jurnal-roster-tanggal>
                             <template v-slot:modal-footer>
                             </template>
                         </b-modal>
@@ -251,6 +154,11 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import FormJurnal from './Form.vue'
+import 'vue-select/dist/vue-select.css'
+import vSelect from 'vue-select'
+import RosterKelasJurnal from './RosterKelas.vue'
+import RosterTanggalJurnal from './RosterTanggal.vue'
+
 
 export default {
     name: 'DataJurnal',
@@ -286,7 +194,8 @@ export default {
         ...mapState('jurnal', {
             jurnals: state => state.jurnals,
             jurnal: state => state.jurnal,
-            rekapjurnal: state => state.rekapjurnal
+            rekapjurnal: state => state.rekapjurnal,
+            kelass: state => state.kelas
         }),
         ...mapState('user', {
             authenticated: state => state.authenticated
@@ -321,7 +230,13 @@ export default {
         }
     },
     methods: {
-        ...mapActions('jurnal', ['editJurnal','updateJurnal','getJurnal', 'removeJurnal','checkJurnal','updateStatus','getRosterJurnal']),
+        ...mapActions('jurnal', ['editJurnal','updateJurnal','getJurnal', 'removeJurnal','checkJurnal','updateStatus','getRosterJurnal','getKelas']),
+        searchKelas(search, loading) {
+            this.getKelas({
+                search: search,
+                loading: loading
+            })            
+        },
         getRoster(){
             this.getRosterJurnal();
         },
@@ -387,7 +302,10 @@ export default {
         }
     },
     components: {
-        'jurnal-form': FormJurnal
+        'jurnal-roster-kelas': RosterKelasJurnal,
+        'jurnal-roster-tanggal': RosterTanggalJurnal,
+        'jurnal-form': FormJurnal,
+        vSelect
     }
 }
 </script>

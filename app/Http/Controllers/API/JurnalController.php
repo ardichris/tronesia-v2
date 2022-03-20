@@ -13,6 +13,7 @@ use App\Pelanggaran;
 use App\Unit;
 use App\JadwalPelajaran;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use DB;
 use PDF;
 
@@ -54,41 +55,89 @@ class JurnalController extends Controller
     
     public function roster(Request $request) {
         $user = $request->user();
-        $tanggal = date($request->tanggal);
-        $hari = Carbon::parse($tanggal)->format('l');
-        $roster = Kelas::where('unit_id',$user->unit_id)->orderBy('kelas_nama','ASC')->get();
-        $jampel = array(0,1,2,3,4,5,6,7,8,9);
-        $jurnal = Jurnal::where('jm_tanggal',$tanggal)
-                        ->where('periode_id',$user->periode)
-                        ->where('jm_status','<',2)
-                        ->get();
-        $jadwal = JadwalPelajaran::with('guru')
-                                    ->where('jp_hari',$hari)
-                                    ->where('periode_id',$user->periode)
-                                    ->get();
-        foreach($roster as $rowkelas){
-            foreach($jampel as $rowjampel){
-                $jurnalfind = null;
-                foreach($jurnal as $rowjurnal){
-                    if($rowjurnal->jm_jampel == $rowjampel){
-                        if($rowjurnal->kelas_id == $rowkelas->id){
-                            $jurnalfind = $rowjurnal->jm_status;
-                            $rowkelas['jam'.$rowjampel] = array('jm_status' => $jurnalfind);
+        if(request()->tanggal != ''){
+            $tanggal = date($request->tanggal);
+            $hari = Carbon::parse($tanggal)->format('l');
+            $roster = Kelas::where('unit_id',$user->unit_id)->orderBy('kelas_nama','ASC')->get();
+            $jampel = array(0,1,2,3,4,5,6,7,8,9);
+            $jurnal = Jurnal::where('jm_tanggal',$tanggal)
+                            ->where('periode_id',$user->periode)
+                            ->where('jm_status','<',2)
+                            ->get();
+            $jadwal = JadwalPelajaran::with('guru')
+                                        ->where('jp_hari',$hari)
+                                        ->where('periode_id',$user->periode)
+                                        ->get();
+            foreach($roster as $rowkelas){
+                foreach($jampel as $rowjampel){
+                    $jurnalfind = null;
+                    foreach($jurnal as $rowjurnal){
+                        if($rowjurnal->jm_jampel == $rowjampel){
+                            if($rowjurnal->kelas_id == $rowkelas->id){
+                                $jurnalfind = $rowjurnal->jm_status;
+                                $rowkelas['jam'.$rowjampel] = array('jm_status' => $jurnalfind);
+                            }
                         }
                     }
-                }
-                if(is_null($jurnalfind)){
-                    $count = 0;
-                    $guru = array();
-                    foreach($jadwal as $rowjadwal){
-                        if($rowjadwal->jp_jampel == $rowjampel && $rowjadwal->kelas_id == $rowkelas->id){
-                            array_push($guru,$rowjadwal->guru->name);     
-                        }
-                    } 
-                    $rowkelas['jam'.$rowjampel] = $guru;   
+                    if(is_null($jurnalfind)){
+                        $count = 0;
+                        $guru = array();
+                        foreach($jadwal as $rowjadwal){
+                            if($rowjadwal->jp_jampel == $rowjampel && $rowjadwal->kelas_id == $rowkelas->id){
+                                array_push($guru,$rowjadwal->guru->name);     
+                            }
+                        } 
+                        $rowkelas['jam'.$rowjampel] = $guru;   
+                    }
+                    
                 }
             }
         }
+        elseif(request()->start != '' && request()->end != '' && request()->kelas != ''){
+            $mulai = date($request->start);
+            $akhir = date($request->end);
+            $roster = array();
+            $period = CarbonPeriod::create($mulai, $akhir)->filter('isWeekday');
+            $jampel = array(0,1,2,3,4,5,6,7,8,9);
+            $jadwal = JadwalPelajaran::with('guru')
+                                        ->where('periode_id',$user->periode)
+                                        ->get();
+            $jurnal = Jurnal::whereBetween('jm_tanggal',[$mulai,$akhir])
+                            ->where('periode_id',$user->periode)
+                            ->where('jm_status','<',2)
+                            ->where('kelas_id', request()->kelas)
+                            ->get();
+            foreach($period as $rowtanggal){
+                foreach($jampel as $rowjampel){
+                    $roster[$rowtanggal->format('d-M-y')]['jam'.$rowjampel] = null;
+                    $jurnalfind = null;
+                    foreach($jurnal as $rowjurnal){
+                        if($rowjurnal->jm_jampel == $rowjampel){
+                            if($rowjurnal->jm_tanggal == $rowtanggal->format('Y-m-d')){
+                                $jurnalfind = $rowjurnal->jm_status;
+                                $roster[$rowtanggal->format('d-M-y')]['jam'.$rowjampel] = array('jm_status' => $jurnalfind);
+                            }
+                        }
+                    }
+                    if(is_null($jurnalfind)){
+                        $hari = $rowtanggal->format('l');
+                        $count = 0;
+                        $guru = array();
+                        foreach($jadwal as $rowjadwal){
+                            if($rowjadwal->jp_jampel == $rowjampel && $rowjadwal->kelas_id == request()->kelas && $rowjadwal->jp_hari == $rowtanggal->format('l')){
+                                //array_push($guru,$rowjadwal->guru->name);  
+                                $roster[$rowtanggal->format('d-M-y')]['jam'.$rowjampel] = array('guru' => $rowjadwal->guru->name);
+                            }
+                        } 
+                        //$rowkelas['jam'.$rowjampel] = $guru;   
+                    }
+                }
+            }
+            
+
+        }
+        
+        
         return new JurnalCollection($roster);
     }
     

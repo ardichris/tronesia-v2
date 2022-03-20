@@ -74,6 +74,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/raporakhir', 'API\RaporAkhirController');
     Route::get('/laporan/rapor_sisipan', 'API\RaporAkhirController@raporSisipanPDF');
     Route::get('/raporsisipan/view', 'API\RaporAkhirController@raporSisipanView');
+    Route::put('/raporsisipan/{kode}', 'API\RaporAkhirController@raporSisipanStore');
 
 
 });

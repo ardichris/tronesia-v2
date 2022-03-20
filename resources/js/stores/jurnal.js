@@ -8,6 +8,9 @@ const state = () => ({
     jurnals: [],
     rekapjurnal: {
         tanggal: '',
+        start: '',
+        end: '',
+        kelas: [],
         jurnal: []
     },
     
@@ -91,7 +94,14 @@ const mutations = {
         state.siswa = [],
         state.kelas = [],
         state.kompetensi = [],
-        state.mapel = []
+        state.mapel = [],
+        state.rekapjurnal= {
+            tanggal: '',
+            start: '',
+            end: '',
+            kelas: [],
+            jurnal: []
+        }
     }
 }
 
@@ -112,8 +122,11 @@ const actions = {
     },*/
     getRosterJurnal({commit, state}, payload){
         let tanggal = state.rekapjurnal.tanggal
+        let start = state.rekapjurnal.start ? state.rekapjurnal.start:null
+        let end = state.rekapjurnal.end ? state.rekapjurnal.end:null
+        let kelas = state.rekapjurnal.kelas.id
         return new Promise((resolve, reject) => {
-            $axios.get(`/jurnal/roster?tanggal=${tanggal}`)
+            $axios.get(`/jurnal/roster?tanggal=${tanggal}&start=${start}&end=${end}&kelas=${kelas}`)
             .then((response) => {
                 commit('ROSTER_DATA', response.data.data)
                 resolve(response.data)

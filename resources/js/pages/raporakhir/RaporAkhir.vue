@@ -4,8 +4,8 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan')">Upload Sisipan</b-button>
-                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-import')">Upload Ledger</b-button>
+                        <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan')" v-if="authenticated.role==0">Upload Sisipan</b-button>
+                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-import')"  v-if="authenticated.role==0">Upload Ledger</b-button>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -43,6 +43,28 @@
                         </b-button>
                     </template>
                 </b-modal>
+                <b-modal id="modal-sisipan-biblical" scrollable size="sm">
+                    <template v-slot:modal-title>
+                        Catatan Walikelas
+                    </template>
+                    <div class="form-group">
+                        <label>Ayat Alkitab</label>
+                        <input type="text" class="form-control" v-model="raporSisipan.rs_catatan_ayat">
+                    </div>
+                    <div class="form-group">
+                        <label>Isi Ayat</label>
+                        <textarea cols="6" rows="5" class="form-control" v-model="raporSisipan.rs_catatan_isi" ></textarea>
+                    </div>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"                                    
+                            block  @click="submitCatatan()"
+                        >
+                            Simpan
+                        </b-button>
+                    </template>
+                </b-modal>
                 <b-modal id="modal-sisipan-preview" scrollable size="lg" hide-footer>
                     <template v-slot:modal-title>
                         Preview Rapor Sisipan
@@ -56,9 +78,10 @@
                         {{row.item.siswa.s_nama}}
                     </template>
                     <template v-slot:cell(sisipan)="row">
+                        <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-'" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-church"></i> Biblical</b-button>
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'" @click="previewSisipan(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i> Preview</b-button>
                         <!-- <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan-preview')"></b-button> -->
-                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?user='+authenticated.id+'&rapor='+row.item.RaporSisipan.id" v-if="row.item.RaporSisipan != '-'"><i class="fa fa-file-pdf"></i> PDF</b-button>
+                        <!-- <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id" v-if="row.item.RaporSisipan != '-'"><i class="fa fa-file-pdf"></i> PDF</b-button> -->
                     </template>
                     <template v-slot:cell(akhir)="row">
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporAkhir != '-'"><i class="fa fa-eye"></i> Preview</b-button>
@@ -120,6 +143,7 @@ export default {
         }),
         ...mapState('raporakhir', {
             raporakhirs: state => state.raporakhirs,
+            raporSisipan: state => state.raporsisipan
         }),
         ...mapState(['token']),
         page: {
@@ -133,19 +157,34 @@ export default {
     },
     watch: {
         page() {
-            this.getRaporAkhir()
+            this.getRaporAkhir(this.search)
         },
         search() {
-            this.getRaporAkhir(this.search)
+            this.getRaporAkhir({
+                search: this.search
+            })
         }
     },
     methods: {
-        ...mapActions('raporakhir', ['viewRaporSisipan','getRaporAkhir','uploadLedger']),
+        ...mapActions('raporakhir', ['viewRaporSisipan','getRaporAkhir','uploadLedger','submitRaporSisipan']),
+        submitCatatan(){
+            this.submitRaporSisipan()
+            .then(() => {
+                this.$bvModal.hide('modal-sisipan-biblical')
+            })
+        },
         previewSisipan(rapor){
             this.viewRaporSisipan({
                 uuid: rapor
             }).then(() => {
                 this.$bvModal.show('modal-sisipan-preview')
+            })
+        },
+        commentSisipan(rapor){
+            this.viewRaporSisipan({
+                uuid: rapor
+            }).then(() => {
+                this.$bvModal.show('modal-sisipan-biblical')
             })
         },
         onFileChange(e) {

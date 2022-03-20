@@ -11,6 +11,7 @@ class JadwalPelajaranController extends Controller
 {
     public function index(Request $request){
         $kelas = request()->kelas;
+        $user = $request->user();
         $rosterJP =   array("Monday" => null,
                             "Tuesday" => null,
                             "Wednesday" => null,

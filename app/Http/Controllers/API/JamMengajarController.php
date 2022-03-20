@@ -19,6 +19,7 @@ class JamMengajarController extends Controller
 
     public function index(Request $request) {
         $user = $request->user();
+        $q = request()->q;
         $jammengajars = JamMengajar::with('kelas','mapel','guru')->where('periode_id',$user->periode)
                         ->where('unit_id',$user->unit_id)
                         ->orderBy('created_at', 'DESC');
@@ -26,12 +27,16 @@ class JamMengajarController extends Controller
             $jammengajars= $jammengajars->where('guru_id',$user->id);
         }
         if (request()->q != '') {
-            $jammengajars = $jammengajars->whereHas('kelas', function($query) use($q){
-                                            $query->where('kelas_nama','like','%'.$q.'%');
-                                            })
-                                        ->orwhereHas('guru', function($query) use($q){
-                                            $query->where('name','like','%'.$q.'%');
+            $jammengajars = $jammengajars->where(function ($query) use ($q) {
+                                            $query->whereHas('kelas', function($query) use($q){
+                                                        $query->where('kelas_nama','like','%'.$q.'%');
+                                                    })
+                                                    ->orwhereHas('guru', function($query) use($q){
+                                                        $query->where('name','like','%'.$q.'%');
+                                                    });
                                         });
+            
+            
         }
         return new JamMengajarCollection($jammengajars->paginate(10));
     }

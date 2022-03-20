@@ -61,6 +61,7 @@ const actions = {
             $axios.get(`/raporakhir?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
+                console.log(response.data)
                 resolve(response.data)
             })
         })
@@ -86,7 +87,16 @@ const actions = {
             $axios.get(`/raporsisipan/view?uuid=${uuid}`)
             .then((response) => {
                 commit('SISIPAN_FORM', response.data.data)
-                console.log(state.raporsisipan)
+                resolve(response.data)
+            })
+        })
+    },
+    submitRaporSisipan({commit, state}, payload){
+        let kode = state.raporsisipan.id
+        return new Promise((resolve, reject) => {
+            $axios.put(`/raporsisipan/${kode}`, state.raporsisipan)
+            .then((response) => {
+                commit('CLEAR_FORM')
                 resolve(response.data)
             })
         })
