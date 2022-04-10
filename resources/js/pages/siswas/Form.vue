@@ -248,7 +248,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="inputTanggalAkta">Tanggal Lahir Sesuai Akta</label>
-                                <input type="text" class="form-control" v-model="siswa.s_akta_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
+                                <input type="date" class="form-control" v-model="siswa.s_akta_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
                             </div>
                             <div class="form-group">
                                 <label for="namaIbuAkta">Nama Ibu Sesuai Akta</label>

@@ -69,7 +69,8 @@
                     <template v-slot:modal-title>
                         Preview Rapor Sisipan
                     </template>
-                    <rapor-sisipan-form></rapor-sisipan-form>
+                    <rapor-sisipan-form v-if="authenticated.unit_id == 1"></rapor-sisipan-form>
+                    <rapor-sisipanP2-form v-if="authenticated.unit_id == 3"></rapor-sisipanP2-form>
                 </b-modal>
             </div>
             <div class="panel-body">
@@ -78,10 +79,9 @@
                         {{row.item.siswa.s_nama}}
                     </template>
                     <template v-slot:cell(sisipan)="row">
-                        <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-'" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-church"></i> Biblical</b-button>
+                        <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-' && authenticated.unit_id == 1" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-church"></i> Biblical</b-button>
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'" @click="previewSisipan(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i> Preview</b-button>
-                        <!-- <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan-preview')"></b-button> -->
-                        <!-- <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id" v-if="row.item.RaporSisipan != '-'"><i class="fa fa-file-pdf"></i> PDF</b-button> -->
+                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'"><i class="fa fa-file-pdf"></i> PDF</b-button>
                     </template>
                     <template v-slot:cell(akhir)="row">
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporAkhir != '-'"><i class="fa fa-eye"></i> Preview</b-button>
@@ -117,6 +117,7 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import FormRaporSisipan from './RaporSisipanForm.vue'
+import FormRaporSisipanP2 from './RaporSisipanFormP2.vue'
 
 export default {
     name: 'DataRaporAkhir',
@@ -157,9 +158,12 @@ export default {
     },
     watch: {
         page() {
-            this.getRaporAkhir(this.search)
+            this.getRaporAkhir({
+                search: this.search
+                })
         },
         search() {
+            this.page = 1;
             this.getRaporAkhir({
                 search: this.search
             })
@@ -195,15 +199,36 @@ export default {
             formData.append('import_file', this.import_file);
             formData.append('rapor', rapor);
             this.uploadLedger(formData).then(() => {
-                    this.import_file = '',
-                    this.$bvModal.hide('modal-import')
+                this.import_file = '',
+                // this.$bvModal.hide('modal-import'),
+                this.getRaporAkhir({
+                    search: ''
+                }),
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    type: 'success',
+                    title: 'Import Ledger Berhasil'
+                })
                     
+            }).catch(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    type: 'error',
+                    title: 'Import Rapor Gagal'
+                })
             })
         }
         
     },
     components: {
-        'rapor-sisipan-form': FormRaporSisipan
+        'rapor-sisipan-form': FormRaporSisipan,
+        'rapor-sisipanP2-form': FormRaporSisipanP2
     }
 }
 </script>

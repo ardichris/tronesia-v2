@@ -1,7 +1,25 @@
 <!-- HTML SECTION -->
 <template>
 <body class="hold-transition login-page">
+        <b-modal id="live-tracking" scrollable size="md">
+            <template v-slot:modal-title>
+                Insert Student Details
+            </template>
+            <label>Student Code</label>
+            <input type="text" class="form-control" v-model="requestLive.studentcode">
 
+            <label>Date of Birth</label>
+            <input type="date" class="form-control" v-model="requestLive.dob">
+            <template v-slot:modal-footer>
+                <b-button
+                    variant="primary"
+                    class="mt-3"                                    
+                    block  @click="liveTrackingHandler  "
+                >
+                    Submit
+                </b-button>
+            </template>
+        </b-modal>
         <div class="login-box">
             <div class="login-logo">
                 <router-link :to="{ name: 'home' }"><b>S.I.A.P</b></router-link>
@@ -48,7 +66,12 @@
                         <a href="#">I forgot my password</a><br>
                     </div>
                 </div>
+                
             </div>
+            <div>
+                    <button v-if="liveStatus === ''" type="submit" class="btn btn-success btn-block btn-flat" @click.prevent="showLiveTrackingModal">Live Location</button>
+                    <button v-if="liveStatus === 'success'" type="submit" class="btn btn-danger btn-block btn-flat" @click.prevent="stopLiveTracking">Stop Tracking</button>
+                </div>
         </div>
 
 </body>
@@ -58,6 +81,7 @@
 <script>
 import { mapActions, mapMutations, mapGetters, mapState } from 'vuex';
 export default {
+    
     data() {
         return {
             data: {
@@ -65,8 +89,35 @@ export default {
                 password: '',
                 periode: 4,
                 remember_me: false
-            }
+            },
+            options: {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            },
+            target: {
+                latitude : 0,
+                longitude: 0
+            },
+            koordinat: {},
+            id: '',
+            centerPosition: {
+            lat: 10.762622,
+            lng: 106.660172,
+            },
+            zoom: 16,
+            positions: [],
+
+            
         }
+    },
+    mounted() {
+        if(this.liveStatus == 'success'){
+            console.log('cek')
+            this.interval = setInterval(() =>
+                this.updateLocation(), 5000);
+        }
+
     },
     //SEBELUM COMPONENT DI-RENDER
     created() {
@@ -75,16 +126,115 @@ export default {
             //MAKA DI-DIRECT KE ROUTE DENGAN NAME home
             this.$router.push({ name: 'home' })
         }
+        if(this.liveStatus == 'success'){
+            this.interval = setInterval(() =>
+                this.updateLocation(), 5000);
+        }
+
+
     },
     computed: {
         ...mapGetters(['isAuth']), //MENGAMBIL GETTERS isAuth DARI VUEX
-      	...mapState(['errors'])
+      	...mapState(['errors']),
+        ...mapState('livetracking', {
+            requestLive: state => state.requestLive,
+            liveStatus: state => state.liveStatus,
+            reqID: state => state.reqID
+        })
     },
+    watch: {
+
+    },
+    
     methods: {
         ...mapActions('auth', ['submit']), //MENGISIASI FUNGSI submit() DARI VUEX AGAR DAPAT DIGUNAKAN PADA COMPONENT TERKAIT. submit() BERASAL DARI ACTION PADA FOLDER STORES/auth.js
         ...mapActions('user', ['getUserLogin']),
+        ...mapActions('livetracking', ['liveLocation', 'requestLiveTracking', 'stopLiveTracking']),
         ...mapMutations(['CLEAR_ERRORS']),
-      
+        ...mapMutations('livetracking', ['CLEAR_FORM']),
+        updateLocation(){
+            this.liveLocation({
+                code: this.requestLive.studentcode,
+                lat: this.centerPosition.lat,
+                lng: this.centerPosition.lng
+            })
+        },
+        stopLiveTracking(){
+            navigator.geolocation.clearWatch(this.id),
+            this.CLEAR_FORM()
+        },
+        trackPosition() {
+            if (navigator.geolocation) {
+                this.id = navigator.geolocation.watchPosition(this.successPosition, this.failurePosition, {
+                enableHighAccuracy: false,
+                timeout: 15000,
+                maximumAge: 0,
+                })
+            } else {
+                alert(`Browser doesn't support Geolocation`)
+            }
+        },
+        successPosition: function(position) {
+            this.positions.push({
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            })
+            this.centerPosition = {lat: position.coords.latitude, lng: position.coords.longitude}
+            this.liveLocation({
+                code: this.reqID,
+                lat: this.centerPosition.lat,
+                lng: this.centerPosition.lng
+            })
+        },
+        failurePosition: function(err) {
+            alert('Error Code: ' + err.code + ' Error Message: ' + err.message)
+        },  
+        
+        showLiveTrackingModal(){
+            this.$bvModal.show('live-tracking')           
+        },
+        liveTrackingHandler(){
+            this.requestLiveTracking()
+                .then(() => {
+                    if(this.liveStatus == 'success'){
+                        this.$swal({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            type: 'success',
+                            title: 'Live Request accepted'
+                        })
+                        this.trackPosition();
+                        this.$bvModal.hide('live-tracking')    
+                    } else {
+                        this.$swal({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            type: 'error',
+                            title: 'Live Request fail'
+                        })
+                    }
+                })
+                .catch(() => {
+                    this.$swal({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        type: 'error',
+                        title: 'Live Request fail'
+                    })
+                })
+            // //id = navigator.geolocation.watchPosition(this.options)
+            // this.id = this.$watchLocation(this.options)
+            // .then(coordinates => {
+            //     console.log(coordinates);
+            //     this.koordinat = coordinates;
+            // });
+        },
       	//KETIKA TOMBOL LOGIN DITEKAN, MAKA AKAN MEMINCU METHODS postLogin()
         postLogin() {
             //DIMANA TOMBOL INI AKAN MENJALANKAN FUNGSI submit() DENGAN MENGIRIMKAN DATA YANG DIBUTUHKAN

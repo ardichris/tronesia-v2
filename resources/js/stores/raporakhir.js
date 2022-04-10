@@ -42,6 +42,11 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.post(`/raporakhir/import`, payload, {
                 headers: { 'content-type': 'multipart/form-data' }
+            }).then((response) => {               
+                resolve(response.data)
+            })
+            .catch(() => {
+                reject()
             })
             // .then((response) => {
             //     dispatch('getRaporAkhir').then(() => {
@@ -61,7 +66,6 @@ const actions = {
             $axios.get(`/raporakhir?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
-                console.log(response.data)
                 resolve(response.data)
             })
         })

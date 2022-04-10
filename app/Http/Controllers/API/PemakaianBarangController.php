@@ -59,7 +59,8 @@ class PemakaianBarangController extends Controller
             'pb_jumlah' => $request->pb_jumlah,
             'pb_keterangan' => $request->pb_keterangan,
             'pb_status' => 0,
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'unit_id' => $user->unit_id
         ]);
         //Barang::find($request->barang['id'])->decrement('barang_stok',$request->pb_jumlah);
         return response()->json(['status' => 'success']);

@@ -17,9 +17,20 @@ use App\User;
 use App\Periode;
 use PDF;
 
+function capitalize_after_delimiters($string)
+    {
+        preg_match_all("/\.\s*\w/", $string, $matches);
+
+        foreach($matches[0] as $match){
+            $string = str_replace($match, strtoupper($match), $string);
+        }
+        return $string;
+    }
 
 class RaporAkhirController extends Controller
 {
+    
+    
     public function raporSisipanStore(Request $request, $id) {
         $this->validate($request, [
             'rs_catatan_ayat' => 'required|string',
@@ -46,6 +57,7 @@ class RaporAkhirController extends Controller
                                     ->first();
         $ttd = User::whereId($raporSisipan['kelas']['kelas']['kelas_wali'])->first();
         $raporSisipan['email'] = $ttd->email;
+        $raporSisipan['ttd'] = $ttd->ttd;
         $raporSisipan['walikelas'] = $ttd->full_name;
         $raporSisipan['periode'] = Periode::whereId($raporSisipan['periode_id']);
         return response()->json(['message' => 'success', 'data' => $raporSisipan], 200);
@@ -56,6 +68,7 @@ class RaporAkhirController extends Controller
     {
         $user = $request->user();
         $idSisipan = $request->rapor;
+        $unit = $request->unit;
         $raporSisipan = RaporSisipan::whereId($idSisipan)
                                     ->with(['siswa' => function ($query) {
                                         $query->select('id','s_nama','s_nis','s_code');
@@ -65,22 +78,31 @@ class RaporAkhirController extends Controller
                                                 ->with('kelas')
                                                 ->first();
         $ttd = User::whereId($raporSisipan['kelas']['kelas']['kelas_wali'])->first();
+        $raporSisipan['rs_spiritual_deskripsi'] = ucfirst(capitalize_after_delimiters($raporSisipan['rs_spiritual_deskripsi'])).'.';
+        $raporSisipan['rs_sosial_deskripsi'] = ucfirst(capitalize_after_delimiters($raporSisipan['rs_sosial_deskripsi'])).'.';
         $raporSisipan['email'] = $ttd->email;
+        $raporSisipan['ttd'] = $ttd->ttd;
         $raporSisipan['walikelas'] = $ttd->full_name;
         $raporSisipan['periode'] = Periode::whereId($raporSisipan['periode_id']);
         //$studentCode = Siswa::whereId($raporSisipan->siswa_id)->value('s_code');
         $studentCode = $raporSisipan['siswa']['s_code'];
-        $pdf = PDF::loadView('sisipan', compact('raporSisipan'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
-        return $pdf->stream($studentCode.".pdf");
+        if($unit == 1) {
+            $pdf = PDF::loadView('sisipan', compact('raporSisipan'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
+            return $pdf->stream($studentCode.".pdf");
+        }elseif($unit == 3) {
+            $pdf = PDF::loadView('sisipanp2', compact('raporSisipan'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
+            return $pdf->stream($studentCode.".pdf");
+        }
+        
         
     }
     
     public function import(Request $request)
     {
          
-        // $request->validate([
-        //     'import_file' => 'required|file|mimes:xls,xlsx'
-        // ]);
+        $request->validate([
+            'import_file' => 'required|file|mimes:xls,xlsx'
+        ]);
 
         $user = $request->user();
         $path = $request->file('import_file');
@@ -112,14 +134,16 @@ class RaporAkhirController extends Controller
         $kelasAnggota = $kelasAnggota->with(['siswa' => function ($query) {
                                         $query->select('id','s_nama','uuid');
                                       }]);
-                                    
+                                   
         if (request()->q != '') {
             $q = request()->q;
-            $kelasAnggota->whereHas('siswa', function($query) use($q){
-                $query->where('s_nama', 'LIKE', '%' . $q . '%');
-            });
-        }
-        $kelasAnggota = $kelasAnggota->paginate(40);                         
+            $kelasAnggota = $kelasAnggota->where(function ($query) use ($q) {
+                                            $query->whereHas('siswa', function($query) use($q){
+                                                        $query->where('s_nama','like','%'.$q.'%');
+                                                    });
+                                            });
+        }                            
+        $kelasAnggota = $kelasAnggota->paginate(40);
         foreach ($kelasAnggota as $row){
             $raporSisipan = RaporSisipan::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $raporAkhir = RaporAkhir::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();

@@ -50,7 +50,8 @@ class BarangMasukController extends Controller
         $newBM = BarangMasuk::create([
                     'bm_kode' => $kode,
                     'bm_tanggal' => $request->bm_tanggal,
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
+                    'unit_id' => $user->unit_id,
                 ]);
         //return response()->json(['status' => 'success']);        
         foreach ($request->listbarang as $row) {

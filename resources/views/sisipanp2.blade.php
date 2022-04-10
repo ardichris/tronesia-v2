@@ -108,7 +108,7 @@
             width: 95%;
         }
         table.TTD td, tr, th{
-            padding:1px;
+            padding:3px;
             border:none;
             width:auto;
         }
@@ -132,7 +132,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="{{ public_path('storage/header/smp1.png') }}" style="width:100%">
+        <img src="{{ public_path('storage/header/smp2.png') }}" style="width:100%">
         <center><h1 style="font-family:'Verdana'; font-size: 14px">LAPORAN HASIL BELAJAR TENGAH SEMESTER</h1></center>       
         <table class="identitas">
             <tr>
@@ -334,29 +334,29 @@
             </tr>
             <tr>
                 <td>Ekonomi</td>
+                <td class='<?php echo ($raporSisipan["rs_eko_uh1"] > 74 || $raporSisipan["rs_eko_uh1"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_uh1']}}</td>
+                <td class='<?php echo ($raporSisipan["rs_eko_tgs1"] > 74 || $raporSisipan["rs_eko_tgs1"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_tgs1']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_uh2"] > 74 || $raporSisipan["rs_eko_uh2"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_uh2']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_tgs2"] > 74 || $raporSisipan["rs_eko_tgs2"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_tgs2']}}</td>
-                <td></td>
-                <td></td>
                 <td class='<?php echo ($raporSisipan["rs_eko_uh3"] > 74 || $raporSisipan["rs_eko_uh3"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_uh3']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_tgs3"] > 74 || $raporSisipan["rs_eko_tgs3"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_tgs3']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_pts"] > 74 || $raporSisipan["rs_eko_pts"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_pts']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_prk"] > 74 || $raporSisipan["rs_eko_prk"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_prk']}}</td>
-                <td></td>
+                <td class='<?php echo ($raporSisipan["rs_eko_prd"] > 74 || $raporSisipan["rs_eko_prd"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_prd']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_pry"] > 74 || $raporSisipan["rs_eko_pry"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_pry']}}</td>
             </tr>
             <tr>
                 <td>Sejarah</td>
+                <td class='<?php echo ($raporSisipan["rs_sej_uh1"] > 74 || $raporSisipan["rs_sej_uh1"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_uh1']}}</td>
+                <td class='<?php echo ($raporSisipan["rs_sej_tgs1"] > 74 || $raporSisipan["rs_sej_tgs1"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_tgs1']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_uh2"] > 74 || $raporSisipan["rs_sej_uh2"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_uh2']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_tgs2"] > 74 || $raporSisipan["rs_sej_tgs2"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_tgs2']}}</td>
-                <td></td>
-                <td></td>
                 <td class='<?php echo ($raporSisipan["rs_sej_uh3"] > 74 || $raporSisipan["rs_sej_uh3"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_uh3']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_tgs3"] > 74 || $raporSisipan["rs_sej_tgs3"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_tgs3']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_pts"] > 74 || $raporSisipan["rs_sej_pts"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_pts']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_prk"] > 74 || $raporSisipan["rs_sej_prk"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_prk']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_prd"] > 74 || $raporSisipan["rs_sej_prd"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_prd']}}</td>
-                <td></td>
+                <td class='<?php echo ($raporSisipan["rs_sej_pry"] > 74 || $raporSisipan["rs_sej_pry"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_pry']}}</td>
             </tr>
             <tr>
                 <td colspan="13" style="font-weight: bold">Kelompok B</td>
@@ -450,7 +450,7 @@
                 <td colspan="4" style="text-align:center; font-weight: bold">ABSENSI</td>
             </tr>
             <tr>
-                <td colspan="9" rowspan="3" style="padding-top:2px; padding-bottom:2px; padding-left:5px"><center><i>{{$raporSisipan["rs_catatan_isi"]}}</i><br><b>{{$raporSisipan["rs_catatan_ayat"]}}</b></center><br>{{$raporSisipan["rs_catatan_pesan"]}}</td>
+                <td colspan="9" rowspan="3" style="padding:5px">{{$raporSisipan["rs_catatan_pesan"]}}</td>
                 <td colspan="2" style="text-align:center">Sakit</td>
                 <td style="border-right:none; text-align:right">{{$raporSisipan["rs_absensi_sakit"] ? $raporSisipan["rs_absensi_sakit"]:"-"}} </td>
                 <td style="border-left:none">hari</td>
@@ -476,16 +476,16 @@
             </tr>
             <tr>
                 <td style="width:25%">Orang Tua Siswa/Wali</td>
-                <td style="width:50%; text-align:center; padding:1px" rowspan="3"><img src="{{public_path('storage/stamps/7781ca84-9012-4220-a913-a5f65b31f3c8.png') }}" style="width:100px"></td>
+                <td style="width:50%; text-align:center;" rowspan="3"><img src="{{public_path('storage/stamps/5a81cb8d-1a02-444f-a2a8-d4571b60b22c.png') }}" style="width:100px"></td>
                 <td style="width:20%">a.n. Kepala Sekolah</td>
             </tr>
             <tr>
                 <td></td>
-                <td style="padding-left:10px"><img src="{{public_path('storage/signs/'.$raporSisipan['ttd'].'.png')}}" style="width: 100px"></td>
+                <td><img src="{{public_path('storage/signs/'.$raporSisipan['ttd'].'.png')}}" style="width: 100px;"></td>
             </tr>
             <tr>
-                <td style="padding:1px">..................................</td>
-                <td style="padding:1px">{{$raporSisipan["walikelas"]}}</td>
+                <td>..................................</td>
+                <td>{{$raporSisipan["walikelas"]}}</td>
             </tr>
         </table>
     </div>

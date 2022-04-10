@@ -5,11 +5,11 @@ namespace App\Imports;
 use App\RaporSisipan;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Ramsey\Uuid\Uuid;
 use App\Siswa;
 
-class RaporSisipansImport implements ToCollection, WithStartRow
+class RaporSisipansImport implements ToCollection, WithHeadingRow
 {
     /**
     * @param array $row
@@ -19,7 +19,7 @@ class RaporSisipansImport implements ToCollection, WithStartRow
     
     public function collection(Collection $rows)
     {   
-        foreach ($rows as $index => $row) 
+        foreach ($rows as $row) 
         {
             $siswa = Siswa::where('s_nis',$row['2'])->where('unit_id',$this->rapor_id['unit'])->value('id');
             if(!is_null($siswa)){
@@ -36,7 +36,7 @@ class RaporSisipansImport implements ToCollection, WithStartRow
                         'rs_walikelas' => $row[5] ? $row[5]:null,
                         'rs_spiritual_nilai' => null,
                         'rs_spiritual_predikat' => $row[7] ? $row[7]:null,
-                        'rs_spiritual_deskripsi' => $row[6] ? $row[6]:null,
+                        'rs_spiritual_deskripsi' => $row['xki1_des'] ? $row[6]:null,
                         'rs_sosial_nilai' => null,
                         'rs_sosial_predikat' => $row[9] ? $row[9]:null,
                         'rs_sosial_deskripsi' => $row[8] ? $row[8]:null,
@@ -216,12 +216,12 @@ class RaporSisipansImport implements ToCollection, WithStartRow
                         'rs_man_prd' => $row[52] != '0' ? $row[52]:null,
                         'rs_man_pry' => $row[51] != '0' ? $row[51]:null,
                         'rs_man_prt' => $row[53] != '0' ? $row[53]:null,
-                        'rs_absensi_sakit' => $row[186] ? $row[186]:null,
-                        'rs_absensi_ijin' => $row[187] ? $row[187]:null,
-                        'rs_absensi_alpha' => $row[188] ? $row[188]:null,
+                        // 'rs_absensi_sakit' => $row[186] ? $row[186]:null,
+                        // 'rs_absensi_ijin' => $row[187] ? $row[187]:null,
+                        // 'rs_absensi_alpha' => $row[188] ? $row[188]:null,
                         //'rs_catatan_ayat' => $row[178] ? $row[178]:null,
                         //'rs_catatan_isi' => $row[179] ? $row[179]:null,
-                        'rs_catatan_pesan' => $row[189] ? $row[189]:null,
+                        // 'rs_catatan_pesan' => $row[189] ? $row[189]:null,
                     ]);
                 } else {
                     $cekdata->update([
@@ -410,12 +410,12 @@ class RaporSisipansImport implements ToCollection, WithStartRow
                         'rs_man_prd' => $row[52] != '0' ? $row[52]:null,
                         'rs_man_pry' => $row[51] != '0' ? $row[51]:null,
                         'rs_man_prt' => $row[53] != '0' ? $row[53]:null,
-                        'rs_absensi_sakit' => $row[186] ? $row[186]:null,
-                        'rs_absensi_ijin' => $row[187] ? $row[187]:null,
-                        'rs_absensi_alpha' => $row[188] ? $row[188]:null,
+                        // 'rs_absensi_sakit' => $row[186] ? $row[186]:null,
+                        // 'rs_absensi_ijin' => $row[187] ? $row[187]:null,
+                        // 'rs_absensi_alpha' => $row[188] ? $row[188]:null,
                         //'rs_catatan_ayat' => $row[178] ? $row[178]:null,
                         //'rs_catatan_isi' => $row[179] ? $row[179]:null,
-                        'rs_catatan_pesan' => $row[189] ? $row[189]:null
+                        // 'rs_catatan_pesan' => $row[189] ? $row[189]:null
                     ]);
                 }
                 
@@ -423,11 +423,6 @@ class RaporSisipansImport implements ToCollection, WithStartRow
             }
             
         }
-    }
-
-    public function startRow(): int
-    {
-        return 2;
     }
 
     public function  __construct($rapor_id)

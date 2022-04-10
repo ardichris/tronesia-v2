@@ -64,7 +64,8 @@ class LaporSarprasController extends Controller
             'ls_keterangan' => $request->ls_keterangan,
             'ls_tanggal' => Carbon::now(),
             'ls_status' => 0,
-            'creator_id' => $user->id
+            'creator_id' => $user->id,
+            'unit_id' => $user->unit_id
             
         ]);
         return response()->json(['status' => 'success']);

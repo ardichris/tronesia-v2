@@ -136,6 +136,7 @@
                         <span class="badge badge-primary" v-if="row.item.absensi.aptm_status == 'Dijemput'">Dijemput</span>
                         <span class="badge badge-success" v-if="row.item.absensi.aptm_status == 'Masuk'">Masuk</span>
                         <span class="badge badge-dark" v-else-if="row.item.absensi == '-'">Daring</span>
+                        <span class="badge badge-dark" v-if="row.item.distance">{{row.item.distance}}km aways</span>
                     </template>
                     <template v-slot:cell(actions)="row">
                         

@@ -17,6 +17,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/login', 'Auth\LoginController@login');
+Route::post('/livetracking', 'API\LiveTrackingController@requestLiveTracking');
+Route::put('/livetracking', 'API\LiveTrackingController@updateLiveTracking');
 Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/', 'FrontController@statistik');
     Route::resource('/teachers', 'API\UserController')->except(['create', 'show', 'update']);

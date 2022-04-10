@@ -11,8 +11,28 @@ use App\Kelas;
 use App\KelasAnggota;
 use Carbon\Carbon;
 
+
+
 class SiswaPtmController extends Controller
 {
+    public function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+      
+        if ($unit == "K") {
+          return (round($miles * 1.609344, 2));
+        } else if ($unit == "N") {
+            return ($miles * 0.8684);
+          } else {
+              return $miles;
+            }
+      }
+
     public function dijemput(Request $request, $kode){
         $absensi = AbsensiPtm::where('siswa_id', $kode)->where('aptm_tanggal', Carbon::today());
         $absensi->update(['aptm_status' => 'Dijemput']);
@@ -72,6 +92,11 @@ class SiswaPtmController extends Controller
             $absen = AbsensiPtm::where('siswa_id',$row->siswa_id)->where('aptm_tanggal', Carbon::today())->first();
             $row['status'] = $absen?$absen->aptm_status:'Daring';
             $row['absensi'] = $absen?$absen:'-';
+            if($absen){
+                $row['distance'] = $absen->aptm_lat?$this->distance($absen->aptm_lat, $absen->aptm_lng, -7.282205, 112.684897, "K"):null;
+            } else {
+                $row['distance'] = null;
+            }
 
         }
         

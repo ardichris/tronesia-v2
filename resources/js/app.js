@@ -23,6 +23,8 @@ Vue.filter('formatDate', function(value) {
 import wysiwyg from "vue-wysiwyg";
 Vue.use(wysiwyg, {});
 import 'vue-wysiwyg/dist/vueWysiwyg.css'
+import VueGeolocation from 'vue-browser-geolocation';
+Vue.use(VueGeolocation);
 
 new Vue({
     el: '#dw',

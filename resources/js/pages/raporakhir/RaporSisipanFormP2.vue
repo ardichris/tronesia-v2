@@ -194,29 +194,29 @@
             </tr>
             <tr>
                 <td>Ekonomi</td>
+                <td :class="raporSisipan['rs_eko_uh1'] > 74 || raporSisipan['rs_eko_uh1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_uh1']}}</td>
+                <td :class="raporSisipan['rs_eko_tgs1'] > 74 || raporSisipan['rs_eko_tgs1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_tgs1']}}</td>
                 <td :class="raporSisipan['rs_eko_uh2'] > 74 || raporSisipan['rs_eko_uh2'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_uh2']}}</td>
                 <td :class="raporSisipan['rs_eko_tgs2'] > 74 || raporSisipan['rs_eko_tgs2'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_tgs2']}}</td>
-                <td></td>
-                <td></td>
                 <td :class="raporSisipan['rs_eko_uh3'] > 74 || raporSisipan['rs_eko_uh3'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_uh3']}}</td>
                 <td :class="raporSisipan['rs_eko_tgs3'] > 74 || raporSisipan['rs_eko_tgs3'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_tgs3']}}</td>
                 <td :class="raporSisipan['rs_eko_pts'] > 74 || raporSisipan['rs_eko_pts'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_pts']}}</td>
                 <td :class="raporSisipan['rs_eko_prk'] > 74 || raporSisipan['rs_eko_prk'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_prk']}}</td>
-                <td></td>
+                <td :class="raporSisipan['rs_eko_prd'] > 74 || raporSisipan['rs_eko_prd'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_prd']}}</td>
                 <td :class="raporSisipan['rs_eko_pry'] > 74 || raporSisipan['rs_eko_pry'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_pry']}}</td>
             </tr>
             <tr>
                 <td>Sejarah</td>
+                <td :class="raporSisipan['rs_sej_uh1'] > 74 || raporSisipan['rs_sej_uh1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_uh1']}}</td>
+                <td :class="raporSisipan['rs_sej_tgs1'] > 74 || raporSisipan['rs_sej_tgs1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_tgs1']}}</td>
                 <td :class="raporSisipan['rs_sej_uh2'] > 74 || raporSisipan['rs_sej_uh2'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_uh2']}}</td>
                 <td :class="raporSisipan['rs_sej_tgs2'] > 74 || raporSisipan['rs_sej_tgs2'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_tgs2']}}</td>
-                <td></td>
-                <td></td>
                 <td :class="raporSisipan['rs_sej_uh3'] > 74 || raporSisipan['rs_sej_uh3'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_uh3']}}</td>
                 <td :class="raporSisipan['rs_sej_tgs3'] > 74 || raporSisipan['rs_sej_tgs3'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_tgs3']}}</td>
                 <td :class="raporSisipan['rs_sej_pts'] > 74 || raporSisipan['rs_sej_pts'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_pts']}}</td>
                 <td :class="raporSisipan['rs_sej_prk'] > 74 || raporSisipan['rs_sej_prk'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_prk']}}</td>
                 <td :class="raporSisipan['rs_sej_prd'] > 74 || raporSisipan['rs_sej_prd'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_prd']}}</td>
-                <td></td>
+                <td :class="raporSisipan['rs_sej_pry'] > 74 || raporSisipan['rs_sej_pry'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_pry']}}</td>
             </tr>
             <tr>
                 <td colspan="12" style="font-weight: bold">Kelompok B</td>
@@ -305,7 +305,7 @@
                 <td colspan="4" style="text-align:center; font-weight: bold">ABSENSI</td>
             </tr>
             <tr>
-                <td colspan="8" rowspan="3"><center><i>{{raporSisipan["rs_catatan_isi"]}}</i><br><b>{{raporSisipan["rs_catatan_ayat"]}}</b></center><br>{{raporSisipan["rs_catatan_pesan"]}}</td>
+                <td colspan="8" rowspan="3"><center><i>{{raporSisipan["rs_catatan_isi"]}}</i><b> - {{raporSisipan["rs_catatan_ayat"]}}</b></center><br>{{raporSisipan["rs_catatan_pesan"]}}</td>
                 <td colspan="2" style="text-align:center">Sakit</td>
                 <td style="border-right:none; text-align:right">{{raporSisipan["rs_absensi_sakit"]?raporSisipan["rs_absensi_sakit"]:"-"}} </td>
                 <td style="border-left:none">hari</td>

@@ -43,7 +43,7 @@
                 <td>{{$row['s_nama']}}</td>
                 <td>{{substr($row['s_kelamin'],0,1)}}</td>
                 <td>{{$row['s_tempat_lahir']}}</td>
-                <td>{{\Carbon\Carbon::parse($row['s_tanggal_lahir'])->format('d/m/Y')}}</td>
+                <td>{{$row['s_tanggal_lahir']}}</td>
                 <td>{{$row['s_agama']}}</td>
                 <td>{{$row['s_status']}}</td>
                 <td>{{$row['s_anak_ke']}}</td>
