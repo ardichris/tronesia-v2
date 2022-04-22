@@ -45,13 +45,19 @@ class SiswaPtmController extends Controller
         return response()->json('sukses');
 
     }
+
+    public function hapusAbsen($kode){
+        $absensi = AbsensiPtm::where('siswa_id', $kode)->where('aptm_tanggal', Carbon::today());
+        $absensi->delete();
+        return response()->json('sukses');
+    }
     
     public function absenmasuk(Request $request){
         $user = $request->user();
         $absensi = AbsensiPtm::create([
                     'siswa_id' => $request->siswaid,
                     'aptm_tanggal' => Carbon::today(),
-                    'aptm_suhu_datang' => $request->suhu,
+                    //'aptm_suhu_datang' => $request->suhu,
                     'aptm_status' => 'Masuk',
                     'periode_id' => $user->periode,
                     'unit_id' => $user->unit_id,

@@ -15,6 +15,7 @@
                                 <a class="dropdown-item" @click="exportSiswa" v-if="authenticated.role==0">Rekap Siswa</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" @click="$bvModal.show('modal-import')">Upload Siswa</a>
+                                <a class="dropdown-item" @click="exportQRCode" v-if="authenticated.role==0">Export QR Code</a>
                             </div>
                             </button>
                         </div>
@@ -32,6 +33,14 @@
                                 >
                                     Upload
                                 </b-button>
+                            </template>
+                        </b-modal>
+                        <b-modal id="modal-qrcode" size="sm" hide-footer>
+                            <template v-slot:modal-title>
+                                QR Code Siswa
+                            </template>
+                            <div><qrcode-vue :value="qrvalue" :size="250" level="H"></qrcode-vue></div>
+                            <template v-slot:modal-footer>
                             </template>
                         </b-modal>
                         <b-modal id="modal-rekap" size="xl" hide-footer>
@@ -75,7 +84,7 @@
                         <span class="badge badge-success" v-if="row.item.s_keterangan == 'AKTIF'">Aktif</span>
                     </template>
                     <template v-slot:cell(actions)="row">
-                        <router-link :to="{ name: 'siswas.view', params: {id: row.item.uuid} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
+                        <button class="btn btn-success btn-sm" @click="qrcodeSiswa(row.item.uuid)"><i class="fa fa-qrcode"></i></button>
                         <router-link :to="{ name: 'siswas.edit', params: {id: row.item.uuid} }" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></router-link>
                         <button class="btn btn-danger btn-sm" @click="deleteSiswa(row.item.uuid)" v-if="authenticated.role==0"><i class="fa fa-trash"></i></button>
                     </template>
@@ -104,6 +113,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import QrcodeVue from 'qrcode.vue'
 
 export default {
     name: 'DataSiswa',
@@ -130,6 +140,7 @@ export default {
             status: 'AKTIF',
             import_file: '',
             error: {},
+            qrvalue: ''
         }
     },
     computed: {
@@ -186,8 +197,11 @@ export default {
     },
     methods: {
         //MENGAMBIL FUNGSI DARI VUEX MODULE siswa
-        ...mapActions('siswa', ['getSiswas', 'removeSiswa','siswaAktif','uploadSiswa']),
+        ...mapActions('siswa', ['getSiswas', 'removeSiswa','siswaAktif','uploadSiswa','pdfQRCode']),
         //KETIKA TOMBOL HAPUS DICLICK, MAKA AKAN MENJALANKAN METHOD INI
+        exportQRCode(){
+            this.pdfQRCode()
+        },
         exportSiswa() {
             window.open(`/api/exportsiswa?api_token=${this.token}`)
         },
@@ -232,6 +246,10 @@ export default {
             
             this.siswaAktif()
         },
+        qrcodeSiswa(uuid){
+            this.qrvalue = uuid
+            this.$bvModal.show('modal-qrcode')    
+        },
         deleteSiswa(id) {
             //AKAN MENAMPILKAN JENDELA KONFIRMASI
             this.$swal({
@@ -254,7 +272,10 @@ export default {
                 }
             })
         }
-    }
+    },
+    components: {
+      QrcodeVue,
+    },
 }
 </script>
 

@@ -21,7 +21,7 @@
                     <template v-slot:modal-footer>
                         <b-button
                             variant="success"
-                            class="mt-3"                                    
+                            class="mt-3"
                             block  @click="submitfile('akhir')"
                         >
                             Upload
@@ -36,7 +36,7 @@
                     <template v-slot:modal-footer>
                         <b-button
                             variant="primary"
-                            class="mt-3"                                    
+                            class="mt-3"
                             block  @click="submitfile('sisipan')"
                         >
                             Upload
@@ -58,7 +58,7 @@
                     <template v-slot:modal-footer>
                         <b-button
                             variant="success"
-                            class="mt-3"                                    
+                            class="mt-3"
                             block  @click="submitCatatan()"
                         >
                             Simpan
@@ -72,6 +72,12 @@
                     <rapor-sisipan-form v-if="authenticated.unit_id == 1"></rapor-sisipan-form>
                     <rapor-sisipanP2-form v-if="authenticated.unit_id == 3"></rapor-sisipanP2-form>
                 </b-modal>
+                <b-modal id="modal-rapor-preview" scrollable size="lg" hide-footer>
+                    <template v-slot:modal-title>
+                        Preview Rapor Akhir
+                    </template>
+                    <rapor-akhir-form v-if="authenticated.unit_id == 1"></rapor-akhir-form>
+                </b-modal>
             </div>
             <div class="panel-body">
                 <b-table striped hover bordered :items="raporakhirs.data" :fields="fields" show-empty>
@@ -84,9 +90,10 @@
                         <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'"><i class="fa fa-file-pdf"></i> PDF</b-button>
                     </template>
                     <template v-slot:cell(akhir)="row">
-                        <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporAkhir != '-'"><i class="fa fa-eye"></i> Preview</b-button>
+                        <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-' && authenticated.unit_id == 1" @click="commentAkhir(row.item.RaporAkhir.id)"><i class="fa fa-church"></i> Biblical</b-button>
+                        <b-button variant="primary" size="sm" v-if="row.item.RaporAkhir != '-'" @click="previewRapor(row.item.RaporAkhir.id)"><i class="fa fa-eye"></i> Preview</b-button>
                         <!-- <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan-preview')"></b-button> -->
-                        <b-button variant="success" size="sm" :href="'/laporan/raporakhir?user='+authenticated.id+'&rapor='+row.item.RaporAkhir.id" v-if="row.item.RaporAkhir != '-'"><i class="fa fa-file-pdf"></i> PDF</b-button>
+                        <!-- <b-button variant="success" size="sm" :href="'/laporan/raporakhir?user='+authenticated.id+'&rapor='+row.item.RaporAkhir.id" v-if="row.item.RaporAkhir != '-'"><i class="fa fa-file-pdf"></i> PDF</b-button> -->
                     </template>
                     <!-- <template v-slot:cell(walikelas)="row">
                         {{row.item.ra_walikelas}}
@@ -118,6 +125,7 @@
 import { mapActions, mapState } from 'vuex'
 import FormRaporSisipan from './RaporSisipanForm.vue'
 import FormRaporSisipanP2 from './RaporSisipanFormP2.vue'
+import FormRaporAkhir from './RaporAkhirForm.vue'
 
 export default {
     name: 'DataRaporAkhir',
@@ -170,7 +178,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions('raporakhir', ['viewRaporSisipan','getRaporAkhir','uploadLedger','submitRaporSisipan']),
+        ...mapActions('raporakhir', ['viewRaporSisipan','getRaporAkhir','uploadLedger','submitRaporSisipan','viewRaporAkhir']),
         submitCatatan(){
             this.submitRaporSisipan()
             .then(() => {
@@ -182,6 +190,13 @@ export default {
                 uuid: rapor
             }).then(() => {
                 this.$bvModal.show('modal-sisipan-preview')
+            })
+        },
+        previewRapor(rapor){
+            this.viewRaporAkhir({
+                uuid: rapor
+            }).then(() => {
+                this.$bvModal.show('modal-rapor-preview')
             })
         },
         commentSisipan(rapor){
@@ -212,7 +227,7 @@ export default {
                     type: 'success',
                     title: 'Import Ledger Berhasil'
                 })
-                    
+
             }).catch(() => {
                 this.$swal({
                     toast: true,
@@ -224,11 +239,12 @@ export default {
                 })
             })
         }
-        
+
     },
     components: {
         'rapor-sisipan-form': FormRaporSisipan,
-        'rapor-sisipanP2-form': FormRaporSisipanP2
+        'rapor-sisipanP2-form': FormRaporSisipanP2,
+        'rapor-akhir-form': FormRaporAkhir,
     }
 }
 </script>

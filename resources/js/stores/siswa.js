@@ -288,6 +288,12 @@ const mutations = {
 }
 
 const actions = {
+    pdfQRCode({commit}){
+        $axios.get(`/siswa/export/qrcode`)
+        .then((response) => {
+            resolve(response.data)
+        })
+    },
     uploadSiswa({ dispatch, commit }, payload) {
         return new Promise((resolve, reject) => {
             $axios.post(`/siswa/import`, payload, {

@@ -16,6 +16,8 @@ use App\Siswa;
 use App\User;
 use App\Periode;
 use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use SimpleSoftwareIO\QrCode\Generator;
 
 function capitalize_after_delimiters($string)
     {
@@ -29,8 +31,8 @@ function capitalize_after_delimiters($string)
 
 class RaporAkhirController extends Controller
 {
-    
-    
+
+
     public function raporSisipanStore(Request $request, $id) {
         $this->validate($request, [
             'rs_catatan_ayat' => 'required|string',
@@ -43,7 +45,7 @@ class RaporAkhirController extends Controller
                                                 'rs_catatan_isi' => $request->rs_catatan_isi]);
         return response()->json(['status' => 'success'], 200);
     }
-    
+
     public function raporSisipanView(Request $request)
     {
         $user = $request->user();
@@ -61,9 +63,9 @@ class RaporAkhirController extends Controller
         $raporSisipan['walikelas'] = $ttd->full_name;
         $raporSisipan['periode'] = Periode::whereId($raporSisipan['periode_id']);
         return response()->json(['message' => 'success', 'data' => $raporSisipan], 200);
-        
+
     }
-    
+
     public function raporSisipanPDF(Request $request)
     {
         $user = $request->user();
@@ -84,6 +86,9 @@ class RaporAkhirController extends Controller
         $raporSisipan['ttd'] = $ttd->ttd;
         $raporSisipan['walikelas'] = $ttd->full_name;
         $raporSisipan['periode'] = Periode::whereId($raporSisipan['periode_id']);
+        //$qrcode = new Generator;
+        //$raporSisipan['qrcode'] = $qrcode->size(200)->generate('test');//QrCode::size(100)->generate('test');
+        //return response()->json(['message' => 'success', 'data' => $raporSisipan], 200);
         //$studentCode = Siswa::whereId($raporSisipan->siswa_id)->value('s_code');
         $studentCode = $raporSisipan['siswa']['s_code'];
         if($unit == 1) {
@@ -93,13 +98,13 @@ class RaporAkhirController extends Controller
             $pdf = PDF::loadView('sisipanp2', compact('raporSisipan'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
             return $pdf->stream($studentCode.".pdf");
         }
-        
-        
+
+
     }
-    
+
     public function import(Request $request)
     {
-         
+
         $request->validate([
             'import_file' => 'required|file|mimes:xls,xlsx'
         ]);
@@ -121,7 +126,7 @@ class RaporAkhirController extends Controller
 
     public function index(Request $request) {
         $user = $request->user();
-        $unit = $user->unit_id;        
+        $unit = $user->unit_id;
         $kelasAnggota = KelasAnggota::wherePeriode_id($user->periode)
                                     ->with('kelas')
                                     ->whereHas('kelas', function($query) use($unit){
@@ -130,11 +135,11 @@ class RaporAkhirController extends Controller
         if($user->role!=0){
             $kelas = Kelas::whereKelas_wali($user->id)->value('id');
             $kelasAnggota = $kelasAnggota->whereKelas_id($kelas);
-        } 
+        }
         $kelasAnggota = $kelasAnggota->with(['siswa' => function ($query) {
                                         $query->select('id','s_nama','uuid');
                                       }]);
-                                   
+
         if (request()->q != '') {
             $q = request()->q;
             $kelasAnggota = $kelasAnggota->where(function ($query) use ($q) {
@@ -142,14 +147,14 @@ class RaporAkhirController extends Controller
                                                         $query->where('s_nama','like','%'.$q.'%');
                                                     });
                                             });
-        }                            
+        }
         $kelasAnggota = $kelasAnggota->paginate(40);
         foreach ($kelasAnggota as $row){
             $raporSisipan = RaporSisipan::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $raporAkhir = RaporAkhir::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $row['RaporSisipan'] = $raporSisipan?$raporSisipan:'-';
             $row['RaporAkhir'] = $raporAkhir?$raporAkhir:'-';
-        }                            
+        }
 
         return new RaporAkhirCollection($kelasAnggota);
     }
@@ -171,11 +176,24 @@ class RaporAkhirController extends Controller
     //     return response()->json(['status' => 'success', 'data' => $raporakhir], 200);
     // }
 
-    // public function view($id)
-    // {
-    //     $raporakhir = RaporAkhir::whereRaporAkhir_kode($id)->first();
-    //     return response()->json(['status' => 'success', 'data' => $raporakhir], 200);
-    // }
+    public function show(Request $request)
+    {
+        $user = $request->user();
+        $raporAkhir = RaporAkhir::whereId($request->uuid)
+                                    ->with(['siswa' => function ($query) {
+                                        $query->select('id','s_nama', 's_nis');
+                                    }])->first();
+                                    $raporAkhir['kelas'] = KelasAnggota::whereSiswa_id($raporAkhir['siswa']['id'])
+                                    ->where('periode_id',$raporAkhir['periode_id'])
+                                    ->with('kelas')
+                                    ->first();
+        $ttd = User::whereId($raporAkhir['kelas']['kelas']['kelas_wali'])->first();
+        $raporAkhir['email'] = $ttd->email;
+        $raporAkhir['ttd'] = $ttd->ttd;
+        $raporAkhir['walikelas'] = $ttd->full_name;
+        $raporAkhir['periode'] = Periode::whereId($raporAkhir['periode_id']);
+        return response()->json(['message' => 'success', 'data' => $raporAkhir], 200);
+    }
 
     // public function update(Request $request, $id)
     // {

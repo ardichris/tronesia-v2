@@ -30,10 +30,22 @@ const mutations = {
         state.siswaptm = {
             ptm:[]
         }
+    },
+    CLEAR_SISWA(state) {
+        state.siswa = []
     }
 }
 
 const actions = {
+    confirmSiswa({commit, state}, payload){
+        return new Promise((resolve, reject) => {
+            $axios.get(`/siswas/${payload}/edit`)
+            .then((response) => {
+                commit('SISWA_DATA', response.data.data)
+                resolve(response.data)
+            })
+        })
+    },
     submitPTM({ dispatch, commit, state }) {
         console.log(state.siswaptm)
         return new Promise((resolve, reject) => {
@@ -51,12 +63,13 @@ const actions = {
     },
     getSiswa({ commit, state }, payload) {
         let search = payload.search
-        payload.loading(true)
+        payload.loading?payload.loading(true):null
         return new Promise((resolve, reject) => {
             $axios.get(`/siswas?q=${search}`)
             .then((response) => {
                 commit('SISWA_DATA', response.data)
-                payload.loading(false)
+                payload.loading?payload.loading(false):null
+                console.log(state.siswa)
                 resolve(response.data)
             })
         })
@@ -69,12 +82,21 @@ const actions = {
             })
         })
     },
-    dijemput({ dispatch }, payload) {
+    hapusAbsen({ dispatch }, payload) {
+        return new Promise((resolve, reject) => {
+            $axios.delete(`/siswaptm/absenmasuk/${payload}`)
+            .then((response) => {
+                resolve(response.data)
+            })
+        })
+    },
+    dijemput({ dispatch, commit }, payload) {
         let kode = payload
         return new Promise((resolve, reject) => {
             $axios.put(`/siswaptm/dijemput/${kode}`)
             .then((response) => {
                 resolve(response.data)
+                commit('CLEAR_SISWA')
             })
         })
     },

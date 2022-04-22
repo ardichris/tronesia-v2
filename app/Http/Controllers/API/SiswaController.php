@@ -15,9 +15,28 @@ use App\KelasAnggota;
 use Ramsey\Uuid\Uuid;
 use App\Imports\SiswasImport;
 use Jenssegers\Date\Date;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use PDF;
 
 class SiswaController extends Controller
 {
+    public function exportQRCode(Request $request){
+        $user = $request->user();
+        $siswa = Siswa::where('s_keterangan', "AKTIF")
+                        ->where('unit_id',$user->unit_id)
+                        ->where('id','<',100)
+                        ->select('s_nama','uuid','id','s_code')
+                        ->get();
+        
+        foreach($siswa as $row) {
+            QrCode::size(300)->generate($row->uuid, 'storage/qr/'.$row->uuid.'.svg');
+            $img_url = 'storage/qr/'.$row->uuid.'.svg';
+            \Session::put('qrImage', $img_url);
+        }
+        $pdf = PDF::loadView('qrcode', compact('siswa'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
+            return $pdf->stream("QRCode.pdf");
+    }
+    
     public function import(Request $request)
     {
         $user = $request->user();
@@ -71,6 +90,7 @@ class SiswaController extends Controller
         if (request()->q != '') {
             $q = $request->q;
             $siswas = $siswas->where('s_nama', 'LIKE', '%' . request()->q . '%')
+                            ->orwhere('uuid', 'LIKE', '%' . request()->q . '%')
                             ->orwhereHas('kelas', function($query) use($q){
                                 $query->where('kelas_nama','like','%'.$q.'%');
                             })

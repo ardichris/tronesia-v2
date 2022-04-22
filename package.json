@@ -36,6 +36,7 @@
     "jspreadsheet-ce": "^4.9.5",
     "moment": "^2.27.0",
     "portal-vue": "^2.1.7",
+    "qrcode.vue": "^1.7.0",
     "vue": "^2.6.11",
     "vue-browser-geolocation": "^1.8.0",
     "vue-material-checkbox": "^2.2.0",

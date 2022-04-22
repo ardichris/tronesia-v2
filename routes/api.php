@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +32,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::put('/kelas/addanggota','API\KelasController@tambahAnggota');
     Route::get('/kelas/anggotakelas/{kode}','API\KelasController@getAnggota');
     Route::resource('/masterpelanggaran', 'API\MasterPelanggaranController')->except(['create', 'show']);
-    Route::resource('/barang', 'API\BarangController')->except(['create', 'show']);    
+    Route::resource('/barang', 'API\BarangController')->except(['create', 'show']);
     Route::resource('/pemakaianbarang', 'API\PemakaianBarangController')->except(['create', 'show']);
     Route::get('/pemakaianbarang/list/{kode}','API\PemakaianBarangController@listPemakaian');
     Route::put('/pemakaianbarang/changestatus/{kode}','API\PemakaianBarangController@changeStatus');
@@ -71,12 +73,15 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('/siswa/import', 'API\SiswaController@import');
     Route::resource('/siswaptm', 'API\SiswaPtmController');
     Route::post('/siswaptm/absenmasuk', 'API\SiswaPtmController@absenmasuk');
+    Route::delete('/siswaptm/absenmasuk/{kode}', 'API\SiswaPtmController@hapusAbsen');
     Route::put('/siswaptm/dijemput/{kode}', 'API\SiswaPtmController@dijemput');
     Route::put('/siswaptm/suhupulang/{kode}', 'API\SiswaPtmController@suhupulang');
     Route::resource('/raporakhir', 'API\RaporAkhirController');
     Route::get('/laporan/rapor_sisipan', 'API\RaporAkhirController@raporSisipanPDF');
     Route::get('/raporsisipan/view', 'API\RaporAkhirController@raporSisipanView');
     Route::put('/raporsisipan/{kode}', 'API\RaporAkhirController@raporSisipanStore');
+    Route::get('/siswa/export/qrcode', 'API\SiswaController@exportQRCode')->name('qrcode.pdf');
+
 
 
 });

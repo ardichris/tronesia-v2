@@ -16,12 +16,12 @@ class RaporAkhirsImport implements ToCollection, WithStartRow
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-    
+
     public function collection(Collection $rows)
-    {   
-        foreach ($rows as $row) 
+    {
+        foreach ($rows as $row)
         {
-            $siswa = Siswa::where('s_nis',$row['0'])->value('id');
+            $siswa = Siswa::where('s_code',$row['0'])->value('id');
             if(!is_null($siswa)){
                 $cekdata = null;
                 $cekdata = RaporAkhir::where('siswa_id',$siswa)->where('periode_id', $this->rapor_id['periode'])->first();
@@ -32,7 +32,6 @@ class RaporAkhirsImport implements ToCollection, WithStartRow
                         'periode_id' => $this->rapor_id['periode'],
                         'unit_id' =>  $this->rapor_id['unit'],
                         'user_id' =>  $this->rapor_id['user'],
-                        'ra_tanggal' => $row[9],
                         'ra_walikelas' => $row[10],
                         'ra_spiritual_nilai' => null,
                         'ra_spiritual_predikat' => $row[11],
@@ -121,16 +120,15 @@ class RaporAkhirsImport implements ToCollection, WithStartRow
                         'ra_ekstra3_kegiatan' => $row[93],
                         'ra_ekstra3_nilai' => $row[94],
                         'ra_ekstra3_predikat' => $row[95],
-                        'ra_catatan_sakit' => $row[102],
-                        'ra_catatan_ijin' => $row[103],
-                        'ra_catatan_alpha' => $row[104],
-                        'ra_catatan_ayat' => $row[105],
-                        'ra_catatan_isi' => $row[106],
-                        'ra_catatan_pesan' => $row[107],
+                        'ra_catatan_sakit' => $row[102]!='0' ? $row[102]:'-',
+                        'ra_catatan_ijin' => $row[103]!='0' ? $row[103]:'-',
+                        'ra_catatan_alpha' => $row[104]!='0' ? $row[104]:'-',
+                        //'ra_catatan_ayat' => $row[105],
+                        //'ra_catatan_isi' => $row[106],
+                        'ra_catatan_pesan' => $row[105],
                     ]);
                 } else {
-                    $cekdata->update(['ra_tanggal' => $row[9],
-                                    'ra_walikelas' => $row[10],
+                    $cekdata->update(['ra_walikelas' => $row[10],
                                     'ra_spiritual_nilai' => null,
                                     'ra_spiritual_predikat' => $row[11],
                                     'ra_spiritual_deskripsi' => $row[12],
@@ -218,17 +216,18 @@ class RaporAkhirsImport implements ToCollection, WithStartRow
                                     'ra_ekstra3_kegiatan' => $row[93],
                                     'ra_ekstra3_nilai' => $row[94],
                                     'ra_ekstra3_predikat' => $row[95],
-                                    'ra_catatan_sakit' => $row[102],
-                                    'ra_catatan_ijin' => $row[103],
-                                    'ra_catatan_alpha' => $row[104],
-                                    'ra_catatan_ayat' => $row[105],
-                                    'ra_catatan_isi' => $row[106],
-                                    'ra_catatan_pesan' => $row[107] ]);
+                                    'ra_catatan_sakit' => $row[102]!='0' ? $row[102]:'-',
+                                    'ra_catatan_ijin' => $row[103]!='0' ? $row[103]:'-',
+                                    'ra_catatan_alpha' => $row[104]!='0' ? $row[104]:'-',
+                                    //'ra_catatan_ayat' => $row[105],
+                                    //'ra_catatan_isi' => $row[106],
+                                    'ra_catatan_pesan' => $row[105]
+                                ]);
                 }
-                
+
                 $siswa = null;
             }
-            
+
         }
     }
 

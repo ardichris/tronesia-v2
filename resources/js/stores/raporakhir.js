@@ -1,9 +1,9 @@
 import $axios from '../api.js'
 
 const state = () => ({
-    raporakhirs: [],
+    raporakhirs: {},
     raporsisipan: {},
-    
+
     raporakhir: {
         raporakhir_kode: '',
         raporakhir_nama: ''
@@ -12,7 +12,7 @@ const state = () => ({
 })
 
 const mutations = {
-    
+
     ASSIGN_DATA(state, payload) {
         state.raporakhirs = payload
     },
@@ -28,6 +28,9 @@ const mutations = {
     SISIPAN_FORM(state, payload){
         state.raporsisipan = payload
     },
+    RAPOR_FORM(state, payload){
+        state.raporakhirs = payload
+    },
     CLEAR_FORM(state) {
         state.raporakhir = {
             raporakhir_kode: '',
@@ -42,7 +45,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.post(`/raporakhir/import`, payload, {
                 headers: { 'content-type': 'multipart/form-data' }
-            }).then((response) => {               
+            }).then((response) => {
                 resolve(response.data)
             })
             .catch(() => {
@@ -95,6 +98,16 @@ const actions = {
             })
         })
     },
+    viewRaporAkhir({ commit, state }, payload) {
+        let uuid = payload.uuid
+        return new Promise((resolve, reject) => {
+            $axios.get(`/raporakhir/view?uuid=${uuid}`)
+            .then((response) => {
+                commit('RAPOR_FORM', response.data.data)
+                resolve(response.data)
+            })
+        })
+    },
     submitRaporSisipan({commit, state}, payload){
         let kode = state.raporsisipan.id
         return new Promise((resolve, reject) => {
@@ -106,15 +119,6 @@ const actions = {
         })
     },
     editRaporAkhir({ commit }, payload) {
-        return new Promise((resolve, reject) => {
-            $axios.get(`/raporakhir/${payload}/edit`)
-            .then((response) => {
-                commit('ASSIGN_FORM', response.data.data)
-                resolve(response.data)
-            })
-        })
-    },
-    viewRaporAkhir({ commit }, payload) {
         return new Promise((resolve, reject) => {
             $axios.get(`/raporakhir/${payload}/edit`)
             .then((response) => {

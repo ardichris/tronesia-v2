@@ -76,6 +76,23 @@
                         </b-button>
                     </template>
                 </b-modal>
+                <b-modal id="modal-jemput" scrollable size="sm">
+                    <template v-slot:modal-title>
+                        Jemput - Scan QR
+                    </template>
+                    <p class="error">{{ error }}</p>
+                    <p class="decode-result">Nama: <b>{{ siswas.s_nama }} / {{ siswas.kelas }}</b></p>
+                    <qrcode-stream @decode="onDecode" @init="onInit"></qrcode-stream>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"                                    
+                            block  @click="sudahdijemput(siswas.id)"
+                        >
+                            Submit
+                        </b-button>
+                    </template>
+                </b-modal>
                 <b-modal id="modal-absen" scrollable size="sm">
                     <template v-slot:modal-title>
                         Scan QRCode
@@ -140,9 +157,9 @@
                     </template>
                     <template v-slot:cell(actions)="row">
                         
-                            <button class="btn btn-success btn-sm" v-if="(row.item.absensi.aptm_status == null)" @click="absenmasuk(row.item.siswa_id)"><i class="fa fa-thermometer-full"></i></button>
+                            <button class="btn btn-success btn-sm" v-if="(row.item.absensi.aptm_status == null)" @click="submitabsenmasuk(row.item.siswa_id)"><i class="fa fa-check"></i></button>
                             <button class="btn btn-primary btn-sm" v-if="(row.item.absensi.aptm_status == 'Masuk')"  @click="sudahdijemput(row.item.siswa_id)" ><i class="fas fa-car"></i></button>
-                            <button class="btn btn-danger btn-sm" v-if="(row.item.absensi != '-' && row.item.absensi.aptm_suhu_pulang == null)" @click="absenpulang(row.item.siswa_id)"><i class="fas fa-thermometer-full"></i></button>
+                            <button class="btn btn-danger btn-sm" v-if="(row.item.absensi != '-' && row.item.absensi.aptm_suhu_pulang == null)" @click="deleteAbsence(row.item.siswa_id)"><i class="fas fa-trash"></i></button>
                         
                     </template>
                 </b-table>
@@ -169,7 +186,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 import { QrcodeStream } from 'vue-qrcode-reader'
@@ -244,9 +261,10 @@ export default {
         // }
     },
     methods: {
-        ...mapActions('siswaptm', ['getSiswaPtm','uploadLedger','absenDatang','dijemput','submitsuhupulang','getSiswa','submitPTM']),
+        ...mapActions('siswaptm', ['getSiswaPtm','uploadLedger','absenDatang','dijemput','submitsuhupulang','getSiswa','submitPTM','hapusAbsen','confirmSiswa']),
+        ...mapMutations('siswaptm' ['CLEAR_SISWA']),
         onDecode (result) {
-        this.result = result
+            this.confirmSiswa(result)
         },
 
         async onInit (promise) {
@@ -309,18 +327,23 @@ export default {
             this.$refs.sm.$el.focus();
             this.siswaid = id;
         },
-        submitabsenmasuk(){
-            this.absenDatang({suhu: this.suhu, siswaid: this.siswaid})
-            .then(() => {
-                this.$bvModal.hide('modal-absen-datang'),
+        submitabsenmasuk(id){
+            this.absenDatang({siswaid: id})
+            .then(() => {              
                 this.refreshdata()
-                this.suhu= ''
-                this.siswaid = ''
             });
         },
         sudahdijemput(id){
             this.dijemput(id)
             .then(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    type: 'success',
+                    title: 'Success'
+                })
                 this.refreshdata()
             });
         },
@@ -336,7 +359,13 @@ export default {
                 this.suhu= ''
                 this.siswaid = ''
             });
-        }
+        },
+        deleteAbsence(id){
+            this.hapusAbsen(id)
+            .then(() => {
+                this.refreshdata()
+            });
+        },
         
     },
     components: {
