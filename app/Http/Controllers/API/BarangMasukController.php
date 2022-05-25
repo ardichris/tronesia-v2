@@ -11,13 +11,22 @@ use App\ListBarangMasuk;
 
 
 class BarangMasukController extends Controller
-{    
+{
     public function index(Request $request) {
         $user = $request->user();
         $pbs = BarangMasuk::orderBy('created_at', 'DESC')
                             ->where('unit_id',$user->unit_id)
-                            ->with(['user']);
-        return new BarangMasukCollection($pbs->paginate(30)); 
+                            ->with(['user','listbarang','listbarang.barang']);
+
+        if (request()->q != '') {
+            $q = request()->q;
+            $pbs = $pbs->where(function ($query) use ($q) {
+                            $query->whereHas('listbarang.barang', function($query) use($q){
+                                        $query->where('barang_nama','like','%'.$q.'%');
+                                    });
+                        });
+                    }
+        return new BarangMasukCollection($pbs->paginate(30));
     }
 
     public function store(Request $request)
@@ -31,7 +40,7 @@ class BarangMasukController extends Controller
         $rowCount = $getBM->count();
         $lastId = $getBM->first();
         if($rowCount==0) {
-            $kode = "BM".date('y').date('m').date('d')."001";    
+            $kode = "BM".date('y').date('m').date('d')."001";
         } else {
             if(substr($lastId->bm_kode,2,6) == date('y').date('m').date('d')) {
             $counter = (int)substr($lastId->bm_kode,-3) + 1 ;
@@ -44,7 +53,7 @@ class BarangMasukController extends Controller
                 }
             } else {
                 $kode = "BM".date('y').date('m').date('d')."001";
-            } 
+            }
         }
 
         $newBM = BarangMasuk::create([
@@ -53,7 +62,7 @@ class BarangMasukController extends Controller
                     'user_id' => $user->id,
                     'unit_id' => $user->unit_id,
                 ]);
-        //return response()->json(['status' => 'success']);        
+        //return response()->json(['status' => 'success']);
         foreach ($request->listbarang as $row) {
                 ListBarangMasuk::create([
                     'barangmasuk_id' => $newBM->id,
@@ -62,7 +71,7 @@ class BarangMasukController extends Controller
                 ]);
                 Barang::find($row['barang']['id'])->increment('barang_stok',$row['jumlah']);
         }
-        return response()->json(['status' => 'success']); 
+        return response()->json(['status' => 'success']);
     }
 
     public function edit($kode)
@@ -77,14 +86,14 @@ class BarangMasukController extends Controller
             'listbarang' => 'required',
             'bm_tanggal' => 'required'
         ]);
-        
+
         $barangmasuk = BarangMasuk::whereBm_kode($kode)->first();
         $user = $request->user();
         $barangmasuk->update([
                         'bm_tanggal' => $request->bm_tanggal,
                         'user_id' => $user->id
                         ]);
-        $barang = ListBarangMasuk::whereBarangmasuk_id($barangmasuk->id);                 
+        $barang = ListBarangMasuk::whereBarangmasuk_id($barangmasuk->id);
         $listbarang = $barang->get();
         foreach ($listbarang as $row) {
             Barang::find($row->barang_id)->decrement('barang_stok',$row->jumlah);
@@ -98,7 +107,7 @@ class BarangMasukController extends Controller
                                     'jumlah' => $row['jumlah']
                                 ]);
                 Barang::find($row['barang']['id'])->increment('barang_stok',$row['jumlah']);
-            }            
+            }
         }
         return response()->json(['status' => 'success']);
     }
@@ -106,7 +115,7 @@ class BarangMasukController extends Controller
     public function destroy($kode)
     {
         $pbs = BarangMasuk::find($kode);
-        $barang = ListBarangMasuk::whereBarangmasuk_id($kode);                 
+        $barang = ListBarangMasuk::whereBarangmasuk_id($kode);
         $listbarang = $barang->get();
         foreach ($listbarang as $row) {
             Barang::find($row->barang_id)->decrement('barang_stok',$row->jumlah);

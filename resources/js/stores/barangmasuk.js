@@ -1,7 +1,7 @@
 import $axios from '../api.js'
 
 const state = () => ({
-    barangmasuks: [], 
+    barangmasuks: [],
     barang:[],
 
     barangmasuk: {
@@ -9,7 +9,7 @@ const state = () => ({
         bm_tanggal: '',
         listbarang: []
     },
-    page: 1 
+    page: 1
 })
 
 const mutations = {
@@ -70,7 +70,7 @@ const actions = {
 
                 })
             })
-            .catch((error) => {   
+            .catch((error) => {
                 console.log(error.response.data)
             })
         })
@@ -83,7 +83,7 @@ const actions = {
                 commit('ASSIGN_FORM', response.data.data)
                 resolve(response.data)
             })
-            .catch((error) => {   
+            .catch((error) => {
                 console.log(error.response.data)
             })
         })

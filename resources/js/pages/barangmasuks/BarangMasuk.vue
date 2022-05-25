@@ -14,7 +14,7 @@
                             <template v-slot:modal-footer>
                                 <b-button
                                     variant="success"
-                                    class="mt-3"                                    
+                                    class="mt-3"
                                     block @click="simpanBMbaru"
                                 >
                                     Simpan
@@ -29,7 +29,7 @@
                             <template v-slot:modal-footer>
                                 <b-button
                                     variant="success"
-                                    class="mt-3"                                    
+                                    class="mt-3"
                                     block @click="editBMsaja"
                                 >
                                     Update
@@ -47,10 +47,15 @@
             <div class="panel-body">
                 <b-table striped hover bordered :items="barangmasuks.data" :fields="fields" show-empty>
                     <template v-slot:cell(user_id)="row">
-                        {{row.item.user.name}}
+                        <div class="badge badge-primary">{{row.item.user.name }}</div>
                     </template>
                     <template v-slot:cell(bm_jumlah)="row">
                         {{row.item.bm_jumlah}} {{row.item.barang.barang_satuan}}
+                    </template>
+                    <template v-slot:cell(listbarang)="row">
+                        <div v-for="item in row.item.listbarang" :key="item.barang.id">
+                                <div class="badge badge-success">{{ item.barang.barang_nama }}</div>
+                        </div>
                     </template>
                     <template v-slot:cell(actions)="row">
                         <!--router-link :to="{ name: 'barangmasuk.view', params: {id: row.item.barangmasuk_kode} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
@@ -97,6 +102,7 @@ export default {
             fields: [
                 { key: 'bm_kode', label: 'Kode', sortable: true },
                 { key: 'bm_tanggal', label: 'Tanggal', sortable: true },
+                { key: 'listbarang', label: 'List Barang'},
                 { key: 'user_id', label: 'User' },
                 { key: 'actions', label: 'Aksi' }
             ],
@@ -124,7 +130,7 @@ export default {
             this.getBarangmasuk()
         },
         search() {
-            this.getBarangmasuk({search: this.search})
+            this.getBarangmasuk(this.search)
         }
     },
     methods: {

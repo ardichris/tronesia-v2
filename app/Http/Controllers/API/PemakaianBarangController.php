@@ -10,7 +10,7 @@ use App\Http\Resources\PemakaianBarangCollection;
 
 class PemakaianBarangController extends Controller
 {
-    
+
     public function index(Request $request) {
             $user = $request->user();
             $pbs = PemakaianBarang::orderBy('created_at', 'DESC')
@@ -19,7 +19,15 @@ class PemakaianBarangController extends Controller
             if($user->role!=0 && $user->role!=4){
                 $pbs = $pbs->where('user_id',$user->id);
             }
-            return new PemakaianBarangCollection($pbs->paginate(30)); 
+            if (request()->q != '') {
+                $q = request()->q;
+                $pbs = $pbs->where(function ($query) use ($q) {
+                                $query->whereHas('barang', function($query) use($q){
+                                            $query->where('barang_nama','like','%'.$q.'%');
+                                        });
+                            });
+                        }
+            return new PemakaianBarangCollection($pbs->paginate(30));
     }
 
     public function store(Request $request)
@@ -28,7 +36,7 @@ class PemakaianBarangController extends Controller
             'barang' => 'required',
             'pb_tanggal' => 'required',
             'pb_jumlah' => 'required',
-            
+
         ]);
         $user = $request->user();
         $getPB = PemakaianBarang::orderBy('id', 'DESC');
@@ -36,7 +44,7 @@ class PemakaianBarangController extends Controller
         $lastId = $getPB->first();
 
         if($rowCount==0) {
-            $kode = "PB".date('y').date('m').date('d')."001";    
+            $kode = "PB".date('y').date('m').date('d')."001";
         } else {
             if(substr($lastId->pb_kode,2,6) == date('y').date('m').date('d')) {
             $counter = (int)substr($lastId->pb_kode,-3) + 1 ;
@@ -49,7 +57,7 @@ class PemakaianBarangController extends Controller
                 }
             } else {
                 $kode = "PB".date('y').date('m').date('d')."001";
-            } 
+            }
         }
 
         PemakaianBarang::create([
@@ -79,9 +87,10 @@ class PemakaianBarangController extends Controller
             'pb_tanggal' => 'required',
             'pb_jumlah' => 'required',
         ]);
-        
+
         $pbs = PemakaianBarang::wherePb_kode($request->pb_kode);
-        $oldPB = $pbs->first(); 
+        $oldPB = $pbs->first();
+        Barang::find($oldPB->barang_id)->increment('barang_stok',$oldPB->pb_jumlah);
         $user = $request->user();
         $pbs->update([
                 'pb_tanggal' => $request->pb_tanggal,
@@ -91,7 +100,7 @@ class PemakaianBarangController extends Controller
                 'user_id' => $user->id
                 ]);
         //Barang::find($oldPB->barang_id)->increment('barang_stok',$oldPB->pb_jumlah);
-        //Barang::find($oldPB->barang_id)->decrement('barang_stok',$request->pb_jumlah);
+        Barang::find($oldPB->barang_id)->decrement('barang_stok',$request->pb_jumlah);
         return response()->json(['status' => 'success']);
     }
 
@@ -101,7 +110,7 @@ class PemakaianBarangController extends Controller
         $barang = $pbs->first();
         if($barang->pb_status == 1) {
             Barang::find($barang->barang_id)->increment('barang_stok',$barang->pb_jumlah);
-        }   
+        }
         $pbs->delete();
         return response()->json(['status' => 'success'], 200);
     }
@@ -116,7 +125,7 @@ class PemakaianBarangController extends Controller
             $pb->update(['pb_status' => $request->status]);
             if($request->status == 1){
                 Barang::find($pb->barang_id)->decrement('barang_stok',$pb->pb_jumlah);
-            }       
+            }
         return response()->json(['status' => 'success'], 200);
     }
 }

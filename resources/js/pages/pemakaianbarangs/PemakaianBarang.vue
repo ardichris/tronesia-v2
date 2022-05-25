@@ -14,7 +14,7 @@
                             <template v-slot:modal-footer>
                                 <b-button
                                     variant="success"
-                                    class="mt-3"                                    
+                                    class="mt-3"
                                     block @click="simpanPBbaru"
                                 >
                                     Simpan
@@ -29,7 +29,7 @@
                             <template v-slot:modal-footer>
                                 <b-button
                                     variant="success"
-                                    class="mt-3"                                    
+                                    class="mt-3"
                                     block @click="editPBsaja"
                                 >
                                     Update
@@ -143,7 +143,7 @@ export default {
             this.getPemakaianbarang()
         },
         search() {
-            this.getPemakaianbarang({search: this.search})
+            this.getPemakaianbarang(this.search)
         }
     },
     methods: {

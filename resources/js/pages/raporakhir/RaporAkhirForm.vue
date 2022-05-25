@@ -301,9 +301,9 @@
         </table>
         <table class="absensi">
             <tr>
-                <td><b>Sakit</b></td>
-                <td><b>Ijin</b></td>
-                <td><b>Tanpa Keterangan</b></td>
+                <td style="width:33%"><b>Sakit</b></td>
+                <td style="width:33%"><b>Ijin</b></td>
+                <td style="width:33%"><b>Tanpa Keterangan</b></td>
             </tr>
             <tr>
                 <td>{{raporAkhir['ra_catatan_sakit']}} hari</td>
@@ -508,7 +508,7 @@ export default {
         }),
         ...mapState('raporakhir', {
             //raporakhirs: state => state.raporakhirs,
-            raporAkhir : state => state.raporakhirs
+            raporAkhir : state => state.raporakhir
         }),
         ...mapState(['token']),
     },

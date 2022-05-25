@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\RaporAkhirCollection;
 use App\RaporAkhir;
 use App\RaporSisipan;
+use App\RaporPetra;
 use App\Kelas;
 use App\KelasAnggota;
 use App\Siswa;
@@ -152,8 +153,10 @@ class RaporAkhirController extends Controller
         foreach ($kelasAnggota as $row){
             $raporSisipan = RaporSisipan::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $raporAkhir = RaporAkhir::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
+            $raporPetra = RaporPetra::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $row['RaporSisipan'] = $raporSisipan?$raporSisipan:'-';
             $row['RaporAkhir'] = $raporAkhir?$raporAkhir:'-';
+            $row['RaporPetra'] = $raporPetra?$raporPetra:'-';
         }
 
         return new RaporAkhirCollection($kelasAnggota);
@@ -195,17 +198,19 @@ class RaporAkhirController extends Controller
         return response()->json(['message' => 'success', 'data' => $raporAkhir], 200);
     }
 
-    // public function update(Request $request, $id)
-    // {
-    //     $this->validate($request, [
-    //         'raporakhir_kode' => 'required',
-    //         'raporakhir_nama' => 'required|string',
-    //     ]);
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'ra_catatan_ayat' => 'required|string',
+            'ra_catatan_isi' => 'required|string'
+        ]);
 
-    //     $raporakhir = RaporAkhir::whereRaporAkhir_kode($id)->first();
-    //     $raporakhir->update($request->except('RaporAkhir_kode'));
-    //     return response()->json(['status' => 'success'], 200);
-    // }
+        $user = $request->user();
+        $raporakhir = RaporAkhir::whereId($id)
+                                    ->update(['ra_catatan_ayat' => $request->ra_catatan_ayat,
+                                                'ra_catatan_isi' => $request->ra_catatan_isi]);
+        return response()->json(['status' => 'success'], 200);
+    }
 
     // public function destroy($id)
     // {
