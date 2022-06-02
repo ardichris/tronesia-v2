@@ -9,10 +9,15 @@ class RaporAkhir extends Model
     protected $guarded = [];
 
     public $incrementing = false;
-    
+
     public function siswa()
     {
         return $this->belongsTo(Siswa::class);
     }
-    
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
+
 }

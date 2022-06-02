@@ -6,6 +6,7 @@
                     <div class="col-sm-12 col-md-6">
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan')" v-if="authenticated.role==0">Upload Sisipan</b-button>
                         <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-import')"  v-if="authenticated.role==0">Upload Ledger</b-button>
+                        <b-button variant="warning" size="sm" v-b-modal="'modal-export'" @click="$bvModal.show('modal-export')"  v-if="authenticated.role==0">Export</b-button>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -13,6 +14,58 @@
                         </span>
                     </div>
                 </div>
+                <b-modal id="modal-export" scrollable size="sm">
+                    <template v-slot:modal-title>
+                        Export Rapor
+                    </template>
+                    <div class="row">
+                        <div class="col">
+                            <label>Extensi File</label>
+                            <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.file">
+                                <option>Excel</option>
+                                <option>PDF</option>
+                            </select>
+                            <label>Rapor</label>
+                            <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.rapor">
+                                <option>Sisipan</option>
+                                <option>Akhir</option>
+                                <option>Petra</option>
+                            </select>
+                            <label>Grup</label>
+                            <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.grup">
+                                <option>All</option>
+                                <option>Jenjang</option>
+                                <option>Kelas</option>
+                                <option>Individu</option>
+                            </select>
+                            <label v-if="exportParameter.grup!=''&&exportParameter.grup!='All'">Detail</label>
+                            <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.detail" v-if="exportParameter.grup!=''&&exportParameter.grup!='All'">
+                                <option v-if="exportParameter.grup=='Jenjang'">7</option>
+                                <option v-if="exportParameter.grup=='Jenjang'">8</option>
+                                <option v-if="exportParameter.grup=='Jenjang'">9</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-1</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-2</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-3</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-4</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-5</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-6</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-7</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-8</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-9</option>
+                                <option v-if="exportParameter.grup=='Kelas'">IX-10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"
+                            block  @click="submitExport"
+                        >
+                            Submit
+                        </b-button>
+                    </template>
+                </b-modal>
                 <b-modal id="modal-input-raporpetra" scrollable size="md">
                     <template v-slot:modal-title>
                         Input Penilaian PETRA
@@ -89,8 +142,8 @@
                                     <div class="form-group">
                                         <label>Ekspresi Emosi</label>
                                         <select type="text" class="form-control" aria-invalid="false" v-model="raporPetra.rp_efour_score">
-                                            <option value="E4+">Peduli</option>
-                                            <option value="E4-">Tidak Peduli</option>
+                                            <option value="E4+">Mampu</option>
+                                            <option value="E4-">Belum Mampu</option>
                                         </select>
                                     </div>
                                 </div>
@@ -153,6 +206,7 @@
                                             <option>Lettering</option>
                                             <option>Make Up</option>
                                             <option>Marketing</option>
+                                            <option>Matematika</option>
                                             <option>MC</option>
                                             <option>Melukis</option>
                                             <option>Memasak</option>
@@ -194,6 +248,7 @@
                                             <option>Vokal</option>
                                             <option>Voli</option>
                                             <option>Wing Chun</option>
+                                            <option>Wushu</option>
                                             <option>Yoga</option>
                                         </select>
                                     </div>
@@ -244,6 +299,7 @@
                                             <option>Lettering</option>
                                             <option>Make Up</option>
                                             <option>Marketing</option>
+                                            <option>Matematika</option>
                                             <option>MC</option>
                                             <option>Melukis</option>
                                             <option>Memasak</option>
@@ -285,6 +341,7 @@
                                             <option>Vokal</option>
                                             <option>Voli</option>
                                             <option>Wing Chun</option>
+                                            <option>Wushu</option>
                                             <option>Yoga</option>
                                         </select>
                                     </div>
@@ -457,6 +514,12 @@
                     </template>
                     <rapor-akhir-form v-if="authenticated.unit_id == 1"></rapor-akhir-form>
                 </b-modal>
+                <b-modal id="modal-raporpetra-view" scrollable size="lg" hide-footer>
+                    <template v-slot:modal-title>
+                        Preview Rapor Petra
+                    </template>
+                    <rapor-petra-view v-if="authenticated.unit_id == 1"></rapor-petra-view>
+                </b-modal>
             </div>
             <div class="panel-body">
                 <b-table striped hover bordered :items="rapors.data" :fields="fields" show-empty>
@@ -477,7 +540,7 @@
                     <template v-slot:cell(petra)="row">
                         <b-button variant="success" size="sm" v-if="row.item.RaporPetra == '-'" @click="inputRaporPetra(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
                         <b-button variant="warning" size="sm" v-if="row.item.RaporPetra != '-'" @click="editRaporPetra(row.item.RaporPetra.id)"><i class="fa fa-pen"></i></b-button>
-                        <b-button variant="primary" size="sm" v-if="row.item.RaporPetra != '-'" @click="previewRapor(row.item.RaporAkhir.id)"><i class="fa fa-eye"></i></b-button>
+                        <b-button variant="primary" size="sm" v-if="row.item.RaporPetra != '-'" @click="viewRaporPetra(row.item.RaporPetra.id)"><i class="fa fa-eye"></i></b-button>
 
                     </template>
                     <!-- <template v-slot:cell(walikelas)="row">
@@ -511,6 +574,7 @@ import { mapActions, mapState } from 'vuex'
 import FormRaporSisipan from './RaporSisipanForm.vue'
 import FormRaporSisipanP2 from './RaporSisipanFormP2.vue'
 import FormRaporAkhir from './RaporAkhirForm.vue'
+import ViewRaporPetra from './RaporPetraView.vue'
 
 export default {
     name: 'DataRaporAkhir',
@@ -541,6 +605,7 @@ export default {
             raporSisipan: state => state.raporsisipan,
             raporAkhir: state => state.raporakhir,
             raporPetra: state => state.raporpetra,
+            exportParameter: state => state.exportParameter
         }),
         ...mapState(['token']),
         page: {
@@ -566,7 +631,14 @@ export default {
         }
     },
     methods: {
-        ...mapActions('raporakhir', ['viewRaporSisipan','getRapor','uploadLedger','submitRaporSisipan','viewRaporAkhir','submitRaporAkhir','addRaporPetra','submitNilaiPetra','editNilaiPetra']),
+        ...mapActions('raporakhir', ['exportRapor','viewRaporSisipan','getRapor','uploadLedger','submitRaporSisipan','viewRaporAkhir','submitRaporAkhir','addRaporPetra','submitNilaiPetra','editNilaiPetra']),
+        submitExport(){
+            window.open(`/api/exportrapor?api_token=${this.token}&file=${this.exportParameter.file}&rapor=${this.exportParameter.rapor}&grup=${this.exportParameter.grup}&detail=${this.exportParameter.detail}`,)
+            // this.exportRapor().then(() => {
+            //         this.$bvModal.hide('modal-export')
+            //     }
+            // )
+        },
         submitNilai(){
             this.submitNilaiPetra().then(() => {
                 this.$bvModal.hide('modal-input-raporpetra')
@@ -601,6 +673,11 @@ export default {
                 uuid: rapor
             }).then(() => {
                 this.$bvModal.show('modal-rapor-preview')
+            })
+        },
+        viewRaporPetra(rapor){
+            this.editNilaiPetra(rapor).then(() => {
+                this.$bvModal.show('modal-raporpetra-view')
             })
         },
         inputRaporPetra(siswa){
@@ -664,6 +741,7 @@ export default {
         'rapor-sisipan-form': FormRaporSisipan,
         'rapor-sisipanP2-form': FormRaporSisipanP2,
         'rapor-akhir-form': FormRaporAkhir,
+        'rapor-petra-view': ViewRaporPetra
     }
 }
 </script>

@@ -23,12 +23,22 @@ const state = () => ({
         rp_academic_score: '',
     },
     siswa: {},
+    exportParameter: {
+        file:'',
+        rapor:'',
+        grup:'',
+        detail:''
+    },
+    exportRapor: {},
 
     page: 1
 })
 
 const mutations = {
 
+    EXPORT_RAPOR(state, payload) {
+        state.exportRapor = payload
+    },
     ASSIGN_DATA(state, payload) {
         state.rapor = payload
     },
@@ -62,6 +72,19 @@ const mutations = {
 
 const actions = {
 
+    exportRapor({commit, state}, payload){
+
+        // return new Promise((resolve, reject)=> {
+        //     $axios.get(`/exportrapor`)
+        //     .then((response) => {
+        //         window.open(response)
+        //         resolve(response)
+        //     })
+        //     // .catch(() => {
+        //     //     reject()
+        //     // })
+        // })
+    },
     uploadLedger({ dispatch, commit }, payload) {
         return new Promise((resolve, reject) => {
             $axios.post(`/raporakhir/import`, payload, {

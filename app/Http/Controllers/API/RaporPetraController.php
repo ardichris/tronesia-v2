@@ -99,8 +99,22 @@ class RaporPetraController extends Controller
 
     }
 
-    public function edit($id){
-        $rapor = RaporPetra::whereId($id)->first();
-        return response()->json(['status' => 'success', 'data' => $rapor], 200);
+    public function edit(Request $request, $id){
+        $user = $request->user();
+        $raporPetra = RaporPetra::whereId($id)
+                                    ->with(['siswa' => function ($query) {
+                                        $query->select('id','s_nama', 's_nis');
+                                    }])->first();
+        $raporPetra['kelas'] = KelasAnggota::whereSiswa_id($raporPetra['siswa']['id'])
+                                            ->where('periode_id',$raporPetra['periode_id'])
+                                            ->with('kelas')
+                                            ->first();
+        //$rapor = RaporPetra::whereId($id)->first();
+        $ttd = User::whereId($raporPetra['kelas']['kelas']['kelas_wali'])->first();
+        $raporPetra['email'] = $ttd->email;
+        $raporPetra['ttd'] = $ttd->ttd;
+        $raporPetra['walikelas'] = $ttd->full_name;
+        $raporPetra['periode'] = Periode::whereId($raporPetra['periode_id']);
+        return response()->json(['status' => 'success', 'data' => $raporPetra], 200);
     }
 }

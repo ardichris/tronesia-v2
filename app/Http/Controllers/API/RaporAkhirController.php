@@ -18,7 +18,9 @@ use App\User;
 use App\Periode;
 use PDF;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Jenssegers\Date\Date;
 use SimpleSoftwareIO\QrCode\Generator;
+use App\Exports\RaporsExport;
 
 function capitalize_after_delimiters($string)
     {
@@ -33,6 +35,51 @@ function capitalize_after_delimiters($string)
 class RaporAkhirController extends Controller
 {
 
+
+    public function exportRapor(Request $request) {
+        $user = $request->user();
+        if(request()->grup=='Jenjang'){
+            $siswa = KelasAnggota::with('kelas')
+                                 ->where('periode_id', $user->periode)
+                                 ->whereHas('kelas', function($query) use($user,$request){
+                                        $query->where('unit_id',$user->unit_id)
+                                              ->where('kelas_jenjang',$request->detail);
+                                    })
+                                 ->pluck('siswa_id');
+        }
+
+        if(request()->rapor=='Akhir'){
+            $rapor = RaporAkhir::whereIn('siswa_id',$siswa)->with('siswa')->where('periode_id',$user->periode)->get();
+            foreach($rapor as $row) {
+                $kelas = KelasAnggota::with('kelas')->where('siswa_id',$row->siswa_id)->where('periode_id',$user->periode)->first();
+                $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
+                $row['absen'] = $kelas?$kelas['absen']:'-';
+                $row['ra_walikelas'] = $kelas?User::whereId($kelas['kelas']['kelas_wali'])->value('full_name'):'-';
+            }
+            $rapor = $rapor->toArray();
+            //$nama = array_column($rapor['siswa'], 's_nama');
+            $kelas = array_column($rapor, 'kelas');
+            $absen = array_column($rapor, 'absen');
+            array_multisort($kelas, SORT_ASC, $absen, SORT_ASC, $rapor);
+        }
+        // Date::setLocale('id');
+        // $siswa = Siswa::where('s_keterangan','AKTIF')->where('unit_id',$user->unit_id)->orderBy('s_nama')->get();
+        // foreach($siswa as $row) {
+        //     $kelas = KelasAnggota::where('siswa_id',$row->id)->where('periode_id',$user->periode)->first();
+        //     //return response()->json(['data' => $kelas['kelas_id']]);
+        //     $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
+        //     $row['absen'] = $kelas?$kelas['absen']:'-';
+        //     $row['s_tanggal_lahir'] = Date::parse($row['s_tanggal_lahir'])->format('j F Y');
+        // }
+        // //$siswa = collect($siswa)->sortBy('s_nama')->sortBy('kelas')->toArray();
+        // $siswa = $siswa->toArray();
+        // $nama = array_column($siswa, 's_nama');
+        // $kelas = array_column($siswa, 'kelas');
+        // $absen = array_column($siswa, 'absen');
+        // array_multisort($kelas, SORT_ASC, $absen, SORT_ASC, $nama, SORT_ASC, $siswa);
+        return Excel::download(new RaporsExport($rapor), 'raporakhir-'.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
+        //return response()->json(['status' => 'sukses'],200);
+    }
 
     public function raporSisipanStore(Request $request, $id) {
         $this->validate($request, [

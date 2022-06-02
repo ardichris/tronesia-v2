@@ -82,6 +82,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/raporsisipan/view', 'API\RaporAkhirController@raporSisipanView');
     Route::put('/raporsisipan/{kode}', 'API\RaporAkhirController@raporSisipanStore');
     Route::get('/siswa/export/qrcode', 'API\SiswaController@exportQRCode')->name('qrcode.pdf');
+    Route::get('exportrapor', 'API\RaporAkhirController@exportRapor');
+
 
 
 
