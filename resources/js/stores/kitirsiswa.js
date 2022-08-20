@@ -1,20 +1,30 @@
 import $axios from '../api.js'
 
+const today = new Date();
+const date = today.getFullYear()+'-'+("0" + (today.getMonth() + 1)).slice(-2)+'-'+("0" + (today.getDate())).slice(-2);
+
 const state = () => ({
     kitirs: [],
     siswas: [],
-    
+    kelas: [],
+
     kitir: {
-        kitir_kode: '',
+        siswa: [],
+        ks_kode: '',
         siswa_id: '',
-        kitir_tanggal: '',
-        kitir_jenis: '',
-        kitir_keterangan: ''
+        ks_tanggal: date,
+        ks_jenis: '',
+        ks_start: '',
+        ks_end: '',
+        ks_keterangan: ''
     },
     page: 1
 })
 
 const mutations = {
+    KELAS_DATA(state, payload) {
+        state.kelas = payload
+    },
     DATA_SISWA(state, payload) {
         state.siswas = payload
     },
@@ -36,16 +46,39 @@ const mutations = {
     },
     CLEAR_FORM(state) {
         state.kitir = {
-            kitir_kode: '',
+            siswa: [],
+            ks_kode: '',
             siswa_id: '',
-            kitir_tanggal: '',
-            kitir_jenis: '',
-            kitir_keterangan: ''
+            ks_tanggal: date,
+            ks_jenis: '',
+            ks_start: '',
+            ks_end: '',
+            ks_keterangan: ''
         }
     }
 }
 
 const actions = {
+    getSiswaKelas({ commit}, payload) {
+        let kelas = payload.kelas
+        return new Promise((resolve, reject) => {
+            $axios.get(`/siswas?s=AKTIF&kelasnama=${kelas}`)
+            .then((response) => {
+                commit('DATA_SISWA', response.data)
+                resolve(response.data)
+            })
+        })
+    },
+    getKelas({ commit, state }, payload) {
+        let search = typeof payload != 'undefined' ? payload:''
+        return new Promise((resolve, reject) => {
+            $axios.get(`/kelas?q=${search}&key=nama`)
+            .then((response) => {
+                commit('KELAS_DATA', response.data)
+                resolve(response.data)
+            })
+        })
+    },
     updateStatus({ dispatch }, payload) {
         let kode = payload.ks.ks_kode
         return new Promise((resolve, reject) => {
@@ -53,14 +86,14 @@ const actions = {
             .then((response) => {
                 resolve(response.data)
             })
-            
+
         })
     },
     getSiswas({ commit, state }, payload) {
         let search = payload.search
         payload.loading(true)
         return new Promise((resolve, reject) => {
-            $axios.get(`/siswas?page=${state.page}&q=${search}&s=AKTIF`)
+            $axios.get(`/siswas?q=${search}&s=AKTIF`)
             .then((response) => {
                 commit('DATA_SISWA', response.data)
                 payload.loading(false)
@@ -70,7 +103,7 @@ const actions = {
     },
     getKitir({ commit, state }, payload) {
         let search = typeof payload != 'undefined' ? payload:''
-        return new Promise((resolve, reject) => {            
+        return new Promise((resolve, reject) => {
             $axios.get(`/kitirsiswa?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)

@@ -13,7 +13,7 @@
             <template v-slot:modal-footer>
                 <b-button
                     variant="primary"
-                    class="mt-3"                                    
+                    class="mt-3"
                     block  @click="liveTrackingHandler  "
                 >
                     Submit
@@ -43,12 +43,13 @@
                             <select class="form-control" v-model="data.periode">
                                 <option value="1">Semester 1 Tahun Ajaran 2020/2021</option>
                                 <option value="2">Semester 2 Tahun Ajaran 2020/2021</option>
-                                <option value="3">Semester 1 Tahun Ajaran 2021/2022</option>                                         
-                                <option value="4" selected>Semester 2 Tahun Ajaran 2021/2022</option>                                         
+                                <option value="3">Semester 1 Tahun Ajaran 2021/2022</option>
+                                <option value="4">Semester 2 Tahun Ajaran 2021/2022</option>
+                                <option value="5" selected>Semester 1 Tahun Ajaran 2022/2023</option>
                             </select>
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                             <p class="text-danger" v-if="errors.periode">{{ errors.periode[0] }}</p>
-                        </div>                        
+                        </div>
                         <div class="alert alert-danger" v-if="errors.invalid">{{ errors.invalid }}</div>
                         <div class="row">
                             <div class="col-8">
@@ -66,7 +67,7 @@
                         <a href="#">I forgot my password</a><br>
                     </div>
                 </div>
-                
+
             </div>
             <div>
                     <button v-if="liveStatus === ''" type="submit" class="btn btn-success btn-block btn-flat" @click.prevent="showLiveTrackingModal">Live Location</button>
@@ -81,13 +82,13 @@
 <script>
 import { mapActions, mapMutations, mapGetters, mapState } from 'vuex';
 export default {
-    
+
     data() {
         return {
             data: {
                 email: '',
                 password: '',
-                periode: 4,
+                periode: 5,
                 remember_me: false
             },
             options: {
@@ -108,7 +109,7 @@ export default {
             zoom: 16,
             positions: [],
 
-            
+
         }
     },
     mounted() {
@@ -145,7 +146,7 @@ export default {
     watch: {
 
     },
-    
+
     methods: {
         ...mapActions('auth', ['submit']), //MENGISIASI FUNGSI submit() DARI VUEX AGAR DAPAT DIGUNAKAN PADA COMPONENT TERKAIT. submit() BERASAL DARI ACTION PADA FOLDER STORES/auth.js
         ...mapActions('user', ['getUserLogin']),
@@ -188,10 +189,10 @@ export default {
         },
         failurePosition: function(err) {
             alert('Error Code: ' + err.code + ' Error Message: ' + err.message)
-        },  
-        
+        },
+
         showLiveTrackingModal(){
-            this.$bvModal.show('live-tracking')           
+            this.$bvModal.show('live-tracking')
         },
         liveTrackingHandler(){
             this.requestLiveTracking()
@@ -206,7 +207,7 @@ export default {
                             title: 'Live Request accepted'
                         })
                         this.trackPosition();
-                        this.$bvModal.hide('live-tracking')    
+                        this.$bvModal.hide('live-tracking')
                     } else {
                         this.$swal({
                             toast: true,

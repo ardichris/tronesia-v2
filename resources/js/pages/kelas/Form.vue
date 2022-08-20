@@ -9,7 +9,7 @@
             <div class="form-group" :class="{ 'has-error': errors.kelas_jenjang }">
                 <label for="">Jenjang</label>
                 <v-select :options="['7', '8', '9', '10', '11', '12']"
-                            v-model="kelas.kelas_jenjang"                      
+                            v-model="kelas.kelas_jenjang"
                             :value="kelas.kelas_jenjang"
                             >
                 </v-select>
@@ -19,9 +19,9 @@
                 <label for="">Wali Kelas</label>
                 <v-select :options="teachers.data"
                     v-model="kelas.kelas_wali"
-                    @search="onSearch" 
+                    @search="onSearch"
                     label="name"
-                    placeholder="Masukkan Kata Kunci" 
+                    placeholder="Masukkan Kata Kunci"
                     :disabled="$route.name == 'kelas.view'"
                     :filterable="false">
                     <template slot="no-options">
@@ -32,7 +32,25 @@
                     </template>
                 </v-select>
                 <p class="text-danger" v-if="errors.kelas_wali">{{ errors.kelas_wali[0] }}</p>
-            </div>            
+            </div>
+            <div class="form-group" :class="{ 'has-error': errors.k_mentor }">
+                <label for="">Mentor</label>
+                <v-select :options="teachers.data"
+                    v-model="kelas.k_mentor"
+                    @search="onSearch"
+                    label="name"
+                    placeholder="Masukkan Kata Kunci"
+                    :disabled="$route.name == 'kelas.view'"
+                    :filterable="false">
+                    <template slot="no-options">
+                        Masukkan Kata Kunci
+                    </template>
+                    <template slot="option" slot-scope="option">
+                        {{ option.name }}
+                    </template>
+                </v-select>
+                <p class="text-danger" v-if="errors.k_mentor">{{ errors.k_mentor[0] }}</p>
+            </div>
         </div>
         <div class="col-md-6" v-if="$route.name == 'kelas.edit'">
             <label for="">Daftar Siswa</label>
@@ -52,9 +70,9 @@
                             <td>
                                 <v-select :options="siswas.data"
                                     v-model="row.siswa"
-                                    @search="onSearchSiswa" 
+                                    @search="onSearchSiswa"
                                     label="s_nama"
-                                    placeholder="Masukkan Kata Kunci" 
+                                    placeholder="Masukkan Kata Kunci"
                                     :filterable="false">
                                     <template slot="no-options">
                                         Masukkan Kata Kunci
@@ -105,7 +123,7 @@ export default {
         ...mapState('kelas', {
             siswas: state => state.siswa,
             anggotas: state => state.anggota,
-            kelas: state => state.kelas, 
+            kelas: state => state.kelas,
             teachers: state => state.teachers,
             tambah: state => state.tambah
         }),
@@ -131,9 +149,9 @@ export default {
                 kelas: this.$route.params.id,
                 key: 'addAnggotaKelas',
                 loading: loading
-            })            
+            })
         },
-        
+
         addSiswa() {
             if (this.filterSiswa.length == 0) {
                 this.kelas.anggota.push({ siswa_id: null, absen: null, siswa: null})
@@ -171,7 +189,7 @@ export default {
             }).then(()=>{ this.anggotaKelas(this.$route.params.id) });
         },
     },
-    //KETIKA PAGE INI DITINGGALKAN MAKA 
+    //KETIKA PAGE INI DITINGGALKAN MAKA
     destroyed() {
         //FORM DI BERSIHKAN
         this.CLEAR_FORM()

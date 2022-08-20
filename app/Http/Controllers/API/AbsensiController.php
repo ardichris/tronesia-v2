@@ -8,25 +8,66 @@ use App\Http\Resources\AbsensiCollection;
 use App\Absensi;
 use App\Siswa;
 use App\User;
+use App\Kelas;
+use App\KelasAnggota;
 
 class AbsensiController extends Controller
 {
     public function index(Request $request)
     {
         /*if (request()->q != '') {
-            $q = $request->q; 
+            $q = $request->q;
             $absensis = Absensi::with(['siswa','user','approve'])->whereHas('siswa', function($query) use($q){
                 $query->where('siswa_nama','like','%'.$q.'%');
-            });                   
+            });
         } else {*/
-            $absensis = Absensi::with('siswa')->orderBy('created_at', 'DESC');
+            $user = $request->user();
+
+            $absensis = Absensi::with(['creator','approve','editor'])
+                                ->with(['siswa' => function ($query) {
+                                            $query->select('id', 's_nama', 'uuid');
+                                        }])
+                                ->where('unit_id', $user->unit_id)
+                                ->orderBy('created_at', 'DESC');
+
+            if (request()->q != '') {
+                $q = request()->q;
+                $absensis = $absensis->where(function ($query) use ($q) {
+                                        $query->whereHas('siswa', function($query) use($q){
+                                                    $query->where('s_nama','like','%'.$q.'%');
+                                                });
+                                });
+            }
+
+            if (request()->kelas != '') {
+                $k = request()->kelas;
+                $filterkelas = Kelas::where('kelas_nama',$k)->where('periode_id',$user->periode)->value('id');
+                $anggotakelas = KelasAnggota::where('kelas_id',$filterkelas)->where('periode_id',$user->periode)->pluck('siswa_id');
+                $absensis = $absensis->whereIn('siswa_id',$anggotakelas);
+            }
+
+            $absensis=$absensis->paginate(40);
+            foreach ($absensis as $row){
+                $kelas = KelasAnggota::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->first();
+                $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
+                $row['absen'] = $kelas?$kelas['absen']:'-';
+                // $absen = AbsensiPtm::where('siswa_id',$row->siswa_id)->where('aptm_tanggal', Carbon::today())->first();
+                // $row['status'] = $absen?$absen->aptm_status:'Daring';
+                // $row['absensi'] = $absen?$absen:'-';
+                // if($absen){
+                //     $row['distance'] = $absen->aptm_lat?$this->distance($absen->aptm_lat, $absen->aptm_lng, -7.282205, 112.684897, "K"):null;
+                // } else {
+                //     $row['distance'] = null;
+                // }
+
+            }
         //}
-        
+
         /*$user = $request->user();
         if($user->role != 0){
             $absensis = $absensis->where('user_id',$user->id);
         }*/
-        return new AbsensiCollection($absensis->paginate(10));
+        return new AbsensiCollection($absensis);
     }
 
     public function store(Request $request)
@@ -42,7 +83,7 @@ class AbsensiController extends Controller
         $lastId = $getAB->first();
 
         if($rowCount==0) {
-            $kode = "AB".date('y').date('m').date('d')."001";    
+            $kode = "AB".date('y').date('m').date('d')."001";
         } else {
             if(substr($lastId->absensi_kode,2,6) == date('y').date('m').date('d')) {
             $counter = (int)substr($lastId->absensi_kode,-3) + 1 ;
@@ -55,7 +96,7 @@ class AbsensiController extends Controller
                 }
             } else {
                 $kode = "AB".date('y').date('m').date('d')."001";
-            } 
+            }
         }
         Absensi::create([
             'absensi_kode' => $kode,
@@ -63,9 +104,12 @@ class AbsensiController extends Controller
             'absensi_tanggal' => $request->absensi_tanggal,
             'absensi_jenis' => $request->absensi_jenis,
             'absensi_keterangan' => $request->absensi_keterangan,
-            'user_id' => $user->id
+            'created_by' => $user->id,
+            'unit_id' => $user->unit_id,
+            'periode_id' => $user->periode,
+            'ab_status' => "Issued"
         ]);
-        return response()->json(['status' => 'success']);
+        return response()->json(['status' => 'success'], 200);
     }
 
     public function view($id)
@@ -87,14 +131,14 @@ class AbsensiController extends Controller
             'absensi_tanggal' => 'required|date',
             'absensi_jenis' => 'required|string|max:150'
         ]);
-        
+
         $user = $request->user();
         $absensi = Absensi::whereAbsensi_kode($request->absensi_kode);
         $absensi->update(['siswa_id' => $request->siswa_id['id'],
                         'absensi_tanggal' => $request->absensi_tanggal,
                         'absensi_jenis' => $request->absensi_jenis,
                         'absensi_keterangan' => $request->absensi_keterangan,
-                        'user_id' => $user->id]);
+                        'updated_by' => $user->id]);
         return response()->json(['status' => 'success']);
     }
 
@@ -114,8 +158,14 @@ class AbsensiController extends Controller
             $query->where('siswa_nama','like','%'.$q.'%');
         })->get();
         return response()->json($absensis);
-        //wkwkwkwkw piye yaw... ora nemu2 ket biyen kae
-        //ya wis kodingku iki disave sik. aq tak golek inspirasi karo mangan lunch.
-        //oke siap
+    }
+
+    public function changeStatus(Request $request, $kode) {
+        $user = $request->user();
+        $ab = Absensi::whereAbsensi_kode($kode)->first();
+            $ab->update(['ab_status' => $request->status,
+                         'approve_by' => $user->id,
+                         'approve_at' => date('d-m-y H:i'),]);
+        return response()->json(['status' => 'success'], 200);
     }
 }

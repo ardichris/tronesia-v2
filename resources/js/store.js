@@ -30,6 +30,7 @@ import rapor from './stores/rapor'
 import raporakhir from './stores/raporakhir'
 import siswaptm from './stores/siswaptm'
 import livetracking from './stores/livetracking.js'
+import laporan from './stores/laporan.js'
 
 Vue.use(Vuex)
 
@@ -64,7 +65,8 @@ const store = new Vuex.Store({
         rapor,
         raporakhir,
         siswaptm,
-        livetracking
+        livetracking,
+        laporan
     },
   	//STATE HAMPIR SERUPA DENGAN PROPERTY DATA DARI COMPONENT HANYA SAJA DAPAT DIGUNAKAN SECARA GLOBAL
     state: {

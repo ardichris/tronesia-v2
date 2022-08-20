@@ -21,10 +21,10 @@
                             <input type="text" class="form-control form-control-sm" placeholder="Cari..." v-model="search">
                         </span>
                         <span class="float-right">
-                            <b-form-select 
+                            <b-form-select
                                 v-model="status"
-                                size="sm"   
-                                placeholder="Status"                            
+                                size="sm"
+                                placeholder="Status"
                                 :options="status_options"
                                 required
                                 ></b-form-select>
@@ -55,7 +55,7 @@
                         <template v-slot:modal-footer>
                             <b-button
                                 variant="success"
-                                class="mt-3"                                    
+                                class="mt-3"
                                 block  @click="updateJMstatus(jurnal,2)"
                             >
                                 Simpan
@@ -70,7 +70,7 @@
                         <template v-slot:modal-footer >
                             <b-button
                                 variant="success"
-                                class="mt-3"                                    
+                                class="mt-3"
                                 block @click="editJMsaja"
                             >
                                 Update
@@ -107,11 +107,11 @@
                         <span class="badge badge-danger" v-else-if="row.item.jm_status == 2">Rejected</span>
                         <span class="badge badge-warning" v-else-if="row.item.jm_status == 0">Submited</span>
                         <span class="badge badge-dark" v-else-if="row.item.jm_status == 3">Archived</span>
-                        
+
                     </template>
                     <template v-slot:cell(kelas_id)="row">
                         <h5><span class="badge badge-warning">{{ row.item.kelas_id ? row.item.kelas.kelas_nama:'-' }} <span class="badge badge-danger">{{ row.item.jm_jampel}}</span></span></h5>
-                        
+
                     </template>
                     <template v-slot:cell(kompetensi_id)="row">
                         {{ row.item.kompetensi_id ? row.item.kompetensi.kd_kode:'-' }}
@@ -122,7 +122,7 @@
                             <button class="btn btn-success btn-sm" v-if="(row.item.jm_status == 0)" @click="updateJMstatus(row.item,1)"><i class="fa fa-check-circle"></i></button>
                             <button class="btn btn-danger btn-sm" v-if="(row.item.jm_status != 3 && row.item.jm_status != 2)" @click="rejectJM(row.item.jm_kode)"><i class="fa fa-times"></i></button>
                         </div>
-                        <div class="btn-group"> 
+                        <div class="btn-group">
                             <button class="btn btn-success btn-sm" @click="viewJM(row.item.jm_kode)" v-if="(row.item.jm_status == 1 && row.item.jm_status != 3) ||authenticated.role==0"><i class="fa fa-eye"></i></button>
                             <button class="btn btn-warning btn-sm" @click="editJM(row.item.jm_kode)" v-if="(row.item.jm_status != 1 && row.item.jm_status != 3) || authenticated.role==0"><i class="fa fa-edit"></i></button>
                             <button class="btn btn-danger btn-sm" @click="deleteJurnal(row.item.id)" v-if="(row.item.jm_status != 1 && row.item.jm_status != 3) || authenticated.role==0"><i class="fa fa-trash"></i></button>
@@ -170,7 +170,7 @@ export default {
     },
     data() {
         return {
-            
+
             fields: [
                 { key: 'user_id', label: 'Guru', sortable: true },
                 { key: 'kelas_id', label: 'Kelas', sortable: true },
@@ -235,7 +235,7 @@ export default {
             this.getKelas({
                 search: search,
                 loading: loading
-            })            
+            })
         },
         getRoster(){
             this.getRosterJurnal();
@@ -253,12 +253,14 @@ export default {
             this.updateStatus({
                 jurnal: jurnal,
                 status: status
-            }),
-            this.$bvModal.hide('reject-modal'),
-            this.getJurnal({
-                search: this.search,
-                status: this.status
+            }).then(() => {
+                this.$bvModal.hide('reject-modal'),
+                this.getJurnal({
+                    search: this.search,
+                    status: this.status
+                })
             })
+
         },
         editJMsaja(){
             this.updateJurnal().then(() => {

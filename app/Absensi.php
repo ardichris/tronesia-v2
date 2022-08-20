@@ -20,11 +20,16 @@ class Absensi extends Model
 
     public function editor()
     {
-        return $this->belongsTo(User::class, 'edit_by', 'id');
+        return $this->belongsTo(User::class, 'updated_by', 'id');
     }
 
     public function approve()
     {
         return $this->belongsTo(User::class, 'approve_by', 'id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 }

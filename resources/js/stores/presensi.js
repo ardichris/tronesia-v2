@@ -50,7 +50,7 @@ const actions = {
     },
     getPresensi({ commit, state }, payload) {
         let search = typeof payload != 'undefined' ? payload:''
-        return new Promise((resolve, reject) => {            
+        return new Promise((resolve, reject) => {
             $axios.get(`/presensi?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)

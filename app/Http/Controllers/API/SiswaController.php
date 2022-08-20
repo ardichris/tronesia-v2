@@ -27,7 +27,7 @@ class SiswaController extends Controller
                         ->where('id','<',100)
                         ->select('s_nama','uuid','id','s_code')
                         ->get();
-        
+
         foreach($siswa as $row) {
             QrCode::size(300)->generate($row->uuid, 'storage/qr/'.$row->uuid.'.svg');
             $img_url = 'storage/qr/'.$row->uuid.'.svg';
@@ -36,7 +36,7 @@ class SiswaController extends Controller
         $pdf = PDF::loadView('qrcode', compact('siswa'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
             return $pdf->stream("QRCode.pdf");
     }
-    
+
     public function import(Request $request)
     {
         $user = $request->user();
@@ -47,7 +47,7 @@ class SiswaController extends Controller
 
         return response()->json(['status' => 'success'], 200);
     }
-    
+
     public function exportSiswa(Request $request) {
         $user = $request->user();
         Date::setLocale('id');
@@ -67,12 +67,21 @@ class SiswaController extends Controller
         array_multisort($kelas, SORT_ASC, $absen, SORT_ASC, $nama, SORT_ASC, $siswa);
         return Excel::download(new SiswasExport($siswa), 'siswa-'.date('y').date('m').date('d').'.xlsx');
     }
-    
+
     public function index(Request $request)
     {
         $user = $request->user();
         $siswas = Siswa::orderBy('s_nama', 'ASC')->where('unit_id',$user->unit_id)->select('id','uuid','s_nama','s_nis','s_kelamin','s_keterangan');
-       if (request()->kelas != '') {
+        if (request()->s != '') {
+            $siswas = $siswas->where('s_keterangan',request()->s);
+        }
+        if (request()->kelasnama != '') {
+            $k = request()->kelasnama;
+            $filterkelas = Kelas::where('kelas_nama',$k)->where('periode_id',$user->periode)->value('id');
+            $anggotakelas = KelasAnggota::where('kelas_id',$filterkelas)->where('periode_id',$user->periode)->pluck('siswa_id');
+            $siswas = $siswas->whereIn('id',$anggotakelas);
+        }
+        if (request()->kelas != '') {
            $anggota = KelasAnggota::where('periode_id',$user->periode)->where('kelas_id',request()->kelas)->pluck('siswa_id');
             $siswas = $siswas->whereIn('id',$anggota);
                                 //where('kelas_id', '=' , request()->kelas);
@@ -91,26 +100,27 @@ class SiswaController extends Controller
             $q = $request->q;
             $siswas = $siswas->where('s_nama', 'LIKE', '%' . request()->q . '%')
                             ->orwhere('uuid', 'LIKE', '%' . request()->q . '%')
-                            ->orwhereHas('kelas', function($query) use($q){
-                                $query->where('kelas_nama','like','%'.$q.'%');
-                            })
+                            // ->orwhereHas('kelas', function($query) use($q){
+                            //     $query->where('kelas_nama','like','%'.$q.'%');
+                            // })
                             ->select(['id','s_nama','s_nis','s_kelamin','s_keterangan','uuid']);
         }
-        if (request()->s != '') {
-            $siswas = $siswas->where('s_keterangan', 'LIKE', '%' . request()->s . '%');
-        }
+
         if (request()->seragam != '') {
             $siswas = $siswas->whereIn('s_keterangan',['SISWA BARU','AKTIF']);
         }
-        $gurubk = JamMengajar::where('mapel_id',22)->where('guru_id',$user->id)->pluck('kelas_id');
-        if ($user->role != 0 && request()->kelas == ''){
-            $siswas = $siswas->whereHas('kelas', function($query) use($user){
-                                $query->where('kelas_wali', $user->id);
-                                })
-                            ->orwhereHas('kelas', function($query) use($user){
-                                $query->where('k_mentor', $user->id);
-                                })
-                            ->orwhereIn('kelas_id', $gurubk);
+        //$gurubk = JamMengajar::where('mapel_id',22)->where('guru_id',$user->id)->where('periode_id',$user->periode)->pluck('kelas_id');
+        if ($user->role != 0 && request()->kelas == '' && request()->kelasnama == ''){
+            $listKelas = Kelas::where('kelas_wali',$user->id)->orWhere('k_mentor',$user->id)->pluck('id');
+            $listSiswa = KelasAnggota::where('periode_id',$user->periode)->whereIn('kelas_id',$listKelas)->pluck('siswa_id');
+            $siswas = $siswas->whereIn('id',$listSiswa);
+            // $siswas = $siswas->whereHas('kelas', function($query) use($user){
+            //                     $query->where('kelas_wali', $user->id);
+            //                     })
+            //                 ->orwhereHas('kelas', function($query) use($user){
+            //                     $query->where('k_mentor', $user->id);
+            //                     })
+            //                 ->orwhereIn('kelas_id', $gurubk);
         }
         $siswas = $siswas->paginate(40);
         foreach($siswas as $row){
@@ -135,6 +145,7 @@ class SiswaController extends Controller
 
         Siswa::create([ 'uuid' => Uuid::Uuid4(),
                         's_nama' => $request->s_nama,
+                        's_code' => $request->s_code,
                         's_nisn' => $request->s_nisn,
                         's_nik' => $request->s_nik,
                         's_nis' => $request->s_nis,
@@ -230,7 +241,7 @@ class SiswaController extends Controller
         $siswa = Siswa::whereUuid($id)->first();
         return response()->json(['status' => 'success', 'data' => $siswa], 200);
     }
-    
+
     public function update(Request $request, $id)
     {
         if(is_null($request['s_nama'])){
@@ -244,7 +255,7 @@ class SiswaController extends Controller
                 //'s_tempat_lahir' => 'required|string',
                 //'s_tanggal_lahir' => 'required|date'
             ]);
-    
+
             $siswa = Siswa::whereUuid($id)->first();
             $siswa->update([
                 's_nama' => $request->s_nama,
@@ -330,7 +341,7 @@ class SiswaController extends Controller
             ]);
         }
         return response()->json(['status' => 'success'], 200);
-        
+
     }
 
     public function destroy($id)

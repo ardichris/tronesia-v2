@@ -18,6 +18,9 @@
                     <template v-slot:cell(kelas_wali)="row">
                         {{ row.item.kelas_wali ? row.item.user.name:'-' }}
                     </template>
+                    <template v-slot:cell(k_mentor)="row">
+                        {{ row.item.k_mentor ? row.item.mentor.name:'-' }}
+                    </template>
                     <template v-slot:cell(actions)="row">
                         <div class="btn-group">
                             <router-link :to="{ name: 'kelas.view', params: {id: row.item.kelas_nama} }" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></router-link>
@@ -65,6 +68,7 @@ export default {
                 { key: 'kelas_nama', label: 'Nama Kelas' },
                 { key: 'kelas_jenjang', label: 'Jenjang Kelas' },
                 { key: 'kelas_wali', label: 'Wali Kelas' },
+                { key: 'k_mentor', label: 'Mentor' },
                 { key: 'actions', label: 'Aksi' }
             ],
             search: ''

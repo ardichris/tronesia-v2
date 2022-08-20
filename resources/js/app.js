@@ -19,7 +19,13 @@ Vue.filter('formatDate', function(value) {
       return moment(String(value)).format('D MMMM YYYY')
     }
   });
-  
+
+  Vue.filter('formatDateView', function(value) {
+    if (value) {
+      return moment(String(value)).format('DD-MM-YYYY')
+    }
+  });
+
 import wysiwyg from "vue-wysiwyg";
 Vue.use(wysiwyg, {});
 import 'vue-wysiwyg/dist/vueWysiwyg.css'

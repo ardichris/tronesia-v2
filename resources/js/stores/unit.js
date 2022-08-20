@@ -1,8 +1,9 @@
 import $axios from '../api.js'
 
+
 const state = () => ({
     units: [],
-    
+
     unit: {
         id: '',
         unit_kode: '',

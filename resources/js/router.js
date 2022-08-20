@@ -99,6 +99,10 @@ import DataRaporAkhir from './pages/raporakhir/RaporAkhir.vue'
 import IndexRaporAkhir from './pages/raporakhir/Index.vue'
 import DataSiswaPTM from './pages/siswaptm/SiswaPTM.vue'
 import IndexSiswaPTM from './pages/siswaptm/Index.vue'
+import LaporanKesiswaan from './pages/laporans/kesiswaan/Kesiswaan.vue'
+import LaporanKesiswaanAbsensi from './pages/laporans/kesiswaan/Absensi.vue'
+import LaporanKesiswaanPelanggaran from './pages/laporans/kesiswaan/Pelanggaran.vue'
+import LaporanKesiswaanKitir from './pages/laporans/kesiswaan/Kitir.vue'
 
 
 Vue.use(Router)
@@ -141,7 +145,7 @@ const router = new Router({
                     name: 'rekapjurnal.data',
                     component: DataRekapJurnal,
                     meta: { title: 'Rekap Jurnal' }
-                }                               
+                }
             ]
         },
         {
@@ -154,7 +158,7 @@ const router = new Router({
                     name: 'presensi.data',
                     component: DataPresensi,
                     meta: { title: 'Presensi' }
-                }                               
+                }
             ]
         },
         {
@@ -167,7 +171,7 @@ const router = new Router({
                     name: 'pengumuman.data',
                     component: DataPengumuman,
                     meta: { title: 'Pengumuman' }
-                }                               
+                }
             ]
         },
         {
@@ -180,7 +184,7 @@ const router = new Router({
                     name: 'seragam.data',
                     component: DataSeragam,
                     meta: { title: 'Daftar Seragam' }
-                }                               
+                }
             ]
         },
         {
@@ -193,7 +197,7 @@ const router = new Router({
                     name: 'laporsarpras.data',
                     component: DataLaporSarpras,
                     meta: { title: 'Daftar Lapor' }
-                }                               
+                }
             ]
         },
         {
@@ -206,7 +210,7 @@ const router = new Router({
                     name: 'kitirsiswa.data',
                     component: DataKitirSiswa,
                     meta: { title: 'Daftar Kitir Siswa' }
-                }                               
+                }
             ]
         },
         {
@@ -231,7 +235,7 @@ const router = new Router({
                     name: 'barangmasuk.edit',
                     component: EditBarangMasuk,
                     meta: { title: 'Edit Barang Masuk' }
-                }                
+                }
             ]
         },
         {
@@ -717,7 +721,7 @@ const router = new Router({
                     meta: { title: 'Rapor Akhir' }
                 }
             ]
-            
+
         },
         {
             path: '/siswaptm',
@@ -731,8 +735,33 @@ const router = new Router({
                     meta: { title: 'Siswa PTM' }
                 }
             ]
-            
-        }     
+
+        },
+        {
+            path: '/laporan/kesiswaan',
+            component: LaporanKesiswaan,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: 'absensi',
+                    name: 'laporan.kesiswaan.absensi',
+                    component: LaporanKesiswaanAbsensi,
+                    meta: { title: 'Laporan Absensi' }
+                },
+                {
+                    path: 'pelanggaran',
+                    name: 'laporan.kesiswaan.pelanggaran',
+                    component: LaporanKesiswaanPelanggaran,
+                    meta: { title: 'Laporan Pelanggaran' }
+                },
+                {
+                    path: 'kitir',
+                    name: 'laporan.kesiswaan.kitir',
+                    component: LaporanKesiswaanKitir,
+                    meta: { title: 'Laporan Kitir' }
+                }
+            ]
+        }
     ]
 });
 

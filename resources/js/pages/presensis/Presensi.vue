@@ -23,7 +23,7 @@
                                     @search="searchKelas"
                                     :value="$store.myValue"
                                     label="kelas_nama"
-                                    placeholder="Masukkan Kata Kunci" 
+                                    placeholder="Masukkan Kata Kunci"
                                     :filterable="false">
                                     <template slot="no-options">
                                         Masukkan Kata Kunci
@@ -42,7 +42,7 @@
                                 <input type="date" class="form-control" v-model="rekappresensi.tanggalakhir">
                             </div>
                         </div>
-                        <div class="row" style="margin-bottom:10px">                            
+                        <div class="row" style="margin-bottom:10px">
                             <div class="col-sm-12">
                                 <span class="float-right">
                                 <b-button variant="success" size="sm" @click="getRekap" style="float-center">Submit</b-button>
@@ -56,7 +56,7 @@
                                         <th>Nama Siswa</th>
                                         <th>S</th>
                                         <th>I</th>
-                                        <th>A</th>                                        
+                                        <th>A</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,9 +84,9 @@
                 </div>
             </div>
             <div class="panel-body">
-              
+
               	<!-- TABLE UNTUK MENAMPILKAN LIST PELANGGARAN -->
-                <b-table striped hover bordered :items="presensis.data" :fields="fields" show-empty>                	
+                <b-table striped hover bordered :items="presensis.data" :fields="fields" show-empty>
                     <template v-slot:cell(siswa)="row">
                         {{ row.item.siswa_id ? row.item.siswa.s_nama:'-' }}
                     </template>
@@ -94,7 +94,7 @@
                         <h5><span class="badge badge-info">{{ row.item.jurnal.jm_tanggal ? row.item.jurnal.jm_tanggal:'-' }}</span></h5>
                     </template>
                     <template v-slot:cell(jampel)="row">
-                        <h5><span class="badge badge-warning">{{ row.item.siswa.kelas_id ? row.item.siswa.kelas.kelas_nama:'-' }} <span class="badge badge-danger">{{ row.item.jurnal.jm_jampel}}</span></span></h5>
+                        <h5><span class="badge badge-warning">{{ row.item.jurnal.kelas_id ? row.item.jurnal.kelas.kelas_nama:'-' }} <span class="badge badge-danger">{{ row.item.jurnal.jm_jampel}}</span></span></h5>
                     </template>
                 </b-table>
               	<!-- TABLE UNTUK MENAMPILKAN LIST PELANGGARAN -->
@@ -179,7 +179,7 @@ export default {
             this.getKelas({
                 search: search,
                 loading: loading
-            })            
+            })
         },
     },
     components: {

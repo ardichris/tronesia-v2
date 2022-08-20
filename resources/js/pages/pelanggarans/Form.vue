@@ -1,19 +1,33 @@
 <template>
     <div class>
+        <div class="alert alert-danger alert-dismissible col-md-12" v-if="pelanggaran.p_jumlah!=''">
+            Total Pelanggaran : {{pelanggaran.p_jumlah}}
+        </div>
+        <div class="form-group">
+            <label for="">Kelas</label>
+            <b-form-select
+                v-model="kelas"
+                size="sm"
+                @change="cari"
+                :options="kelasdata.data"
+                >
+            </b-form-select>
+        </div>
         <div class="form-group" :class="{ 'has-error': errors.siswa_id }">
             <label for="">Nama Siswa</label>
             <v-select :options="siswas.data"
                 v-model="pelanggaran.siswa_id"
-                @search="onSearch" 
+                @search="onSearch"
+                v-on:input="setMP"
                 label="s_nama"
-                placeholder="Masukkan Kata Kunci" 
+                placeholder="Masukkan Kata Kunci"
                 :disabled="$route.name == 'pelanggarans.view'"
                 :filterable="false">
                 <template slot="no-options">
                     Masukkan Kata Kunci
                 </template>
                 <template slot="option" slot-scope="option">
-                    {{ option.s_nama }} - {{option.kelas ? option.kelas.kelas_nama:''}}
+                    {{ option.s_nama }} - ({{ option.kelas }}/{{option.absen}})
                 </template>
             </v-select>
             <p class="text-danger" v-if="errors.siswa_id">Siswa belum dipilih</p>
@@ -29,8 +43,9 @@
             <v-select :options="MPs.data"
                 v-model="pelanggaran.mp_id"
                 @search="onSearchMP"
+                v-on:input="onSearchPelanggaran"
                 label="mp_pelanggaran"
-                placeholder="Masukkan Kata Kunci" 
+                placeholder="Masukkan Kata Kunci"
                 :disabled="$route.name == 'pelanggarans.view'"
                 :filterable="false">
                 <template slot="no-options">
@@ -38,25 +53,17 @@
                 </template>
                 <template slot="option" slot-scope="option">
                     {{ option.mp_pelanggaran }}
+                    <span class="badge badge-danger float-right" v-if="option.total>0">{{option.total}}</span>
                 </template>
             </v-select>
             <p class="text-danger" v-if="errors.mp_id">Pelanggaran belum diisi</p>
         </div>
-        <!--div class="form-group" :class="{ 'has-error': errors.pelanggaran_jenis }">
-            <label for="">Jenis Pelanggaran</label>
-            <v-select :options="['Terlambat', 'Escape', 'Atribut', 'Seragam', 'Sepatu', 'Kaos Kaki', 'Rambut', 'Berkelahi', 'Bermain Game', 'Mendengarkan Musik', 'Berkata Kotor']"
-                        v-model="pelanggaran.pelanggaran_jenis"
-                        :disabled="$route.name == 'pelanggaran.view'"
-                        :value="pelanggaran.pelanggaran_jenis"
-                        >
-            </v-select>
-            <p class="text-danger" v-if="errors.pelanggaran_jenis">Pelanggaran belum dipilih</p>
-        </div-->
         <div class="form-group" :class="{ 'has-error': errors.pelanggaran_keterangan }">
             <label for="">Keterangan</label>
             <input type="text" class="form-control" v-model="pelanggaran.pelanggaran_keterangan" :readonly="$route.name == 'pelanggarans.view'">
             <p class="text-danger" v-if="errors.pelanggaran_keterangan">Keterangan belum diisi</p>
         </div>
+
     </div>
 </template>
 
@@ -66,20 +73,39 @@ import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css'
 export default {
     name: 'FormPelanggarans',
+    data() {
+        return {
+            kelas: '',
+        }
+    },
     computed: {
         ...mapState(['errors']),
         ...mapState('pelanggaran', {
             siswas: state => state.siswas,
             MPs: state => state.MPs,
-            pelanggaran: state => state.pelanggaran
+            pelanggaran: state => state.pelanggaran,
+            kelasdata: state=> state.kelas
         })
-        
+
     },
     methods: {
-        ...mapActions('pelanggaran', ['getSiswas', 'getMPs', 'editPelanggaran']),
+        ...mapActions('pelanggaran', ['getSiswas', 'getMPs', 'getMP', 'editPelanggaran','getSiswaKelas','getTotalPelanggaran']),
         ...mapMutations('pelanggaran', ['CLEAR_FORM']),
+        setMP(){
+            this.getMP({
+                cat: 'Ringan',
+            })
+            this.getTotalPelanggaran()
+
+        },
         onSearch(search, loading) {
             this.getSiswas({
+                search: search,
+                loading: loading
+            })
+        },
+        onSearchPelanggaran(search, loading) {
+            this.getTotalPelanggaran({
                 search: search,
                 loading: loading
             })
@@ -89,11 +115,15 @@ export default {
                 search: search,
                 loading: loading
             })
-        }
+        },
+        cari(){
+            this.getSiswaKelas({
+                kelas: this.kelas
+            })
+        },
     },
     destroyed() {
-            this.CLEAR_FORM(),
-            this.$store.commit('CLEAR_ERRORS')
+            this.CLEAR_FORM()
     },
     components: {
         vSelect

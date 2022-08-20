@@ -2,7 +2,7 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo class="brand-image img-circle elevation-3">
         <a href="/" class="brand-link">
-        <img src="/storage/LOGO P1.png" alt="AdminLTE Logo" 
+        <img src="/storage/LOGO P1.png" alt="AdminLTE Logo"
             style="opacity: .8">
         </a-->
         <a href="/" class="brand-link">
@@ -104,7 +104,7 @@
                     </a>
                     <ul class="nav nav-treeview" >
                         <li class="nav-item">
-                            <a class="nav-link ml-3" v-if="authenticated.role!=2">
+                            <a class="nav-link ml-3">
                                 <i class="fas fa-user-injured nav-icon"></i>
                                 <p><router-link :to="{ name: 'absensi.data' }">Absensi</router-link></p>
                             </a>
@@ -135,7 +135,7 @@
                         </li>
                     </ul>
                 </li>
-                
+
                 <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==2 || authenticated.role==1">
                     <a class="nav-link">
                         <i class="nav-icon fas fa-book-reader"></i>
@@ -260,6 +260,40 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item has-treeview">
+                    <a class="nav-link">
+                        <i class="nav-icon fas fa-file"></i>
+                        <p>
+                            Laporan
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item ml-3 has-treeview">
+                            <a class="nav-link">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Kesiswaan
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item ml-3">
+                                    <a class="nav-link">
+                                        <i class="nav-icon fas fa-user-injured"></i>
+                                        <p><router-link :to="{ name: 'laporan.kesiswaan.absensi' }">Absensi</router-link></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item ml-3">
+                                    <a class="nav-link">
+                                        <i class="nav-icon fas fa-ticket-alt"></i>
+                                        <p><router-link :to="{ name: 'laporan.kesiswaan.kitir' }">Kitir</router-link></p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item has-treeview" v-if="authenticated.role==0">
                     <a class="nav-link">
                         <i class="nav-icon fas fa-cog"></i>
@@ -279,7 +313,7 @@
                 </li>
             </ul>
         </nav>
-        <!-- /.sidebar-menu -->          
+        <!-- /.sidebar-menu -->
         </div>
         <!-- /.sidebar -->
     </aside>
@@ -305,6 +339,6 @@ export default {
             })
         },
     }
-    
+
 }
 </script>

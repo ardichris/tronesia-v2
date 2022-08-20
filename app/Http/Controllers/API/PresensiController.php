@@ -37,18 +37,21 @@ class PresensiController extends Controller
                 if($rowpresensi->alasan=="Urusan Pribadi") $ijin++;
                 if($rowpresensi->alasan=="Alpha") $alpha++;
             }
-            $row['ijin'] = floor($ijin/6);                     
+            $row['ijin'] = floor($ijin/6);
             $row['sakit'] = floor($sakit/6);
             $row['alpha'] = floor($alpha/6);
         }
         return new PresensiCollection($siswa);
 
     }
-    
+
     public function index(Request $request)
     {
         $user = $request->user();
-        $presensis = DetailJurnal::with(['siswa','jurnal','siswa.kelas'])
+        $presensis = DetailJurnal::with(['siswa' => function ($query) {
+                                            $query->select('id', 's_nama', 'uuid');
+                                        }])
+                                    ->with(['jurnal','jurnal.kelas'])
                                     ->whereHas('jurnal', function($query) use($user){
                                         $query->where('unit_id',$user->unit_id);
                                     })

@@ -15,12 +15,14 @@ use App\Kelas;
 use App\KelasAnggota;
 use App\Siswa;
 use App\User;
+use App\Unit;
 use App\Periode;
 use PDF;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Jenssegers\Date\Date;
 use SimpleSoftwareIO\QrCode\Generator;
 use App\Exports\RaporsExport;
+use App\Exports\RaporsPetraExport;
 
 function capitalize_after_delimiters($string)
     {
@@ -38,30 +40,51 @@ class RaporAkhirController extends Controller
 
     public function exportRapor(Request $request) {
         $user = $request->user();
-        if(request()->grup=='Jenjang'){
-            $siswa = KelasAnggota::with('kelas')
+        $siswa = KelasAnggota::with('kelas')
                                  ->where('periode_id', $user->periode)
-                                 ->whereHas('kelas', function($query) use($user,$request){
-                                        $query->where('unit_id',$user->unit_id)
-                                              ->where('kelas_jenjang',$request->detail);
-                                    })
-                                 ->pluck('siswa_id');
+                                 ->whereHas('kelas', function($query) use($user){
+                                        $query->where('unit_id',$user->unit_id);
+                                    });
+
+        if(request()->grup=='Jenjang'){
+            $siswa = $siswa->whereHas('kelas', function($query) use($request){
+                                        $query->where('kelas_jenjang',$request->detail);
+                                    });
         }
+
+        if(request()->grup=='Kelas'){
+            $siswa = $siswa->whereHas('kelas', function($query) use($request){
+                                        $query->where('kelas_nama',$request->detail);
+                                    });
+        }
+
+        // if(request()->grup=='Jenjang'){
+        //     $siswa = KelasAnggota::with('kelas')
+        //                          ->where('periode_id', $user->periode)
+        //                          ->whereHas('kelas', function($query) use($user,$request){
+        //                                 $query->where('unit_id',$user->unit_id)
+        //                                       ->where('kelas_jenjang',$request->detail);
+        //                             })
+        //                          ->pluck('siswa_id');
+        // }
+
+        $siswa = $siswa->pluck('siswa_id');
 
         if(request()->rapor=='Akhir'){
             $rapor = RaporAkhir::whereIn('siswa_id',$siswa)->with('siswa')->where('periode_id',$user->periode)->get();
-            foreach($rapor as $row) {
-                $kelas = KelasAnggota::with('kelas')->where('siswa_id',$row->siswa_id)->where('periode_id',$user->periode)->first();
-                $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
-                $row['absen'] = $kelas?$kelas['absen']:'-';
-                $row['ra_walikelas'] = $kelas?User::whereId($kelas['kelas']['kelas_wali'])->value('full_name'):'-';
-            }
-            $rapor = $rapor->toArray();
-            //$nama = array_column($rapor['siswa'], 's_nama');
-            $kelas = array_column($rapor, 'kelas');
-            $absen = array_column($rapor, 'absen');
-            array_multisort($kelas, SORT_ASC, $absen, SORT_ASC, $rapor);
         }
+
+        if(request()->rapor=='Petra'){
+            $rapor = RaporPetra::whereIn('siswa_id',$siswa)->with('siswa')->where('periode_id',$user->periode)->get();
+        }
+
+        foreach($rapor as $row) {
+            $kelas = KelasAnggota::with('kelas')->where('siswa_id',$row->siswa_id)->where('periode_id',$user->periode)->first();
+            $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
+            $row['absen'] = $kelas?$kelas['absen']:'-';
+            $row['walikelas'] = $kelas?User::whereId($kelas['kelas']['kelas_wali'])->value('full_name'):'-';
+        }
+
         // Date::setLocale('id');
         // $siswa = Siswa::where('s_keterangan','AKTIF')->where('unit_id',$user->unit_id)->orderBy('s_nama')->get();
         // foreach($siswa as $row) {
@@ -72,12 +95,16 @@ class RaporAkhirController extends Controller
         //     $row['s_tanggal_lahir'] = Date::parse($row['s_tanggal_lahir'])->format('j F Y');
         // }
         // //$siswa = collect($siswa)->sortBy('s_nama')->sortBy('kelas')->toArray();
-        // $siswa = $siswa->toArray();
-        // $nama = array_column($siswa, 's_nama');
-        // $kelas = array_column($siswa, 'kelas');
-        // $absen = array_column($siswa, 'absen');
-        // array_multisort($kelas, SORT_ASC, $absen, SORT_ASC, $nama, SORT_ASC, $siswa);
-        return Excel::download(new RaporsExport($rapor), 'raporakhir-'.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
+        $rapor = $rapor->toArray();
+        //$nama = array_column($rapor->siswa, 's_nama');
+        $kelas = array_column($rapor, 'kelas');
+        $absen = array_column($rapor, 'absen');
+        array_multisort($kelas, SORT_ASC, $absen, SORT_ASC, $rapor);
+        if(request()->rapor=='Akhir'){
+            return Excel::download(new RaporsExport($rapor), 'raporakhir-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
+        } elseif(request()->rapor=='Petra'){
+            return Excel::download(new RaporsPetraExport($rapor), 'raporpetra-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
+        }
         //return response()->json(['status' => 'sukses'],200);
     }
 
@@ -238,9 +265,11 @@ class RaporAkhirController extends Controller
                                     ->with('kelas')
                                     ->first();
         $ttd = User::whereId($raporAkhir['kelas']['kelas']['kelas_wali'])->first();
+        $kasek = Unit::whereId($user->unit_id)->first();
         $raporAkhir['email'] = $ttd->email;
         $raporAkhir['ttd'] = $ttd->ttd;
         $raporAkhir['walikelas'] = $ttd->full_name;
+        $raporAkhir['kasek'] = $kasek->unit_head;
         $raporAkhir['periode'] = Periode::whereId($raporAkhir['periode_id']);
         return response()->json(['message' => 'success', 'data' => $raporAkhir], 200);
     }

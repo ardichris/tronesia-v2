@@ -109,7 +109,7 @@
                 <td>{{$row['siswa']['s_code']}}</td>
                 <td>{{$row['siswa']['s_nisn']}}</td>
                 <td>{{$row['siswa']['s_nis']}}</td>
-                <td>{{$row['ra_walikelas']}}</td>
+                <td>{{$row['walikelas']}}</td>
                 <td>{{$row['ra_spiritual_predikat']}}</td>
                 <td>{{$row['ra_spiritual_deskripsi']}}</td>
                 <td>{{$row['ra_sosial_predikat']}}</td>

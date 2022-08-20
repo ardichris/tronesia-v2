@@ -3,7 +3,9 @@ import $axios from '../api.js'
 const state = () => ({
     absensis: [],
     siswas: [],
-    
+    kelas:[],
+    siswa: [],
+
     absensi: {
         absensi_kode: '',
         siswa_id: '',
@@ -20,6 +22,12 @@ const mutations = {
     },
     ASSIGN_DATA(state, payload) {
         state.absensis = payload
+    },
+    KELAS_DATA(state, payload) {
+        state.kelas = payload
+    },
+    SISWA_DATA(state, payload) {
+        state.siswa = payload
     },
     SET_PAGE(state, payload) {
         state.page = payload
@@ -45,6 +53,35 @@ const mutations = {
 }
 
 const actions = {
+    updateStatus({ dispatch }, payload) {
+        let kode = payload.ab
+        return new Promise((resolve, reject) => {
+            $axios.put(`/absensi/changestatus/${kode}`, payload)
+            .then((response) => {
+                resolve(response.data)
+            })
+
+        })
+    },
+    viewSiswa({ commit }, payload) {
+        return new Promise((resolve, reject) => {
+            $axios.get(`/siswas/${payload.uuid}/edit`)
+            .then((response) => {
+                commit('SISWA_DATA', response.data.data)
+                resolve(response.data)
+            })
+        })
+    },
+    getKelas({ commit, state }, payload) {
+        let search = typeof payload != 'undefined' ? payload:''
+        return new Promise((resolve, reject) => {
+            $axios.get(`/kelas?q=${search}&key=nama`)
+            .then((response) => {
+                commit('KELAS_DATA', response.data)
+                resolve(response.data)
+            })
+        })
+    },
     getSiswas({ commit, state }, payload) {
         let search = payload.search
         payload.loading(true)
@@ -57,10 +94,21 @@ const actions = {
             })
         })
     },
+    getSiswaKelas({ commit}, payload) {
+        let kelas = payload.kelas
+        return new Promise((resolve, reject) => {
+            $axios.get(`/siswas?s=AKTIF&kelasnama=${kelas}`)
+            .then((response) => {
+                commit('DATA_SISWA', response.data)
+                resolve(response.data)
+            })
+        })
+    },
     getAbsensi({ commit, state }, payload) {
-        let search = typeof payload != 'undefined' ? payload:''
-        return new Promise((resolve, reject) => {            
-            $axios.get(`/absensi?page=${state.page}&q=${search}`)
+        let search = payload.search
+        let kelas = payload.kelas
+        return new Promise((resolve, reject) => {
+            $axios.get(`/absensi?page=${state.page}&q=${search}&kelas=${kelas}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
                 resolve(response.data)
@@ -78,13 +126,12 @@ const actions = {
         })
     },
     submitAbsensi({ dispatch, commit, state }) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             $axios.post(`/absensi`, state.absensi)
             .then((response) => {
-                dispatch('getAbsensi').then(() => {
-                    commit('CLEAR_FORM')
-                    resolve(response.data)
-                })
+                commit('CLEAR_FORM')
+                resolve(response.data)
+
             })
             .catch((error) => {
                 if (error.response.status == 422) {
@@ -120,9 +167,7 @@ const actions = {
     removeAbsensi({ dispatch }, payload) {
         return new Promise((resolve, reject) => {
             $axios.delete(`/absensi/${payload}`)
-            .then((response) => {
-                dispatch('getAbsensi').then(() => resolve())
-            })
+
         })
     }
 }

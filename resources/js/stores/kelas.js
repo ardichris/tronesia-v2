@@ -4,17 +4,18 @@ const state = () => ({
     siswa: [],
     teachers: [],
     kelass: [],
-    anggota: [], 
-    
+    anggota: [],
+
     kelas: {
         id: '',
         kelas_nama: '',
         kelas_jenjang: '',
         kelas_wali: '',
+        k_mentor:'',
         tambah: '',
         anggota: [],
     },
-    page: 1 
+    page: 1
 })
 
 const mutations = {
@@ -28,7 +29,7 @@ const mutations = {
     ANGGOTA_DATA(state, payload) {
         state.anggota = payload
     },
-    
+
     ASSIGN_DATA(state, payload) {
         state.kelass = payload
     },
@@ -42,6 +43,7 @@ const mutations = {
             kelas_nama: payload.kelas_nama,
             kelas_jenjang: payload.kelas_jenjang,
             kelas_wali: payload.user,
+            k_mentor: payload.mentor,
             anggota: payload.anggota
         }
     },
@@ -103,7 +105,7 @@ const actions = {
         let search = payload.search
         payload.loading(true)
         return new Promise((resolve, reject) => {
-            $axios.get(`/teachers?page=${state.page}&q=${search}`)
+            $axios.get(`/teachers?q=${search}`)
             .then((response) => {
                 commit('TEACHER_DATA', response.data)
                 payload.loading(false)
@@ -158,7 +160,7 @@ const actions = {
             })
         })
     },
-   
+
     updateKelas({ state, commit }, payload) {
         return new Promise((resolve, reject) => {
             $axios.put(`/kelas/${payload}`, state.kelas)

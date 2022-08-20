@@ -17,7 +17,7 @@ class KelasController extends Controller
         $anggota = Siswa::whereKelas_id($id)->orderBy('s_nama', 'ASC');
         return new KelasCollection($anggota->paginate(40));
     }
-    
+
     public function tambahAnggota(Request $request)
     {
         if (request()->key == 'tambahAnggotaKelas') {
@@ -26,28 +26,35 @@ class KelasController extends Controller
         }
         return response()->json(['status' => 'success'], 200);
     }
-    
+
     public function index(Request $request) {
         $user = $request->user();
-        $kelas = Kelas::with(['user'])->orderBy('kelas_nama', 'ASC')->where('unit_id', $user->unit_id);
+        $kelas = Kelas::with(['user','mentor'])->orderBy('kelas_nama', 'ASC')->where('periode_id', $user->periode)->where('unit_id', $user->unit_id);
         if (request()->q != '') {
             $kelas = $kelas->where('kelas_nama', 'LIKE', '%' . request()->q . '%');
         }
-        return new KelasCollection($kelas->paginate(10));
+        if (request()->key == 'nama') {
+            $kelas = $kelas->pluck('kelas_nama');
+        } else {
+            $kelas = $kelas->paginate(10);
+        }
+        return new KelasCollection($kelas);
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'kelas_nama' => 'required|string|unique:kelas,kelas_nama',
+            'kelas_nama' => 'required|string',
             'kelas_jenjang' => 'required'
         ]);
         $user = $request->user();
         Kelas::create([
             'kelas_nama' => $request->kelas_nama,
             'kelas_jenjang' => $request->kelas_jenjang,
-            'kelas_wali' => $request->kelas_wali['id'],
+            'kelas_wali' => $request->kelas_wali?$request->kelas_wali['id']:null,
+            'k_mentor' => $request->k_mentor?$request->k_mentor['id']:null,
             'unit_id' => $user->unit_id,
+            'periode_id' => $user->periode,
         ]);
         return response()->json(['status' => 'success'], 200);
     }
@@ -55,7 +62,7 @@ class KelasController extends Controller
     public function edit(Request $request, $id)
     {
         //$user = $id->user();
-        $kelas = Kelas::with(['user'])->whereId($id)->first();
+        $kelas = Kelas::with(['user','mentor'])->whereId($id)->first();
         $anggota = KelasAnggota::where('kelas_id',$id)
                                 ->with(array('siswa' => function($query) {
                                     $query->select('id','s_nama');
@@ -63,8 +70,8 @@ class KelasController extends Controller
                                 //->where('periode_id',$user->periode)
                                 ->orderBy('absen')
                                 ->get();
-                                
-        
+
+
         $kelas['anggota'] = $anggota;
         // $kelas['anggota'] = KelasAnggota::where('kelas_id',$id)
         //                                 ->with('siswa')
@@ -72,7 +79,7 @@ class KelasController extends Controller
         //                                 ->sortBy(function($urut){
         //                                     return $urut->siswa->s_nama;
         //                                 });
-                                        
+
         return response()->json(['status' => 'success', 'data' => $kelas], 200);
     }
 
@@ -92,9 +99,10 @@ class KelasController extends Controller
         $kelas = Kelas::whereId($id)->first();
         $kelas->update([
                 'kelas_jenjang' => $request->kelas_jenjang,
-                'kelas_wali' => $request->kelas_wali['id']
+                'kelas_wali' => $request->kelas_wali['id'],
+                'k_mentor' => $request->k_mentor['id']
         ]);
-        
+
         foreach($request->anggota as $key=>$row){
             if(!is_null($row['siswa_id'])){
                 KelasAnggota::whereId($row['id'])
@@ -114,8 +122,8 @@ class KelasController extends Controller
                 }
             }
         }
-        
-        $anggota = KelasAnggota::where('kelas_id', $id)->get();        
+
+        $anggota = KelasAnggota::where('kelas_id', $id)->get();
         foreach($anggota as $rowanggota){
             $match = true;
             foreach($request->anggota as $key=>$row){

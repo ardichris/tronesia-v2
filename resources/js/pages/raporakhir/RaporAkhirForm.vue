@@ -331,7 +331,7 @@
             </tr>
             <tr>
                 <td>Orang Tua Siswa/Wali</td>
-                <td style="width:50%"></td>
+                <td style="width:50%;text-align:center">Walikelas</td>
                 <td style="width:20%;">Kepala Sekolah</td>
             </tr>
             <tr>
@@ -342,7 +342,7 @@
             <tr>
                 <td>..................................</td>
                 <td style="text-align:center;">{{raporAkhir['walikelas']}}</td>
-                <td>Yurui, S.Pd., M.M.</td>
+                <td>{{raporAkhir["kasek"]}}</td>
             </tr>
         </table>
     </div>

@@ -31,7 +31,7 @@ class JurnalController extends Controller
                     ->orderBy('jm_jampel', 'ASC')
                     ->where('user_id',$user);
                     //->get();
-                    
+
                     //$listjurnal = $listjurnal->where('user_id',$user->id);
         $jurnals['tanggal'] = Carbon::now()->format('d F Y');
         $jurnals['list'] = $listjurnal->get();
@@ -41,24 +41,26 @@ class JurnalController extends Controller
         $pdf = PDF::loadView('print', compact('jurnals'))->setPaper('a4', 'landscape');
         return $pdf->stream();
         /*
-        
+
         */
 
-        
+
         //GET DATA BERDASARKAN ID
         //$invoice = Invoice::with(['customer', 'detail', 'detail.product'])->find($id);
         //LOAD PDF YANG MERUJUK KE VIEW PRINT.BLADE.PHP DENGAN MENGIRIMKAN DATA DARI INVOICE
         //KEMUDIAN MENGGUNAKAN PENGATURAN LANDSCAPE A4
-        
+
     }
-    
-    
+
+
     public function roster(Request $request) {
         $user = $request->user();
         if(request()->tanggal != ''){
             $tanggal = date($request->tanggal);
             $hari = Carbon::parse($tanggal)->format('l');
-            $roster = Kelas::where('unit_id',$user->unit_id)->orderBy('kelas_nama','ASC')->get();
+            $roster = Kelas::where('unit_id',$user->unit_id)
+                            ->where('periode_id',$user->periode)
+                            ->orderBy('kelas_nama','ASC')->get();
             $jampel = array(0,1,2,3,4,5,6,7,8,9);
             $jurnal = Jurnal::where('jm_tanggal',$tanggal)
                             ->where('periode_id',$user->periode)
@@ -84,12 +86,12 @@ class JurnalController extends Controller
                         $guru = array();
                         foreach($jadwal as $rowjadwal){
                             if($rowjadwal->jp_jampel == $rowjampel && $rowjadwal->kelas_id == $rowkelas->id){
-                                array_push($guru,$rowjadwal->guru->name);     
+                                array_push($guru,$rowjadwal->guru->name);
                             }
-                        } 
-                        $rowkelas['jam'.$rowjampel] = $guru;   
+                        }
+                        $rowkelas['jam'.$rowjampel] = $guru;
                     }
-                    
+
                 }
             }
         }
@@ -125,22 +127,22 @@ class JurnalController extends Controller
                         $guru = array();
                         foreach($jadwal as $rowjadwal){
                             if($rowjadwal->jp_jampel == $rowjampel && $rowjadwal->kelas_id == request()->kelas && $rowjadwal->jp_hari == $rowtanggal->format('l')){
-                                //array_push($guru,$rowjadwal->guru->name);  
+                                //array_push($guru,$rowjadwal->guru->name);
                                 $roster[$rowtanggal->format('d-M-y')]['jam'.$rowjampel] = array('guru' => $rowjadwal->guru->name);
                             }
-                        } 
-                        //$rowkelas['jam'.$rowjampel] = $guru;   
+                        }
+                        //$rowkelas['jam'.$rowjampel] = $guru;
                     }
                 }
             }
-            
+
 
         }
-        
-        
+
+
         return new JurnalCollection($roster);
     }
-    
+
     public function rekap(Request $request) {
         //return response()->json(['data' => $request->start], 200);
         $user = $request->user();
@@ -156,7 +158,7 @@ class JurnalController extends Controller
         //}
         return new JurnalCollection($jurnals->get());
     }
-    
+
     public function index(Request $request) {
         $user = $request->user();
         $jurnals = Jurnal::with(['mapel','kelas','kompetensi','user','detail','detail.siswa','pelanggaran','pelanggaran.siswa','unit'])
@@ -196,7 +198,7 @@ class JurnalController extends Controller
             'jm_jampel' => 'required',
             //'mapel_id' => 'required'
         ]);
-        
+
         //DB::enableQueryLog();
         foreach ($request->jm_jampel as $rowJP) {
             $getJM = Jurnal::orderBy('id', 'DESC');
@@ -209,7 +211,7 @@ class JurnalController extends Controller
                                                 ['kelas_id', $request->kelas_id['id']],
                                                 ['jm_tanggal', $request->jm_tanggal],
                                                 ['jm_status','!=',2]]);
-                    $konflik = $cekkonflik->count();                         
+                    $konflik = $cekkonflik->count();
                     $konflikwith = $cekkonflik->with('user')->first();
                 }
             }
@@ -220,7 +222,7 @@ class JurnalController extends Controller
             }
 
             if($rowCount==0) {
-                $kode = "JM".date('y').date('m').date('d')."001";    
+                $kode = "JM".date('y').date('m').date('d')."001";
             } else {
                 if(substr($lastId->jm_kode,2,6) == date('y').date('m').date('d')) {
                 $counter = (int)substr($lastId->jm_kode,-3) + 1 ;
@@ -233,7 +235,7 @@ class JurnalController extends Controller
                     }
                 } else {
                     $kode = "JM".date('y').date('m').date('d')."001";
-                } 
+                }
             }
             $user = $request->user();
 
@@ -252,7 +254,7 @@ class JurnalController extends Controller
                             'jm_status' => $konflik != 0 ? 2:0,
                             'jm_keterangan' => $request->jm_keterangan,
                             'jm_catatan' => $catatan
-                            
+
                         ]);
 
             foreach ($request->detail as $row) {
@@ -271,7 +273,7 @@ class JurnalController extends Controller
                 $lastId = $getPL->first();
 
                 if($rowCount==0) {
-                    $kode = "PL".date('y').date('m').date('d')."001";    
+                    $kode = "PL".date('y').date('m').date('d')."001";
                 } else {
                     if(substr($lastId->pelanggaran_kode,2,6) == date('y').date('m').date('d')) {
                     $counter = (int)substr($lastId->pelanggaran_kode,-3) + 1 ;
@@ -284,9 +286,9 @@ class JurnalController extends Controller
                         }
                     } else {
                         $kode = "PL".date('y').date('m').date('d')."001";
-                    } 
+                    }
                 }
-                
+
                 Pelanggaran::create([
                     'pelanggaran_kode' => $kode,
                     'jurnal_id' => $new_jurnal->id,
@@ -299,12 +301,12 @@ class JurnalController extends Controller
                     'periode_id' => $user->periode
                 ]);
             }
-            
+
         }
             //return response()->json(DB::getQueryLog());
             return response()->json('sukses');
-  
-        
+
+
     }
 
     public function edit($id)
@@ -324,7 +326,7 @@ class JurnalController extends Controller
             //return response()->json($request->status);
             $jurnal->update(['jm_status' => $request->status,
                              'jm_catatan' => $request->jurnal['jm_catatan']]);
-        
+
         return response()->json(['status' => 'success'], 200);
     }
 
@@ -336,7 +338,7 @@ class JurnalController extends Controller
             'kelas_id' => 'required',
             //'mapel_id' => 'required'
         ]);
-        
+
         $jurnal = Jurnal::where('jm_kode',$id)->first();
         $konflik = 0;
         if($request->mapel_id['id']!=23 && $request->mapel_id['id']!=24){
@@ -345,7 +347,7 @@ class JurnalController extends Controller
                                             ['kelas_id', $request->kelas_id['id']],
                                             ['jm_tanggal', $request->jm_tanggal],
                                             ['jm_status','!=',2]]);
-            $konflik = $cekkonflik->count();                             
+            $konflik = $cekkonflik->count();
             $konflikwith = $cekkonflik->with('user')->first();
         }
         if($konflik!=0){
@@ -353,7 +355,7 @@ class JurnalController extends Controller
         } else {
             $catatan="";
         }
-        
+
         $jurnal->update([
             'mapel_id' => $request->mapel_id['id'],
             'jm_tanggal' => $request->jm_tanggal,
@@ -377,7 +379,7 @@ class JurnalController extends Controller
                     'siswa_id' => $row['siswa']['id'],
                     'alasan' => $row['alasan']
                 ]);
-            }            
+            }
         }
         //return response()->json(['status' => $request->pelanggaran], 200);
         Pelanggaran::whereJurnal_id($jurnal->id)->delete();
@@ -388,7 +390,7 @@ class JurnalController extends Controller
                 $lastId = $getPL->first();
 
                 if($rowCount==0) {
-                    $kode = "PL".date('y').date('m').date('d')."001";    
+                    $kode = "PL".date('y').date('m').date('d')."001";
                 } else {
                     if(substr($lastId->pelanggaran_kode,2,6) == date('y').date('m').date('d')) {
                     $counter = (int)substr($lastId->pelanggaran_kode,-3) + 1 ;
@@ -401,9 +403,9 @@ class JurnalController extends Controller
                         }
                     } else {
                         $kode = "PL".date('y').date('m').date('d')."001";
-                    } 
+                    }
                 }
-                
+
                 Pelanggaran::create([
                     'pelanggaran_kode' => $kode,
                     'jurnal_id' => $jurnal->id,
@@ -416,7 +418,7 @@ class JurnalController extends Controller
                     'periode_id' => $user->periode
                 ]);
             }
-        } 
+        }
         return response()->json(['status' => 'success'], 200);
     }
 

@@ -11,6 +11,7 @@
             <th>Kelas</th>
             <th>No. Induk</th>
             <th>NISN</th>
+            <th>NIK</th>
             <th>Nama Siswa</th>
             <th>P/L</th>
             <th>Tempat lahir</th>
@@ -40,6 +41,7 @@
                 <td>{{$row['kelas']}}/{{$row['absen']}}</td>
                 <td>{{$row['s_nis']}}</td>
                 <td>{{$row['s_nisn']}}</td>
+                <td>'{{$row['s_nik']}}</td>
                 <td>{{$row['s_nama']}}</td>
                 <td>{{substr($row['s_kelamin'],0,1)}}</td>
                 <td>{{$row['s_tempat_lahir']}}</td>
@@ -60,7 +62,7 @@
                 <td>{{$row['s_wali_notelp']}}</td>
                 <td>{{$row['s_wali_alamat']}}</td>
                 <td>{{$row['s_wali_pekerjaan']}}</td>
-                
+
 
             </tr>
         @endforeach

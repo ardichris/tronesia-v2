@@ -24,14 +24,12 @@ class FrontController extends Controller
     public function statistik(Request $request)
     {
         $user = $request->user();
-        $absensitotal = DetailJurnal::with('jurnal')
-                                    ->whereHas('jurnal', function($query) use($user) {
-                                        $query->where('periode_id', $user->periode)->where('unit_id', $user->unit_id);
-                                    })->count();
-        $absensitoday = DetailJurnal::with('jurnal')
-                                    ->whereHas('jurnal', function($query) use($user) {
-                                        $query->where('jm_tanggal', Carbon::today())->where('unit_id', $user->unit_id);
-                                    })->count();
+        $absensitotal = Absensi::where('periode_id', $user->periode)
+                                ->where('unit_id', $user->unit_id)
+                                ->count();
+        $absensitoday = Absensi::where('absensi_tanggal', Carbon::today())
+                                ->where('unit_id', $user->unit_id)
+                                ->count();
         $pelanggarantotal = Pelanggaran::where('unit_id',$user->unit_id)->where('periode_id',$user->periode)->count();
         $pelanggarantoday = Pelanggaran::where('pelanggaran_tanggal', Carbon::today())->where('unit_id',$user->unit_id)
                                          ->count();//->with('siswa')->get();

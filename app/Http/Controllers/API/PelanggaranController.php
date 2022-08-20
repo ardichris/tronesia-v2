@@ -9,18 +9,28 @@ use App\Pelanggaran;
 use App\MasterPelanggaran;
 use App\JamMengajar;
 use App\User;
+use App\Kelas;
+use App\KelasAnggota;
 use DB;
 
 class PelanggaranController extends Controller
 {
+    public function total(Request $request)
+    {
+        $total = Pelanggaran::where('siswa_id',$request->siswa)->count();
+        return response()->json(['status' => 'success', 'data' => $total], 200);
+    }
+
     public function index(Request $request)
     {
         $user = $request->user();
-        $pelanggarans = Pelanggaran::with(['siswa','user','jurnal','siswa.kelas','masterpelanggaran'])
+        $pelanggarans = Pelanggaran::with(['user','jurnal','siswa.kelas','masterpelanggaran'])
+                                    ->with(['siswa' => function ($query) {
+                                            $query->select('id', 's_nama', 'uuid');
+                                        }])
                                     ->where('unit_id',$user->unit_id)
-                                    ->where('periode_id',$user->periode)
                                     ->orderBy('created_at', 'DESC');
-        if (request()->q != '') { 
+        if (request()->q != '') {
             $q = request()->q;
             $pelanggarans = $pelanggarans->where(function ($query) use ($q) {
                                             $query  ->whereHas('siswa', function($query) use($q){
@@ -28,66 +38,108 @@ class PelanggaranController extends Controller
                                                         })
                                                     ->orWhere('pelanggaran_jenis','like','%'.$q.'%')
                                                     ->orWhere('pelanggaran_keterangan','like','%'.$q.'%');
-                                                });                   
+                                                });
         }
         $gurubk = JamMengajar::where('mapel_id',22)->where('guru_id',$user->id)->pluck('kelas_id');
-        if($user->role==2){
-            $pelanggarans = $pelanggarans->where(function ($query) use ($gurubk, $user) {
-                                            $query  ->whereHas('siswa.kelas', function($query) use($user){
-                                                        $query->where('kelas_wali',$user->id);
-                                                        })
-                                                    ->orwhereHas('siswa.kelas', function($query) use($user){
-                                                        $query->where('k_mentor', $user->id);
-                                                        })
-                                                    ->orwhereHas('siswa', function($query) use($gurubk){
-                                                        $query->whereIn('kelas_id', $gurubk);
-                                                        });
-                                        });
-        }
-       // return response()->json(['status' => $pelanggarans->get()], 200);                            
-        
-        return new PelanggaranCollection($pelanggarans->paginate(10));
+        // if($user->role==2){
+        //     $pelanggarans = $pelanggarans->where(function ($query) use ($gurubk, $user) {
+        //                                     $query  ->whereHas('siswa.kelas', function($query) use($user){
+        //                                                 $query->where('kelas_wali',$user->id);
+        //                                                 })
+        //                                             ->orwhereHas('siswa.kelas', function($query) use($user){
+        //                                                 $query->where('k_mentor', $user->id);
+        //                                                 })
+        //                                             ->orwhereHas('siswa', function($query) use($gurubk){
+        //                                                 $query->whereIn('kelas_id', $gurubk);
+        //                                                 });
+        //                                 });
+        // }
+       // return response()->json(['status' => $pelanggarans->get()], 200);
+       $pelanggarans = $pelanggarans->paginate(10);
+       foreach ($pelanggarans as $row){
+            $kelas = KelasAnggota::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->first();
+            $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
+            $row['absen'] = $kelas?$kelas['absen']:'-';
+       }
+
+        return new PelanggaranCollection($pelanggarans);
     }
-    
+
     public function store(Request $request)
     {
         //BUAT VALIDASI DATA
         $this->validate($request, [
-            'siswa_id' => 'required',
             'pelanggaran_tanggal' => 'required|date',
-            'mp_id' => 'required',
         ]);
-        $getPL = Pelanggaran::orderBy('id', 'DESC');
-        $rowCount = $getPL->count();
-        $lastId = $getPL->first();
-
-        if($rowCount==0) {
-            $kode = "PL".date('y').date('m').date('d')."001";    
-        } else {
-            if(substr($lastId->pelanggaran_kode,2,6) == date('y').date('m').date('d')) {
-            $counter = (int)substr($lastId->pelanggaran_kode,-3) + 1 ;
-                if($counter < 10) {
-                    $kode = "PL".date('y').date('m').date('d')."00".$counter;
-                } elseif ($counter < 100) {
-                    $kode = "PL".date('y').date('m').date('d')."0".$counter;
-                } else {
-                    $kode = "PL".date('y').date('m').date('d').$counter;
-                }
-            } else {
-                $kode = "PL".date('y').date('m').date('d')."001";
-            } 
-        }
         $user = $request->user();
-        Pelanggaran::create([
-            'pelanggaran_kode' => $kode,
-            'siswa_id' => $request->siswa_id['id'],
-            'mp_id' => $request->mp_id['id'],
-            'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
-            'pelanggaran_keterangan' => $request->pelanggaran_keterangan,
-            'user_id' => $user->id,
-            'unit_id' => $user->unit_id,
-            'periode_id' => $user->periode
-        ]);
+        if(empty($request->pelanggar)){
+            $getPL = Pelanggaran::orderBy('id', 'DESC');
+            $rowCount = $getPL->count();
+            $lastId = $getPL->first();
+
+            if($rowCount==0) {
+                $kode = "PL".date('y').date('m').date('d')."001";
+            } else {
+                if(substr($lastId->pelanggaran_kode,2,6) == date('y').date('m').date('d')) {
+                $counter = (int)substr($lastId->pelanggaran_kode,-3) + 1 ;
+                    if($counter < 10) {
+                        $kode = "PL".date('y').date('m').date('d')."00".$counter;
+                    } elseif ($counter < 100) {
+                        $kode = "PL".date('y').date('m').date('d')."0".$counter;
+                    } else {
+                        $kode = "PL".date('y').date('m').date('d').$counter;
+                    }
+                } else {
+                    $kode = "PL".date('y').date('m').date('d')."001";
+                }
+            }
+            Pelanggaran::create([
+                'pelanggaran_kode' => $kode,
+                'siswa_id' => $request->siswa_id['id'],
+                'mp_id' => $request->mp_id['id'],
+                'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
+                'pelanggaran_keterangan' => $request->pelanggaran_keterangan,
+                'user_id' => $user->id,
+                'unit_id' => $user->unit_id,
+                'periode_id' => $user->periode
+            ]);
+        } else {
+            foreach($request->pelanggar as $row) {
+                $getPL = Pelanggaran::orderBy('id', 'DESC');
+                $rowCount = $getPL->count();
+                $lastId = $getPL->first();
+
+                if($rowCount==0) {
+                    $kode = "PL".date('y').date('m').date('d')."001";
+                } else {
+                    if(substr($lastId->pelanggaran_kode,2,6) == date('y').date('m').date('d')) {
+                    $counter = (int)substr($lastId->pelanggaran_kode,-3) + 1 ;
+                        if($counter < 10) {
+                            $kode = "PL".date('y').date('m').date('d')."00".$counter;
+                        } elseif ($counter < 100) {
+                            $kode = "PL".date('y').date('m').date('d')."0".$counter;
+                        } else {
+                            $kode = "PL".date('y').date('m').date('d').$counter;
+                        }
+                    } else {
+                        $kode = "PL".date('y').date('m').date('d')."001";
+                    }
+                }
+
+
+                Pelanggaran::create([
+                    'pelanggaran_kode' => $kode,
+                    'siswa_id' => $row['siswa']['id'],
+                    'mp_id' => $row['mp_id']['id'],
+                    'pelanggaran_tanggal' => $request->pelanggaran_tanggal,
+                    'user_id' => $user->id,
+                    'unit_id' => $user->unit_id,
+                    'periode_id' => $user->periode
+                ]);
+                //return response()->json(['status' => 'success']);
+
+            }
+        }
         return response()->json(['status' => 'success']);
     }
 

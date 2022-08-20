@@ -4,7 +4,23 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6" >
-                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('my-modal')">Tambah</b-button>
+                        <b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('my-modal')">Add</b-button>
+                        <b-button variant="success" size="sm" v-b-modal="'add-grup'" @click="$bvModal.show('add-grup')">Add-Grup</b-button>
+                        <b-modal id="add-grup" size="md">
+                            <template v-slot:modal-title>
+                                Tambah Kitir
+                            </template>
+                            <add-grup-form></add-grup-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"
+                                    block @click="simpanKSbaru"
+                                >
+                                    Simpan
+                                </b-button>
+                            </template>
+                        </b-modal>
                         <b-modal id="add-modal">
                             <template v-slot:modal-title>
                                 Tambah Kitir
@@ -13,7 +29,7 @@
                             <template v-slot:modal-footer>
                                 <b-button
                                     variant="success"
-                                    class="mt-3"                                    
+                                    class="mt-3"
                                     block @click="simpanKSbaru"
                                 >
                                     Simpan
@@ -28,7 +44,7 @@
                             <template v-slot:modal-footer>
                                 <b-button
                                     variant="success"
-                                    class="mt-3"                                    
+                                    class="mt-3"
                                     block @click="editKSsaja"
                                 >
                                     Update
@@ -44,21 +60,30 @@
                 </div>
             </div>
             <div class="panel-body">
-              
+
               	<!-- TKSLE UNTUK MENAMPILKAN LIST KITIR -->
-                <b-table striped hover bordered :items="kitirs.data" :fields="fields" show-empty>                	
+                <b-table striped hover bordered :items="kitirs.data" :fields="fields" show-empty>
                     <template v-slot:cell(siswa_id)="row">
-                        {{ row.item.siswa_id ? row.item.siswa.siswa_nama:'-' }}
+                        {{ row.item.siswa_id ? row.item.siswa.s_nama:'-' }}
+                        <div class="badge badge-primary" v-if="row.item.kelas.substr(0, 2)=='IX'">{{row.item.kelas}}</div>
+                        <div class="badge badge-danger" v-else-if="row.item.kelas.substr(0, 4)=='VIII'">{{row.item.kelas}}</div>
+                        <div class="badge badge-warning" v-else>{{row.item.kelas}}</div>
+
+                    </template>
+                    <template v-slot:cell(ks_tanggal)="row">
+                        <div class="badge badge-info">{{ row.item.ks_tanggal | formatDateView }}</div><br>
+                        <div class="badge badge-success" v-if="row.item.ks_start!=null">JP{{ row.item.ks_start }}</div>
+                        <div class="badge badge-danger" v-if="row.item.ks_end!=null">JP{{ row.item.ks_end }}</div>
                     </template>
                     <template v-slot:cell(status)="row">
-                        <div class="badge badge-warning">{{ row.item.creator_id ? row.item.creator.name:'-' }}<br>{{ row.item.last_at }}</div><br>
-                        <div class="badge badge-success" v-if="row.item.approve_by != null">{{ row.item.approve_by ? row.item.approve.name:null }} <br> {{ row.item.approve_at }}</div>
+                        <div class="badge badge-dark">{{ row.item.creator_id ? row.item.creator.name:'-' }}</div><br>
+                        <div class="badge badge-success" v-if="row.item.approve_by != null">{{ row.item.approve_by ? row.item.approve.name:null }}</div>
                     </template>
                     <template v-slot:cell(actions)="row">
                         <div class="btn-group">
                         <button class="btn btn-success btn-sm" v-if="(authenticated.role==0 || authenticated.role==4) && row.item.ks_status != 1" @click="updateKSStatus(row.item,1)"><i class="far fa-check-circle"></i></button>
-                        <button class="btn btn-warning btn-sm" @click="editKS(row.item.ks_kode)" v-if="row.item.ks_status != 1 || authenticated.role==0"><i class="fa fa-edit"></i></button>
-                        <button class="btn btn-danger btn-sm" @click="deleteKitir(row.item.id)" v-if="row.item.ks_status != 1 || authenticated.role==0"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-warning btn-sm" @click="editKS(row.item.ks_kode)" v-if="authenticated.id==row.item.creator_id || authenticated.role==0"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-danger btn-sm" @click="deleteKitir(row.item.id)" v-if="authenticated.id==row.item.creator_id || authenticated.role==0"><i class="fa fa-trash"></i></button>
                         </div>
                     </template>
                 </b-table>
@@ -88,6 +113,8 @@
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex'
 import FormKitir from './Form.vue'
+import AddGrup from './addGrupForm.vue'
+
 
 export default {
     name: 'DataKitir',
@@ -137,12 +164,14 @@ export default {
     methods: {
         ...mapActions('kitirsiswa', ['editKitir','getKitir', 'removeKitir','submitKitir','updateKitir','updateStatus']),
         ...mapMutations('kitirsiswa', ['CLEAR_FORM']),
+
         updateKSStatus(ks,status){
             this.updateStatus({
                 ks: ks,
                 status: status
-            }),
-            this.getKitir(this.search)
+            }).then(() => {
+                this.getKitir(this.search)
+            })
         },
         editKSsaja(){
             this.updateKitir().then(() => {
@@ -159,6 +188,7 @@ export default {
         simpanKSbaru(){
             this.submitKitir().then(() => {
                 this.$bvModal.hide('add-modal'),
+                this.$bvModal.hide('add-grup'),
                 this.getKitir()
             })
         },
@@ -179,7 +209,8 @@ export default {
         }
     },
     components: {
-        'kitir-form': FormKitir
+        'kitir-form': FormKitir,
+        'add-grup-form': AddGrup,
     }
 }
 </script>

@@ -2,20 +2,43 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Database\QueryException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\MasterPelanggaranCollection;
 use App\MasterPelanggaran;
+use App\Pelanggaran;
 
 class MasterPelanggaranController extends Controller
 {
     public function index(Request $request) {
+        $user = $request->user();
         $MP = MasterPelanggaran::orderBy('mp_pelanggaran', 'ASC');
+        if (request()->category != '') {
+            $MP = $MP->where('mp_kategori',request()->category);
+        }
         if (request()->q != '') {
             $MP = $MP->where('mp_pelanggaran', 'LIKE', '%' . request()->q . '%')
                              ->orWhere('mp_kategori', 'LIKE', '%' . request()->q . '%');
         }
-        return new MasterPelanggaranCollection($MP->paginate(10));
+        $MP = $MP->paginate(10);
+        if (request()->siswa != '') {
+            foreach($MP as $row){
+                try {
+                    $total = Pelanggaran::where('mp_id', $row['id'])
+                                    ->where('siswa_id', $request->siswa)
+                                    ->where('periode_id', $user->periode)
+                                    ->count();
+                    $row['total'] = $total;
+                }
+                catch(QueryException $e){
+                    $total = 0;
+                }
+
+            }
+
+        }
+        return new MasterPelanggaranCollection($MP);
     }
 
     public function store(Request $request)
@@ -50,7 +73,7 @@ class MasterPelanggaranController extends Controller
             'mp_poin' => 'required|integer'
         ]);
 
-        $MP = MasterPelanggaran::whereId($request->id)->first();                                                                                                                                                                                                                                                                                                                                                                                                  
+        $MP = MasterPelanggaran::whereId($request->id)->first();
         $MP->update($request->except('id'));
         return response()->json(['status' => 'success'], 200);
     }

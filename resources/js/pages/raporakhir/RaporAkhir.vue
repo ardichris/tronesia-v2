@@ -43,6 +43,25 @@
                                 <option v-if="exportParameter.grup=='Jenjang'">7</option>
                                 <option v-if="exportParameter.grup=='Jenjang'">8</option>
                                 <option v-if="exportParameter.grup=='Jenjang'">9</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VII-1</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VII-2</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VII-3</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VII-4</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VII-5</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VII-6</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VII-7</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VII-8</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VII-9</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-1</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-2</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-3</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-4</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-5</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-6</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-7</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-8</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-9</option>
+                                <option v-if="exportParameter.grup=='Kelas'">VIII-10</option>
                                 <option v-if="exportParameter.grup=='Kelas'">IX-1</option>
                                 <option v-if="exportParameter.grup=='Kelas'">IX-2</option>
                                 <option v-if="exportParameter.grup=='Kelas'">IX-3</option>
@@ -225,6 +244,7 @@
                                             <option>Origami</option>
                                             <option>Otomotif</option>
                                             <option>Paduan Suara</option>
+                                            <option>Pemrograman</option>
                                             <option>Pianika</option>
                                             <option>Piano</option>
                                             <option>Polo Air</option>
@@ -318,6 +338,7 @@
                                             <option>Origami</option>
                                             <option>Otomotif</option>
                                             <option>Paduan Suara</option>
+                                            <option>Pemrograman</option>
                                             <option>Pianika</option>
                                             <option>Piano</option>
                                             <option>Polo Air</option>
@@ -512,7 +533,7 @@
                     <template v-slot:modal-title>
                         Preview Rapor Akhir
                     </template>
-                    <rapor-akhir-form v-if="authenticated.unit_id == 1"></rapor-akhir-form>
+                    <rapor-akhir-form></rapor-akhir-form>
                 </b-modal>
                 <b-modal id="modal-raporpetra-view" scrollable size="lg" hide-footer>
                     <template v-slot:modal-title>
