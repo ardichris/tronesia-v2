@@ -4,9 +4,9 @@
             <label for="">Mata Pelajaran</label>
             <v-select :options="mapels.data"
                 v-model="kompetensi.kompetensi_mapel"
-                @search="onSearch" 
+                @search="onSearch"
                 label="mapel_kode"
-                placeholder="Masukkan Kata Kunci" 
+                placeholder="Masukkan Kata Kunci"
                 :disabled="$route.name == 'kompetensi.view'"
                 :filterable="false">
                 <template slot="no-options">
@@ -21,7 +21,7 @@
         <div class="form-group" :class="{ 'has-error': errors.kompetensi_jenjang }">
             <label for="">Jenjang</label>
             <v-select :options="['7', '8', '9', '10', '11', '12']"
-                        v-model="kompetensi.kompetensi_jenjang"                      
+                        v-model="kompetensi.kompetensi_jenjang"
                         :value="kompetensi.kompetensi_jenjang"
                         >
             </v-select>
@@ -29,7 +29,7 @@
         </div>
         <div class="form-group" :class="{ 'has-error': errors.kd_kode }">
             <label for="">Kode Kompetensi Dasar</label>
-             <input type="text" class="form-control" v-model="kompetensi.kd_kode" :readonly="$route.name == 'kompetensi.view'"></textarea>
+            <input type="text" class="form-control" v-model="kompetensi.kd_kode" :readonly="$route.name == 'kompetensi.view'"></input>
             <p class="text-danger" v-if="errors.kd_kode">{{ errors.kd_kode[0] }}</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.kompetensi_deskripsi }">

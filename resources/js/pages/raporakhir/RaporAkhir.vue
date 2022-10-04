@@ -5,6 +5,7 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan')" v-if="authenticated.role==0">Upload Sisipan</b-button>
+                        <b-button variant="primary" size="sm" v-b-modal="'setting-sisipan'" @click="settingsisipan" v-if="authenticated.role==0">Setting Sisipan</b-button>
                         <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-import')"  v-if="authenticated.role==0">Upload Ledger</b-button>
                         <b-button variant="warning" size="sm" v-b-modal="'modal-export'" @click="$bvModal.show('modal-export')"  v-if="authenticated.role==0">Export</b-button>
                     </div>
@@ -478,10 +479,61 @@
                         </b-button>
                     </template>
                 </b-modal>
-                <b-modal id="modal-sisipan-biblical" scrollable size="sm">
+                <b-modal id="setting-sisipan" scrollable size="md">
                     <template v-slot:modal-title>
-                        Catatan Walikelas
+                        Setting Rapor Sisipan
                     </template>
+                    <div class="form-group" v-for="item in mapel_sisipan">
+                        <label>{{item}}</label>
+                        <div class="row">
+                            <div class="col md-3" v-for="(items, index) in field_sisipan">
+                                <v-select
+                                    :options="filterTP(item)"
+                                    :filterable="false"
+                                    label="kd_kode"
+                                    v-model="settingTP.field[item][items]">
+
+                                    <template slot="no-options">
+                                        Masukkan Kata Kunci
+                                    </template>
+                                    <template slot="option" slot-scope="option">
+                                        {{ option.kd_kode }}
+                                    </template>
+                                    <template slot="selected-option" slot-scope="option">
+                                        <span class="badge badge-primary">{{ option.kd_kode }}</span>
+                                    </template>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="primary"
+                            class="mt-3"
+                            block  @click="submitSetting()"
+                        >
+                            Submit
+                        </b-button>
+                    </template>
+                </b-modal>
+                <b-modal id="modal-input-sisipan" scrollable size="sm">
+                    <template v-slot:modal-title>
+                        Rapor Sisipan
+                    </template>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label>Sakit</label>
+                            <input type="number" class="form-control" v-model="raporSisipan.rs_absensi_sakit">
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Ijin</label>
+                            <input type="number" class="form-control" v-model="raporSisipan.rs_absensi_ijin">
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Alpha</label>
+                            <input type="number" class="form-control" v-model="raporSisipan.rs_absensi_alpha">
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label>Ayat Alkitab</label>
                         <input type="text" class="form-control" v-model="raporSisipan.rs_catatan_ayat">
@@ -489,6 +541,50 @@
                     <div class="form-group">
                         <label>Isi Ayat</label>
                         <textarea cols="6" rows="5" class="form-control" v-model="raporSisipan.rs_catatan_isi" ></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Catatan Wali Kelas</label>
+                        <textarea cols="6" rows="5" class="form-control" v-model="raporSisipan.rs_catatan_pesan" ></textarea>
+                    </div>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"
+                            block  @click="addSisipan()"
+                        >
+                            Simpan
+                        </b-button>
+                    </template>
+                </b-modal>
+                <b-modal id="modal-sisipan-biblical" scrollable size="sm">
+                    <template v-slot:modal-title>
+                        Edit Rapor Sisipan
+                    </template>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label>Sakit</label>
+                            <input type="number" class="form-control" v-model="raporSisipan.rs_absensi_sakit">
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Ijin</label>
+                            <input type="number" class="form-control" v-model="raporSisipan.rs_absensi_ijin">
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Alpha</label>
+                            <input type="number" class="form-control" v-model="raporSisipan.rs_absensi_alpha">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ayat Alkitab</label>
+                        <input type="text" class="form-control" v-model="raporSisipan.rs_catatan_ayat">
+                    </div>
+                    <div class="form-group">
+                        <label>Isi Ayat</label>
+                        <textarea cols="6" rows="5" class="form-control" v-model="raporSisipan.rs_catatan_isi" ></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Catatan Walikelas</label>
+                        <textarea cols="6" rows="5" class="form-control" v-model="raporSisipan.rs_catatan_pesan" ></textarea>
                     </div>
                     <template v-slot:modal-footer>
                         <b-button
@@ -529,6 +625,12 @@
                     <rapor-sisipan-form v-if="authenticated.unit_id == 1"></rapor-sisipan-form>
                     <rapor-sisipanP2-form v-if="authenticated.unit_id == 3"></rapor-sisipanP2-form>
                 </b-modal>
+                <b-modal id="modal-sisipan-kurmer-preview" scrollable size="lg" hide-footer>
+                    <template v-slot:modal-title>
+                        Preview Rapor Sisipan
+                    </template>
+                    <rapor-sisipan-kurmer-form v-if="authenticated.unit_id == 1"></rapor-sisipan-kurmer-form>
+                </b-modal>
                 <b-modal id="modal-rapor-preview" scrollable size="lg" hide-footer>
                     <template v-slot:modal-title>
                         Preview Rapor Akhir
@@ -548,9 +650,12 @@
                         {{row.item.siswa.s_nama}}
                     </template>
                     <template v-slot:cell(sisipan)="row">
-                        <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-' && authenticated.unit_id == 1" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-church"></i></b-button>
-                        <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'" @click="previewSisipan(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i></b-button>
-                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'"><i class="fa fa-file-pdf"></i></b-button>
+                        <b-button variant="success" size="sm" v-if="row.item.RaporSisipan == '-'&&row.item.kelas.kelas_jenjang=='7'" @click="inputRaporSisipan(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
+                        <!-- <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-' && row.item.kelas.kelas_jenjang!='7'" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-church"></i></b-button> -->
+                        <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-'" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-edit"></i></b-button>
+                        <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang!='7'" @click="previewSisipan(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i></b-button>
+                        <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang=='7'" @click="previewSisipanKurmer(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i></b-button>
+                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'&& authenticated.role==0"><i class="fa fa-file-pdf"></i></b-button>
                     </template>
                     <template v-slot:cell(akhir)="row">
                         <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-' && authenticated.unit_id == 1" @click="commentRapor(row.item.RaporAkhir.id)"><i class="fa fa-church"></i></b-button>
@@ -591,11 +696,14 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 import FormRaporSisipan from './RaporSisipanForm.vue'
+import FormRaporSisipanKurmer from './RaporSisipanKurmerForm.vue'
 import FormRaporSisipanP2 from './RaporSisipanFormP2.vue'
 import FormRaporAkhir from './RaporAkhirForm.vue'
 import ViewRaporPetra from './RaporPetraView.vue'
+import vSelect from 'vue-select'
+
 
 export default {
     name: 'DataRaporAkhir',
@@ -606,6 +714,10 @@ export default {
     },
     data() {
         return {
+            mapel_sisipan : ['PAK','PKN','BIN','BIG','MAT','BIO','FIS',
+                             'EKO','GEO','SEJ','SNR','SNM','MEK','TIK',
+                             'ORG','JWA','MAN'],
+            field_sisipan : ['1','2','3','4'],
             fields: [
                 { key: 's_nama', label: 'Nama Siswa' },
                 { key: 'sisipan', label: 'Rapor Sisipan' },
@@ -618,6 +730,7 @@ export default {
         }
     },
     computed: {
+
         ...mapState('user', {
             authenticated: state => state.authenticated
         }),
@@ -626,7 +739,9 @@ export default {
             raporSisipan: state => state.raporsisipan,
             raporAkhir: state => state.raporakhir,
             raporPetra: state => state.raporpetra,
-            exportParameter: state => state.exportParameter
+            exportParameter: state => state.exportParameter,
+            kompetensi: state => state.kompetensi,
+            settingTP: state => state.settingTP
         }),
         ...mapState(['token']),
         page: {
@@ -652,7 +767,30 @@ export default {
         }
     },
     methods: {
-        ...mapActions('raporakhir', ['exportRapor','viewRaporSisipan','getRapor','uploadLedger','submitRaporSisipan','viewRaporAkhir','submitRaporAkhir','addRaporPetra','submitNilaiPetra','editNilaiPetra']),
+        ...mapActions('raporakhir', ['exportRapor',
+                                    'viewRaporSisipan',
+                                    'viewRaporSisipanKurmer',
+                                    'getRapor',
+                                    'uploadLedger',
+                                    'submitRaporSisipan',
+                                    'viewRaporAkhir',
+                                    'submitRaporAkhir',
+                                    'addRaporPetra',
+                                    'submitNilaiPetra',
+                                    'editNilaiPetra',
+                                    'getKompetensi',
+                                    'setTP',
+                                    'getSettingSisipan',
+                                    'tambahSisipan']),
+        ...mapMutations('raporakhir', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
+        submitSetting(){
+            this.setTP().then(()=>{
+                this.$bvModal.hide('setting_sisipan')
+            })
+        },
+        filterTP(mapel){
+          return this.kompetensi.filter(item => item.kompetensi_mapel === mapel)
+        },
         submitExport(){
             window.open(`/api/exportrapor?api_token=${this.token}&file=${this.exportParameter.file}&rapor=${this.exportParameter.rapor}&grup=${this.exportParameter.grup}&detail=${this.exportParameter.detail}`,)
             // this.exportRapor().then(() => {
@@ -668,11 +806,25 @@ export default {
                 })
             })
         },
+        addSisipan(){
+            this.submitRaporSisipan().then(() => {
+                this.$bvModal.hide('modal-input-sisipan')
+                this.getRapor({
+                    search: ''
+                })
+            })
+        },
         submitCatatan(rapor){
             if(rapor=='sisipan'){
                 this.submitRaporSisipan()
                 .then(() => {
                     this.$bvModal.hide('modal-sisipan-biblical')
+                    .then(() => {
+                        this.getRapor({
+                            search: ''
+                        })
+                    })
+
                 })
             }
             if(rapor=='rapor'){
@@ -687,6 +839,13 @@ export default {
                 uuid: rapor
             }).then(() => {
                 this.$bvModal.show('modal-sisipan-preview')
+            })
+        },
+        previewSisipanKurmer(rapor){
+            this.viewRaporSisipanKurmer({
+                uuid: rapor
+            }).then(() => {
+                this.$bvModal.show('modal-sisipan-kurmer-preview')
             })
         },
         previewRapor(rapor){
@@ -704,6 +863,12 @@ export default {
         inputRaporPetra(siswa){
            this.$store.commit('raporakhir/SET_SISWA', siswa)
             this.$bvModal.show('modal-input-raporpetra')
+        },
+        inputRaporSisipan(siswa){
+           this.CLEAR_FORM()
+           this.raporSisipan.id = siswa
+            this.$bvModal.show('modal-input-sisipan')
+
         },
         editRaporPetra(rapor){
             this.editNilaiPetra(rapor)
@@ -755,14 +920,23 @@ export default {
                     title: 'Import Rapor Gagal'
                 })
             })
+        },
+        settingsisipan(){
+            this.getSettingSisipan()
+            this.getKompetensi().then(()=>{
+                this.$bvModal.show('setting-sisipan')
+            })
         }
 
     },
     components: {
         'rapor-sisipan-form': FormRaporSisipan,
+        'rapor-sisipan-kurmer-form': FormRaporSisipanKurmer,
         'rapor-sisipanP2-form': FormRaporSisipanP2,
         'rapor-akhir-form': FormRaporAkhir,
-        'rapor-petra-view': ViewRaporPetra
+        'rapor-petra-view': ViewRaporPetra,
+        vSelect
+
     }
 }
 </script>

@@ -16,19 +16,19 @@
             <p class="text-warning" v-if="$route.name == 'teachers.edit'">Leave blank if you don't want to change password</p>
             <p class="text-danger" v-if="errors.password">{{ errors.password[0] }}</p>
         </div>
-        <div class="form-group" :class="{ 'has-error': errors.role }" v-if="authenticated.role==0">
+        <div class="form-group" :class="{ 'has-error': errors.role }" v-if="authenticated.role==10">
             <label for="">Role</label>
             <input type="text" class="form-control" v-model="teacher.role" :readonly="$route.name == 'teachers.view'">
             <p class="text-danger" v-if="errors.role">{{ errors.role[0] }}</p>
         </div>
-        <div class="form-group" :class="{ 'has-error': errors.unit_id }">
+        <div class="form-group" :class="{ 'has-error': errors.unit_id }" v-if="authenticated.role==10">
             <label for="">Unit Kerja</label>
             <v-select :options="units.data"
                 v-model="teacher.unit_id"
                 @search="onSearch"
                 :value="$store.myValue"
                 label="unit_kode"
-                placeholder="Pilih Unit Kerja" 
+                placeholder="Pilih Unit Kerja"
                 :filterable="false">
                 <template slot="no-options">
                     Masukkan Kata Kunci
@@ -56,7 +56,7 @@ import 'vue-select/dist/vue-select.css'
 import _ from 'lodash'
 export default {
     name: 'FormTeacher',
-    created() { 
+    created() {
         if (this.$route.name == 'teachers.edit' || this.$route.name == 'teachers.view') {
             this.editTeacher(this.$route.params.id).then((res) => {
                 this.teacher = {

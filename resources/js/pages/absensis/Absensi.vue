@@ -101,20 +101,21 @@
               	<!-- TABLE UNTUK MENAMPILKAN LIST PELANGGARAN -->
                 <b-table striped hover bordered :items="absensis.data" :fields="fields" show-empty>
                     <template v-slot:cell(siswa_id)="row">
-                        {{ row.item.siswa_id ? row.item.siswa.s_nama:'-' }}
+                        {{ row.item.siswa_id ? row.item.siswa.s_nama:'-' }}<br>
                         <div class="badge badge-primary" v-if="row.item.kelas.substr(0, 2)=='IX'">{{row.item.kelas}}</div>
                         <div class="badge badge-danger" v-else-if="row.item.kelas.substr(0, 4)=='VIII'">{{row.item.kelas}}</div>
-                        <div class="badge badge-warning" v-else>{{row.item.kelas}}</div><br>
-                        <button class="badge badge-success" @click="ceksiswa(row.item.siswa.uuid)">detail</button>
+                        <div class="badge badge-warning" v-else>{{row.item.kelas}}</div>
+                        <button class="badge badge-success" @click="ceksiswa(row.item.siswa.uuid)"><i class="fa fa-search"></i></button>
                     </template>
                     <template v-slot:cell(ab_status)="row">
                         <span class="badge badge-success" v-if="row.item.ab_status == 'Approved'">Approved</span>
                         <span class="badge badge-danger" v-else-if="row.item.ab_status == 2">Rejected</span>
-                        <span class="badge badge-warning" v-else-if="row.item.ab_status == 'Issued'">Issued</span>
+                        <span class="badge badge-info" v-else-if="row.item.ab_status == 'Issued'">Issued</span>
                         <span class="badge badge-dark" v-else-if="row.item.ab_status == 3">Archived</span>
                     </template>
                     <template v-slot:cell(actions)="row">
                         <button class="btn btn-success btn-sm" v-if="(authenticated.role==0 || authenticated.role==5) && row.item.ab_status != 'Approved'" @click="updateABStatus(row.item.absensi_kode,'Approved')"><i class="far fa-check-circle"></i></button>
+                        <button class="btn btn-info btn-sm" v-if="(authenticated.role==0 || authenticated.role==5) && row.item.ab_status == 'Approved'" @click="updateABStatus(row.item.absensi_kode,'Issued')"><i class="fa fa-clock"></i></button>
                         <button class="btn btn-warning btn-sm" v-if="authenticated.id==(row.item.created_by && row.item.ab_status!='Approved') || authenticated.role == 0" @click="editAB(row.item.absensi_kode)"><i class="fa fa-edit"></i></button>
                         <button class="btn btn-danger btn-sm" v-if="authenticated.id==(row.item.created_by && row.item.ab_status!='Approved') || authenticated.role == 0" @click="deleteAbsensi(row.item.id)"><i class="fa fa-trash"></i></button>
                     </template>
@@ -232,7 +233,7 @@ export default {
         editABsaja(){
             this.updateAbsensi().then(() => {
                 this.$bvModal.hide('edit-modal'),
-                this.getAbsensi()
+                this.refreshdata()
             })
         },
         editAB(kode){

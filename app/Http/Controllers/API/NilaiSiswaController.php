@@ -44,134 +44,157 @@ class NilaiSiswaController extends Controller
             $ampu = request()->kelas;
         }
 
-        $kelas = KelasAnggota::where('kelas_id', $ampu)->orderBy('absen')->pluck('siswa_id');
-        $nilaisiswa = Siswa::whereIn('id', $kelas)
+        $kelas = KelasAnggota::where('kelas_id', $ampu)->orderBy('absen')->get();
+        $anggota = $kelas->pluck('siswa_id');
+        $nilaisiswa = Siswa::whereIn('id', $anggota)
                             ->select('s_nama','id')
-                            //->orderBy('s_nama','ASC')
                             ->get();
-
-        if(request()->jenis=='KI1' || request()->jenis=='KI2') {
-            foreach($nilaisiswa as $key=>$row){
-                $nilai = NilaiSiswa::where('siswa_id',$row->id)
-                                    ->where('periode_id', $user->periode);
-                $jenis = request()->jenis;
-                $nilaisiswa[$key][$jenis.'1'] = $nilai->where('ns_jenis_nilai',$jenis.'1')->value('ns_nilai');
-                $nilaisiswa[$key][$jenis.'2'] = $nilai->where('ns_jenis_nilai',$jenis.'2')->value('ns_nilai');
-                $nilaisiswa[$key][$jenis.'3'] = $nilai->where('ns_jenis_nilai',$jenis.'3')->value('ns_nilai');
-                $nilaisiswa[$key][$jenis.'4'] = $nilai->where('ns_jenis_nilai',$jenis.'4')->value('ns_nilai');
-                $nilaisiswa[$key][$jenis.'5'] = $nilai->where('ns_jenis_nilai',$jenis.'5')->value('ns_nilai');
-                $nilaisiswa[$key][$jenis.'6'] = $nilai->where('ns_jenis_nilai',$jenis.'6')->value('ns_nilai');
-                $nilaisiswa[$key][$jenis.'7'] = $nilai->where('ns_jenis_nilai',$jenis.'7')->value('ns_nilai');
-
-            }
-        } else {
-            foreach($nilaisiswa as $key=>$row){
-                $nilai = NilaiSiswa::where('siswa_id',$row->id)
-                                    ->where('mapel_id', request()->mapel)
-                                    ->where('ns_jenis_nilai', request()->jenis)
-                                    //->where('kompetensi_id', request()->kd)
-                                    ->where('periode_id', $user->periode);
-                if($request->kd != ''){
-                    $nilai = $nilai->where('kompetensi_id', request()->kd);
+        foreach($nilaisiswa as $key=>$row){
+            foreach($kelas as $keykelas=>$rowkelas){
+                if($row->id==$rowkelas->siswa_id){
+                    $row['absen'] = $rowkelas->absen;
                 }
-                $nilaisiswa[$key]['nilai'] = $nilai->value('ns_nilai');
-                $nilaisiswa[$key]['id_nilai'] = $nilai->value('id');
-                $nilaisiswa[$key]['sisipan'] = $nilai->value('ns_sisipan');
-                //$row = array("nilai" => $nilai->ns_nilai);
             }
         }
-        //return response()->json(['status' => 'success', 'data' => 'data'], 200);
+
+        //return response()->json(['status' => 'success', 'data' => $nilaisiswa], 200);
+        $nilaisiswa = $nilaisiswa->toArray();
+        $absen = array_column($nilaisiswa, 'absen');
+        array_multisort($absen, SORT_ASC, $nilaisiswa);
+        $counter=0;
+        foreach($nilaisiswa as $key=>$row){
+            $counter++;
+            $nilai = NilaiSiswa::where('siswa_id',$row['id'])
+                                ->where('mapel_id', request()->mapel)
+                                ->where('ns_jenis_nilai', request()->jenis)
+                                ->where('periode_id', $user->periode);
+            if($request->kd != ''){
+                $nilai = $nilai->where('kompetensi_id', request()->kd);
+            }
+            $nilaisiswa[$key]['id_nilai'] = $nilai->value('id');
+            $nilaisiswa[$key]['ns_tes'] = $nilai->value('ns_tes');
+            $nilaisiswa[$key]['ns_remidi'] = $nilai->value('ns_remidi');
+            if(request()->jenis=='NTT'){
+                $nilaisiswa[$key]['ns_tugas'] = $nilai->value('ns_tugas');
+                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(IF(OR(ISBLANK(F'.$counter.'),AVERAGE(D'.$counter.':E'.$counter.')>75),AVERAGE(D'.$counter.':E'.$counter.'),IF(F'.$counter.'>75,AVERAGE(D'.$counter.',75),AVERAGE(D'.$counter.',MAX(E'.$counter.':F'.$counter.')))),0),"")';
+            } else {
+                $nilaisiswa[$key]['ns_nilai'] = '=IF(ISBLANK(D'.$counter.'),"",ROUND(IF(D'.$counter.'>75,D'.$counter.',IF(MAX(D'.$counter.':E'.$counter.')>75,75,MAX(D'.$counter.':E'.$counter.'))),0))';
+            }
+            //$nilaisiswa[$key]['sisipan'] = $nilai->value('ns_sisipan');
+            //$row = array("nilai" => $nilai->ns_nilai);
+        }
+
 
         return response()->json(['status' => 'success', 'data' => $nilaisiswa], 200);
+
     }
-    
-    // public function index(Request $request) {
-    //     $user = $request->user();
-    //     $pengetahuan = array('PHS','TGS');
-    //     $ketrampilan = array('PRK','PRD','PRY','PRT');
-    //     $jenis = request()->jenis;
-    //     $mapel = Mapel::where('id', request()->mapel)->first();
-    //     $kelas = Kelas::where('id', request()->kelas)->first();
-    //     $nilaisiswa['mapel'] = $mapel;
-    //     $nilaisiswa['mapelkode'] = $mapel->mapel_kode;
-    //     $nilaisiswa['kelas'] = $kelas;
-    //     $nilaisiswa['kelasnama'] = $kelas->kelas_nama;
-    //     $nilaisiswa['jenis'] = $jenis;
-    //     $nilaisiswa['siswa'] = Siswa::where('kelas_id', request()->kelas)
-    //                                 ->select('s_nama','id')
-    //                                 ->orderBy('s_nama','ASC')
-    //                                 ->get();
-    //     if(in_array($jenis,$pengetahuan)){
-    //         $sort = '3.';
-    //     } elseif(in_array($jenis,$ketrampilan)){
-    //         $sort = '4.';
-    //     } else {
-    //         $sort = null;
-    //     };
-    //     $kompetensi = Kompetensi::where('kompetensi_mapel', $mapel->mapel_kode)
-    //                             ->where('kompetensi_jenjang', $kelas->kelas_jenjang);
-    //     if(!is_null($sort)){
-    //         $kompetensi = $kompetensi->where('kd_kode', 'like', $sort.'%');
-    //         $komp = $kompetensi->get();
-    //         $nilaisiswa['kompetensi'] = $kompetensi->select('id','kd_kode')->get(); 
-    //     } else {
-    //         $nilaisiswa['kompetensi'] = ['PTS','PAS'];
-    //     }    
-    //     foreach ($nilaisiswa['siswa'] as $row) {
-    //         $count = 0;
-    //         $nilai = NilaiSiswa::where('siswa_id',$row->id)
-    //                             ->select('ns_nilai')
-    //                             ->where('unit_id',$user->unit_id)
-    //                             ->where('periode_id',$user->periode);
-    //             if (is_null($sort)){
-    //                 $ptspas = array('PTS','PAS');
-    //                 $row['nilai'] = $kompetensi->take(2)->get();                    
-    //                 foreach ($ptspas as $rowptspas) {                    
-    //                     $nilaiptspas = $nilai->where('ns_jenis_nilai',$rowptspas)
-    //                                         ->where('mapel_id',request()->mapel)->first();                   
-    //                     if(is_null($nilaiptspas)) {
-    //                         $nilaiptspas = "";
-    //                     };
-    //                     $row['nilai'][$count] = ['ns_nilai' => $nilaiptspas];
-    //                     $count = $count+1;
-    //                 }                    
-    //             } else {
-    //                 $row['nilai'] = $kompetensi->pluck('kd_kode');
-    //                 foreach ($komp as $rowkomp) { 
-    //                     $nilai = NilaiSiswa::where('siswa_id',$row->id)
-    //                                     ->select('ns_nilai')
-    //                                     ->where('unit_id',$user->unit_id)
-    //                                     ->where('periode_id',$user->periode)   
-    //                                     ->where('ns_jenis_nilai',$jenis)
-    //                                     ->where('kompetensi_id', $rowkomp['id']);           
-    //                     $row['nilai'][$count] = $nilai->first();
-    //                     if(is_null($row['nilai'][$count])) {
-    //                         $row['nilai'][$count] = array('ns_nilai' => "");
-    //                     };
-    //                     $count = $count+1;
-    //                 };
-    //             }
-    //         }; 
-    //     return response()->json(['status' => 'success', 'data' => $nilaisiswa], 200);
-    // }
-    
+
+
     public function store(Request $request){
         $user = $request->user();
         foreach($request->nilai as $row){
-            if(!is_null($row[3])){
-                NilaiSiswa::where('id',$row[3])->update(['ns_nilai' => $row[1], 'ns_sisipan' => $row[4]]);
+
+            $ns_final=null;
+
+            if(!is_null($row[1]) && is_null($row[0]) && (!is_null($row[3])||!is_null($row[4]))){
+                if($row[3]>100||$row[4]>100||$row[5]>100||$row[3]<0||$row[4]<0||$row[5]<0){
+                    continue;
+                }
+                if($request->jenis['value']=='NTT'){
+                    $ns_remidi_test=null;
+                    if(!is_null($row[4])&&!is_null($row[5])){
+                        $ns_remidi_test = max($row[4],$row[5]);
+                        if($ns_remidi_test>75) $ns_remidi_test=75;
+                    }
+                    if(!is_null($row[3])||!is_null($row[4])){
+                        if(!is_null($row[3])&&!is_null($row[4])){
+                            $array_nilai= [$row[3],$row[4]];
+                            $ns_final = round(array_sum($array_nilai)/count($array_nilai));
+                        } else {
+                            $ns_final = max($row[3],$row[4]);
+                        }
+                        if(!is_null($ns_remidi_test)){
+                            $ns_final = round(($row[3]+$ns_remidi_test)/2,0);
+                        }
+                    }
+
+                    NilaiSiswa::create(['siswa_id' => $row[1],
+                                        'mapel_id' => $request->kelas['mapel_id'],
+                                        'kompetensi_id' =>  $request->kd['id'],
+                                        'ns_jenis_nilai' => $request->jenis['value'],
+                                        'ns_tugas' => $row[3],
+                                        'ns_tes' => $row[4],
+                                        'ns_remidi' => $row[4]<75?$row[5]:null,
+                                        'ns_nilai' => $ns_final?round($ns_final,0):null,
+                                        //'ns_sisipan' => $row[4],
+                                        'periode_id' => $user->periode,
+                                        'user_id' => $user->id,
+                                        'unit_id' => $user->unit_id]);
+                } else {
+                    $ns_remidi_test=null;
+                    if($row[3]>100||$row[4]>100||$row[3]<0||$row[4]<0){
+                        continue;
+                    }
+                    if(!is_null($row[3])&&!is_null($row[4])){
+                        $ns_remidi_test = max($row[3],$row[4]);
+                        if($ns_remidi_test>75&&$row[3]<75) $ns_remidi_test=75;
+                    }
+                    NilaiSiswa::create(['siswa_id' => $row[1],
+                                        'mapel_id' => $request->kelas['mapel_id'],
+                                        'ns_jenis_nilai' => $request->jenis['value'],
+                                        'ns_tes' => $row[3],
+                                        'ns_remidi' => $row[3]<75?$row[4]:null,
+                                        'ns_nilai' => $ns_remidi_test?round($ns_remidi_test,0):$row[3],
+                                        //'ns_sisipan' => $row[4],
+                                        'periode_id' => $user->periode,
+                                        'user_id' => $user->id,
+                                        'unit_id' => $user->unit_id]);
+                }
             }
-            if(!is_null($row[1]) && is_null($row[3])){
-                NilaiSiswa::create(['siswa_id' => $row[2],
-                                    'mapel_id' => $request->kelas['mapel_id'],
-                                    'kompetensi_id' =>  $request->kd['id'],
-                                    'ns_jenis_nilai' => $request->jenis['value'],
-                                    'ns_nilai' => $row[1],
-                                    'ns_sisipan' => $row[4],
-                                    'periode_id' => $user->periode,
-                                    'user_id' => $user->id,
-                                    'unit_id' => $user->unit_id]);
+
+            if(!is_null($row[0])){
+                $nilai = NilaiSiswa::where('id',$row[0]);
+                if($row[3]>100||$row[4]>100||$row[5]>100||$row[3]<0||$row[4]<0||$row[5]<0){
+                    continue;
+                }
+                if($request->jenis['value']=='NTT'){
+                    $ns_remidi_test=null;
+                    if(!is_null($row[4])&&!is_null($row[5])){
+                        $ns_remidi_test = max($row[4],$row[5]);
+                        if($ns_remidi_test>75) $ns_remidi_test=75;
+                    }
+                    if(!is_null($row[3])||!is_null($row[4])){
+                        if(!is_null($row[3])&&!is_null($row[4])){
+                            $array_nilai= [$row[3],$row[4]];
+                            $ns_final = round(array_sum($array_nilai)/count($array_nilai));
+                        } else {
+                            $ns_final = max($row[3],$row[4]);
+                        }
+                        if(!is_null($ns_remidi_test)){
+                            $ns_final = round(($row[3]+$ns_remidi_test)/2,0);
+                        }
+                    }
+                    $nilai->update(['ns_tugas' => $row[3],
+                                    'ns_tes' => $row[4],
+                                    'ns_remidi' => $row[4]<75?$row[5]:null,
+                                    'ns_nilai' => $ns_final?round($ns_final,0):null
+                                ]);
+                } else {
+                    $ns_remidi_test=null;
+                    if($row[3]>100||$row[4]>100||$row[3]<0||$row[4]<0){
+                        continue;
+                    }
+                    if(!is_null($row[3])&&!is_null($row[4])){
+                        $ns_remidi_test = max($row[3],$row[4]);
+                        if($ns_remidi_test>75&&$row[3]<75) $ns_remidi_test=75;
+                    }
+                    $nilai->update(['ns_tes' => $row[3],
+                                    'ns_remidi' => $row[3]<75?$row[4]:null,
+                                    'ns_nilai' => $ns_remidi_test?round($ns_remidi_test,0):$row[3]]);
+                }
+
             }
+
         }
 
         // $this->validate($request, [
@@ -181,7 +204,7 @@ class NilaiSiswaController extends Controller
         // foreach( $request->siswa as $rowsiswa){
         //     $count=0;
         //     if ($request->jenis != 'PTSPAS') {
-        //         foreach( $rowsiswa['nilai'] as $rownilai){                
+        //         foreach( $rowsiswa['nilai'] as $rownilai){
         //             $nilai = NilaiSiswa::where('siswa_id',$rowsiswa['id'])
         //                                 ->where('mapel_id',$request->mapel['id'])
         //                                 ->where('kompetensi_id',$request->kompetensi[$count]['id'])
@@ -202,7 +225,7 @@ class NilaiSiswaController extends Controller
 
         //             } else {
         //                 $nilai->update(['ns_nilai' => $rownilai['ns_nilai']]);
-                                                                    
+
         //             }
         //             $count = $count + 1;
         //         }
@@ -229,11 +252,11 @@ class NilaiSiswaController extends Controller
         //             }
         //             $count = $count + 1;
         //         }
-        //     }   
-               
+        //     }
+
         // }
         return response()->json(['status' => 'success'], 200);
     }
 
-    
+
 }

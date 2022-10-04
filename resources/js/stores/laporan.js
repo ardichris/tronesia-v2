@@ -4,11 +4,12 @@ const state = () => ({
     absensis: [],
     kelas: [],
     siswa: [],
-    rekap:[],
+    rekap:null,
+    total:null,
 
     laporanabsensi: {
-        siswa: [],
-        kelas: [],
+        siswa: null,
+        kelas: null,
         start: '',
         end: ''
     },
@@ -27,7 +28,8 @@ const mutations = {
 
     ABSENSI_DATA(state, payload) {
         state.absensis = payload
-        state.rekap = payload.total
+        state.total = payload.total
+        state.rekap = payload.rekap
     },
     REKAP_DATA(state, payload) {
         state.rekap = payload
@@ -43,8 +45,8 @@ const mutations = {
         state.siswa= [],
 
         state.laporanabsensi= {
-            siswa: [],
-            kelas: [],
+            siswa: null,
+            kelas: null,
             start: '',
             end: ''
         }
@@ -55,15 +57,19 @@ const actions = {
     searchAbsensi({commit,state}, payload){
         let start = state.laporanabsensi.start
         let end = state.laporanabsensi.end
-        let siswa = state.laporanabsensi.siswa != 'undefined'?'':state.laporanabsensi.siswa.uuid
-        let kelas = state.laporanabsensi.kelas != 'undefined'?'':state.laporanabsensi.kelas.id
-        return new Promise((resolve) => {
+        let siswa = state.laporanabsensi.siswa == null? '':state.laporanabsensi.siswa.uuid
+        let kelas = state.laporanabsensi.kelas == null? '':state.laporanabsensi.kelas
+        return new Promise((resolve,reject) => {
             $axios.get(`/laporan/kesiswaan/absensi?start=${start}&end=${end}&siswa=${siswa}&kelas=${kelas}`)
             .then((response) => {
                 commit('ABSENSI_DATA', response.data)
-                //commit('REKAP_DATA', response.data.total)
-                console.log(state.rekap)
                 resolve(response.data)
+            })
+            .catch((error) => {
+                if (error.response.status == 422) {
+                    commit('SET_ERRORS', error.response.data.errors, { root: true })
+                }
+                reject()
             })
         })
     },

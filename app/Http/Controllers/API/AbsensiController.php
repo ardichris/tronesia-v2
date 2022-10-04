@@ -10,6 +10,8 @@ use App\Siswa;
 use App\User;
 use App\Kelas;
 use App\KelasAnggota;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class AbsensiController extends Controller
 {
@@ -78,37 +80,45 @@ class AbsensiController extends Controller
             'absensi_jenis' => 'required|string|max:150'
         ]);
         $user = $request->user();
-        $getAB = Absensi::orderBy('id', 'DESC');
-        $rowCount = $getAB->count();
-        $lastId = $getAB->first();
 
-        if($rowCount==0) {
-            $kode = "AB".date('y').date('m').date('d')."001";
-        } else {
-            if(substr($lastId->absensi_kode,2,6) == date('y').date('m').date('d')) {
-            $counter = (int)substr($lastId->absensi_kode,-3) + 1 ;
-                if($counter < 10) {
-                    $kode = "AB".date('y').date('m').date('d')."00".$counter;
-                } elseif ($counter < 100) {
-                    $kode = "AB".date('y').date('m').date('d')."0".$counter;
-                } else {
-                    $kode = "AB".date('y').date('m').date('d').$counter;
-                }
-            } else {
+        $begin = $request->absensi_tanggal;
+        $end   = $request->absensi_enddate?$request->absensi_enddate:$request->absensi_tanggal;
+        $period = CarbonPeriod::create($begin, $end)->filter('isWeekday');
+        foreach($period as $date){
+            $getAB = Absensi::orderBy('id', 'DESC');
+            $rowCount = $getAB->count();
+            $lastId = $getAB->first();
+
+            if($rowCount==0) {
                 $kode = "AB".date('y').date('m').date('d')."001";
+            } else {
+                if(substr($lastId->absensi_kode,2,6) == date('y').date('m').date('d')) {
+                $counter = (int)substr($lastId->absensi_kode,-3) + 1 ;
+                    if($counter < 10) {
+                        $kode = "AB".date('y').date('m').date('d')."00".$counter;
+                    } elseif ($counter < 100) {
+                        $kode = "AB".date('y').date('m').date('d')."0".$counter;
+                    } else {
+                        $kode = "AB".date('y').date('m').date('d').$counter;
+                    }
+                } else {
+                    $kode = "AB".date('y').date('m').date('d')."001";
+                }
             }
+            Absensi::create([
+                'absensi_kode' => $kode,
+                'siswa_id' => $request->siswa_id['id'],
+                'absensi_tanggal' => $date,
+                'absensi_jenis' => $request->absensi_jenis,
+                'absensi_keterangan' => $request->absensi_keterangan,
+                'created_by' => $user->id,
+                'unit_id' => $user->unit_id,
+                'periode_id' => $user->periode,
+                'ab_status' => "Issued"
+            ]);
         }
-        Absensi::create([
-            'absensi_kode' => $kode,
-            'siswa_id' => $request->siswa_id['id'],
-            'absensi_tanggal' => $request->absensi_tanggal,
-            'absensi_jenis' => $request->absensi_jenis,
-            'absensi_keterangan' => $request->absensi_keterangan,
-            'created_by' => $user->id,
-            'unit_id' => $user->unit_id,
-            'periode_id' => $user->periode,
-            'ab_status' => "Issued"
-        ]);
+
+
         return response()->json(['status' => 'success'], 200);
     }
 
@@ -163,9 +173,16 @@ class AbsensiController extends Controller
     public function changeStatus(Request $request, $kode) {
         $user = $request->user();
         $ab = Absensi::whereAbsensi_kode($kode)->first();
+        if($request->status=="Approved"){
             $ab->update(['ab_status' => $request->status,
                          'approve_by' => $user->id,
                          'approve_at' => date('d-m-y H:i'),]);
+        }
+        if($request->status=="Issued"){
+            $ab->update(['ab_status' => $request->status,
+                         'approve_by' => null,
+                         'approve_at' => null]);
+        }
         return response()->json(['status' => 'success'], 200);
     }
 }

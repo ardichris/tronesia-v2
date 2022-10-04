@@ -17,29 +17,38 @@
                                     <template slot="option" slot-scope="option">
                                         {{option.mapel.mapel_kode}} - {{ option.kelas.kelas_nama }}
                                     </template>
+                                    <template slot="selected-option" slot-scope="option">
+                                        <span class="badge badge-primary">{{ option.kelas.kelas_nama }}</span>
+                                    </template>
                                 </v-select>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" v-if="nilaiselect.kelas">
                                 <label>Jenis Nilai</label>
                                 <v-select :options="field"
                                     v-model="nilaiselect.jenis"
                                     label="text"
-                                    @input="searchkd">                                    
+                                    @input="searchkd">
+                                    <template slot="selected-option" slot-scope="option">
+                                        <span class="badge badge-primary">{{ option.text }}</span>
+                                    </template>
                                 </v-select>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" v-if="nilaiselect.jenis.text=='NTT'">
                                 <label>Kompetensi</label>
                                 <v-select
                                     :options="kompetensis.data"
                                     v-model="nilaiselect.kd"
                                     label="kd_kode"
-                                    placeholder="Masukkan Kata Kunci"                                     
-                                    :filterable="false">                                
+                                    placeholder="Masukkan Kata Kunci"
+                                    :filterable="false">
                                     <template slot="no-options">
                                         Masukkan Kata Kunci
                                     </template>
                                     <template slot="option" slot-scope="option">
                                         {{ option.kd_kode }}
+                                    </template>
+                                    <template slot="selected-option" slot-scope="option">
+                                        <span class="badge badge-primary">{{ option.kd_kode }}</span>
                                     </template>
                                 </v-select>
                             </div>
@@ -53,29 +62,31 @@
                         </div>
                         <div class="card-body">
                             <div id="spreadsheet" ref="spreadsheet"></div>
-                            <div>
-                                <button type="button" class="btn btn-info" @click="submitNilai(jExcelObj.getData())">Submit Nilai</button>    
+                            <div v-if="nilaisiswa!=null">
+                                <button type="button" class="btn btn-info" @click="submitNilai(jExcelObj.getData())">Submit Nilai</button>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 </template>
 
 <script>
 import { mapActions, mapState, mapMutations } from 'vuex'
 import FormNilaiSiswa from './Form.vue'
 import vSelect from 'vue-select'
+//import jexcel from 'jexcel'
 
 export default {
     name: 'DataNilaiSiswa',
     created() {
         //SEBELUM COMPONENT DI-LOAD, REQUEST DATA DARI SERVER
-        this.getJamMengajar().then(() => {
-                const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
+        this.getJamMengajar()
+        .then(() => {
+                const jExcelObj = jexcel(this.$refs["spreadsheet"]);
                 Object.assign(this, { jExcelObj });
             })
     },
@@ -85,18 +96,17 @@ export default {
             //AGAR OTOMATIS DI-RENDER
             search: '',
             field: [
-                { value: 'PHS', text: 'UH' },
-                { value: 'TGS', text: 'Tugas' },
-                { value: 'PTS', text: 'PTS' },
-                { value: 'PAS', text: 'PAS' },
-                { value: 'PRK', text: 'Praktik' },
-                { value: 'PRD', text: 'Produk' },
-                { value: 'PRY', text: 'Proyek' },
-                { value: 'PRT', text: 'Portofolio' },
+                { value: 'NTT', text: 'NTT' },
+                { value: 'STS', text: 'STS' },
+                { value: 'SAS', text: 'SAS' },
+                // { value: 'PRK', text: 'Praktik' },
+                // { value: 'PRD', text: 'Produk' },
+                // { value: 'PRY', text: 'Proyek' },
+                // { value: 'PRT', text: 'Portofolio' },
                 ],
-           
+
             myNilai: JSON.stringify(this.nilaisiswa)
-            // myCars: [                
+            // myCars: [
             //     ["Civic", "Honda"],
             //      ["Z4", "BMW"],
             //  ]
@@ -110,7 +120,7 @@ export default {
             nilaisiswa: state => state.nilaisiswas,
             jammengajars: state => state.jammengajars,
             kompetensis: state => state.kompetensi
-            
+
         }),
         page: {
             get() {
@@ -127,11 +137,29 @@ export default {
             return {
                 data: this.nilaisiswa,
                 columns: [
-                { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
-                { type: "text", name:'nilai', title: "Nilai", width: "100px" },
-                { type: "hidden", name:'id', title: "Nilai", width: "250px"},
                 { type: "hidden", name:'id_nilai', title: "Nilai", width: "250px"},
-                { type: "dropdown", name:'sisipan', title: "Sisipan", width: "100px", source:["PH1", "PH2", "PH3"] },
+                { type: "hidden", name:'id', title: "Nilai", width: "250px"},
+                { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
+                { type: "number", name:'ns_tugas', title: "TUGAS", width: "100px" },
+                { type: "number", name:'ns_tes', title: "TES", width: "100px" },
+                { type: "number", name:'ns_remidi', title: "REMIDI", width: "100px" },
+                { type: "text", name:'ns_nilai', title: "AKHIR", width: "100px", readOnly:true },
+                { type: "hidden", name:'absen', title: "Absen", width: "250px"},
+
+                ]
+            };
+        },
+        jExcelOptionsTest() {
+            return {
+                data: this.nilaisiswa,
+                columns: [
+                { type: "hidden", name:'id_nilai', title: "Nilai", width: "250px"},
+                { type: "hidden", name:'id', title: "Nilai", width: "250px"},
+                { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
+                { type: "text", name:'ns_tes', title: "NILAI", width: "100px" },
+                { type: "text", name:'ns_remidi', title: "REMIDI", width: "100px" },
+                { type: "text", name:'ns_nilai', title: "AKHIR", width: "100px", readOnly:true  },
+                { type: "hidden", name:'absen', title: "Absen", width: "250px"},
                 ]
             };
         }
@@ -160,7 +188,18 @@ export default {
             this.JENIS_SELECT(JMset)
         },
         getNilai(){
-            this.getNilaiSiswa().then(() => {this.jExcelObj.setData(this.nilaisiswa)})
+            this.getNilaiSiswa().then(() => {
+                this.jExcelObj.destroy(this.$refs["spreadsheet"], true);
+                jexcel.destroy(document.getElementById('spreadsheet'), true);
+                if(this.nilaiselect.jenis.value=="NTT"){
+                    const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
+                    Object.assign(this, { jExcelObj });
+                } else {
+                    const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptionsTest);
+                    Object.assign(this, { jExcelObj });
+                }
+                this.jExcelObj.setData(this.nilaisiswa)
+                })
             // .then(() => {
             //     const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
             //     Object.assign(this, { jExcelObj });
@@ -169,14 +208,29 @@ export default {
         submitNilai(payload){
             //var tabelnilai = document.getElementById('spreadsheet').jexcel;
             this.SET_NILAI(payload)
-            this.submitNilaiSiswa().then(this.$swal({
-                position: 'top-end',
-                title: 'Nilai tersimpan',
-                type: 'success',
-                showConfirmButton: false,
-                timer: 1500
-                }))
-            
+            this.submitNilaiSiswa()
+            .then(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    title: 'Nilai tersimpan',
+                    type: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                }),
+                this.getNilai()
+            })
+            .catch(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    type: 'error',
+                    title: 'Gagal'
+                })
+            })
+
         },
         simpanNilaiSiswabaru(){
             this.submitNilaiSiswa().then(() => {

@@ -51,11 +51,22 @@
                 </v-select>
                 <p class="text-danger" v-if="errors.k_mentor">{{ errors.k_mentor[0] }}</p>
             </div>
+            <div class="form-group">
+                    <button class="btn btn-danger btn-sm btn-flat" @click.prevent="back">
+                        <i class="fa fa-angle-double-left"></i> Kembali
+                    </button>
+                <span class="float-right">
+                    <button class="btn btn-primary btn-sm btn-flat" @click.prevent="submit">
+                        <i class="fa fa-save"></i> Update
+                    </button>
+                </span>
+            </div>
         </div>
+
         <div class="col-md-6" v-if="$route.name == 'kelas.edit'">
             <label for="">Daftar Siswa</label>
             <button class="btn btn-warning btn-sm float-right" style="margin-bottom: 10px" @click="addSiswa" :disabled="authenticated.role != 0">Tambah</button>
-            <div class="table-responsive" style="height: auto">
+            <div class="table-responsive" style="height: 3300px">
                 <table class="table" >
                     <thead>
                         <tr>
@@ -134,8 +145,20 @@ export default {
         },
     },
     methods: {
-        ...mapActions('kelas', ['getTeacher','getSiswa','removeAnggota','anggotaKelas','tambahAnggota']),
+        ...mapActions('kelas', ['getTeacher','getSiswa','removeAnggota','anggotaKelas','tambahAnggota','updateKelas']),
         ...mapMutations('kelas', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
+        submit() {
+            //KETIKA TOMBOL UPDATE DI MAKA AKAN MENGIRIMKAN PERMINTAAN
+            //UNTUK MENGUBAH DATA BERDASARKAN CODE YANG DIKIRIMKAN
+            this.updateKelas(this.$route.params.id).then(() => {
+                //APABILA BERHASIL MAKA AKAN DI-DIRECT KEMBALI
+                //KE HALAMAN /outlets
+                this.$router.push({ name: 'kelas.data' })
+            })
+        },
+        back() {
+                this.$router.push({ name: 'kelas.data' })
+        },
         onSearch(search, loading) {
             //KITA AKAN ME-REQUEST DATA CUSTOMER BERDASARKAN KEYWORD YG DIMINTA
             this.getTeacher({

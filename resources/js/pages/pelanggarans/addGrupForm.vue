@@ -38,7 +38,12 @@
                                     Masukkan Kata Kunci
                                 </template>
                                 <template slot="option" slot-scope="option">
-                                    ({{ option.kelas }}/{{option.absen}}) {{ option.s_nama }}
+                                    <span>
+                                        <div class="badge badge-primary" v-if="option.kelas.substr(0, 2)=='IX'">{{option.kelas}}/{{option.absen}}</div>
+                                        <div class="badge badge-danger" v-else-if="option.kelas.substr(0, 4)=='VIII'">{{option.kelas}}/{{option.absen}}</div>
+                                        <div class="badge badge-warning" v-else-if="option.kelas.substr(0, 4)=='VII-'">{{option.kelas}}/{{option.absen}}</div>
+                                        <div class="badge badge-dark" v-else>{{option.kelas}}</div> {{ option.s_nama }}
+                                    </span>
                                 </template>
                             </v-select>
                             <div class="badge badge-danger float-right" v-if="row.total!=''">Total pelanggaran : {{row.total}}</div>

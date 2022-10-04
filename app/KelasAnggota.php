@@ -13,6 +13,7 @@ class KelasAnggota extends Model
         return $this->belongsTo(Kelas::class);
     }
 
+
     public function siswa()
     {
         return $this->belongsTo(Siswa::class);

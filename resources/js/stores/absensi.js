@@ -11,7 +11,8 @@ const state = () => ({
         siswa_id: '',
         absensi_tanggal: '',
         absensi_jenis: '',
-        absensi_keterangan: ''
+        absensi_keterangan: '',
+        absensi_enddate: ''
     },
     page: 1
 })
@@ -47,7 +48,8 @@ const mutations = {
             siswa_id: '',
             absensi_tanggal: '',
             absensi_jenis: '',
-            absensi_keterangan: ''
+            absensi_keterangan: '',
+            absensi_enddate: ''
         }
     }
 }

@@ -1,7 +1,7 @@
 import $axios from '../api.js'
 
 const state = () => ({
-    nilaisiswas: [],
+    nilaisiswas: null,
     jammengajars: [],
     kompetensi: [],
     nilaiselect: {
@@ -13,7 +13,7 @@ const state = () => ({
         kd: '',
         nilai: ''
     },
-    
+
     mapel: {
         mapel_kode: '',
         mapel_nama: ''
@@ -61,10 +61,15 @@ const mutations = {
 const actions = {
     getKD({ commit, state }, payload) {
         let mapels = state.nilaiselect.kelas.mapel.mapel_kode
+        if(mapels=="DC") {
+            mapels="BIG"
+            state.nilaiselect.kelas.mapel.id=4
+            state.nilaiselect.kelas.mapel_id=4
+        }
         let jenjangs = state.nilaiselect.kelas.kelas.kelas_jenjang
         let jenis = state.nilaiselect.jenis.value
         return new Promise((resolve, reject) => {
-            $axios.get(`/kompetensi?m=${mapels}&j=${jenjangs}&t=${jenis}`)
+            $axios.get(`/kompetensi?m=${mapels}&j=${jenjangs}&s=active`)
             .then((response) => {
                 commit('KOMPETENSI_DATA', response.data)
                 resolve(response.data)
@@ -89,6 +94,7 @@ const actions = {
         let kelas = state.nilaiselect.kelas.kelas.id
         let jenis = state.nilaiselect.jenis.value
         let kd = state.nilaiselect.kd.id?state.nilaiselect.kd.id:''
+        if(jenis!='NTT') kd = ''
         return new Promise((resolve, reject) => {
             $axios.get(`/nilaisiswa?kelas=${kelas}&mapel=${mapel}&jenis=${jenis}&kd=${kd}`)
             .then((response) => {
@@ -107,15 +113,12 @@ const actions = {
                 })
             })
             .catch((error) => {
-                if (error.response.status == 422) {
-                    commit('SET_ERRORS', error.response.data.errors, { root: true })
-                }
+                reject()
             })
         })
         // return new Promise((resolve, reject) => {
         //     $axios.post(`/nilaisiswa`, state.nilaisiswas)
         //     .then((response) => {
-        //         console.log(response.data.status)
         //     //     dispatch('getNilaiSiswa').then(() => {
         //     //         commit('ASSIGN_DATA', response.data.data)
         //     //         resolve(response)

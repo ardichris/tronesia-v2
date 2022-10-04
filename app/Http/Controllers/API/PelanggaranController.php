@@ -11,10 +11,46 @@ use App\JamMengajar;
 use App\User;
 use App\Kelas;
 use App\KelasAnggota;
+use App\KitirSiswa;
 use DB;
 
 class PelanggaranController extends Controller
 {
+    function createKitirMasuk($id_siswa, $tanggal, $jenis, $user, $keterangan){
+        $getKS = KitirSiswa::orderBy('id', 'DESC');
+                $rowCount = $getKS->count();
+                $lastId = $getKS->first();
+
+                if($rowCount==0) {
+                    $kode = "KS".date('y').date('m').date('d')."001";
+                } else {
+                    if(substr($lastId->ks_kode,2,6) == date('y').date('m').date('d')) {
+                    $counter = (int)substr($lastId->ks_kode,-3) + 1 ;
+                        if($counter < 10) {
+                            $kode = "KS".date('y').date('m').date('d')."00".$counter;
+                        } elseif ($counter < 100) {
+                            $kode = "KS".date('y').date('m').date('d')."0".$counter;
+                        } else {
+                            $kode = "KS".date('y').date('m').date('d').$counter;
+                        }
+                    } else {
+                        $kode = "KS".date('y').date('m').date('d')."001";
+                    }
+                }
+                KitirSiswa::create([
+                    'ks_kode' => $kode,
+                    'siswa_id' => $id_siswa,
+                    'ks_tanggal' => $tanggal,
+                    'ks_jenis' => $jenis,
+                    'ks_start' => 0,
+                    'ks_end' => null,
+                    'ks_keterangan' => $keterangan,
+                    'ks_status' => 0,
+                    'creator_id' => $user,
+                    'last_at' => date('d-m-y H:i')
+                ]);
+    }
+
     public function total(Request $request)
     {
         $total = Pelanggaran::where('siswa_id',$request->siswa)->count();
@@ -103,6 +139,9 @@ class PelanggaranController extends Controller
                 'unit_id' => $user->unit_id,
                 'periode_id' => $user->periode
             ]);
+            if( $request->mp_id['mp_pelanggaran'] == "Terlambat") {
+                $this->createKitirMasuk($request->siswa_id['id'],$request->pelanggaran_tanggal,"Masuk Kelas",$user->id,"Terlambat");
+            }
         } else {
             foreach($request->pelanggar as $row) {
                 $getPL = Pelanggaran::orderBy('id', 'DESC');
@@ -136,7 +175,9 @@ class PelanggaranController extends Controller
                     'unit_id' => $user->unit_id,
                     'periode_id' => $user->periode
                 ]);
-                //return response()->json(['status' => 'success']);
+                if( $row['mp_id']['mp_pelanggaran'] == "Terlambat") {
+                    $this->createKitirMasuk($row['siswa']['id'],$request->pelanggaran_tanggal,"Masuk Kelas",$user->id,"Terlambat");
+                }
 
             }
         }

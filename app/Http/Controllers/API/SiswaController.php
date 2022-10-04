@@ -71,9 +71,10 @@ class SiswaController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $siswas = Siswa::orderBy('s_nama', 'ASC')->where('unit_id',$user->unit_id)->select('id','uuid','s_nama','s_nis','s_kelamin','s_keterangan');
+        $siswas = Siswa::orderBy('s_nama', 'ASC')->where('unit_id',$user->unit_id)->select('id','uuid','s_nama','s_code','s_kelamin','s_keterangan');
         if (request()->s != '') {
-            $siswas = $siswas->where('s_keterangan',request()->s);
+            $siswas = $siswas->where('s_keterangan','LIKE', '%' . request()->s . '%');
+
         }
         if (request()->kelasnama != '') {
             $k = request()->kelasnama;
@@ -94,12 +95,16 @@ class SiswaController extends Controller
             $kelas = KelasAnggota::where('kelas_id',request()->kelas)->pluck('siswa_id');
             $siswas = Siswa::whereNotIn('id',$kelas)
                            ->where('s_keterangan','AKTIF')
+                           ->where('unit_id', $user->unit_id)
                            ->orderBy('s_nama', 'ASC');
         }
         if (request()->q != '') {
             $q = $request->q;
-            $siswas = $siswas->where('s_nama', 'LIKE', '%' . request()->q . '%')
-                            ->orwhere('uuid', 'LIKE', '%' . request()->q . '%')
+            $siswas = $siswas->where(function ($query) use ($q) {
+                                $query->where('s_nama', 'LIKE', '%' . request()->q . '%')
+                                        ->orWhere('uuid', $q);
+                            })
+            // ->orwhere('uuid', 'LIKE', '%' . request()->q . '%')
                             // ->orwhereHas('kelas', function($query) use($q){
                             //     $query->where('kelas_nama','like','%'.$q.'%');
                             // })
@@ -225,7 +230,8 @@ class SiswaController extends Controller
                         's_ayah_agama' => $request->s_ayah_agama,
                         's_ayah_warga_negara' => $request->s_ayah_warga_negara,
                         's_pengeluaran' => $request->s_pengeluaran,
-                        's_keterangan' => 'AKTIF']);
+                        's_keterangan' => 'AKTIF',
+                        'unit_id' => $user->unit_id]);
         return response()->json('sukses');
     }
 

@@ -5,8 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\KitirSiswaCollection;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\KitirsNotification;
 use App\KitirSiswa;
 use App\Siswa;
+use App\User;
 use App\Kelas;
 use App\KelasAnggota;
 
@@ -171,10 +174,16 @@ class KitirSiswaController extends Controller
 
     public function changeStatus(Request $request,$kode) {
         $user = $request->user();
-        $ks = KitirSiswa::whereKs_kode($kode)->first();
+        $ks = KitirSiswa::with(['user'])
+                        ->with(['siswa' => function ($query) {
+                            $query->select('id', 's_nama');
+                            }])
+                        ->where('ks_kode',$kode)->first();
             $ks->update(['ks_status' => $request->status,
                          'approve_by' => $user->id,
                          'approve_at' => date('d-m-y H:i'),]);
+        $ks->s_nama = $ks->siswa->s_nama;
+        Notification::send($ks->user, new KitirsNotification($ks, $ks->user));
         return response()->json(['status' => 'success'], 200);
     }
 }

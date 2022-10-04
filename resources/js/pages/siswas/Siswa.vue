@@ -28,7 +28,7 @@
                             <template v-slot:modal-footer>
                                 <b-button
                                     variant="success"
-                                    class="mt-3"                                    
+                                    class="mt-3"
                                     block  @click="submitfile()"
                                 >
                                     Upload
@@ -59,9 +59,9 @@
                             <b-form-input type="text" class="form-control form-control-sm" placeholder="Cari..." v-model="search"></b-form-input>
                         </span>
                         <span class="float-right">
-                            <b-form-select 
+                            <b-form-select
                                 v-model="status"
-                                size="sm"                               
+                                size="sm"
                                 :options="['','AKTIF','ALUMNI','SISWA BARU']"
                                 required
                                 ></b-form-select>
@@ -130,7 +130,7 @@ export default {
             //AGAR OTOMATIS DI-RENDER
             fields: [
                 { key: 'kelas', label: 'Kelas' },
-                { key: 's_nis', label: 'NIS' },
+                { key: 's_code', label: 'Kode' },
                 { key: 's_nama', label: 'Nama Siswa' },
                 { key: 's_kelamin', label: 'L/P' },
                 { key: 's_keterangan', label: 'Status' },
@@ -176,7 +176,7 @@ export default {
         }
     },
     watch: {
-        page() {            
+        page() {
             this.getSiswas({
                 search: this.search,
                 status: this.status
@@ -225,7 +225,7 @@ export default {
                 this.getSiswas({
                     search: this.search,
                     status: this.status
-                }) 
+                })
             }).catch(() => {
                 this.$swal({
                     toast: true,
@@ -243,12 +243,12 @@ export default {
                 Object.assign(this, { jExcelObj })
                 $bvModal.show('modal-rekap')
             })
-            
+
             this.siswaAktif()
         },
         qrcodeSiswa(uuid){
             this.qrvalue = uuid
-            this.$bvModal.show('modal-qrcode')    
+            this.$bvModal.show('modal-qrcode')
         },
         deleteSiswa(id) {
             //AKAN MENAMPILKAN JENDELA KONFIRMASI

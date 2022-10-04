@@ -21,7 +21,7 @@ class MasterPelanggaranController extends Controller
             $MP = $MP->where('mp_pelanggaran', 'LIKE', '%' . request()->q . '%')
                              ->orWhere('mp_kategori', 'LIKE', '%' . request()->q . '%');
         }
-        $MP = $MP->paginate(10);
+        $MP = $MP->paginate(20);
         if (request()->siswa != '') {
             foreach($MP as $row){
                 try {

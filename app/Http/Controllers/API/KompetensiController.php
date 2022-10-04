@@ -19,6 +19,9 @@ class KompetensiController extends Controller
                                         ->where('kompetensi_jenjang', 'LIKE', '%' . request()->j . '%')
                                         ->orderBy('kd_kode', 'ASC');
         }
+        if (request()->j != '') {
+            $kompetensis = $kompetensis->where('kompetensi_jenjang', 'LIKE', '%' . request()->j . '%');
+        }
         if (request()->t != '') {
             $jenis = request()->t;
             $pengetahuan = array('PHS','TGS');
@@ -33,6 +36,15 @@ class KompetensiController extends Controller
             if(!is_null($sort)){
                 $kompetensis = $kompetensis->where('kd_kode', 'like', $sort.'%');
             }
+        }
+        if (request()->s == 'active') {
+            $kompetensis = $kompetensis->where('is_active',1);
+        }
+
+        if (request()->r == 'sisipan') {
+            $kompetensis = $kompetensis->select(['kd_kode','id','kompetensi_mapel'])->orderBy('kd_kode');
+            return new KompetensiCollection($kompetensis->get());
+
         }
         return new KompetensiCollection($kompetensis->paginate(50));
     }

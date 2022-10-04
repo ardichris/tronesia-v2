@@ -35,10 +35,10 @@ class JamMengajarController extends Controller
                                                         $query->where('name','like','%'.$q.'%');
                                                     });
                                         });
-            
-            
+
+
         }
-        return new JamMengajarCollection($jammengajars->paginate(10));
+        return new JamMengajarCollection($jammengajars->paginate(40));
     }
 
     public function store(Request $request)

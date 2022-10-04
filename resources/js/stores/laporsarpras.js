@@ -2,7 +2,7 @@ import $axios from '../api.js'
 
 const state = () => ({
     laporsarprass: [],
-    
+
     laporsarpras: {
         ls_kategori: '',
         ls_sarpras: '',
@@ -50,13 +50,13 @@ const actions = {
             .then((response) => {
                 resolve(response.data)
             })
-            
+
         })
     },
     getLaporSarpras({ commit, state }, payload) {
         let search = typeof payload.search != 'undefined' ? payload.search:''
         let kategori = typeof payload.kategori != 'undefined' ? payload.kategori:''
-        return new Promise((resolve, reject) => {            
+        return new Promise((resolve, reject) => {
             $axios.get(`/laporsarpras?page=${state.page}&q=${search}&k=${kategori}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
@@ -75,7 +75,6 @@ const actions = {
         })
     },
     submitLaporSarpras({ dispatch, commit, state }) {
-        console.log(state.laporsarpras)
         return new Promise((resolve, reject) => {
             $axios.post(`/laporsarpras`, state.laporsarpras)
             .then((response) => {

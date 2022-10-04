@@ -45,7 +45,6 @@ const actions = {
             $axios.get(`/masterpelanggaran?page=${state.page}&q=${search}`)
             .then((response) => {
                 commit('ASSIGN_DATA', response.data)
-                console.log(response.data)
                 resolve(response.data)
             })
         })

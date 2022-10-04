@@ -18,6 +18,11 @@ class KitirSiswa extends Model
         return $this->belongsTo(User::class, 'creator_id', 'id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'creator_id', 'id');
+    }
+
     public function approve()
     {
         return $this->belongsTo(User::class, 'approve_by', 'id');

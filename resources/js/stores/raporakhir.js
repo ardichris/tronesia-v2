@@ -30,12 +30,39 @@ const state = () => ({
         detail:''
     },
     exportRapor: {},
+    kompetensi: [],
+    settingTP: {
+        field:{
+            PAK:{1:[],2:[],3:[],4:[]},
+            PKN:{1:[],2:[],3:[],4:[]},
+            BIN:{1:[],2:[],3:[],4:[]},
+            BIG:{1:[],2:[],3:[],4:[]},
+            MAT:{1:[],2:[],3:[],4:[]},
+            BIO:{1:[],2:[],3:[],4:[]},
+            FIS:{1:[],2:[],3:[],4:[]},
+            EKO:{1:[],2:[],3:[],4:[]},
+            GEO:{1:[],2:[],3:[],4:[]},
+            SEJ:{1:[],2:[],3:[],4:[]},
+            SNR:{1:[],2:[],3:[],4:[]},
+            SNM:{1:[],2:[],3:[],4:[]},
+            MEK:{1:[],2:[],3:[],4:[]},
+            TIK:{1:[],2:[],3:[],4:[]},
+            JWA:{1:[],2:[],3:[],4:[]},
+            MAN:{1:[],2:[],3:[],4:[]},
+            ORG:{1:[],2:[],3:[],4:[]},
+        }
+    },
 
     page: 1
 })
 
 const mutations = {
-
+    SETTING_SISIPAN(state, payload){
+        state.settingTP.field = Object.assign( {}, state.settingTP.field, payload )
+    },
+    KOMPETENSI_DATA(state, payload){
+        state.kompetensi = payload
+    },
     EXPORT_RAPOR(state, payload) {
         state.exportRapor = payload
     },
@@ -142,6 +169,16 @@ const actions = {
             })
         })
     },
+    viewRaporSisipanKurmer({ commit, state }, payload) {
+        let uuid = payload.uuid
+        return new Promise((resolve, reject) => {
+            $axios.get(`/raporsisipan/view?uuid=${uuid}&kurikulum=merdeka`)
+            .then((response) => {
+                commit('SISIPAN_FORM', response.data.data)
+                resolve(response.data)
+            })
+        })
+    },
     viewRaporAkhir({ commit, state }, payload) {
         let uuid = payload.uuid
         return new Promise((resolve, reject) => {
@@ -159,6 +196,7 @@ const actions = {
             .then((response) => {
                 commit('CLEAR_FORM')
                 resolve(response.data)
+                this.getRapor()
             })
         })
     },
@@ -228,6 +266,36 @@ const actions = {
             })
         })
     },
+    getKompetensi({ commit, state }, payload){
+        let jenjangs = 7
+        return new Promise((resolve, reject) => {
+            $axios.get(`/kompetensi?j=${jenjangs}&r=sisipan&s=active`)
+            .then((response) => {
+                commit('KOMPETENSI_DATA', response.data.data)
+                console.log(response.data.data)
+                resolve(response.data)
+            })
+        })
+    },
+    setTP({commit, state}){
+        return new Promise((resolve, reject) => {
+            $axios.post(`/settingsisipan`, state.settingTP)
+            .then(() => {
+                //commit('CLEAR_KOMPETENSI')
+            })
+        })
+    },
+    getSettingSisipan({commit, state}){
+        return new Promise((resolve) => {
+            $axios.get(`/settingsisipan`)
+            .then((response) => {
+                commit('SETTING_SISIPAN', response.data.data)
+                resolve(response.data)
+            })
+        })
+
+    }
+
 }
 
 export default {

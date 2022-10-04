@@ -68,17 +68,9 @@ class PengumumanController extends Controller
 
     public function destroy($id)
     {
-        $kitirsiswa = KitirSiswa::find($id);
-        $kitirsiswa->delete();
+        $pengumuman = Pengumumans::find($id);
+        $pengumuman->delete();
         return response()->json(['status' => 'success'], 200);
     }
 
-    public function changeStatus(Request $request,$kode) {
-        $user = $request->user();
-        $ks = KitirSiswa::whereKs_kode($kode)->first();
-            $ks->update(['ks_status' => $request->status,
-                         'approve_by' => $user->id,
-                         'approve_at' => date('d-m-y H:i'),]);    
-        return response()->json(['status' => 'success'], 200);
-    }
 }

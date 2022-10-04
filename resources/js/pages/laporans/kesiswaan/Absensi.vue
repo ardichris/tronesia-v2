@@ -11,6 +11,14 @@
                             <div class="card-body">
                                 <div class="row mb-2">
                                     <div class="col-sm-4">
+                                        <label>Start</label><span class="badge badge-danger" style="margin-left : 5px" v-if="errors.start">!</span>
+                                        <input type="date" class="form-control" v-model="laporanabsensi.start">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label>End</label><span class="badge badge-danger" style="margin-left : 5px" v-if="errors.end">!</span>
+                                        <input type="date" class="form-control" v-model="laporanabsensi.end">
+                                    </div>
+                                    <div class="col-sm-4">
                                         <label>Kelas</label>
                                         <v-select :options="kelass.data"
                                             v-model="laporanabsensi.kelas"
@@ -27,16 +35,8 @@
                                             </template>
                                         </v-select>
                                     </div>
-                                    <div class="col-sm-4">
-                                        <label>Tanggal Awal</label>
-                                        <input type="date" class="form-control" v-model="laporanabsensi.start">
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <label>Tanggal Akhir</label>
-                                        <input type="date" class="form-control" v-model="laporanabsensi.end">
-                                    </div>
                                 </div>
-                                <div class="row mb-2">
+                                <div class="row">
                                     <div class="col-sm-8">
                                         <label for="">Nama Siswa</label>
                                         <v-select :options="siswas.data"
@@ -53,6 +53,7 @@
                                                 {{ option.s_nama }} ({{ option.kelas }})
                                             </template>
                                         </v-select>
+
                                     </div>
                                     <div class="col-sm-4 d-flex justify-content-center padding:5px">
                                         <a class="btn btn-app bg-success">
@@ -66,15 +67,52 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6">
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title"><i class="fas fa-check mr-1"></i>Rekap</h3>
                             </div>
                             <div class="card-body">
                                 <div class="row col-sm-12">
-                                    <table style="width:100%; text-align:center" v-if="rekap.kelas7_total">
+                                    <div class="table-responsive" v-if="rekap">
+                                        <table class="table" width="auto">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nama Siswa</th>
+                                                    <th>S</th>
+                                                    <th>I</th>
+                                                    <th>A</th>
+                                                    <th>C</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in rekap" :key="index">
+                                                    <td>
+                                                        {{row.Nama}}
+                                                        <div class="badge badge-primary" v-if="row.Kelas.substr(0, 2)=='IX'">{{row.Kelas}}</div>
+                                                        <div class="badge badge-danger" v-else-if="row.Kelas.substr(0, 4)=='VIII'">{{row.Kelas}}</div>
+                                                        <div class="badge badge-warning" v-else>{{row.Kelas}}</div>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="row.Sakit == 0">-</span>
+                                                        <span v-else>{{row.Sakit}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="row.Ijin == 0">-</span>
+                                                        <span v-else>{{row.Ijin}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="row.Alpha == 0">-</span>
+                                                        <span v-else>{{row.Alpha}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="row.Covid == 0">-</span>
+                                                        <span v-else>{{row.Covid}}</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <table style="width:100%; text-align:center" v-if="total">
                                         <thead>
                                             <tr>
                                                 <th>Jenjang</th>
@@ -82,29 +120,33 @@
                                                 <th>Sakit</th>
                                                 <th>Ijin</th>
                                                 <th>Alpha</th>
+                                                <th>Covid</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td>VII</td>
-                                                <td>{{rekap.kelas7_total}}</td>
-                                                <td>{{rekap.kelas7_sakit}}</td>
-                                                <td>{{rekap.kelas7_ijin}}</td>
-                                                <td>{{rekap.kelas7_alpha}}</td>
+                                                <td>{{total.kelas7_total}}</td>
+                                                <td>{{total.kelas7_sakit}}</td>
+                                                <td>{{total.kelas7_ijin}}</td>
+                                                <td>{{total.kelas7_alpha}}</td>
+                                                <td>{{total.kelas7_covid}}</td>
                                             </tr>
                                             <tr>
                                                 <td>VIII</td>
-                                                <td>{{rekap.kelas8_total}}</td>
-                                                <td>{{rekap.kelas8_sakit}}</td>
-                                                <td>{{rekap.kelas8_ijin}}</td>
-                                                <td>{{rekap.kelas8_alpha}}</td>
+                                                <td>{{total.kelas8_total}}</td>
+                                                <td>{{total.kelas8_sakit}}</td>
+                                                <td>{{total.kelas8_ijin}}</td>
+                                                <td>{{total.kelas8_alpha}}</td>
+                                                <td>{{total.kelas8_covid}}</td>
                                             </tr>
                                             <tr>
                                                 <td>IX</td>
-                                                <td>{{rekap.kelas9_total}}</td>
-                                                <td>{{rekap.kelas9_sakit}}</td>
-                                                <td>{{rekap.kelas9_ijin}}</td>
-                                                <td>{{rekap.kelas9_alpha}}</td>
+                                                <td>{{total.kelas9_total}}</td>
+                                                <td>{{total.kelas9_sakit}}</td>
+                                                <td>{{total.kelas9_ijin}}</td>
+                                                <td>{{total.kelas9_alpha}}</td>
+                                                <td>{{total.kelas9_covid}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -112,20 +154,23 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm-6">
+                        <b-table striped hover bordered :items="absensis.data" :fields="fields" show-empty>
+                            <template v-slot:cell(absensi_tanggal)="row">
+                                <span>{{row.item.absensi_tanggal|formatDateView}}</span>
+                            </template>
+                            <template v-slot:cell(siswa_id)="row">
+                                {{ row.item.siswa_id ? row.item.siswa.s_nama:'-' }}
+                            </template>
+                            <template v-slot:cell(kelas)="row">
+                                {{ row.item.kelas ? row.item.kelas:'-' }}
+                            </template>
+                        </b-table>
+                    </div>
                 </div>
             </div>
             <div class="panel-body">
-                <b-table striped hover bordered :items="absensis.data" :fields="fields" show-empty>
-                    <template v-slot:cell(absensi_tanggal)="row">
-                        <span>{{row.item.absensi_tanggal|formatDateView}}</span>
-                    </template>
-                    <template v-slot:cell(siswa_id)="row">
-                        {{ row.item.siswa_id ? row.item.siswa.s_nama:'-' }}
-                    </template>
-                    <template v-slot:cell(kelas)="row">
-                        {{ row.item.kelas ? row.item.kelas:'-' }}
-                    </template>
-                </b-table>
+
             </div>
         </div>
     </div>
@@ -153,12 +198,14 @@ export default {
         this.getKelas()
     },
     computed: {
+        ...mapState(['errors']),
         ...mapState('laporan', {
             laporanabsensi: state => state.laporanabsensi,
             absensis: state => state.absensis,
             kelass: state => state.kelas,
             siswas: state => state.siswa,
-            rekap: state => state.rekap
+            rekap: state => state.rekap,
+            total: state => state.total
         }),
     },
     watch: {
@@ -168,6 +215,26 @@ export default {
         ...mapMutations('laporan', ['CLEAR_FORM']),
         cariAbsensi(){
             this.searchAbsensi()
+            .then(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    type: 'success',
+                    title: 'Success'
+                })
+            })
+            .catch(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    type: 'error',
+                    title: 'Search Failed'
+                })
+            })
         },
         cari(){
             this.getSiswaKelas({

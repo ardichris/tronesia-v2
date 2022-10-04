@@ -163,7 +163,7 @@
                                 <p><router-link :to="{ name: 'jammengajar.data' }">Mengajar</router-link></p>
                             </a>
                         </li>
-                        <li class="nav-item" v-if="authenticated.role==0">
+                        <li class="nav-item" v-if="authenticated.role==0||authenticated.role==2">
                             <a class="nav-link ml-3">
                                 <i class="fas fa-spell-check nav-icon"></i>
                                 <p><router-link :to="{ name: 'nilaisiswa.data' }">Penilaian</router-link></p>

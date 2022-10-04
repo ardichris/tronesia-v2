@@ -30,12 +30,19 @@
         </div>
         <div class="form-group" :class="{ 'has-error': errors.absensi_tanggal }">
             <label for="">Tanggal</label>
-            <input type="date" class="form-control" v-model="absensi.absensi_tanggal" :readonly="$route.name == 'absensi.view'">
-            <p class="text-danger" v-if="errors.absensi_tanggal">Tanggal belum diisi</p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <input type="date" class="form-control" v-model="absensi.absensi_tanggal" :readonly="$route.name == 'absensi.view'">
+                    <p class="text-danger" v-if="errors.absensi_tanggal">Tanggal belum diisi</p>
+                </div>
+                <div class="col-sm-6">
+                    <input type="date" class="form-control" v-model="absensi.absensi_enddate" :readonly="$route.name == 'absensi.view'">
+                </div>
+            </div>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.absensi_jenis }">
             <label for="">Jenis Absensi</label>
-            <v-select :options="['Sakit', 'Ijin', 'Alpha']"
+            <v-select :options="['Sakit', 'Ijin', 'Alpha', 'Covid']"
                         v-model="absensi.absensi_jenis"
                         :disabled="$route.name == 'absensi.view'"
                         :value="absensi.absensi_jenis"
