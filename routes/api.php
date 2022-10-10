@@ -78,7 +78,6 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::put('/siswaptm/suhupulang/{kode}', 'API\SiswaPtmController@suhupulang');
     Route::resource('/raporakhir', 'API\RaporAkhirController');
     Route::resource('/raporpetra', 'API\RaporPetraController');
-    Route::get('/laporan/rapor_sisipan', 'API\RaporAkhirController@raporSisipanPDF');
     Route::get('/raporsisipan/view', 'API\RaporAkhirController@raporSisipanView');
     Route::put('/raporsisipan/{kode}', 'API\RaporAkhirController@raporSisipanStore');
     Route::get('/siswa/export/qrcode', 'API\SiswaController@exportQRCode')->name('qrcode.pdf');
@@ -88,6 +87,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/laporan/kesiswaan/absensi','API\LaporanController@absensi');
     Route::resource('notification', 'API\NotificationController')->except(['create', 'destroy']);
     Route::resource('settingsisipan', 'API\SisipanFieldController');
+    Route::get('/laporan/raporsisipan', 'API\RaporSisipanController@raporSisipanPDF');
 
 
 

@@ -12,6 +12,7 @@ const state = () => ({
         kelas_jenjang: '',
         kelas_wali: '',
         k_mentor:'',
+        k_jenis: '',
         tambah: '',
         anggota: [],
     },
@@ -44,6 +45,7 @@ const mutations = {
             kelas_jenjang: payload.kelas_jenjang,
             kelas_wali: payload.user,
             k_mentor: payload.mentor,
+            k_jenis: payload.k_jenis,
             anggota: payload.anggota
         }
     },
@@ -53,6 +55,7 @@ const mutations = {
             kelas_nama: '',
             kelas_jenjang: '',
             kelas_wali: '',
+            k_jenis: '',
             kelas_anggota: []
         }
     }

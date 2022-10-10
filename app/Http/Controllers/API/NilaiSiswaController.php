@@ -76,7 +76,7 @@ class NilaiSiswaController extends Controller
             $nilaisiswa[$key]['ns_remidi'] = $nilai->value('ns_remidi');
             if(request()->jenis=='NTT'){
                 $nilaisiswa[$key]['ns_tugas'] = $nilai->value('ns_tugas');
-                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(IF(OR(ISBLANK(F'.$counter.'),AVERAGE(D'.$counter.':E'.$counter.')>75),AVERAGE(D'.$counter.':E'.$counter.'),IF(F'.$counter.'>75,AVERAGE(D'.$counter.',75),AVERAGE(D'.$counter.',MAX(E'.$counter.':F'.$counter.')))),0),"")';
+                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(IF(ISBLANK(F'.$counter.'),AVERAGE(D'.$counter.':E'.$counter.'),IF(F'.$counter.'>75,AVERAGE(D'.$counter.',75),AVERAGE(D'.$counter.',MAX(E'.$counter.':F'.$counter.')))),0),"")';
             } else {
                 $nilaisiswa[$key]['ns_nilai'] = '=IF(ISBLANK(D'.$counter.'),"",ROUND(IF(D'.$counter.'>75,D'.$counter.',IF(MAX(D'.$counter.':E'.$counter.')>75,75,MAX(D'.$counter.':E'.$counter.'))),0))';
             }

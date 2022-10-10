@@ -1,6 +1,9 @@
 <template>
     <div class="container">
-        <center><h1 style="font-family:'Verdana'; font-size: 14px">LAPORAN HASIL BELAJAR TENGAH SEMESTER</h1></center>       
+        <center><img :src="'/storage/header/'+raporSisipan['kop']+'.png'" style="width:80%"> </center>
+        <br>
+        <center><h1 style="font-family:'Verdana'; font-size: 14px">LAPORAN HASIL BELAJAR TENGAH SEMESTER</h1></center>
+        <br>
         <table class="identitas">
             <tr>
                 <td style="width:15%">Nama Siswa</td>
@@ -13,7 +16,7 @@
                 <td style="width:40%">{{raporSisipan['kelas']['kelas']['kelas_nama']}} / {{raporSisipan['kelas']['absen']}}</td>
                 <td style="width:20%">Semester</td>
                 <td style="width:1%">:</td>
-                <td style="width:20%">2 (Dua)</td>
+                <td style="width:20%">1 (Satu)</td>
             </tr>
             <tr>
                 <td>Nomor Induk</td>
@@ -21,7 +24,7 @@
                 <td>{{raporSisipan['siswa']['s_nis']}}</td>
                 <td>Tahun Pelajaran</td>
                 <td>:</td>
-                <td>2021 - 2022</td>
+                <td>2022 - 2023</td>
             </tr>
         </table>
         <table class="subrapor">
@@ -122,8 +125,8 @@
                 <td :class="raporSisipan['rs_bin_prk'] > 74 || raporSisipan['rs_bin_prk'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_bin_prk']}}</td>
                 <td :class="raporSisipan['rs_bin_prd'] > 74 || raporSisipan['rs_bin_prd'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_bin_prd']}}</td>
                 <td :class="raporSisipan['rs_bin_pry'] > 74 || raporSisipan['rs_bin_pry'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_bin_pry']}}</td>
-                
-                
+
+
             </tr>
             <tr>
                 <td colspan="2">4. Bahasa Inggris</td>
@@ -323,26 +326,25 @@
         </table>
         <table class="TTD">
             <tr>
-                <td colspan="2"></td>
-                <td style="text-align:left; width:30%">Surabaya, 24 Maret 2022</td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align:left">Mengetahui,</td>
-            </tr>
-            <tr>
-                <td>Orang Tua Siswa/Wali</td>
-                <td style="width:45%"></td>
-                <td style="width:20%">a.n. Kepala Sekolah</td>
+                <td style="text-align:left; width:30%"></td>
+                <td style="text-align:center; padding:1px; width:40%" rowspan="5"><img :src="'/storage/stamps/'+raporSisipan['stamp']+'.png'" style="width:100px"></td>
+                <td style="text-align:center; width:30%">Surabaya, 14 Oktober 2022</td>
             </tr>
             <tr>
                 <td></td>
                 <td></td>
-                <td></td><!-- <img :src="'/storage/signs/'+raporSisipan['ttd']+'.png'" style="width: 100px;"> -->
             </tr>
             <tr>
-                <td>..................................</td>
                 <td></td>
-                <td>{{raporSisipan['walikelas']}}</td>
+                <td style="text-align:center; width:20%">a.n. Kepala Sekolah</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="text-align:center"><img :src="'/storage/signs/'+raporSisipan['ttd']+'.png'" style="width: 100px;"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="text-align:center">{{raporSisipan['rs_walikelas']}}</td>
             </tr>
         </table>
     </div>
@@ -372,12 +374,12 @@
             margin-left: auto;
             margin-right: auto;
             margin-top: 5px;
-            font-size: 12px; 
+            font-size: 12px;
         }
         table.ki1ki2 {
             font-size:10px;
             margin-left: auto;
-            margin-right: auto; 
+            margin-right: auto;
             margin-top: 7px;
             margin-bottom: 7px;
             border: 1px solid black;
@@ -390,7 +392,7 @@
         }
         table.identitas {
             margin-left: auto;
-            margin-right: auto; 
+            margin-right: auto;
             font-size:13px;
             font-family: Verdana;
             width: 90%;
@@ -402,7 +404,7 @@
             font-size:25px;
             margin-top:15px;
             margin-bottom:15px;
-            
+
         }
         table.nilai {
             margin-left:auto;
@@ -460,7 +462,7 @@
             font-size: 12px;
             margin-right: auto;
             margin-left: auto;
-            margin-top: 15px;  
+            margin-top: 15px;
             border: none;
             width: 95%;
         }
@@ -470,7 +472,7 @@
             border: none;
 
         }
-        
+
 </style>
 <script>
 import { mapActions, mapState } from 'vuex'
@@ -478,7 +480,7 @@ import { mapActions, mapState } from 'vuex'
 export default {
     name: 'RaporSisipanForm',
     created() {
-        
+
     },
     data() {
         return {
@@ -507,8 +509,8 @@ export default {
             return input.toString().replace( /(^|\. *)([a-z])/g, function(match, separator, char) {
                 return separator + char.toUpperCase();
             });
-        } 
+        }
     },
-    
+
 }
 </script>

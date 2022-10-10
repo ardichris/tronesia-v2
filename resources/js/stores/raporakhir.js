@@ -272,7 +272,6 @@ const actions = {
             $axios.get(`/kompetensi?j=${jenjangs}&r=sisipan&s=active`)
             .then((response) => {
                 commit('KOMPETENSI_DATA', response.data.data)
-                console.log(response.data.data)
                 resolve(response.data)
             })
         })
@@ -280,8 +279,8 @@ const actions = {
     setTP({commit, state}){
         return new Promise((resolve, reject) => {
             $axios.post(`/settingsisipan`, state.settingTP)
-            .then(() => {
-                //commit('CLEAR_KOMPETENSI')
+            .then((response) => {
+                resolve(response.data)
             })
         })
     },

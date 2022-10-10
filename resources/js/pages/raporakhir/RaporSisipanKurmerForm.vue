@@ -1,6 +1,9 @@
 <template>
     <div class="container">
+        <center><img :src="'/storage/header/'+raporSisipan['kop']+'.png'" style="width:80%"> </center>
+        <br>
         <center><h1 style="font-family:'Verdana'; font-size: 14px">LAPORAN HASIL BELAJAR TENGAH SEMESTER</h1></center>
+        <br>
         <table class="identitas">
             <tr>
                 <td style="width:15%">Nama Siswa</td>
@@ -11,19 +14,28 @@
                 <td style="width:15%">Kelas</td>
                 <td style="width:1%">:</td>
                 <td style="width:40%">{{raporSisipan['kelas']['kelas']['kelas_nama']}} / {{raporSisipan['kelas']['absen']}}</td>
-                <td style="width:20%">Semester</td>
+                <td style="width:20%">Fase</td>
                 <td style="width:1%">:</td>
-                <td style="width:20%">1 (Satu)</td>
+                <td style="width:20%">D</td>
+            </tr>
+            <tr>
+                <td>Student Code</td>
+                <td>:</td>
+                <td>{{raporSisipan['siswa']['s_code']}}</td>
+                <td>Semester</td>
+                <td>:</td>
+                <td>1 (Satu)</td>
             </tr>
             <tr>
                 <td>Nomor Induk</td>
                 <td>:</td>
-                <td>{{raporSisipan['siswa']['s_code']}}</td>
+                <td>{{raporSisipan['siswa']['s_nis']}}</td>
                 <td>Tahun Pelajaran</td>
                 <td>:</td>
                 <td>2022 - 2023</td>
             </tr>
         </table>
+        <br>
         <table class="subrapor">
             <tr>
                 <td style="width:675px; font-weight: bold">PENILAIAN AKADEMIK</td>
@@ -36,17 +48,17 @@
             <tr>
                 <td colspan="2" style="width:100px; text-align:center; font-weight: bold">MATA PELAJARAN</td>
                 <td style="text-align:center; font-weight: bold">TP</td>
-                <td style="text-align:center; font-weight: bold">TES</td>
                 <td style="text-align:center; font-weight: bold">TGS</td>
+                <td style="text-align:center; font-weight: bold">TES</td>
                 <td style="text-align:center; font-weight: bold">TP</td>
-                <td style="text-align:center; font-weight: bold">TES</td>
                 <td style="text-align:center; font-weight: bold">TGS</td>
+                <td style="text-align:center; font-weight: bold">TES</td>
                 <td style="text-align:center; font-weight: bold">TP</td>
-                <td style="text-align:center; font-weight: bold">TES</td>
                 <td style="text-align:center; font-weight: bold">TGS</td>
+                <td style="text-align:center; font-weight: bold">TES</td>
                 <td style="text-align:center; font-weight: bold">TP</td>
-                <td style="text-align:center; font-weight: bold">TES</td>
                 <td style="text-align:center; font-weight: bold">TGS</td>
+                <td style="text-align:center; font-weight: bold">TES</td>
                 <td style="text-align:center; font-weight: bold">STS</td>
             </tr>
             <tr>
@@ -66,7 +78,7 @@
                 <td class="nilai">{{raporSisipan['nilai']['PAK']['STS']?raporSisipan['nilai']['PAK']['STS']['ns_nilai']:null}}</td>
             </tr>
             <tr>
-                <td colspan="2">2. Pendidikan Kewarganegaraan</td>
+                <td colspan="2">2. Pendidikan Pancasila dan Kewarganegaraan</td>
                 <td class="nilaitp">{{raporSisipan['nilai']['PKN'][1]['TP']}}</td>
                 <td :class="raporSisipan['nilai']['PKN'][1]['ns_tugas'] > 74 || raporSisipan['nilai']['PKN'][1]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PKN'][1]['ns_tugas']}}</td>
                 <td :class="raporSisipan['nilai']['PKN'][1]['ns_tes'] > 74 || raporSisipan['nilai']['PKN'][1]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PKN'][1]['ns_tes']}}</td>
@@ -130,23 +142,7 @@
                 <td class="nilai">{{raporSisipan['nilai']['MAT']['STS']?raporSisipan['nilai']['MAT']['STS']['ns_nilai']:null}}</td>
             </tr>
             <tr>
-                <td rowspan="2" style="width:100px">6. IPA</td>
-                <td>Biologi</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['BIO'][1]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['BIO'][1]['ns_tugas'] > 74 || raporSisipan['nilai']['BIO'][1]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['BIO'][1]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['BIO'][1]['ns_tes'] > 74 || raporSisipan['nilai']['BIO'][1]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['BIO'][1]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['BIO'][2]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['BIO'][2]['ns_tugas'] > 74 || raporSisipan['nilai']['BIO'][2]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['BIO'][2]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['BIO'][2]['ns_tes'] > 74 || raporSisipan['nilai']['BIO'][2]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['BIO'][2]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['BIO'][3]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['BIO'][3]['ns_tugas'] > 74 || raporSisipan['nilai']['BIO'][3]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['BIO'][3]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['BIO'][3]['ns_tes'] > 74 || raporSisipan['nilai']['BIO'][3]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['BIO'][3]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['BIO'][4]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['BIO'][4]['ns_tugas'] > 74 || raporSisipan['nilai']['BIO'][4]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['BIO'][4]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['BIO'][4]['ns_tes'] > 74 || raporSisipan['nilai']['BIO'][4]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['BIO'][4]['ns_tes']}}</td>
-                <td class="nilai">{{raporSisipan['nilai']['BIO']['STS']?raporSisipan['nilai']['BIO']['STS']['ns_nilai']:null}}</td>
-            </tr>
-            <tr>
+                <td style="width:100px">6. IPA</td>
                 <td>Fisika</td>
                 <td class="nilaitp">{{raporSisipan['nilai']['FIS'][1]['TP']}}</td>
                 <td :class="raporSisipan['nilai']['FIS'][1]['ns_tugas'] > 74 || raporSisipan['nilai']['FIS'][1]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['FIS'][1]['ns_tugas']}}</td>
@@ -163,7 +159,7 @@
                 <td class="nilai">{{raporSisipan['nilai']['FIS']['STS']?raporSisipan['nilai']['FIS']['STS']['ns_nilai']:null}}</td>
             </tr>
             <tr>
-                <td rowspan="3">7. IPS</td>
+                <td rowspan="2">7. IPS</td>
                 <td>Geografi</td>
                 <td class="nilaitp">{{raporSisipan['nilai']['GEO'][1]['TP']}}</td>
                 <td :class="raporSisipan['nilai']['GEO'][1]['ns_tugas'] > 74 || raporSisipan['nilai']['GEO'][1]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['GEO'][1]['ns_tugas']}}</td>
@@ -196,69 +192,21 @@
                 <td class="nilai">{{raporSisipan['nilai']['EKO']['STS']?raporSisipan['nilai']['EKO']['STS']['ns_nilai']:null}}</td>
             </tr>
             <tr>
-                <td>Sejarah</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SEJ'][1]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SEJ'][1]['ns_tugas'] > 74 || raporSisipan['nilai']['SEJ'][1]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SEJ'][1]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SEJ'][1]['ns_tes'] > 74 || raporSisipan['nilai']['SEJ'][1]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SEJ'][1]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SEJ'][2]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SEJ'][2]['ns_tugas'] > 74 || raporSisipan['nilai']['SEJ'][2]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SEJ'][2]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SEJ'][2]['ns_tes'] > 74 || raporSisipan['nilai']['SEJ'][2]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SEJ'][2]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SEJ'][3]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SEJ'][3]['ns_tugas'] > 74 || raporSisipan['nilai']['SEJ'][3]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SEJ'][3]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SEJ'][3]['ns_tes'] > 74 || raporSisipan['nilai']['SEJ'][3]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SEJ'][3]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SEJ'][4]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SEJ'][4]['ns_tugas'] > 74 || raporSisipan['nilai']['SEJ'][4]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SEJ'][4]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SEJ'][4]['ns_tes'] > 74 || raporSisipan['nilai']['SEJ'][4]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SEJ'][4]['ns_tes']}}</td>
-                <td class="nilai">{{raporSisipan['nilai']['SEJ']['STS']?raporSisipan['nilai']['SEJ']['STS']['ns_nilai']:null}}</td>
-            </tr>
-            <tr>
-                <td rowspan="3">8. Mapel Pilihan</td>
-                <td>Seni Rupa</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SNR'][1]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SNR'][1]['ns_tugas'] > 74 || raporSisipan['nilai']['SNR'][1]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNR'][1]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SNR'][1]['ns_tes'] > 74 || raporSisipan['nilai']['SNR'][1]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNR'][1]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SNR'][2]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SNR'][2]['ns_tugas'] > 74 || raporSisipan['nilai']['SNR'][2]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNR'][2]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SNR'][2]['ns_tes'] > 74 || raporSisipan['nilai']['SNR'][2]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNR'][2]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SNR'][3]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SNR'][3]['ns_tugas'] > 74 || raporSisipan['nilai']['SNR'][3]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNR'][3]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SNR'][3]['ns_tes'] > 74 || raporSisipan['nilai']['SNR'][3]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNR'][3]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SNR'][4]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SNR'][4]['ns_tugas'] > 74 || raporSisipan['nilai']['SNR'][4]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNR'][4]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SNR'][4]['ns_tes'] > 74 || raporSisipan['nilai']['SNR'][4]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNR'][4]['ns_tes']}}</td>
-                <td class="nilai">{{raporSisipan['nilai']['SNR']['STS']?raporSisipan['nilai']['SNR']['STS']['ns_nilai']:null}}</td>
-            </tr>
-            <tr>
-                <td>Seni Musik</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SNM'][1]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SNM'][1]['ns_tugas'] > 74 || raporSisipan['nilai']['SNM'][1]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNM'][1]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SNM'][1]['ns_tes'] > 74 || raporSisipan['nilai']['SNM'][1]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNM'][1]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SNM'][2]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SNM'][2]['ns_tugas'] > 74 || raporSisipan['nilai']['SNM'][2]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNM'][2]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SNM'][2]['ns_tes'] > 74 || raporSisipan['nilai']['SNM'][2]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNM'][2]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SNM'][3]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SNM'][3]['ns_tugas'] > 74 || raporSisipan['nilai']['SNM'][3]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNM'][3]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SNM'][3]['ns_tes'] > 74 || raporSisipan['nilai']['SNM'][3]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNM'][3]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['SNM'][4]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['SNM'][4]['ns_tugas'] > 74 || raporSisipan['nilai']['SNM'][4]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNM'][4]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['SNM'][4]['ns_tes'] > 74 || raporSisipan['nilai']['SNM'][4]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['SNM'][4]['ns_tes']}}</td>
-                <td class="nilai">{{raporSisipan['nilai']['SNM']['STS']?raporSisipan['nilai']['SNM']['STS']['ns_nilai']:null}}</td>
-            </tr>
-            <tr>
-                <td>Prakarya</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['MEK'][1]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['MEK'][1]['ns_tugas'] > 74 || raporSisipan['nilai']['MEK'][1]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['MEK'][1]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['MEK'][1]['ns_tes'] > 74 || raporSisipan['nilai']['MEK'][1]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['MEK'][1]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['MEK'][2]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['MEK'][2]['ns_tugas'] > 74 || raporSisipan['nilai']['MEK'][2]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['MEK'][2]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['MEK'][2]['ns_tes'] > 74 || raporSisipan['nilai']['MEK'][2]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['MEK'][2]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['MEK'][3]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['MEK'][3]['ns_tugas'] > 74 || raporSisipan['nilai']['MEK'][3]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['MEK'][3]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['MEK'][3]['ns_tes'] > 74 || raporSisipan['nilai']['MEK'][3]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['MEK'][3]['ns_tes']}}</td>
-                <td class="nilaitp">{{raporSisipan['nilai']['MEK'][4]['TP']}}</td>
-                <td :class="raporSisipan['nilai']['MEK'][4]['ns_tugas'] > 74 || raporSisipan['nilai']['MEK'][4]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['MEK'][4]['ns_tugas']}}</td>
-                <td :class="raporSisipan['nilai']['MEK'][4]['ns_tes'] > 74 || raporSisipan['nilai']['MEK'][4]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['MEK'][4]['ns_tes']}}</td>
-                <td class="nilai">{{raporSisipan['nilai']['MEK']['STS']?raporSisipan['nilai']['MEK']['STS']['ns_nilai']:null}}</td>
+                <td>8. Mapel Pilihan</td>
+                <td>{{raporSisipan['nilai']['PIL']['KET']}}</td>
+                <td class="nilaitp">{{raporSisipan['nilai']['PIL'][1]['TP']}}</td>
+                <td :class="raporSisipan['nilai']['PIL'][1]['ns_tugas'] > 74 || raporSisipan['nilai']['PIL'][1]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PIL'][1]['ns_tugas']}}</td>
+                <td :class="raporSisipan['nilai']['PIL'][1]['ns_tes'] > 74 || raporSisipan['nilai']['PIL'][1]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PIL'][1]['ns_tes']}}</td>
+                <td class="nilaitp">{{raporSisipan['nilai']['PIL'][2]['TP']}}</td>
+                <td :class="raporSisipan['nilai']['PIL'][2]['ns_tugas'] > 74 || raporSisipan['nilai']['PIL'][2]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PIL'][2]['ns_tugas']}}</td>
+                <td :class="raporSisipan['nilai']['PIL'][2]['ns_tes'] > 74 || raporSisipan['nilai']['PIL'][2]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PIL'][2]['ns_tes']}}</td>
+                <td class="nilaitp">{{raporSisipan['nilai']['PIL'][3]['TP']}}</td>
+                <td :class="raporSisipan['nilai']['PIL'][3]['ns_tugas'] > 74 || raporSisipan['nilai']['PIL'][3]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PIL'][3]['ns_tugas']}}</td>
+                <td :class="raporSisipan['nilai']['PIL'][3]['ns_tes'] > 74 || raporSisipan['nilai']['PIL'][3]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PIL'][3]['ns_tes']}}</td>
+                <td class="nilaitp">{{raporSisipan['nilai']['PIL'][4]['TP']}}</td>
+                <td :class="raporSisipan['nilai']['PIL'][4]['ns_tugas'] > 74 || raporSisipan['nilai']['PIL'][4]['ns_tugas'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PIL'][4]['ns_tugas']}}</td>
+                <td :class="raporSisipan['nilai']['PIL'][4]['ns_tes'] > 74 || raporSisipan['nilai']['PIL'][4]['ns_tes'] == null  ? 'nilai' : 'nilaikkm'">{{raporSisipan['nilai']['PIL'][4]['ns_tes']}}</td>
+                <td class="nilai">{{raporSisipan['nilai']['PIL']['STS']?raporSisipan['nilai']['PIL']['STS']['ns_nilai']:null}}</td>
             </tr>
             <tr>
                 <td colspan="2">9. Pend. Jasmani, Olah Raga & Kesehatan</td>
@@ -347,24 +295,23 @@
         </table>
         <table class="TTD">
             <tr>
-                <td colspan="2"></td>
+                <td style="text-align:left; width:30%"></td>
+                <td style="text-align:center; padding:1px; width:40%" rowspan="5"><img :src="'/storage/stamps/'+raporSisipan['stamp']+'.png'" style="width:100px"></td>
                 <td style="text-align:center; width:30%">Surabaya, 14 Oktober 2022</td>
             </tr>
             <tr>
-                <td colspan="3" style="text-align:left">Mengetahui,</td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
-                <td>Orang Tua Siswa/Wali</td>
-                <td style="width:45%"></td>
+                <td></td>
                 <td style="text-align:center; width:20%">a.n. Kepala Sekolah</td>
             </tr>
             <tr>
                 <td></td>
-                <td></td>
                 <td style="text-align:center"><img :src="'/storage/signs/'+raporSisipan['ttd']+'.png'" style="width: 100px;"></td>
             </tr>
             <tr>
-                <td>..................................</td>
                 <td></td>
                 <td style="text-align:center">{{raporSisipan['rs_walikelas']}}</td>
             </tr>
@@ -494,7 +441,7 @@
             margin-left: auto;
             margin-top: 15px;
             border: none;
-            width: 95%;
+            width: 90%;
         }
         table.TTD td, tr, th{
             padding:3px;

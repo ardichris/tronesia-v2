@@ -629,7 +629,7 @@
                     <template v-slot:modal-title>
                         Preview Rapor Sisipan
                     </template>
-                    <rapor-sisipan-kurmer-form v-if="authenticated.unit_id == 1"></rapor-sisipan-kurmer-form>
+                    <rapor-sisipan-kurmer-form></rapor-sisipan-kurmer-form>
                 </b-modal>
                 <b-modal id="modal-rapor-preview" scrollable size="lg" hide-footer>
                     <template v-slot:modal-title>
@@ -650,12 +650,13 @@
                         {{row.item.siswa.s_nama}}
                     </template>
                     <template v-slot:cell(sisipan)="row">
-                        <b-button variant="success" size="sm" v-if="row.item.RaporSisipan == '-'&&row.item.kelas.kelas_jenjang=='7'" @click="inputRaporSisipan(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
+                        <b-button variant="success" size="sm" v-if="row.item.RaporSisipan == '-'" @click="inputRaporSisipan(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
                         <!-- <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-' && row.item.kelas.kelas_jenjang!='7'" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-church"></i></b-button> -->
                         <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-'" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-edit"></i></b-button>
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang!='7'" @click="previewSisipan(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i></b-button>
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang=='7'" @click="previewSisipanKurmer(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i></b-button>
-                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'&& authenticated.role==0"><i class="fa fa-file-pdf"></i></b-button>
+                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id+'&kurikulum=merdeka'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang=='7'"><i class="fa fa-file-pdf"></i></b-button>
+                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'&& authenticated.role==0&&row.item.kelas.kelas_jenjang!='7'"><i class="fa fa-file-pdf"></i></b-button>
                     </template>
                     <template v-slot:cell(akhir)="row">
                         <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-' && authenticated.unit_id == 1" @click="commentRapor(row.item.RaporAkhir.id)"><i class="fa fa-church"></i></b-button>
@@ -783,11 +784,7 @@ export default {
                                     'getSettingSisipan',
                                     'tambahSisipan']),
         ...mapMutations('raporakhir', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
-        submitSetting(){
-            this.setTP().then(()=>{
-                this.$bvModal.hide('setting_sisipan')
-            })
-        },
+
         filterTP(mapel){
           return this.kompetensi.filter(item => item.kompetensi_mapel === mapel)
         },
@@ -926,7 +923,21 @@ export default {
             this.getKompetensi().then(()=>{
                 this.$bvModal.show('setting-sisipan')
             })
-        }
+        },
+        submitSetting(){
+            this.setTP().then(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    title: 'Setting tersimpan',
+                    type: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                }),
+                this.$bvModal.hide('setting_sisipan')
+            })
+            this.$bvModal.hide('setting_sisipan')
+        },
 
     },
     components: {

@@ -52,6 +52,7 @@ class JamMengajarController extends Controller
             foreach ($request->pengajar as $row) {
                 $konflik = JamMengajar::where('guru_id', $row['guru']['id'])
                                         ->where('kelas_id', $request->kelas['id'])
+                                        ->where('mapel_id', $request->mapel['id'])
                                         ->where('periode_id', $user->periode)
                                         ->count();
                 if($konflik == 0){
@@ -68,6 +69,7 @@ class JamMengajarController extends Controller
             foreach ($request->mengajar as $row) {
                 $konflik = JamMengajar::where('guru_id', $request->guru['id'])
                                         ->where('kelas_id', $row['kelas']['id'])
+                                        ->where('mapel_id', $row['mapel']['id'])
                                         ->where('periode_id', $user->periode)
                                         ->count();
                 if($konflik == 0){

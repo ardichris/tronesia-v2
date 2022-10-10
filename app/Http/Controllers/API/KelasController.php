@@ -98,6 +98,7 @@ class KelasController extends Controller
         ]);
         $user = $request->user();
         $kelas = Kelas::whereId($id)->first();
+        $jenisKelas = $request->k_jenis;
         $kelas->update([
                 'kelas_jenjang' => $request->kelas_jenjang,
                 'kelas_wali' => $request->kelas_wali?$request->kelas_wali['id']:null,
@@ -109,7 +110,11 @@ class KelasController extends Controller
                             ->where('periode_id',$user->periode)
                             ->update(['absen' => $row['absen']]);
             } else {
-                $cek = KelasAnggota::where('siswa_id',$row['siswa']['id']);
+                $cek = KelasAnggota::with('kelas')
+                                   ->where('siswa_id',$row['siswa']['id'])
+                                   ->whereHas('kelas', function($query) use($jenisKelas){
+                                        $query->where('k_jenis',$jenisKelas);
+                                   });
                 $cekcount = $cek->count();
                 if($cekcount>0){
                     $cek->update(['kelas_id' => $id,
