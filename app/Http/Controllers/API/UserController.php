@@ -106,14 +106,15 @@ class UserController extends Controller
                 $filename = $request->email . '-' . time() . '.' . $file->getClientOriginalExtension();
                 $file->storeAs('public/teachers', $filename);
             }
-            
+
             //PERBAHARUI DATA YANG ADA DI DATABASE
             $user->update([
                 'name' => $request->name,
+                'full_name' => $request->full_name,
                 'email' => $email,
                 'password' => $password,
                 'photo' => $filename,
-                
+
             ]);
             return response()->json(['status' => 'success'], 200);
         } catch (\Exception $e) {

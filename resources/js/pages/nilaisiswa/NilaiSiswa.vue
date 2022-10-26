@@ -52,7 +52,10 @@
                                     </template>
                                 </v-select>
                             </div>
-                            <button type="button" class="btn btn-success" @click="getNilai">Submit Filter</button>
+                            <div style="margin-bottom:5px">
+                            <button type="button" class="btn btn-success" v-if="nilaiselect.jenis" @click="getNilai">Submit Filter</button>
+                            </div>
+                            <button type="button" class="btn btn-warning" v-if="nilaiselect.kelas" @click="downloadNilai">Download Nilai</button>
 
                         </div>
                     </div>
@@ -120,8 +123,8 @@ export default {
             nilaisiswa: state => state.nilaisiswas,
             jammengajars: state => state.jammengajars,
             kompetensis: state => state.kompetensi
-
         }),
+        ...mapState(['token']),
         page: {
             get() {
                 //MENGAMBIL VALUE PAGE DARI VUEX MODULE nilaisiswa
@@ -186,6 +189,9 @@ export default {
         },
         JenisSelected(JMset){
             this.JENIS_SELECT(JMset)
+        },
+        downloadNilai(){
+            window.open(`/api/downloadnilai?api_token=${this.token}&filter=${this.nilaiselect.kelas.id}`)
         },
         getNilai(){
             this.getNilaiSiswa().then(() => {

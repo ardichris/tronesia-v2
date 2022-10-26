@@ -2,6 +2,7 @@ import $axios from '../api.js'
 
 const state = () => ({
     rapor: {},
+    kelas: [],
     raporsisipan: {},
     raporakhir: {},
     raporpetra: {
@@ -57,6 +58,9 @@ const state = () => ({
 })
 
 const mutations = {
+    KELAS_DATA(state, payload) {
+        state.kelas = payload
+    },
     SETTING_SISIPAN(state, payload){
         state.settingTP.field = Object.assign( {}, state.settingTP.field, payload )
     },
@@ -132,6 +136,16 @@ const actions = {
             //         commit('SET_ERRORS', error.response.data.errors, { root: true })
             //     }
             // })
+        })
+    },
+    getKelas({ commit, state }, payload) {
+        let search = typeof payload != 'undefined' ? payload:''
+        return new Promise((resolve, reject) => {
+            $axios.get(`/kelas?q=${search}&key=nama`)
+            .then((response) => {
+                commit('KELAS_DATA', response.data)
+                resolve(response.data)
+            })
         })
     },
     getRapor({ commit, state }, payload) {

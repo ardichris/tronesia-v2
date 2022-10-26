@@ -2,6 +2,7 @@ import $axios from '../api.js'
 
 const state = () => ({
     absensis: [],
+    pelanggarans: [],
     kelas: [],
     siswa: [],
     rekap:null,
@@ -13,7 +14,12 @@ const state = () => ({
         start: '',
         end: ''
     },
-
+    laporanpelanggaran: {
+        siswa: null,
+        kelas: null,
+        start: '',
+        end: ''
+    },
 
     page: 1
 })
@@ -28,6 +34,11 @@ const mutations = {
 
     ABSENSI_DATA(state, payload) {
         state.absensis = payload
+        state.total = payload.total
+        state.rekap = payload.rekap
+    },
+    PELANGGARAN_DATA(state, payload) {
+        state.pelanggarans = payload
         state.total = payload.total
         state.rekap = payload.rekap
     },
@@ -50,10 +61,36 @@ const mutations = {
             start: '',
             end: ''
         }
+
+        state.laporanabsensi= {
+            siswa: null,
+            kelas: null,
+            start: '',
+            end: ''
+        }
     }
 }
 
 const actions = {
+    searchPelanggaran({commit,state}, payload){
+        let start = state.laporanpelanggaran.start
+        let end = state.laporanpelanggaran.end
+        let siswa = state.laporanpelanggaran.siswa == null? '':state.laporanpelanggaran.siswa.uuid
+        let kelas = state.laporanpelanggaran.kelas == null? '':state.laporanpelanggaran.kelas
+        return new Promise((resolve,reject) => {
+            $axios.get(`/laporan/kesiswaan/pelanggaran?start=${start}&end=${end}&siswa=${siswa}&kelas=${kelas}`)
+            .then((response) => {
+                commit('PELANGGARAN_DATA', response.data)
+                resolve(response.data)
+            })
+            .catch((error) => {
+                if (error.response.status == 422) {
+                    commit('SET_ERRORS', error.response.data.errors, { root: true })
+                }
+                reject()
+            })
+        })
+    },
     searchAbsensi({commit,state}, payload){
         let start = state.laporanabsensi.start
         let end = state.laporanabsensi.end

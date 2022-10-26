@@ -7,6 +7,10 @@
     <title>Laporan Jurnal Mengajar</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
+        @page {
+            margin-top: 5;
+            margin-bottom: 5;
+        }
         body{
             font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
             color:#333;
@@ -30,6 +34,7 @@
         table.data {
             border:1px solid #333;
             border-collapse:collapse;
+            margin-top:10px;
             margin:0 auto;
             width: 100%;
         }
@@ -48,8 +53,8 @@
             margin:0px;
         }
         table.TTD {
-            width: 100%;  
-            margin:0 auto;  
+            width: 100%;
+            margin:0 auto;
             border: none;
         }
         table.TTD td, tr, th{
@@ -64,7 +69,7 @@
         <center><h1>Laporan Jurnal Mengajar</h1></center>
         Nama Guru : <strong>{{$jurnals['guru'][0]}}</strong><br>
         Tanggal :  <strong>{{$jurnals['start']}}</strong>
-        s/d  <strong>{{$jurnals['end']}}</strong><br>
+        s/d  <strong>{{$jurnals['end']}}</strong><br><br>
         <table class="data">
             <thead>
             </thead>
@@ -73,13 +78,13 @@
                     <th>Tanggal</th>
                     <th>Jam</th>
                     <th>Kelas</th>
-                    <th>KD</th>
+                    <th>Kompetensi</th>
                     <th>Materi</th>
                     <th>Catatan</th>
                 </tr>
                 @foreach ($jurnals['list'] as $row)
                 <tr>
-                    <td><p style="text-align:center;">{{\Carbon\Carbon::parse($row->jm_tanggal)->format('d F Y')}}</p></td>
+                    <td><p style="text-align:center;">{{\Carbon\Carbon::parse($row->jm_tanggal)->translatedFormat('d F Y')}}</p></td>
                     <td><p style="text-align:center;">{{ $row->jm_jampel }}</p></td>
                     <td><p style="text-align:center;">{{ $row->kelas->kelas_nama }}</p></td>
                     <td><p style="text-align:center;">{{ $row->kompetensi ? $row->kompetensi->kd_kode:'-' }}</p></td>
@@ -110,7 +115,7 @@
                         <br>
                         <br>
                         <br>
-                        Yurui, S.Pd., M.M.</b></p>
+                        {{$jurnals['signature']}}</b></p>
                     </td>
                 </tr>
             </tbody>

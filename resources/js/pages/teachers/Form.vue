@@ -1,9 +1,14 @@
 <template>
     <div>
         <div class="form-group" :class="{ 'has-error': errors.name }">
-            <label for="">Nama Lengkap</label>
+            <label for="">Nama</label>
             <input type="text" class="form-control" v-model="teacher.name" :readonly="$route.name == 'teachers.view'">
             <p class="text-danger" v-if="errors.name">{{ errors.name[0] }}</p>
+        </div>
+        <div class="form-group" :class="{ 'has-error': errors.full_name }">
+            <label for="">Nama Lengkap</label>
+            <input type="text" class="form-control" v-model="teacher.full_name" :readonly="$route.name == 'teachers.view'">
+            <p class="text-danger" v-if="errors.full_name">{{ errors.full_name[0] }}</p>
         </div>
         <div class="form-group" :class="{ 'has-error': errors.email }">
             <label for="">Email</label>
@@ -61,6 +66,7 @@ export default {
             this.editTeacher(this.$route.params.id).then((res) => {
                 this.teacher = {
                     name: res.data.name,
+                    full_name: res.data.full_name,
                     email: res.data.email,
                     password: '',
                     photo: '',
@@ -74,6 +80,7 @@ export default {
         return {
             teacher: {
                 name: '',
+                full_name: '',
                 email: '',
                 password: '',
                 photo: '',
@@ -109,6 +116,7 @@ export default {
             //DIMANA UNTUK MENGUPLOAD GAMBAR HARUS MENGGUNAKAN FORMDATA
             let form = new FormData()
             form.append('name', this.teacher.name)
+            form.append('full_name', this.teacher.full_name)
             form.append('email', this.teacher.email)
             form.append('password', this.teacher.password)
             form.append('role', this.teacher.role)
@@ -122,6 +130,7 @@ export default {
                     //KEMUDIAN FORM DI KOSONGKAN
                     this.teacher = {
                         name: '',
+                        full_name: '',
                         email: '',
                         password: '',
                         photo: '',
@@ -140,6 +149,7 @@ export default {
                     //KEMUDIAN FORM DI KOSONGKAN
                     this.teacher = {
                         name: '',
+                        full_name: '',
                         email: '',
                         password: '',
                         photo: '',

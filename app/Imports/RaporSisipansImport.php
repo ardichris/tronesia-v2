@@ -8,6 +8,8 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Ramsey\Uuid\Uuid;
 use App\Siswa;
+use App\KelasAnggota;
+use App\User;
 
 class RaporSisipansImport implements ToCollection, WithStartRow
 {
@@ -16,15 +18,25 @@ class RaporSisipansImport implements ToCollection, WithStartRow
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-    
+
     public function collection(Collection $rows)
-    {   
-        foreach ($rows as $index => $row) 
+    {
+        foreach ($rows as $index => $row)
         {
             $siswa = Siswa::where('s_nis',$row['2'])->where('unit_id',$this->rapor_id['unit'])->value('id');
             if(!is_null($siswa)){
                 $cekdata = null;
+                $unit = $this->rapor_id['unit'];
                 $cekdata = RaporSisipan::where('siswa_id',$siswa)->where('periode_id', $this->rapor_id['periode'])->first();
+                $kelas = KelasAnggota::with('kelas')
+                                     ->where('siswa_id',$siswa)
+                                     ->where('periode_id', $this->rapor_id['periode'])
+                                     ->whereHas('kelas', function($query) use($unit){
+                                            $query->where('unit_id',$unit)
+                                                ->where('k_jenis', 'REGULER');
+                                        })
+                                     ->first();
+                $walikelas = User::where('id', $kelas->kelas->kelas_wali)->value('full_name');
                 if(is_null($cekdata)){
                     RaporSisipan::create([
                         'id'  => Uuid::Uuid4(),
@@ -33,7 +45,7 @@ class RaporSisipansImport implements ToCollection, WithStartRow
                         'unit_id' =>  $this->rapor_id['unit'],
                         'user_id' =>  $this->rapor_id['user'],
                         'rs_tanggal' => null,
-                        'rs_walikelas' => $row[5] ? $row[5]:null,
+                        'rs_walikelas' => $walikelas ? $walikelas:null,
                         'rs_spiritual_nilai' => null,
                         'rs_spiritual_predikat' => $row[7] ? $row[7]:null,
                         'rs_spiritual_deskripsi' => $row[6] ? $row[6]:null,
@@ -227,7 +239,7 @@ class RaporSisipansImport implements ToCollection, WithStartRow
                     $cekdata->update([
                         'user_id' =>  $this->rapor_id['user'],
                         'rs_tanggal' => null,
-                        'rs_walikelas' => $row[5] ? $row[5]:null,
+                        'rs_walikelas' => $walikelas ? $walikelas:null,
                         'rs_spiritual_nilai' => null,
                         'rs_spiritual_predikat' => $row[7] ? $row[7]:null,
                         'rs_spiritual_deskripsi' => $row[6] ? $row[6]:null,
@@ -418,10 +430,10 @@ class RaporSisipansImport implements ToCollection, WithStartRow
                         'rs_catatan_pesan' => $row[189] ? $row[189]:null
                     ]);
                 }
-                
+
                 $siswa = null;
             }
-            
+
         }
     }
 

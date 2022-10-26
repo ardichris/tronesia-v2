@@ -88,8 +88,8 @@ function nilaiSisipanKurmer($id, $unit){
                                             $query->where('mapel_kode', $key);
                                         })
                                         ->first();
-
-                $raporSisipan[$key][$valuekelompok]= ['ns_nilai' => $nilaisiswa?$nilaisiswa['ns_nilai']:null];
+                $raporSisipan[$key][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
+                $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
 
             } else {
             $komp = SisipanField::where('periode_id',$rapor['periode_id'])
@@ -114,6 +114,9 @@ function nilaiSisipanKurmer($id, $unit){
                                                         'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
                                                         'TP' =>  $kompetensi[1]
                                                         ];
+                $raporSisipan[$key][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tugas'];
+                $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
+
                 } else {
                     $raporSisipan[$key][$valuekelompok]=[
                                                         'ns_tugas' => '-',
@@ -159,7 +162,7 @@ function nilaiSisipanKurmer($id, $unit){
                                     })
                                     ->first();
 
-            $raporSisipan['PIL'][$valuekelompok]= ['ns_nilai' => $nilaisiswa?$nilaisiswa['ns_nilai']:null];
+            $raporSisipan['PIL'][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
 
         } else {
         $komp = SisipanField::where('periode_id',$rapor['periode_id'])
@@ -184,6 +187,9 @@ function nilaiSisipanKurmer($id, $unit){
                                                     'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
                                                     'TP' =>  $kompetensi[1]
                                                     ];
+                $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tugas'];
+                $raporSisipan['PIL'][$valuekelompok]['ns_tes']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tes'];
+
             } else {
                 $raporSisipan['PIL'][$valuekelompok]=[
                                                     'ns_tugas' => '-',
@@ -255,13 +261,14 @@ class RaporSisipanController extends Controller
 
     public function raporSisipanPDF(Request $request)
     {
+        $ayat = [1,6];
         $user = $request->user();
         $idSisipan = $request->rapor;
         $unit = $request->unit;
         if($request->kurikulum == 'merdeka'){
             $raporSisipan = nilaiSisipanKurmer($idSisipan, $unit);
             //return response()->json(["data" => compact('raporSisipan')],200);
-            if($unit == 1){
+            if(in_array($unit, $ayat)){
                 $pdf = PDF::loadView('sisipankurmer', compact('raporSisipan'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
                 return $pdf->stream($raporSisipan['siswa']['s_code'].".pdf");
             } else {
@@ -289,10 +296,10 @@ class RaporSisipanController extends Controller
             $raporSisipan['walikelas'] = $ttd->full_name;
             $raporSisipan['periode'] = Periode::whereId($raporSisipan['periode_id']);
             $studentCode = $raporSisipan['siswa']['s_code'];
-            if($unit == 1) {
+            if(in_array($unit, $ayat)) {
                 $pdf = PDF::loadView('sisipan', compact('raporSisipan'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
                 return $pdf->stream($studentCode.".pdf");
-            }elseif($unit == 3) {
+            } else {
                 $pdf = PDF::loadView('sisipanp2', compact('raporSisipan'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
                 return $pdf->stream($studentCode.".pdf");
             }

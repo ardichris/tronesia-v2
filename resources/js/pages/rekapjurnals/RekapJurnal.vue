@@ -19,7 +19,7 @@
                             <template v-slot:modal-footer>
                                 <b-button
                                     variant="success"
-                                    class="mt-3"                                    
+                                    class="mt-3"
                                     block  @click="submitRekap"
                                 >
                                     Submit
@@ -31,7 +31,7 @@
             </div>
             <div class="panel-body">
                 <!--b-button variant="primary" size="sm" v-b-modal="'add-modal'" @click="$bvModal.show('tanggal-modal')">View</b-button-->
-                Nama Guru :  <label for="">{{authenticated.name}}</label><br>
+                Nama Guru :  <label for="">{{authenticated.full_name}}</label><br>
                 Tanggal :  <label for="">{{rekapjurnal.tanggalmulai | formatDate}}</label>
                  s/d   <label for="">{{rekapjurnal.tanggalakhir | formatDate}}</label><br>
                 <b-table striped hover bordered :items="jurnals.data" :fields="fields" show-empty>
@@ -45,16 +45,6 @@
                         {{ row.item.kompetensi_id ? row.item.kompetensi.kd_kode:''  }}
                     </template>
                 </b-table>
-                <b-row align-h="end">
-                    <b-col cols="3">Surabaya, {{new Date() | formatDate}}  <!--new Date().toLocaleString()-->
-                        <br>
-                        <br>
-                        <br>
-                        <br>
-                        <a v-if="authenticated.unit_id == 1">Yurui, S.Pd., M.M.</a>
-                        <a v-if="authenticated.unit_id == 3">Arif Prianto, S.Pd., M.M.</a>
-                    </b-col>
-                </b-row>
                 <b-button variant="success"  :href="'/laporan/cetak_pdf?user='+authenticated.id+'&start='+rekapjurnal.tanggalmulai+'&finish='+rekapjurnal.tanggalakhir">Cetak PDF</b-button>
             </div>
         </div>
@@ -75,7 +65,7 @@ export default {
       this.$bvModal.show('tanggal-modal')
     },
     data() {
-        return {            
+        return {
             fields: [
                 { key: 'jm_tanggal', label: 'Tanggal' },
                 { key: 'jm_jampel', label: 'Jam' },
@@ -123,7 +113,7 @@ export default {
     destroyed() {
         this.CLEAR_FORM()
     },
-    
+
 }
 </script>
 

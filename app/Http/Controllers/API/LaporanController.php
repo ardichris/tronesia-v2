@@ -8,6 +8,8 @@ use App\Absensi;
 use App\Kelas;
 use App\KelasAnggota;
 use App\Siswa;
+use App\Pelanggaran;
+use App\MasterPelanggaran;
 use App\Http\Resources\AbsensiCollection;
 
 
@@ -25,7 +27,8 @@ class LaporanController extends Controller
                                 $query->select('id', 's_nama', 'uuid');
                             }])
                         ->whereBetween('absensi_tanggal',[$request->start,$request->end])
-                        ->where('ab_status', 'Approved');
+                        ->where('ab_status', 'Approved')
+                        ->where('unit_id', $user->unit_id);
 
         if($request->siswa!=''){
             $q = $request->siswa;
@@ -126,5 +129,74 @@ class LaporanController extends Controller
         }
         return response()->json(['status' => 'success', 'data' => $absen, 'total' => $total, 'rekap' => $rekap], 200);
 
+    }
+
+    public function pelanggaran(Request $request){
+
+        $this->validate($request, [
+            'start' => 'required|date',
+            'end' => 'required|date',
+        ]);
+
+        $user = $request->user();
+
+        $pelanggaran = Pelanggaran::with(['siswa' => function ($query) {
+                                        $query->select('id', 's_nama', 'uuid');
+                                    }])
+                                ->with('masterpelanggaran')
+                                ->whereBetween('pelanggaran_tanggal',[$request->start,$request->end])
+                                ->where('unit_id', $user->unit_id);
+
+        $rekap = [];
+        if($request->siswa!=''){
+            $q = $request->siswa;
+            $pelanggaran = $pelanggaran->where(function ($query) use ($q) {
+                                            $query->whereHas('siswa', function($query) use($q){
+                                                        $query->where('uuid','like','%'.$q.'%');
+                                                    });
+                                        });
+        }
+        if($request->kelas!=''){
+            $q = $request->kelas;
+            $anggota = KelasAnggota::with('kelas')
+                                    ->where(function ($query) use ($q) {
+                                        $query->whereHas('kelas', function($query) use($q){
+                                                    $query->where('kelas_nama',$q);
+                                                });
+                                        })
+                                    ->where('periode_id',$user->periode)
+                                    ->pluck('siswa_id');
+            $pelanggaran = $pelanggaran->whereIn('siswa_id',$anggota);
+        }
+        $pelanggaran = $pelanggaran->get();
+        $masterpelanggaran = MasterPelanggaran::orderBy('mp_kategori')->get();
+
+        foreach($pelanggaran as $row) {
+            $kelas = KelasAnggota::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->first();
+            $kelasdetail = Kelas::where('id',$kelas['kelas_id'])->first();
+            $row['kelas'] = $kelas?$kelasdetail['kelas_nama']:'-';
+            $row['absen'] = $kelas?$kelas['absen']:'-';
+        }
+
+        foreach($masterpelanggaran as $rowmp){
+            $count = 0;
+            foreach($pelanggaran as $rowp){
+                if($rowp['mp_id']==$rowmp['id']){
+                    $count++;
+                }
+            }
+            if($count>0){
+                array_push($rekap, (object)[
+                    'mp_pelanggaran' => $rowmp->mp_pelanggaran,
+                    'mp_kategori' => $rowmp->mp_kategori,
+                    'jumlah' => $count,
+                ]);
+            }
+            //$rowmp['jumlah'] = $count;
+        }
+        //$masterpelanggaran = $masterpelanggaran->toArray();
+        $total = array_column($rekap, 'jumlah');
+        array_multisort($total, SORT_DESC, $rekap);
+        return response()->json(['status' => 'SUKSES', 'data' => $pelanggaran, 'rekap' => $rekap],200);
     }
 }

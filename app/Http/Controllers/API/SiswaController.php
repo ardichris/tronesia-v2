@@ -103,12 +103,12 @@ class SiswaController extends Controller
             $siswas = $siswas->where(function ($query) use ($q) {
                                 $query->where('s_nama', 'LIKE', '%' . request()->q . '%')
                                         ->orWhere('uuid', $q);
-                            })
+                            });
             // ->orwhere('uuid', 'LIKE', '%' . request()->q . '%')
                             // ->orwhereHas('kelas', function($query) use($q){
                             //     $query->where('kelas_nama','like','%'.$q.'%');
                             // })
-                            ->select(['id','s_nama','s_nis','s_kelamin','s_keterangan','uuid']);
+                            //->select(['id','s_nama','s_nis','s_kelamin','s_keterangan','uuid']);
         }
 
         if (request()->seragam != '') {

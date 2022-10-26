@@ -222,7 +222,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['PAK']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['PAK']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['PAK']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['PAK']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['PAK']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['PAK']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['PAK']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['PAK']['STS']?$raporSisipan['nilai']['PAK']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['PAK']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['PAK']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['PAK']['STS']?$raporSisipan['nilai']['PAK']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">2.</td>
@@ -239,7 +239,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['PKN']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['PKN']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['PKN']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['PKN']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['PKN']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['PKN']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['PKN']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['PKN']['STS']?$raporSisipan['nilai']['PKN']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['PKN']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['PKN']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['PKN']['STS']?$raporSisipan['nilai']['PKN']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">3.</td>
@@ -256,7 +256,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['BIN']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['BIN']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['BIN']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['BIN']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['BIN']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['BIN']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['BIN']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['BIN']['STS']?$raporSisipan['nilai']['BIN']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['BIN']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['BIN']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['BIN']['STS']?$raporSisipan['nilai']['BIN']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">4.</td>
@@ -273,7 +273,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['BIG']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['BIG']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['BIG']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['BIG']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['BIG']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['BIG']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['BIG']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['BIG']['STS']?$raporSisipan['nilai']['BIG']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['BIG']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['BIG']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['BIG']['STS']?$raporSisipan['nilai']['BIG']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">5.</td>
@@ -290,7 +290,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['MAT']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['MAT']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['MAT']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['MAT']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['MAT']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['MAT']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['MAT']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['MAT']['STS']?$raporSisipan['nilai']['MAT']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo (($raporSisipan['nilai']['MAT']['STS']['ns_tes'] > 74 && $raporSisipan['nilai']['MAT']['STS']['ns_tes'] < 101) || $raporSisipan['nilai']['MAT']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['MAT']['STS']?$raporSisipan['nilai']['MAT']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">6.</td>
@@ -308,7 +308,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['FIS']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['FIS']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['FIS']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['FIS']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['FIS']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['FIS']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['FIS']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['FIS']['STS']?$raporSisipan['nilai']['FIS']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['FIS']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['FIS']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['FIS']['STS']?$raporSisipan['nilai']['FIS']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td rowspan="2" class="nomermapel">7.</td>
@@ -326,7 +326,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['GEO']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['GEO']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['GEO']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['GEO']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['GEO']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['GEO']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['GEO']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['GEO']['STS']?$raporSisipan['nilai']['GEO']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['GEO']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['GEO']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['GEO']['STS']?$raporSisipan['nilai']['GEO']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td>Ekonomi</td>
@@ -342,7 +342,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['EKO']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['EKO']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['EKO']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['EKO']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['EKO']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['EKO']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['EKO']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['EKO']['STS']?$raporSisipan['nilai']['EKO']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['EKO']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['EKO']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['EKO']['STS']?$raporSisipan['nilai']['EKO']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">8.</td>
@@ -360,7 +360,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['PIL']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['PIL']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['PIL']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['PIL']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['PIL']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['PIL']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['PIL']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['PIL']['STS']?$raporSisipan['nilai']['PIL']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['PIL']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['PIL']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['PIL']['STS']?$raporSisipan['nilai']['PIL']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">9.</td>
@@ -377,7 +377,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['ORG']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['ORG']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['ORG']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['ORG']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['ORG']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['ORG']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['ORG']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['ORG']['STS']?$raporSisipan['nilai']['ORG']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['ORG']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['ORG']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['ORG']['STS']?$raporSisipan['nilai']['ORG']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">10.</td>
@@ -394,7 +394,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['TIK']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['TIK']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['TIK']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['TIK']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['TIK']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['TIK']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['TIK']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['TIK']['STS']?$raporSisipan['nilai']['TIK']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['TIK']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['TIK']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['TIK']['STS']?$raporSisipan['nilai']['TIK']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">11.</td>
@@ -411,7 +411,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['JWA']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['JWA']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['JWA']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['JWA']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['JWA']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['JWA']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['JWA']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['JWA']['STS']?$raporSisipan['nilai']['JWA']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['JWA']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['JWA']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['JWA']['STS']?$raporSisipan['nilai']['JWA']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td class="nomermapel">12.</td>
@@ -428,7 +428,7 @@
                 <td class="nilaitp">{{$raporSisipan['nilai']['MAN']['4']['TP']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['MAN']['4']['ns_tugas'] > 74 || $raporSisipan['nilai']['MAN']['4']['ns_tugas'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['MAN']['4']['ns_tugas']}}</td>
                 <td class='<?php echo ($raporSisipan['nilai']['MAN']['4']['ns_tes'] > 74 || $raporSisipan['nilai']['MAN']['4']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['MAN']['4']['ns_tes']}}</td>
-                <td class="nilai">{{$raporSisipan['nilai']['MAN']['STS']?$raporSisipan['nilai']['MAN']['STS']['ns_nilai']:null}}</td>
+                <td class='<?php echo ($raporSisipan['nilai']['MAN']['STS']['ns_tes'] > 74 || $raporSisipan['nilai']['MAN']['STS']['ns_tes'] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['nilai']['MAN']['STS']?$raporSisipan['nilai']['MAN']['STS']['ns_tes']:null}}</td>
             </tr>
             <tr>
                 <td colspan="10" style="text-align:center; font-weight: bold">CATATAN WALIKELAS</td>

@@ -61,9 +61,10 @@ class KelasController extends Controller
 
     public function edit(Request $request, $id)
     {
-        //$user = $id->user();
+        $user = $request->user();
         $kelas = Kelas::with(['user','mentor'])->whereId($id)->first();
         $anggota = KelasAnggota::where('kelas_id',$id)
+                                ->where('periode_id',$user->periode)
                                 ->with(array('siswa' => function($query) {
                                     $query->select('id','s_nama');
                                 }))
@@ -112,6 +113,7 @@ class KelasController extends Controller
             } else {
                 $cek = KelasAnggota::with('kelas')
                                    ->where('siswa_id',$row['siswa']['id'])
+                                   ->where('periode_id',$user->periode)
                                    ->whereHas('kelas', function($query) use($jenisKelas){
                                         $query->where('k_jenis',$jenisKelas);
                                    });

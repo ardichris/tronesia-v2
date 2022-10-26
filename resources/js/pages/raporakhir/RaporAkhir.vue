@@ -4,10 +4,29 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan')" v-if="authenticated.role==0">Upload Sisipan</b-button>
-                        <b-button variant="primary" size="sm" v-b-modal="'setting-sisipan'" @click="settingsisipan" v-if="authenticated.role==0">Setting Sisipan</b-button>
-                        <b-button variant="success" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-import')"  v-if="authenticated.role==0">Upload Ledger</b-button>
-                        <b-button variant="warning" size="sm" v-b-modal="'modal-export'" @click="$bvModal.show('modal-export')"  v-if="authenticated.role==0">Export</b-button>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" size="sm">Sisipan</button>
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                            <div class="dropdown-menu" role="menu" style="">
+                                <a class="dropdown-item" @click="$bvModal.show('modal-sisipan')" v-if="authenticated.role==0">Upload Ledger</a>
+                                <a class="dropdown-item" @click="settingsisipan" v-if="authenticated.role==0">Setting Sisipan</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" @click="$bvModal.show('modal-export')"  v-if="authenticated.role==0">Export Ledger</a>
+                            </div>
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success" size="sm">Final</button>
+                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                            <div class="dropdown-menu" role="menu" style="">
+                                <a class="dropdown-item" @click="$bvModal.show('modal-import')"  v-if="authenticated.role==0">Upload Ledger</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" @click="$bvModal.show('modal-export')"  v-if="authenticated.role==0">Export Ledger</a>
+                            </div>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -34,46 +53,25 @@
                             </select>
                             <label>Grup</label>
                             <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.grup">
-                                <option>All</option>
                                 <option>Jenjang</option>
                                 <option>Kelas</option>
-                                <option>Individu</option>
                             </select>
-                            <label v-if="exportParameter.grup!=''&&exportParameter.grup!='All'">Detail</label>
-                            <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.detail" v-if="exportParameter.grup!=''&&exportParameter.grup!='All'">
-                                <option v-if="exportParameter.grup=='Jenjang'">7</option>
-                                <option v-if="exportParameter.grup=='Jenjang'">8</option>
-                                <option v-if="exportParameter.grup=='Jenjang'">9</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VII-1</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VII-2</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VII-3</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VII-4</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VII-5</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VII-6</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VII-7</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VII-8</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VII-9</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-1</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-2</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-3</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-4</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-5</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-6</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-7</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-8</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-9</option>
-                                <option v-if="exportParameter.grup=='Kelas'">VIII-10</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-1</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-2</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-3</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-4</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-5</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-6</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-7</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-8</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-9</option>
-                                <option v-if="exportParameter.grup=='Kelas'">IX-10</option>
-                            </select>
+                            <div class="form-group" v-if="exportParameter.grup!=''&&exportParameter.grup!='All'">
+                                <label>Detail</label>
+                                <b-form-select
+                                    v-if="exportParameter.grup=='Kelas'"
+                                    v-model="exportParameter.detail"
+                                    size="sm"
+                                    @change="cari"
+                                    :options="kelasdata.data"
+                                    >
+                                </b-form-select>
+                                <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.detail" v-if="exportParameter.grup=='Jenjang'">
+                                    <option>7</option>
+                                    <option>8</option>
+                                    <option>9</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <template v-slot:modal-footer>
@@ -622,8 +620,7 @@
                     <template v-slot:modal-title>
                         Preview Rapor Sisipan
                     </template>
-                    <rapor-sisipan-form v-if="authenticated.unit_id == 1"></rapor-sisipan-form>
-                    <rapor-sisipanP2-form v-if="authenticated.unit_id == 3"></rapor-sisipanP2-form>
+                    <rapor-sisipan-form></rapor-sisipan-form>
                 </b-modal>
                 <b-modal id="modal-sisipan-kurmer-preview" scrollable size="lg" hide-footer>
                     <template v-slot:modal-title>
@@ -656,7 +653,7 @@
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang!='7'" @click="previewSisipan(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i></b-button>
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang=='7'" @click="previewSisipanKurmer(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i></b-button>
                         <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id+'&kurikulum=merdeka'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang=='7'"><i class="fa fa-file-pdf"></i></b-button>
-                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'&& authenticated.role==0&&row.item.kelas.kelas_jenjang!='7'"><i class="fa fa-file-pdf"></i></b-button>
+                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang!='7'"><i class="fa fa-file-pdf"></i></b-button>
                     </template>
                     <template v-slot:cell(akhir)="row">
                         <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-' && authenticated.unit_id == 1" @click="commentRapor(row.item.RaporAkhir.id)"><i class="fa fa-church"></i></b-button>
@@ -711,7 +708,9 @@ export default {
     created() {
         this.getRapor({
                 search: ''
-            })
+            }),
+        this.getKelas()
+
     },
     data() {
         return {
@@ -728,6 +727,7 @@ export default {
             search: '',
             import_file: '',
             error: {},
+            kelas:'',
         }
     },
     computed: {
@@ -742,7 +742,8 @@ export default {
             raporPetra: state => state.raporpetra,
             exportParameter: state => state.exportParameter,
             kompetensi: state => state.kompetensi,
-            settingTP: state => state.settingTP
+            settingTP: state => state.settingTP,
+            kelasdata: state=> state.kelas
         }),
         ...mapState(['token']),
         page: {
@@ -772,6 +773,7 @@ export default {
                                     'viewRaporSisipan',
                                     'viewRaporSisipanKurmer',
                                     'getRapor',
+                                    'getKelas',
                                     'uploadLedger',
                                     'submitRaporSisipan',
                                     'viewRaporAkhir',
@@ -790,10 +792,6 @@ export default {
         },
         submitExport(){
             window.open(`/api/exportrapor?api_token=${this.token}&file=${this.exportParameter.file}&rapor=${this.exportParameter.rapor}&grup=${this.exportParameter.grup}&detail=${this.exportParameter.detail}`,)
-            // this.exportRapor().then(() => {
-            //         this.$bvModal.hide('modal-export')
-            //     }
-            // )
         },
         submitNilai(){
             this.submitNilaiPetra().then(() => {

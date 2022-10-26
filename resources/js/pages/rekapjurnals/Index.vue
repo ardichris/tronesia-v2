@@ -5,7 +5,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-12">
-                            <center><h1>Rekap Jurnal Mengajar</h1></center>                           
+                            <center><h1>Laporan Jurnal Mengajar</h1></center>
                         </div>
                     </div>
                 </div>
@@ -13,14 +13,14 @@
 
             <section class="content">
                 <div class="row">
-                    
+
                         <router-view></router-view>
-                    
+
                 </div>
             </section>
         </div>
     </div>
-    
+
 </template>
 <script>
     import Breadcrumb from '../../components/Breadcrumb.vue'
@@ -31,7 +31,7 @@
         components: {
             'breadcrumb': Breadcrumb
         },
-        
+
         computed: {
             ...mapState('rekapjurnal', {
                 rekapjurnal: state => state.jurnal,
@@ -47,7 +47,7 @@
                 this.getKelas({
                     search: search,
                     loading: loading
-                })            
+                })
             },
 
         },

@@ -10,10 +10,67 @@ use App\Kelas;
 use App\Kompetensi;
 use App\Mapel;
 use App\KelasAnggota;
+use App\JamMengajar;
 use App\Http\Resources\NilaiSiswaCollection;
+use App\Exports\NilaiSiswaExport;
+use Jenssegers\Date\Date;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class NilaiSiswaController extends Controller
 {
+    public function downloadNilai(Request $request){
+        $user = $request->user();
+        $jammengajar = JamMengajar::whereId($request->filter)
+                                  ->with(['kelas','mapel'])
+                                  ->first();
+        if($jammengajar->mapel->mapel_kode=='DC'){
+            $jammengajar->mapel->mapel_kode = 'BIG';
+            $jammengajar->mapel_id = 4;
+        }
+        $kompetensi = Kompetensi::where('kompetensi_mapel', $jammengajar->mapel->mapel_kode)
+                                ->where('kompetensi_jenjang', $jammengajar->kelas->kelas_jenjang)
+                                ->where('is_active',1)
+                                ->get();
+        $siswa = KelasAnggota::where('kelas_id', $jammengajar->kelas_id)
+                             ->with(['siswa' => function ($query) {
+                                 $query->select('id','s_nama', 's_nis','s_code');
+                               }])
+                             ->orderBy('absen')
+                             ->get();
+        $siswaID = $siswa->pluck('siswa_id');
+        $nilai = NilaiSiswa::whereIn('siswa_id', $siswaID)
+                           ->where('mapel_id', $jammengajar->mapel_id)
+                           ->where('periode_id', $jammengajar->periode_id)
+                           ->get();
+        $namaTP = $kompetensi->pluck('kd_kode');
+        $header = ['STS' => null,'SAS'=> null, 'TP'=>$namaTP];
+        $kompID = $kompetensi->pluck('id');
+        $periode = $jammengajar->periode_id;
+        foreach($siswa as $rowsiswa){
+            $rowsiswa['STS']=['ns_tes' => null, 'ns_remidi' => null];
+            $rowsiswa['SAS']=['ns_tes' => null, 'ns_remidi' => null];
+            foreach($kompetensi as $rowkomp){
+                $nilaisiswa[$rowkomp->kd_kode]=['ns_tugas' => null, 'ns_tes' => null, 'ns_remidi' => null];
+                foreach($nilai as $rownilai) {
+                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->kompetensi_id==$rowkomp->id){
+                        $nilaisiswa[$rowkomp->kd_kode] = ['ns_tugas' => $rownilai->ns_tugas, 'ns_tes' => $rownilai->ns_tes, 'ns_remidi' => $rownilai->ns_remidi];
+                    }
+                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->ns_jenis_nilai=='STS'){
+                        $rowsiswa['STS'] = ['ns_tes' => $rownilai->ns_tes, 'ns_remidi' => $rownilai->ns_remidi];
+                    }
+                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->ns_jenis_nilai=='SAS'){
+                        $rowsiswa['SAS'] = ['ns_tes' => $rownilai->ns_tes, 'ns_remidi' => $rownilai->ns_remidi];
+                    }
+                }
+            }
+            $rowsiswa['nilai'] = $nilaisiswa;
+        }
+        $download = ['header' => $header, 'siswa' => $siswa];
+        //return response()->json(['data' => $download],200);
+        return Excel::download(new NilaiSiswaExport($download), 'nilaisiswa-'.$jammengajar->kelas->kelas_nama.'-'.$jammengajar->mapel->mapel_kode.'-'.date('y').date('m').date('d').'.xlsx');
+    }
+
     public function nilaiki12(Request $request) {
         $user = $request->user();
         foreach($request->nilai as $row){
@@ -92,6 +149,7 @@ class NilaiSiswaController extends Controller
 
     public function store(Request $request){
         $user = $request->user();
+        if($user->unit_id==1) return response()->json(['status' => 'ditutup'],500);
         foreach($request->nilai as $row){
 
             $ns_final=null;

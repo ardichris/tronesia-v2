@@ -137,7 +137,7 @@
         <table class="identitas">
             <tr>
                 <td style="width:15%">Nama Siswa</td>
-                <td style="width:1%">:</td>
+                <td style="width:3%">:</td>
                 <td colspan="4">{{$raporSisipan['siswa']['s_nama']}}</td>
             </tr>
             <tr>
@@ -334,23 +334,23 @@
             </tr>
             <tr>
                 <td>Ekonomi</td>
+                <td class='<?php echo ($raporSisipan["rs_eko_uh1"] > 74 || $raporSisipan["rs_eko_uh1"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_uh1']}}</td>
+                <td class='<?php echo ($raporSisipan["rs_eko_tgs1"] > 74 || $raporSisipan["rs_eko_tgs1"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_tgs1']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_uh2"] > 74 || $raporSisipan["rs_eko_uh2"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_uh2']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_tgs2"] > 74 || $raporSisipan["rs_eko_tgs2"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_tgs2']}}</td>
-                <td></td>
-                <td></td>
                 <td class='<?php echo ($raporSisipan["rs_eko_uh3"] > 74 || $raporSisipan["rs_eko_uh3"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_uh3']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_tgs3"] > 74 || $raporSisipan["rs_eko_tgs3"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_tgs3']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_pts"] > 74 || $raporSisipan["rs_eko_pts"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_pts']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_prk"] > 74 || $raporSisipan["rs_eko_prk"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_prk']}}</td>
-                <td></td>
+                <td class='<?php echo ($raporSisipan["rs_eko_prd"] > 74 || $raporSisipan["rs_eko_prd"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_prd']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_eko_pry"] > 74 || $raporSisipan["rs_eko_pry"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_eko_pry']}}</td>
             </tr>
             <tr>
                 <td>Sejarah</td>
+                <td class='<?php echo ($raporSisipan["rs_sej_uh1"] > 74 || $raporSisipan["rs_sej_uh1"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_uh1']}}</td>
+                <td class='<?php echo ($raporSisipan["rs_sej_tgs1"] > 74 || $raporSisipan["rs_sej_tgs1"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_tgs1']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_uh2"] > 74 || $raporSisipan["rs_sej_uh2"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_uh2']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_tgs2"] > 74 || $raporSisipan["rs_sej_tgs2"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_tgs2']}}</td>
-                <td></td>
-                <td></td>
                 <td class='<?php echo ($raporSisipan["rs_sej_uh3"] > 74 || $raporSisipan["rs_sej_uh3"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_uh3']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_tgs3"] > 74 || $raporSisipan["rs_sej_tgs3"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_tgs3']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_sej_pts"] > 74 || $raporSisipan["rs_sej_pts"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_sej_pts']}}</td>

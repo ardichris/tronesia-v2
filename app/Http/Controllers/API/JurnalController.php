@@ -21,7 +21,8 @@ class JurnalController extends Controller
 {
     public function rekapJurnalPDF(Request $request)
     {
-        $user = $request->user;
+        $user = User::whereId($request->user)->first();
+        $unit = Unit::whereId($user->unit_id)->first();
         $mulai = date($request->start);
         $akhir = date($request->finish);
         $listjurnal = Jurnal::with(['mapel','kelas','kompetensi'])
@@ -29,17 +30,20 @@ class JurnalController extends Controller
                     ->where('jm_status','=',1)
                     ->orderBy('jm_tanggal', 'ASC')
                     ->orderBy('jm_jampel', 'ASC')
-                    ->where('user_id',$user);
+                    ->where('user_id',$user->id);
                     //->get();
 
                     //$listjurnal = $listjurnal->where('user_id',$user->id);
-        $jurnals['tanggal'] = Carbon::now()->format('d F Y');
+        Carbon::setLocale('id');
+        $jurnals['tanggal'] = Carbon::now()->translatedFormat('d F Y');
         $jurnals['list'] = $listjurnal->get();
-        $jurnals['guru'] = User::where('id',$user)->pluck('name');
-        $jurnals['start'] = Carbon::parse($mulai)->format('d F Y');
-        $jurnals['end'] = Carbon::parse($akhir)->format('d F Y');
-        $pdf = PDF::loadView('print', compact('jurnals'))->setPaper('a4', 'landscape');
-        return $pdf->stream();
+        $jurnals['guru'] = User::where('id',$user->id)->pluck('full_name');
+        $jurnals['start'] = Carbon::parse($mulai)->translatedFormat('d F Y');
+        $jurnals['end'] = Carbon::parse($akhir)->translatedFormat('d F Y');
+        $jurnals['signature'] =  $unit->unit_head;
+        //return response()->json(['data' => $jurnals],200);
+        $pdf = PDF::loadView('laporanjurnal', compact('jurnals'))->setPaper('a4', 'landscape');
+        return $pdf->stream("laporan_jurnal.pdf");
         /*
 
         */

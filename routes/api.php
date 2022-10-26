@@ -85,9 +85,11 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/pelanggaran/total', 'API\PelanggaranController@total');
     Route::put('/absensi/changestatus/{kode}','API\AbsensiController@changeStatus');
     Route::get('/laporan/kesiswaan/absensi','API\LaporanController@absensi');
+    Route::get('/laporan/kesiswaan/pelanggaran','API\LaporanController@pelanggaran');
     Route::resource('notification', 'API\NotificationController')->except(['create', 'destroy']);
     Route::resource('settingsisipan', 'API\SisipanFieldController');
     Route::get('/laporan/raporsisipan', 'API\RaporSisipanController@raporSisipanPDF');
+    Route::get('downloadnilai', 'API\NilaiSiswaController@downloadNilai');
 
 
 

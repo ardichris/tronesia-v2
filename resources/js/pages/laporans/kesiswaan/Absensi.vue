@@ -6,7 +6,7 @@
                     <div class="col-sm-6">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-filter mr-1"></i>Filter</h3>
+                                <h3 class="card-title"><i class="fas fa-filter mr-1"></i>Filter Absensi</h3>
                             </div>
                             <div class="card-body">
                                 <div class="row mb-2">

@@ -31,12 +31,12 @@
             margin-left: auto;
             margin-right: auto;
             margin-top: 5px;
-            font-size: 12px; 
+            font-size: 12px;
         }
         table.ki1ki2 {
             font-size:10px;
             margin-left: auto;
-            margin-right: auto; 
+            margin-right: auto;
             margin-top: 7px;
             margin-bottom: 7px;
             border: 1px solid black;
@@ -49,7 +49,7 @@
         }
         table.identitas {
             margin-left: auto;
-            margin-right: auto; 
+            margin-right: auto;
             font-size:13px;
             font-family: Verdana;
             width: 90%;
@@ -61,7 +61,7 @@
             font-size:25px;
             margin-top:15px;
             margin-bottom:15px;
-            
+
         }
         table.nilai {
             margin-left:auto;
@@ -103,7 +103,7 @@
             font-size: 12px;
             margin-right: auto;
             margin-left: auto;
-            margin-top: 15px;  
+            margin-top: 15px;
             border: none;
             width: 95%;
         }
@@ -132,8 +132,8 @@
 </head>
 <body>
     <div class="container">
-        <img src="{{ public_path('storage/header/smp2.png') }}" style="width:100%">
-        <center><h1 style="font-family:'Verdana'; font-size: 14px">LAPORAN HASIL BELAJAR TENGAH SEMESTER</h1></center>       
+    <img src="{{public_path('storage/header/'.$raporSisipan['kop'].'.png')}}" style="width: 100%">
+        <center><h1 style="font-family:'Verdana'; font-size: 14px">LAPORAN HASIL BELAJAR TENGAH SEMESTER</h1></center>
         <table class="identitas">
             <tr>
                 <td style="width:15%">Nama Siswa</td>
@@ -146,7 +146,7 @@
                 <td style="width:45%">{{$raporSisipan['kelas']['kelas']['kelas_nama']}} / {{$raporSisipan['kelas']['absen']}}</td>
                 <td style="width:15%">Semester</td>
                 <td style="width:1%">:</td>
-                <td style="width:20%">2 (Dua)</td>
+                <td style="width:20%">1 (Satu)</td>
             </tr>
             <tr>
                 <td>Nomor Induk</td>
@@ -154,7 +154,7 @@
                 <td>{{$raporSisipan['siswa']['s_nis']}}</td>
                 <td>Tahun Pelajaran</td>
                 <td>:</td>
-                <td>2021 - 2022</td>
+                <td>2022 - 2023</td>
             </tr>
         </table>
         <table class="subrapor">
@@ -258,8 +258,8 @@
                 <td class='<?php echo ($raporSisipan["rs_bin_prk"] > 74 || $raporSisipan["rs_bin_prk"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_bin_prk']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_bin_prd"] > 74 || $raporSisipan["rs_bin_prd"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_bin_prd']}}</td>
                 <td class='<?php echo ($raporSisipan["rs_bin_pry"] > 74 || $raporSisipan["rs_bin_pry"] == null ) ? "nilai" : "nilaikkm" ?>'>{{$raporSisipan['rs_bin_pry']}}</td>
-                
-                
+
+
             </tr>
             <tr>
                 <td class="nomermapel">4.</td>
@@ -469,23 +469,23 @@
         <table class="TTD">
             <tr>
                 <td colspan="2"></td>
-                <td style="text-align:left; width:30%">Surabaya, 24 Maret 2022</td>
+                <td style="text-align:center; width:30%">Surabaya, 14 Oktober 2022</td>
             </tr>
             <tr>
-                <td colspan="3" style="text-align:left">Mengetahui,<td>
+                <td colspan="3" style="text-align:left"><td>
             </tr>
             <tr>
-                <td style="width:25%">Orang Tua Siswa/Wali</td>
-                <td style="width:50%; text-align:center;" rowspan="3"><img src="{{public_path('storage/stamps/5a81cb8d-1a02-444f-a2a8-d4571b60b22c.png') }}" style="width:100px"></td>
-                <td style="width:20%">a.n. Kepala Sekolah</td>
+                <td style="width:25%"></td>
+                <td style="width:50%; text-align:center; padding:1px" rowspan="3"><img src="{{public_path('storage/stamps/'.$raporSisipan['stamp'].'.png')}}" style="width: 100px"></td>
+                <td style="width:20%; text-align:center;">a.n. Kepala Sekolah</td>
             </tr>
             <tr>
                 <td></td>
-                <td><img src="{{public_path('storage/signs/'.$raporSisipan['ttd'].'.png')}}" style="width: 100px;"></td>
+                <td style="padding-left:10px; text-align:center;"><img src="{{public_path('storage/signs/'.$raporSisipan['ttd'].'.png')}}" style="width: 100px"></td>
             </tr>
             <tr>
-                <td>..................................</td>
-                <td>{{$raporSisipan["walikelas"]}}</td>
+                <td style="padding:1px"></td>
+                <td style="padding:1px; text-align:center;">{{$raporSisipan["rs_walikelas"]}}</td>
             </tr>
         </table>
     </div>
