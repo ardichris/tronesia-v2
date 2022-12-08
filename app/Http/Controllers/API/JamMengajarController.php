@@ -26,6 +26,19 @@ class JamMengajarController extends Controller
         if ($user->role != 0 || request()->jm == 'nilai'){
             $jammengajars= $jammengajars->where('guru_id',$user->id);
         }
+        if(request()->kurikulum == 'kurmer'){
+            $jammengajars = $jammengajars->where(function ($query) use ($q) {
+                                                $query->whereHas('kelas', function($query) {
+                                                            $query->where('kelas_jenjang',7);
+                                                        });
+                                            });
+        } elseif(request()->kurikulum == 'kurtilas'){
+            $jammengajars = $jammengajars->where(function ($query) use ($q) {
+                $query->whereHas('kelas', function($query) {
+                            $query->whereIn('kelas_jenjang',[8,9]);
+                        });
+            });
+        }
         if (request()->q != '') {
             $jammengajars = $jammengajars->where(function ($query) use ($q) {
                                             $query->whereHas('kelas', function($query) use($q){

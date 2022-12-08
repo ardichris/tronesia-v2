@@ -20,6 +20,8 @@ use App\Periode;
 use App\NilaiSiswa;
 use App\Mapel;
 use App\SisipanField;
+use App\KurmerReport;
+use App\Kompetensi;
 use PDF;
 use Ramsey\Uuid\Uuid;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -30,159 +32,91 @@ use App\Exports\RaporsSisipanExport;
 use App\Exports\RaporsSisipanKurmerExport;
 use App\Exports\RaporsPetraExport;
 
-function capitalize_after_delimiters($string)
-    {
-        preg_match_all("/\.\s*\w/", $string, $matches);
+function predikatEkstra($huruf){
+    if($huruf == 'A') return 'Sangat Baik';
+    if($huruf == 'B') return 'Baik';
+    if($huruf == 'C') return 'Cukup';
+    if($huruf == 'D') return 'Kurang';
+}
 
-        foreach($matches[0] as $match){
-            $string = str_replace($match, strtoupper($match), $string);
-        }
-        return $string;
+function capitalize_after_delimiters($string){
+    preg_match_all("/\.\s*\w/", $string, $matches);
+
+    foreach($matches[0] as $match){
+        $string = str_replace($match, strtoupper($match), $string);
     }
-function nilaiSisipanKurmer($id, $unit)
-    {
-        $rapor = RaporSisipan::whereId($id)
-                                    ->with(['siswa' => function ($query) {
-                                        $query->select('id','s_nama', 's_nis','s_code');
-                                        }])
-                                    ->select(['id',
-                                                'siswa_id',
-                                                'rs_absensi_sakit',
-                                                'rs_absensi_ijin',
-                                                'rs_absensi_alpha',
-                                                'rs_catatan_ayat',
-                                                'rs_catatan_isi',
-                                                'rs_catatan_pesan',
-                                                'rs_walikelas',
-                                                'periode_id'])
-                                    ->first();
+    return $string;
+}
+function nilaiSisipanKurmer($id, $unit) {
+    $rapor = RaporSisipan::whereId($id)
+                                ->with(['siswa' => function ($query) {
+                                    $query->select('id','s_nama', 's_nis','s_code');
+                                    }])
+                                ->select(['id',
+                                            'siswa_id',
+                                            'rs_absensi_sakit',
+                                            'rs_absensi_ijin',
+                                            'rs_absensi_alpha',
+                                            'rs_catatan_ayat',
+                                            'rs_catatan_isi',
+                                            'rs_catatan_pesan',
+                                            'rs_walikelas',
+                                            'periode_id'])
+                                ->first();
 
-        $fieldrapor = SisipanField::where('periode_id',$rapor['periode_id'])
-                                    ->where('unit_id', $unit)
-                                    ->get()->toArray();
+    $fieldrapor = SisipanField::where('periode_id',$rapor['periode_id'])
+                                ->where('unit_id', $unit)
+                                ->get()->toArray();
 
-        $kelas = KelasAnggota::whereSiswa_id($rapor['siswa']['id'])
-                                    ->where('periode_id',$rapor['periode_id'])
-                                    ->with('kelas')
-                                    ->whereHas('kelas', function($query) use($unit){
-                                        $query->where('unit_id', $unit)
-                                        ->where('k_jenis', "REGULER");
-                                    })
-                                    ->first();
+    $kelas = KelasAnggota::whereSiswa_id($rapor['siswa']['id'])
+                                ->where('periode_id',$rapor['periode_id'])
+                                ->with('kelas')
+                                ->whereHas('kelas', function($query) use($unit){
+                                    $query->where('unit_id', $unit)
+                                    ->where('k_jenis', "REGULER");
+                                })
+                                ->first();
 
-        $raporSisipan = [
-                            'PAK' => [],
-                            'PKN' => [],
-                            'BIN' => [],
-                            'BIG' => [],
-                            'MAT' => [],
-                            'BIO' => [],
-                            'FIS' => [],
-                            'EKO' => [],
-                            'GEO' => [],
-                            'SEJ' => [],
-                            'ORG' => [],
-                            'MAN' => [],
-                            'TIK' => [],
-                            'JWA' => [],
-                            'DC' => [],
-                        ];
+    $raporSisipan = [
+                        'PAK' => [],
+                        'PKN' => [],
+                        'BIN' => [],
+                        'BIG' => [],
+                        'MAT' => [],
+                        'BIO' => [],
+                        'FIS' => [],
+                        'EKO' => [],
+                        'GEO' => [],
+                        'SEJ' => [],
+                        'ORG' => [],
+                        'MAN' => [],
+                        'TIK' => [],
+                        'JWA' => [],
+                        'DC' => [],
+                    ];
 
-        $kelompok = ['1','2','3','4','STS'];
-        foreach($raporSisipan as $key=>$value){
-            foreach($kelompok as $valuekelompok){
-                if($valuekelompok=='STS'){
-                    $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                            ->where('periode_id',$rapor['periode_id'])
-                                            ->where('ns_jenis_nilai', 'STS')
-                                            ->with(['mapel'])
-                                            ->whereHas('mapel', function($query) use($key){
-                                                $query->where('mapel_kode', $key);
-                                            })
-                                            ->first();
-                    $raporSisipan[$key][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
-                    $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
-
-                } else {
-                $komp = SisipanField::where('periode_id',$rapor['periode_id'])
-                                    ->where('unit_id', $unit)
-                                    ->where('mapel', $key)
-                                    ->where('field', $valuekelompok)
-                                    ->with('kompetensi')
-                                    ->first();
-                if($komp){
-                    $kompetensi = explode('.', $komp->kompetensi->kd_kode);
-                    $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                        ->where('periode_id',$rapor['periode_id'])
-                                        ->where('kompetensi_id',$komp['kompetensi_id'])
-                                        ->with(['kompetensi','mapel'])
-                                        ->first();
-
-                    if($nilaisiswa){
-                        $raporSisipan[$key][$valuekelompok]=[
-                                                            'ns_tugas' => $nilaisiswa['ns_tugas'],
-                                                            'ns_tes' => $nilaisiswa['ns_tes'],
-                                                            'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
-                                                            'TP' =>  $kompetensi[1]
-                                                            ];
-                    $raporSisipan[$key][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tugas'];
-                    $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
-
-                    } else {
-                        $raporSisipan[$key][$valuekelompok]=[
-                                                            'ns_tugas' => '-',
-                                                            'ns_tes' => '-',
-                                                            'ns_jenis' => '-',
-                                                            'TP' =>  $kompetensi[1]
-                                                            ];
-                    }
-
-                } else {
-                    $raporSisipan[$key][$valuekelompok]=[
-                                                        'ns_tugas' => null,
-                                                        'ns_tes' => null,
-                                                        'ns_jenis' => null,
-                                                        'TP' =>  null
-                                                        ];
-                }
-
-                }
-            }
-
-        }
-        $kelaspilihan = KelasAnggota::where('siswa_id', $rapor['siswa']['id'])
-                                    ->where('periode_id', $rapor['periode_id'])
-                                    ->with('kelas')
-                                    ->whereHas('kelas', function($query) {
-                                        $query->where('k_jenis','PILIHAN');
-                                    })
-                                    ->first();
-
-        $mapelpilihan = $kelaspilihan->kelas->k_mapel;
-        $raporSisipan['PIL'] = [];
-        $raporSisipan['PIL']['KET'] = Mapel::where('mapel_kode', $mapelpilihan)->value('mapel_nama');
-
+    $kelompok = ['1','2','3','4','STS'];
+    foreach($raporSisipan as $key=>$value){
         foreach($kelompok as $valuekelompok){
             if($valuekelompok=='STS'){
                 $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
                                         ->where('periode_id',$rapor['periode_id'])
                                         ->where('ns_jenis_nilai', 'STS')
                                         ->with(['mapel'])
-                                        ->whereHas('mapel', function($query) use($mapelpilihan){
-                                            $query->where('mapel_kode', $mapelpilihan);
+                                        ->whereHas('mapel', function($query) use($key){
+                                            $query->where('mapel_kode', $key);
                                         })
                                         ->first();
-
-                $raporSisipan['PIL'][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
+                $raporSisipan[$key][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
+                $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
 
             } else {
             $komp = SisipanField::where('periode_id',$rapor['periode_id'])
                                 ->where('unit_id', $unit)
-                                ->where('mapel', $mapelpilihan)
+                                ->where('mapel', $key)
                                 ->where('field', $valuekelompok)
                                 ->with('kompetensi')
                                 ->first();
-
             if($komp){
                 $kompetensi = explode('.', $komp->kompetensi->kd_kode);
                 $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
@@ -192,17 +126,17 @@ function nilaiSisipanKurmer($id, $unit)
                                     ->first();
 
                 if($nilaisiswa){
-                    $raporSisipan['PIL'][$valuekelompok]=[
+                    $raporSisipan[$key][$valuekelompok]=[
                                                         'ns_tugas' => $nilaisiswa['ns_tugas'],
                                                         'ns_tes' => $nilaisiswa['ns_tes'],
                                                         'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
                                                         'TP' =>  $kompetensi[1]
                                                         ];
-                    $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tugas'];
-                    $raporSisipan['PIL'][$valuekelompok]['ns_tes']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tes'];
+                $raporSisipan[$key][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tugas'];
+                $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
 
                 } else {
-                    $raporSisipan['PIL'][$valuekelompok]=[
+                    $raporSisipan[$key][$valuekelompok]=[
                                                         'ns_tugas' => '-',
                                                         'ns_tes' => '-',
                                                         'ns_jenis' => '-',
@@ -211,7 +145,7 @@ function nilaiSisipanKurmer($id, $unit)
                 }
 
             } else {
-                $raporSisipan['PIL'][$valuekelompok]=[
+                $raporSisipan[$key][$valuekelompok]=[
                                                     'ns_tugas' => null,
                                                     'ns_tes' => null,
                                                     'ns_jenis' => null,
@@ -222,10 +156,396 @@ function nilaiSisipanKurmer($id, $unit)
             }
         }
 
-        $rapor = $raporSisipan;
-
-        return $rapor;
     }
+    $kelaspilihan = KelasAnggota::where('siswa_id', $rapor['siswa']['id'])
+                                ->where('periode_id', $rapor['periode_id'])
+                                ->with('kelas')
+                                ->whereHas('kelas', function($query) {
+                                    $query->where('k_jenis','PILIHAN');
+                                })
+                                ->first();
+
+    $mapelpilihan = $kelaspilihan->kelas->k_mapel;
+    $raporSisipan['PIL'] = [];
+    $raporSisipan['PIL']['KET'] = Mapel::where('mapel_kode', $mapelpilihan)->value('mapel_nama');
+
+    foreach($kelompok as $valuekelompok){
+        if($valuekelompok=='STS'){
+            $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+                                    ->where('periode_id',$rapor['periode_id'])
+                                    ->where('ns_jenis_nilai', 'STS')
+                                    ->with(['mapel'])
+                                    ->whereHas('mapel', function($query) use($mapelpilihan){
+                                        $query->where('mapel_kode', $mapelpilihan);
+                                    })
+                                    ->first();
+
+            $raporSisipan['PIL'][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
+
+        } else {
+        $komp = SisipanField::where('periode_id',$rapor['periode_id'])
+                            ->where('unit_id', $unit)
+                            ->where('mapel', $mapelpilihan)
+                            ->where('field', $valuekelompok)
+                            ->with('kompetensi')
+                            ->first();
+
+        if($komp){
+            $kompetensi = explode('.', $komp->kompetensi->kd_kode);
+            $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+                                ->where('periode_id',$rapor['periode_id'])
+                                ->where('kompetensi_id',$komp['kompetensi_id'])
+                                ->with(['kompetensi','mapel'])
+                                ->first();
+
+            if($nilaisiswa){
+                $raporSisipan['PIL'][$valuekelompok]=[
+                                                    'ns_tugas' => $nilaisiswa['ns_tugas'],
+                                                    'ns_tes' => $nilaisiswa['ns_tes'],
+                                                    'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
+                                                    'TP' =>  $kompetensi[1]
+                                                    ];
+                $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tugas'];
+                $raporSisipan['PIL'][$valuekelompok]['ns_tes']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tes'];
+
+            } else {
+                $raporSisipan['PIL'][$valuekelompok]=[
+                                                    'ns_tugas' => '-',
+                                                    'ns_tes' => '-',
+                                                    'ns_jenis' => '-',
+                                                    'TP' =>  $kompetensi[1]
+                                                    ];
+            }
+
+        } else {
+            $raporSisipan['PIL'][$valuekelompok]=[
+                                                'ns_tugas' => null,
+                                                'ns_tes' => null,
+                                                'ns_jenis' => null,
+                                                'TP' =>  null
+                                                ];
+        }
+
+        }
+    }
+
+    $rapor = $raporSisipan;
+
+    return $rapor;
+}
+
+function detail_rapor($id, $periode, $jenjang, $siswa){
+    $mapel = ['PAK', 'PKN', 'BIN', 'BIG', 'MAT', 'IPA', 'IPS', 'ORG', 'JWA', 'MAN', 'MEK', 'BDY'];
+    $kik13 = ['3','4'];
+    $dbmapel = Mapel::get();
+    $semester = substr(Periode::whereId($periode)->value('p_semester'),0,1);
+    $kompetensi = Kompetensi::where('kompetensi_jenjang', $jenjang)
+                            ->where('is_active',1)
+                            ->get();
+
+    foreach($mapel as $row){
+        foreach($kik13 as $rowki){
+            $kompetensiki = $kompetensi->where('k_inti',$rowki);
+            $nilai = null;
+            $lm_id = null;
+            $selectMapel = null;
+            $mapel_id = null;
+            $max = null;
+            $min = null;
+            $kd_id = $kompetensiki->where('kompetensi_mapel', $row)->pluck('id');
+            $dbnilai = NilaiSiswa::where('siswa_id', $siswa)
+                                ->where('periode_id', $periode)
+                                ->whereIn('kompetensi_id', $kd_id)
+                                //->groupBy('ns_nilai', 'ASC')
+                                ->get();
+
+            $countkd = 0;
+            $avg = $avgkd = 0;
+            $nilai['avg'] = null;
+            $descmerge = $desckd = $descA = $descB = $descC = $descD = '';
+            foreach($kd_id as $rowkd){
+                if($dbnilai->where('kompetensi_id',$rowkd)->count() > 0){
+                    $avgkd = $dbnilai->where('kompetensi_id',$rowkd)->avg('ns_nilai');
+                    $countkd++;
+                    $avg = $avg + $avgkd;
+                    $nilai['avg']= $avg/$countkd;
+                }
+                // $desckd = $kompetensi->where('id', $rowkd)->first();
+                // if($avgkd>=93){
+                //     $descA = $descA.$desckd->kompetensi_deskripsi.", ";
+                // } elseif($avgkd>=84){
+                //     $descB = $descB.$desckd->kompetensi_deskripsi.", ";
+                // } elseif($avgkd>=75){
+                //     $descC = $descC.$desckd->kompetensi_deskripsi.", ";
+                // } elseif($avgkd > 0) {
+                //     $descD = $descD.$desckd->kompetensi_deskripsi.", ";
+                // }
+            }
+            // $descA = $descA!=''?"Mampu ".substr($descA, 0, -2)." dengan sangat baik. ":"";
+            // $descB = $descB!=''?"Mampu ".substr($descB, 0, -2)." dengan baik. ":"";
+            // $descC = $descC!=''?"Cukup mampu ".substr($descC, 0, -2).". ":"";
+            // $descD = $descD!=''?"Perlu bimbingan dalam ".substr($descD, 0, -2).". ":"";
+            // $descmerge = $descA.$descB.$descC.$descD;
+            if($rowki==3){
+                if($row=='IPA') {
+                    $mapel=['BIO','FIS'];
+                    $idMapel = $dbmapel->whereIn('mapel_kode', $mapel)->pluck('id');
+                    $pas = NilaiSiswa::where('siswa_id', $siswa)
+                                        ->where('periode_id', $periode)
+                                        ->whereIn('mapel_id', $idMapel)
+                                        ->where('ns_jenis_nilai', 'PAS')
+                                        ->avg('ns_nilai');
+                    $pts = NilaiSiswa::where('siswa_id', $siswa)
+                                        ->where('periode_id', $periode)
+                                        ->whereIn('mapel_id', $idMapel)
+                                        ->where('ns_jenis_nilai', 'PTS')
+                                        ->avg('ns_nilai');
+                } elseif($row=='IPS') {
+                    $mapel=['EKO','GEO','SEJ'];
+                    $idMapel = $dbmapel->whereIn('mapel_kode', $mapel)->pluck('id');
+                    $pas = NilaiSiswa::where('siswa_id', $siswa)
+                                        ->where('periode_id', $periode)
+                                        ->whereIn('mapel_id', $idMapel)
+                                        ->where('ns_jenis_nilai', 'PAS')
+                                        ->avg('ns_nilai');
+                    $pts = NilaiSiswa::where('siswa_id', $siswa)
+                                        ->where('periode_id', $periode)
+                                        ->whereIn('mapel_id', $idMapel)
+                                        ->where('ns_jenis_nilai', 'PTS')
+                                        ->avg('ns_nilai');
+                } elseif($row=='BDY') {
+                    $mapel=['SNR','SNM'];
+                    $idMapel = $dbmapel->whereIn('mapel_kode', $mapel)->pluck('id');
+                    $pas = NilaiSiswa::where('siswa_id', $siswa)
+                                        ->where('periode_id', $periode)
+                                        ->whereIn('mapel_id', $idMapel)
+                                        ->where('ns_jenis_nilai', 'PAS')
+                                        ->avg('ns_nilai');
+                    $pts = NilaiSiswa::where('siswa_id', $siswa)
+                                        ->where('periode_id', $periode)
+                                        ->whereIn('mapel_id', $idMapel)
+                                        ->where('ns_jenis_nilai', 'PTS')
+                                        ->avg('ns_nilai');
+                } else {
+                    $idMapel = $dbmapel->whereIn('mapel_kode', $row)->first();
+                    $pas = NilaiSiswa::where('siswa_id', $siswa)
+                                        ->where('periode_id', $periode)
+                                        ->where('mapel_id', $idMapel['id'])
+                                        ->where('ns_jenis_nilai', 'PAS')
+                                        ->value('ns_nilai');
+                    $pts = NilaiSiswa::where('siswa_id', $siswa)
+                                        ->where('periode_id', $periode)
+                                        ->where('mapel_id', $idMapel['id'])
+                                        ->where('ns_jenis_nilai', 'PTS')
+                                        ->value('ns_nilai');
+                }
+
+                $nilai['score'] = round(($nilai['avg']*2+$pts+$pas)/4,0)!=0?round(($nilai['avg']*2+$pts+$pas)/4,0):null;
+                $max= $dbnilai->max('ns_nilai');
+                $min= $dbnilai->min('ns_nilai');
+                $kd_max= $max?$dbnilai->where('ns_nilai', $max)->first():null;
+                $kd_min= $min?$dbnilai->where('ns_nilai', $min)->first():null;
+                $descmax = $kd_max?$kompetensi->where('id',$kd_max->kompetensi_id)->first():null;
+                $descmin= $kd_min?$kompetensi->where('id',$kd_min->kompetensi_id)->first():null;
+                if($nilai['score']>=93){
+                    $nilai['description']= 'Sangat Baik, menguasai dan memahami semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
+                } elseif($nilai['score']>=84){
+                    $nilai['description']= 'Menguasai sebagian besar kompetensi yang dipersyaratkan dengan baik. Perlu ditingkatkan pemahaman pada kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
+                } elseif($nilai['score']>=75){
+                    $nilai['description']= 'Beberapa kompetensi telah dikuasai dengan cukup baik. Kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
+                } elseif($nilai['score']>0) {
+                    $nilai['description']= 'Belum menguasai sebagian besar kompetensi yang dipersyaratkan.';
+                } else {
+                    $nilai['description']= null;
+                }
+            } else {
+                $nilai['score'] = round($nilai['avg'],0)!=0?round($nilai['avg'],0):null;
+                $max= $dbnilai->max('ns_nilai');
+                $min= $dbnilai->min('ns_nilai');
+                $kd_max= $max?$dbnilai->where('ns_nilai', $max)->first():null;
+                $kd_min= $min?$dbnilai->where('ns_nilai', $min)->first():null;
+                $descmax = $kd_max?$kompetensi->where('id',$kd_max->kompetensi_id)->first():null;
+                $descmin= $kd_min?$kompetensi->where('id',$kd_min->kompetensi_id)->first():null;
+                if($nilai['score']>=93){
+                    $nilai['description']= 'Sangat baik, terampil dan mahir dalam semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
+                } elseif($nilai['score']>=84){
+                    $nilai['description']= 'Terampil pada sebagian besar kompetensi yang dipersyaratkan. Perlu ditingkatkan keterampilan pada kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
+                } elseif($nilai['score']>=75){
+                    $nilai['description']= 'Cukup terampil dalam beberapa kompetensi. Kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
+                } elseif($nilai['score']>0) {
+                    $nilai['description']= 'Belum terampil pada sebagian besar kompetensi yang dipersyaratkan.';
+                } else {
+                    $nilai['description']= null;
+                }
+            }
+            //$nilai['description'] = $descmerge;
+            if($nilai['score']>=93){
+                $nilai['predicate']= 'A';
+            } elseif($nilai['score']>=84){
+                $nilai['predicate']= 'B';
+            } elseif($nilai['score']>=75){
+                $nilai['predicate']= 'C';
+            } elseif($nilai['score']>0) {
+                $nilai['predicate']= 'D';
+            } else {
+                $nilai['predicate']= null;
+            }
+            $nilaiki[$rowki] = $nilai;
+        }
+        $nilaiK13[$row] = $nilaiki;
+    }
+
+    $rapor = RaporAkhir::where('id',$id)
+                        ->update([  'ra_pak_pengetahuan_nilai' => $nilaiK13['PAK'][3]['score'],
+                                    'ra_pak_pengetahuan_predikat' => $nilaiK13['PAK'][3]['predicate'],
+                                    'ra_pak_pengetahuan_deskripsi' => $nilaiK13['PAK'][3]['description'],
+                                    'ra_pak_keterampilan_nilai' => $nilaiK13['PAK'][4]['score'],
+                                    'ra_pak_keterampilan_predikat' => $nilaiK13['PAK'][4]['predicate'],
+                                    'ra_pak_keterampilan_deskripsi' => $nilaiK13['PAK'][4]['description'],
+                                    'ra_pkn_pengetahuan_nilai' => $nilaiK13['PKN'][3]['score'],
+                                    'ra_pkn_pengetahuan_predikat' => $nilaiK13['PKN'][3]['predicate'],
+                                    'ra_pkn_pengetahuan_deskripsi' => $nilaiK13['PKN'][3]['description'],
+                                    'ra_pkn_keterampilan_nilai' => $nilaiK13['PKN'][4]['score'],
+                                    'ra_pkn_keterampilan_predikat' => $nilaiK13['PKN'][4]['predicate'],
+                                    'ra_pkn_keterampilan_deskripsi' => $nilaiK13['PKN'][4]['description'],
+                                    'ra_bin_pengetahuan_nilai' => $nilaiK13['BIN'][3]['score'],
+                                    'ra_bin_pengetahuan_predikat' => $nilaiK13['BIN'][3]['predicate'],
+                                    'ra_bin_pengetahuan_deskripsi' => $nilaiK13['BIN'][3]['description'],
+                                    'ra_bin_keterampilan_nilai' => $nilaiK13['BIN'][4]['score'],
+                                    'ra_bin_keterampilan_predikat' => $nilaiK13['BIN'][4]['predicate'],
+                                    'ra_bin_keterampilan_deskripsi' => $nilaiK13['BIN'][4]['description'],
+                                    'ra_big_pengetahuan_nilai' => $nilaiK13['BIG'][3]['score'],
+                                    'ra_big_pengetahuan_predikat' => $nilaiK13['BIG'][3]['predicate'],
+                                    'ra_big_pengetahuan_deskripsi' => $nilaiK13['BIG'][3]['description'],
+                                    'ra_big_keterampilan_nilai' => $nilaiK13['BIG'][4]['score'],
+                                    'ra_big_keterampilan_predikat' => $nilaiK13['BIG'][4]['predicate'],
+                                    'ra_big_keterampilan_deskripsi' => $nilaiK13['BIG'][4]['description'],
+                                    'ra_mat_pengetahuan_nilai' => $nilaiK13['MAT'][3]['score'],
+                                    'ra_mat_pengetahuan_predikat' => $nilaiK13['MAT'][3]['predicate'],
+                                    'ra_mat_pengetahuan_deskripsi' => $nilaiK13['MAT'][3]['description'],
+                                    'ra_mat_keterampilan_nilai' => $nilaiK13['MAT'][4]['score'],
+                                    'ra_mat_keterampilan_predikat' => $nilaiK13['MAT'][4]['predicate'],
+                                    'ra_mat_keterampilan_deskripsi' => $nilaiK13['MAT'][4]['description'],
+                                    'ra_ipa_pengetahuan_nilai' => $nilaiK13['IPA'][3]['score'],
+                                    'ra_ipa_pengetahuan_predikat' => $nilaiK13['IPA'][3]['predicate'],
+                                    'ra_ipa_pengetahuan_deskripsi' => $nilaiK13['IPA'][3]['description'],
+                                    'ra_ipa_keterampilan_nilai' => $nilaiK13['IPA'][4]['score'],
+                                    'ra_ipa_keterampilan_predikat' => $nilaiK13['IPA'][4]['predicate'],
+                                    'ra_ipa_keterampilan_deskripsi' => $nilaiK13['IPA'][4]['description'],
+                                    'ra_ips_pengetahuan_nilai' => $nilaiK13['IPS'][3]['score'],
+                                    'ra_ips_pengetahuan_predikat' => $nilaiK13['IPS'][3]['predicate'],
+                                    'ra_ips_pengetahuan_deskripsi' => $nilaiK13['IPS'][3]['description'],
+                                    'ra_ips_keterampilan_nilai' => $nilaiK13['IPS'][4]['score'],
+                                    'ra_ips_keterampilan_predikat' => $nilaiK13['IPS'][4]['predicate'],
+                                    'ra_ips_keterampilan_deskripsi' => $nilaiK13['IPS'][4]['description'],
+                                    'ra_bdy_pengetahuan_nilai' => $nilaiK13['BDY'][3]['score'],
+                                    'ra_bdy_pengetahuan_predikat' => $nilaiK13['BDY'][3]['predicate'],
+                                    'ra_bdy_pengetahuan_deskripsi' => $nilaiK13['BDY'][3]['description'],
+                                    'ra_bdy_keterampilan_nilai' => $nilaiK13['BDY'][4]['score'],
+                                    'ra_bdy_keterampilan_predikat' => $nilaiK13['BDY'][4]['predicate'],
+                                    'ra_bdy_keterampilan_deskripsi' => $nilaiK13['BDY'][4]['description'],
+                                    'ra_org_pengetahuan_nilai' => $nilaiK13['ORG'][3]['score'],
+                                    'ra_org_pengetahuan_predikat' => $nilaiK13['ORG'][3]['predicate'],
+                                    'ra_org_pengetahuan_deskripsi' => $nilaiK13['ORG'][3]['description'],
+                                    'ra_org_keterampilan_nilai' => $nilaiK13['ORG'][4]['score'],
+                                    'ra_org_keterampilan_predikat' => $nilaiK13['ORG'][4]['predicate'],
+                                    'ra_org_keterampilan_deskripsi' => $nilaiK13['ORG'][4]['description'],
+                                    'ra_pky_pengetahuan_nilai' => $nilaiK13['MEK'][3]['score'],
+                                    'ra_pky_pengetahuan_predikat' => $nilaiK13['MEK'][3]['predicate'],
+                                    'ra_pky_pengetahuan_deskripsi' => $nilaiK13['MEK'][3]['description'],
+                                    'ra_pky_keterampilan_nilai' => $nilaiK13['MEK'][4]['score'],
+                                    'ra_pky_keterampilan_predikat' => $nilaiK13['MEK'][4]['predicate'],
+                                    'ra_pky_keterampilan_deskripsi' => $nilaiK13['MEK'][4]['description'],
+                                    'ra_jwa_pengetahuan_nilai' => $nilaiK13['JWA'][3]['score'],
+                                    'ra_jwa_pengetahuan_predikat' => $nilaiK13['JWA'][3]['predicate'],
+                                    'ra_jwa_pengetahuan_deskripsi' => $nilaiK13['JWA'][3]['description'],
+                                    'ra_jwa_keterampilan_nilai' => $nilaiK13['JWA'][4]['score'],
+                                    'ra_jwa_keterampilan_predikat' => $nilaiK13['JWA'][4]['predicate'],
+                                    'ra_jwa_keterampilan_deskripsi' => $nilaiK13['JWA'][4]['description'],
+                                    'ra_man_pengetahuan_nilai' => $nilaiK13['MAN'][3]['score'],
+                                    'ra_man_pengetahuan_predikat' => $nilaiK13['MAN'][3]['predicate'],
+                                    'ra_man_pengetahuan_deskripsi' => $nilaiK13['MAN'][3]['description'],
+                                    'ra_man_keterampilan_nilai' => $nilaiK13['MAN'][4]['score'],
+                                    'ra_man_keterampilan_predikat' => $nilaiK13['MAN'][4]['predicate'],
+                                    'ra_man_keterampilan_deskripsi' => $nilaiK13['MAN'][4]['description'],
+                                ]);
+
+    return $nilaiK13;
+}
+
+function raporAkhirUpdate($id, $periode, $unit, $user, $request){
+    if(strlen($id)<30){
+        $kelas = KelasAnggota::with('kelas')
+                                 ->where('siswa_id',$id)
+                                 ->where('periode_id', $periode)
+                                 ->whereHas('kelas', function($query) use($unit){
+                                        $query->where('unit_id',$unit)
+                                            ->where('k_jenis', 'REGULER');
+                                    })
+                                 ->first();
+        $walikelas = User::where('id', $kelas->kelas->kelas_wali)->value('id');
+        $raporkurtilas = RaporAkhir::create([
+                        'id'  => Uuid::Uuid4(),
+                        'siswa_id' => $id,
+                        'periode_id' => $periode,
+                        'unit_id' =>  $unit,
+                        'user_id' =>  $user,
+                        'ra_tanggal' => null,
+                        'ra_walikelas' => $walikelas,
+                        'ra_catatan_sakit' => $request->attedance_sick?$request->attedance_sick:null,
+                        'ra_catatan_ijin' => $request->attedance_excuse?$request->attedance_excuse:null,
+                        'ra_catatan_alpha' => $request->attedance_alpha?$request->attedance_alpha:null,
+                        'ra_catatan_ayat' => $request->note_verse?$request->note_verse:null,
+                        'ra_catatan_isi' => $request->note_godword?$request->note_godword:null,
+                        'ra_catatan_pesan' => $request->note?$request->note:null,
+                        'ra_ekstra1_kegiatan' => $request->extracurricular1?$request->extracurricular1:null,
+                        'ra_ekstra1_nilai' => $request->extracurricular1_score?$request->extracurricular1_score:null,
+                        'ra_ekstra1_predikat' => $request->extracurricular1_score?predikatEkstra($request->extracurricular1_score):null,
+                        'ra_ekstra2_kegiatan' => $request->extracurricular2?$request->extracurricular2:null,
+                        'ra_ekstra2_nilai' => $request->extracurricular2_score?$request->extracurricular2_score:null,
+                        'ra_ekstra2_predikat' => $request->extracurricular2_score?predikatEkstra($request->extracurricular2_score):null,
+                        'ra_ekstra3_kegiatan' => $request->extracurricular3?$request->extracurricular3:null,
+                        'ra_ekstra3_nilai' => $request->extracurricular3_score?$request->extracurricular3_score:null,
+                        'ra_ekstra3_predikat' => $request->extracurricular3_score?predikatEkstra($request->extracurricular3_score):null,
+                        ]);
+
+        $data = detail_rapor($raporkurtilas->id, $periode, $kelas->kelas->kelas_jenjang, $raporkurtilas->siswa_id);
+
+    } else {
+        $raporkurtilas = RaporAkhir::whereId($id);
+        $kelas = KelasAnggota::with('kelas')
+                                 ->where('siswa_id',$raporkurtilas->value('siswa_id'))
+                                 ->where('periode_id', $periode)
+                                 ->whereHas('kelas', function($query) use($unit){
+                                        $query->where('unit_id',$unit)
+                                            ->where('k_jenis', 'REGULER');
+                                    })
+                                 ->first();
+        $walikelas = User::where('id', $kelas->kelas->kelas_wali)->value('id');
+
+        $raporkurtilas->update(['user_id' =>  $user,
+                                'ra_walikelas' => $walikelas,
+                                'ra_catatan_sakit' => $request->attedance_sick?$request->attedance_sick:null,
+                                'ra_catatan_ijin' => $request->attedance_excuse?$request->attedance_excuse:null,
+                                'ra_catatan_alpha' => $request->attedance_alpha?$request->attedance_alpha:null,
+                                'ra_catatan_ayat' => $request->note_verse?$request->note_verse:null,
+                                'ra_catatan_isi' => $request->note_godword?$request->note_godword:null,
+                                'ra_catatan_pesan' => $request->note?$request->note:null,
+                                'ra_ekstra1_kegiatan' => $request->extracurricular1?$request->extracurricular1:null,
+                                'ra_ekstra1_nilai' => $request->extracurricular1_score?$request->extracurricular1_score:null,
+                                'ra_ekstra1_predikat' => $request->extracurricular1_score?predikatEkstra($request->extracurricular1_score):null,
+                                'ra_ekstra2_kegiatan' => $request->extracurricular2?$request->extracurricular2:null,
+                                'ra_ekstra2_nilai' => $request->extracurricular2_score?$request->extracurricular2_score:null,
+                                'ra_ekstra2_predikat' => $request->extracurricular2_score?predikatEkstra($request->extracurricular2_score):null,
+                                'ra_ekstra3_kegiatan' => $request->extracurricular3?$request->extracurricular3:null,
+                                'ra_ekstra3_nilai' => $request->extracurricular3_score?$request->extracurricular3_score:null,
+                                'ra_ekstra3_predikat' => $request->extracurricular3_score?predikatEkstra($request->extracurricular3_score):null,
+                            ]);
+            $data = detail_rapor($raporkurtilas->value('id'), $periode, $kelas->kelas->kelas_jenjang, $raporkurtilas->value('siswa_id'));
+
+    }
+    return response()->json(['data' => $data],200);
+}
 
 class RaporAkhirController extends Controller
 {
@@ -667,9 +987,11 @@ class RaporAkhirController extends Controller
         foreach ($kelasAnggota as $row){
             $raporSisipan = RaporSisipan::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $raporAkhir = RaporAkhir::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
+            $raporKurmer = KurmerReport::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $raporPetra = RaporPetra::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $row['RaporSisipan'] = $raporSisipan?$raporSisipan:'-';
             $row['RaporAkhir'] = $raporAkhir?$raporAkhir:'-';
+            $row['RaporKurmer'] = $raporKurmer?$raporKurmer:'-';
             $row['RaporPetra'] = $raporPetra?$raporPetra:'-';
         }
 
@@ -693,17 +1015,23 @@ class RaporAkhirController extends Controller
     //     return response()->json(['status' => 'success', 'data' => $raporakhir], 200);
     // }
 
-    public function show(Request $request)
-    {
+    public function show(Request $request) {
         $user = $request->user();
+        //$data = raporAkhirUpdate($request->uuid, $user->periode, $user->unit_id, $user->id, $request);
         $raporAkhir = RaporAkhir::whereId($request->uuid)
-                                    ->with(['siswa' => function ($query) {
+                                ->with(['siswa' => function ($query) {
                                         $query->select('id','s_nama', 's_nis');
                                     }])->first();
-                                    $raporAkhir['kelas'] = KelasAnggota::whereSiswa_id($raporAkhir['siswa']['id'])
-                                    ->where('periode_id',$raporAkhir['periode_id'])
-                                    ->with('kelas')
-                                    ->first();
+        $kelas = KelasAnggota::whereSiswa_id($raporAkhir['siswa']['id'])
+                                            ->where('periode_id',$raporAkhir['periode_id'])
+                                            ->with('kelas')
+                                            ->first();
+        $data = detail_rapor($request->uuid, $user->periode, $kelas['kelas']['kelas_jenjang'], $raporAkhir['siswa_id']);
+        $raporAkhir = RaporAkhir::whereId($request->uuid)
+                                ->with(['siswa' => function ($query) {
+                                        $query->select('id','s_nama', 's_nis');
+                                    }])->first();
+        $raporAkhir['kelas'] = $kelas;
         $ttd = User::whereId($raporAkhir['kelas']['kelas']['kelas_wali'])->first();
         $kasek = Unit::whereId($user->unit_id)->first();
         $raporAkhir['email'] = $ttd->email;
@@ -716,16 +1044,79 @@ class RaporAkhirController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'ra_catatan_ayat' => 'required|string',
-            'ra_catatan_isi' => 'required|string'
-        ]);
-
         $user = $request->user();
-        $raporakhir = RaporAkhir::whereId($id)
-                                    ->update(['ra_catatan_ayat' => $request->ra_catatan_ayat,
-                                                'ra_catatan_isi' => $request->ra_catatan_isi]);
-        return response()->json(['status' => 'success'], 200);
+        //$data = raporAkhirUpdate($id, $user->periode, $user->unit_id, $user->id, $request);
+        if(strlen($id)<30){
+            $kelas = KelasAnggota::with('kelas')
+                                     ->where('siswa_id',$id)
+                                     ->where('periode_id', $user->periode)
+                                     ->whereHas('kelas', function($query) use($user){
+                                            $query->where('unit_id',$user->unit_id)
+                                                ->where('k_jenis', 'REGULER');
+                                        })
+                                     ->first();
+            $walikelas = User::where('id', $kelas->kelas->kelas_wali)->value('id');
+            $raporkurtilas = RaporAkhir::create([
+                            'id'  => Uuid::Uuid4(),
+                            'siswa_id' => $id,
+                            'periode_id' => $user->periode,
+                            'unit_id' =>  $user->unit_id,
+                            'user_id' =>  $user->id,
+                            'ra_tanggal' => null,
+                            'ra_walikelas' => $walikelas,
+                            'ra_catatan_sakit' => $request->ra_catatan_sakit?$request->ra_catatan_sakit:null,
+                            'ra_catatan_ijin' => $request->ra_catatan_ijin?$request->ra_catatan_ijin:null,
+                            'ra_catatan_alpha' => $request->ra_catatan_alpha?$request->ra_catatan_alpha:null,
+                            'ra_catatan_ayat' => $request->ra_catatan_ayat?$request->ra_catatan_ayat:null,
+                            'ra_catatan_isi' => $request->ra_catatan_isi?$request->ra_catatan_isi:null,
+                            'ra_catatan_pesan' => $request->ra_catatan_pesan?$request->ra_catatan_pesan:null,
+                            'ra_ekstra1_kegiatan' => $request->ra_ekstra1_kegiatan?$request->ra_ekstra1_kegiatan:null,
+                            'ra_ekstra1_nilai' => $request->ra_ekstra1_nilai?$request->ra_ekstra1_nilai:null,
+                            'ra_ekstra1_predikat' => $request->ra_ekstra1_predikat?predikatEkstra($request->ra_ekstra1_predikat):null,
+                            'ra_ekstra2_kegiatan' => $request->ra_ekstra2_kegiatan?$request->ra_ekstra2_kegiatan:null,
+                            'ra_ekstra2_nilai' => $request->ra_ekstra2_nilai?$request->ra_ekstra2_nilai:null,
+                            'ra_ekstra2_predikat' => $request->ra_ekstra2_predikat?predikatEkstra($request->ra_ekstra2_predikat):null,
+                            'ra_ekstra3_kegiatan' => $request->ra_ekstra3_kegiatan?$request->ra_ekstra3_kegiatan:null,
+                            'ra_ekstra3_nilai' => $request->ra_ekstra3_nilai?$request->ra_ekstra3_nilai:null,
+                            'ra_ekstra3_predikat' => $request->ra_ekstra3_predikat?predikatEkstra($request->ra_ekstra3_predikat):null,
+                            ]);
+
+            $data = detail_rapor($raporkurtilas->id, $user->periode, $kelas->kelas->kelas_jenjang, $raporkurtilas->siswa_id);
+
+        } else {
+            $raporkurtilas = RaporAkhir::whereId($id);
+            $kelas = KelasAnggota::with('kelas')
+                                     ->where('siswa_id',$raporkurtilas->value('siswa_id'))
+                                     ->where('periode_id', $user->periode)
+                                     ->whereHas('kelas', function($query) use($user){
+                                            $query->where('unit_id',$user->unit_id)
+                                                ->where('k_jenis', 'REGULER');
+                                        })
+                                     ->first();
+            $walikelas = User::where('id', $kelas->kelas->kelas_wali)->value('id');
+
+            $raporkurtilas->update(['user_id' =>  $user->id,
+                                    'ra_walikelas' => $walikelas,
+                                    'ra_catatan_sakit' => $request->ra_catatan_sakit?$request->ra_catatan_sakit:null,
+                                    'ra_catatan_ijin' => $request->ra_catatan_ijin?$request->ra_catatan_ijin:null,
+                                    'ra_catatan_alpha' => $request->ra_catatan_alpha?$request->ra_catatan_alpha:null,
+                                    'ra_catatan_ayat' => $request->ra_catatan_ayat?$request->ra_catatan_ayat:null,
+                                    'ra_catatan_isi' => $request->ra_catatan_isi?$request->ra_catatan_isi:null,
+                                    'ra_catatan_pesan' => $request->ra_catatan_pesan?$request->ra_catatan_pesan:null,
+                                    'ra_ekstra1_kegiatan' => $request->ra_ekstra1_kegiatan?$request->ra_ekstra1_kegiatan:null,
+                                    'ra_ekstra1_nilai' => $request->ra_ekstra1_nilai?$request->ra_ekstra1_nilai:null,
+                                    'ra_ekstra1_predikat' => $request->ra_ekstra1_predikat?predikatEkstra($request->ra_ekstra1_predikat):null,
+                                    'ra_ekstra2_kegiatan' => $request->ra_ekstra2_kegiatan?$request->ra_ekstra2_kegiatan:null,
+                                    'ra_ekstra2_nilai' => $request->ra_ekstra2_nilai?$request->ra_ekstra2_nilai:null,
+                                    'ra_ekstra2_predikat' => $request->ra_ekstra2_predikat?predikatEkstra($request->ra_ekstra2_predikat):null,
+                                    'ra_ekstra3_kegiatan' => $request->ra_ekstra3_kegiatan?$request->ra_ekstra3_kegiatan:null,
+                                    'ra_ekstra3_nilai' => $request->ra_ekstra3_nilai?$request->ra_ekstra3_nilai:null,
+                                    'ra_ekstra3_predikat' => $request->ra_ekstra3_predikat?predikatEkstra($request->ra_ekstra3_predikat):null,
+                                ]);
+                $data = detail_rapor($raporkurtilas->value('id'), $user->periode, $kelas->kelas->kelas_jenjang, $raporkurtilas->value('siswa_id'));
+
+        }
+        return response()->json(['status' => 'SUKSES'], 200);
     }
 
     // public function destroy($id)

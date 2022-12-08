@@ -72,8 +72,15 @@ const state = () => ({
         s_domisili_kota: '',
         s_ayah_perusahaan: '',
         s_ayah_jabatan: '',
+        s_ayah_tempat_lahir: '',
+        s_ayah_agama: '',
+        s_ayah_warga_negara: '',
         s_ibu_perusahaan: '',
         s_ibu_jabatan: '',
+        s_ibu_tempat_lahir: '',
+        s_ibu_agama: '',
+        s_ibu_warga_negara: '',
+        s_ortu_alamat: '',
         s_keterangan: '',
         kelas: '',
         s_nama_panggilan: '',
@@ -84,12 +91,6 @@ const state = () => ({
         s_saudara_angkat: '',
         s_status_anak: '',
         s_bahasa: '',
-        s_ibu_tempat_lahir: '',
-        s_ibu_agama: '',
-        s_ibu_warga_negara: '',
-        s_ayah_tempat_lahir: '',
-        s_ayah_agama: '',
-        s_ayah_warga_negara: '',
         s_pengeluaran: '',
     },
     page: 1
@@ -151,6 +152,7 @@ const mutations = {
             s_ayah_penghasilan: payload.s_ayah_penghasilan,
             s_ibu_pendidikan: payload.s_ibu_pendidikan,
             s_ibu_penghasilan: payload.s_ibu_penghasilan,
+            s_ortu_alamat: payload.s_ortu_alamat,
             s_kk_nomor: payload.s_kk_nomor,
             s_wali_nik: payload.s_wali_nik,
             s_wali_pendidikan: payload.s_wali_pendidikan,
@@ -242,6 +244,7 @@ const mutations = {
             s_ayah_penghasilan: '',
             s_ibu_pendidikan: '',
             s_ibu_penghasilan: '',
+            s_ortu_alamat: '',
             s_kk_nomor: '',
             s_wali_nik: '',
             s_wali_pendidikan: '',
@@ -299,7 +302,7 @@ const actions = {
             $axios.post(`/siswa/import`, payload, {
                 headers: { 'content-type': 'multipart/form-data' }
             })
-            .then((response) => {               
+            .then((response) => {
                 resolve(response.data)
             })
             .catch(() => {
@@ -319,11 +322,11 @@ const actions = {
             .then((response) => {
                 commit('SISWA_AKTIF', response.data)
                 resolve(response.data)
-                
+
             })
         })
     },
-    
+
     getSiswas({ commit, state }, payload) {
         let search = typeof payload.search != 'undefined' ? payload.search:''
         let status = typeof payload.status != 'undefined' ? payload.status:''
@@ -371,7 +374,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             $axios.put(`/siswas/${payload}`, state.siswa)
             .then((response) => {
-                commit('CLEAR_FORM')                
+                commit('CLEAR_FORM')
                 resolve(response.data)
             })
         })

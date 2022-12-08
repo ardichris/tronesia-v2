@@ -68,6 +68,12 @@
                         <p><router-link :to="{ name: 'kompetensi.data' }">Master Kompetensi</router-link></p>
                         </a>
                     </li>
+                    <li class="nav-item" v-if="authenticated.role==0">
+                        <a class="nav-link ml-3">
+                        <i class="fas fa-running nav-icon"></i>
+                        <p><router-link :to="{ name: 'lingkupmateri.data' }">Lingkup Materi</router-link></p>
+                        </a>
+                    </li>
                     <li class="nav-item" v-if="authenticated.role!=2">
                         <a class="nav-link ml-3">
                         <i class="fas fa-ban nav-icon"></i>
@@ -160,7 +166,13 @@
                         <li class="nav-item" v-if="authenticated.role==0||authenticated.role==2">
                             <a class="nav-link ml-3">
                                 <i class="fas fa-spell-check nav-icon"></i>
-                                <p><router-link :to="{ name: 'nilaisiswa.data' }">Penilaian</router-link></p>
+                                <p><router-link :to="{ name: 'nilaisiswa.data' }">Penilaian Kurtilas</router-link></p>
+                            </a>
+                        </li>
+                        <li class="nav-item" v-if="authenticated.role==0||authenticated.role==2">
+                            <a class="nav-link ml-3">
+                                <i class="fas fa-spell-check nav-icon"></i>
+                                <p><router-link :to="{ name: 'nilaisiswa.kurmer' }">Penilaian KurMer</router-link></p>
                             </a>
                         </li>
                         <!-- <li class="nav-item" v-if="authenticated.role!=null">
@@ -253,6 +265,31 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item ml-3 has-treeview">
+                            <a class="nav-link">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    PSB
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item ml-3">
+                                    <a class="nav-link">
+                                        <i class="nav-icon fas fa-user-injured"></i>
+                                        <p><router-link :to="{ name: 'penerimaansiswa.daftarulang' }">Daftar Ulang</router-link></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item ml-3">
+                                    <a class="nav-link">
+                                        <i class="fas fa-exclamation-triangle nav-icon"></i>
+                                        <p><router-link :to="{ name: 'penerimaansiswa.pembayaran' }">Pembayaran</router-link></p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item has-treeview">
                     <a class="nav-link">
@@ -305,6 +342,29 @@
                                     <a class="nav-link">
                                         <i class="fas fa-tasks nav-icon"></i>
                                         <p><router-link :to="{ name: 'rekapjurnal.data' }">Jurnal</router-link></p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item ml-3 has-treeview">
+                            <a class="nav-link">
+                                <i class="nav-icon fas fa-book-reader"></i>
+                                <p>
+                                    PSB
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item ml-3">
+                                    <a class="nav-link">
+                                        <i class="fas fa-tasks nav-icon"></i>
+                                        <p><router-link :to="{ name: 'laporan.psb.pembayaran' }">Pembayaran</router-link></p>
+                                    </a>
+                                </li>
+                                <li class="nav-item ml-3">
+                                    <a class="nav-link">
+                                        <i class="fas fa-tasks nav-icon"></i>
+                                        <p><router-link :to="{ name: 'laporan.psb.daftarulang' }">Daftar Ulang</router-link></p>
                                     </a>
                                 </li>
                             </ul>

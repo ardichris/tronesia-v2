@@ -12,9 +12,9 @@
                             <span class="sr-only">Toggle Dropdown</span>
                             <div class="dropdown-menu" role="menu" style="">
                                 <a class="dropdown-item"><router-link :to="{ name: 'siswas.add' }" v-if="authenticated.role==0">Tambah</router-link></a>
-                                <a class="dropdown-item" @click="exportSiswa" v-if="authenticated.role==0">Rekap Siswa</a>
+                                <a class="dropdown-item" @click="exportSiswa">Rekap Siswa</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" @click="$bvModal.show('modal-import')">Upload Siswa</a>
+                                <a class="dropdown-item" @click="$bvModal.show('modal-import')" v-if="authenticated.role==0">Upload Siswa</a>
                                 <a class="dropdown-item" @click="exportQRCode" v-if="authenticated.role==0">Export QR Code</a>
                             </div>
                             </button>

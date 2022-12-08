@@ -52,6 +52,8 @@ import DataKompetensi from './pages/kompetensis/Kompetensi.vue'
 import AddKompetensi from './pages/kompetensis/Add.vue'
 import EditKompetensi from './pages/kompetensis/Edit.vue'
 import ViewKompetensi from './pages/kompetensis/View.vue'
+import IndexLingkupMateri from './pages/lingkupmateris/Index.vue'
+import DataLingkupMateri from './pages/lingkupmateris/LingkupMateri.vue'
 import IndexKelas from './pages/kelas/Index.vue'
 import DataKelas from './pages/kelas/Kelas.vue'
 import AddKelas from './pages/kelas/Add.vue'
@@ -80,6 +82,7 @@ import AddUnit from './pages/units/Add.vue'
 import EditUnit from './pages/units/Edit.vue'
 import ViewUnit from './pages/units/View.vue'
 import DataNilaiSiswa from './pages/nilaisiswa/NilaiSiswa.vue'
+import DataNilaiSiswaKurMer from './pages/nilaisiswa/NilaiSiswaKurmer.vue'
 import IndexNilaiSiswa from './pages/nilaisiswa/Index.vue'
 import AddNilaiSiswa from './pages/nilaisiswa/Add.vue'
 import EditNilaiSiswa from './pages/nilaisiswa/Edit.vue'
@@ -103,6 +106,11 @@ import LaporanKesiswaan from './pages/laporans/kesiswaan/Kesiswaan.vue'
 import LaporanKesiswaanAbsensi from './pages/laporans/kesiswaan/Absensi.vue'
 import LaporanKesiswaanPelanggaran from './pages/laporans/kesiswaan/Pelanggaran.vue'
 import LaporanKesiswaanKitir from './pages/laporans/kesiswaan/Kitir.vue'
+import LaporanPembayaranPSB from './pages/laporans/psb/Pembayaran.vue'
+import LaporanDaftarUlangPSB from './pages/laporans/psb/DaftarUlang.vue'
+import PenerimaanSiswa from './pages/penerimaansiswas/PenerimaanSiswa.vue'
+import PenerimaanSiswaDaftarUlang from './pages/penerimaansiswas/DaftarUlang.vue'
+import PenerimaanSiswaPembayaran from './pages/penerimaansiswas/Pembayaran.vue'
 
 
 Vue.use(Router)
@@ -549,6 +557,19 @@ const router = new Router({
             ]
         },
         {
+            path: '/lingkupmateri',
+            component: IndexLingkupMateri,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'lingkupmateri.data',
+                    component: DataLingkupMateri,
+                    meta: { title: 'Daftar Lingkup Materi' }
+                }
+            ]
+        },
+        {
             path: '/kelas',
             component: IndexKelas,
             meta: { requiresAuth: true },
@@ -620,6 +641,12 @@ const router = new Router({
                     name: 'nilaisiswa.data',
                     component: DataNilaiSiswa,
                     meta: { title: 'Daftar Nilai Siswa' }
+                },
+                {
+                    path: 'kurmer',
+                    name: 'nilaisiswa.kurmer',
+                    component: DataNilaiSiswaKurMer,
+                    meta: { title: 'Daftar Nilai Siswa KurMer' }
                 },
                 {
                     path: 'add',
@@ -759,6 +786,38 @@ const router = new Router({
                     name: 'laporan.kesiswaan.kitir',
                     component: LaporanKesiswaanKitir,
                     meta: { title: 'Laporan Kitir' }
+                },
+
+            ]
+        },
+        {
+            path: '/penerimaansiswa/',
+            component: PenerimaanSiswa,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: 'pembayaran',
+                    name: 'penerimaansiswa.pembayaran',
+                    component: PenerimaanSiswaPembayaran,
+                    meta: { title: 'Pembayaran PSB' }
+                },
+                {
+                    path: 'daftarulang',
+                    name: 'penerimaansiswa.daftarulang',
+                    component: PenerimaanSiswaDaftarUlang,
+                    meta: { title: 'Daftar Ulang PSB' }
+                },
+                {
+                    path: 'laporanpembayaran',
+                    name: 'laporan.psb.pembayaran',
+                    component: LaporanPembayaranPSB,
+                    meta: { title: 'Laporan Pembayaran PSB' }
+                },
+                {
+                    path: 'laporandaftarulang',
+                    name: 'laporan.psb.daftarulang',
+                    component: LaporanDaftarUlangPSB,
+                    meta: { title: 'Laporan Daftar Ulang PSB' }
                 }
             ]
         }

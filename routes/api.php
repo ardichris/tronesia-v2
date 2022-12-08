@@ -66,6 +66,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/jadwalpelajaran','API\JadwalPelajaranController');
     Route::resource('/nilaisiswa', 'API\NilaiSiswaController');
     Route::post('/nilaisiswa/nilaiki12', 'API\NilaiSiswaController@nilaiki12');
+    Route::post('/nilaisiswa/import', 'API\NilaiSiswaController@import');
     Route::get('exportsiswa', 'API\SiswaController@exportSiswa');
     Route::resource('/rapor', 'API\RaporController');
     Route::resource('/raporakhir', 'API\RaporAkhirController');
@@ -86,10 +87,15 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::put('/absensi/changestatus/{kode}','API\AbsensiController@changeStatus');
     Route::get('/laporan/kesiswaan/absensi','API\LaporanController@absensi');
     Route::get('/laporan/kesiswaan/pelanggaran','API\LaporanController@pelanggaran');
+    Route::get('/laporan/psb/pembayaran','API\LaporanController@pembayaran');
     Route::resource('notification', 'API\NotificationController')->except(['create', 'destroy']);
     Route::resource('settingsisipan', 'API\SisipanFieldController');
     Route::get('/laporan/raporsisipan', 'API\RaporSisipanController@raporSisipanPDF');
     Route::get('downloadnilai', 'API\NilaiSiswaController@downloadNilai');
+    Route::get('/penerimaansiswa/pembayaran', 'API\PenerimaanSiswaController@indexPembayaran');
+    Route::post('/penerimaansiswa/pembayaran/import', 'API\PenerimaanSiswaController@importPembayaran');
+    Route::resource('/lingkupmateri', 'API\LingkupMateriController');
+    Route::resource('/raporkurmer', 'API\KurmerReportController');
 
 
 

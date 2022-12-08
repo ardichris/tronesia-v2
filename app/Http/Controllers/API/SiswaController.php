@@ -52,6 +52,11 @@ class SiswaController extends Controller
         $user = $request->user();
         Date::setLocale('id');
         $siswa = Siswa::where('s_keterangan','AKTIF')->where('unit_id',$user->unit_id)->orderBy('s_nama')->get();
+        if($user->role!=0) {
+            $listKelas = Kelas::where('kelas_wali',$user->id)->orWhere('k_mentor',$user->id)->pluck('id');
+            $listSiswa = KelasAnggota::where('periode_id',$user->periode)->whereIn('kelas_id',$listKelas)->pluck('siswa_id');
+            $siswa = $siswa->whereIn('id',$listSiswa);
+        }
         foreach($siswa as $row) {
             $kelas = KelasAnggota::where('siswa_id',$row->id)->where('periode_id',$user->periode)->first();
             //return response()->json(['data' => $kelas['kelas_id']]);
@@ -213,8 +218,15 @@ class SiswaController extends Controller
                         's_domisili_kota' => $request->s_domisili_kota,
                         's_ayah_perusahaan' => $request->s_ayah_perusahaan,
                         's_ayah_jabatan' => $request->s_ayah_jabatan,
+                        's_ayah_tempat_lahir' => $request->s_ayah_tempat_lahir,
+                        's_ayah_agama' => $request->s_ayah_agama,
+                        's_ayah_warga_negara' => $request->s_ayah_warga_negara,
                         's_ibu_perusahaan' => $request->s_ibu_perusahaan,
                         's_ibu_jabatan' => $request->s_ibu_jabatan,
+                        's_ibu_tempat_lahir' => $request->s_ibu_tempat_lahir,
+                        's_ibu_agama' => $request->s_ibu_agama,
+                        's_ibu_warga_negara' => $request->s_ibu_warga_negara,
+                        's_ortu_alamat' => $request->s_ortu_alamat,
                         's_nama_panggilan' => $request->s_nama_panggilan,
                         's_golongan_darah' => $request->s_golongan_darah,
                         's_warga_negara' => $request->s_warga_negara,
@@ -223,12 +235,6 @@ class SiswaController extends Controller
                         's_saudara_angkat' => $request->s_saudara_angkat,
                         's_status_anak' => $request->s_status_anak,
                         's_bahasa' => $request->s_bahasa,
-                        's_ibu_tempat_lahir' => $request->s_ibu_tempat_lahir,
-                        's_ibu_agama' => $request->s_ibu_agama,
-                        's_ibu_warga_negara' => $request->s_ibu_warga_negara,
-                        's_ayah_tempat_lahir' => $request->s_ayah_tempat_lahir,
-                        's_ayah_agama' => $request->s_ayah_agama,
-                        's_ayah_warga_negara' => $request->s_ayah_warga_negara,
                         's_pengeluaran' => $request->s_pengeluaran,
                         's_keterangan' => 'AKTIF',
                         'unit_id' => $user->unit_id]);
@@ -302,8 +308,18 @@ class SiswaController extends Controller
                 's_akta_nama_ibu' => $request->s_akta_nama_ibu,
                 's_ayah_pendidikan' => $request->s_ayah_pendidikan,
                 's_ayah_penghasilan' => $request->s_ayah_penghasilan,
+                's_ayah_perusahaan' => $request->s_ayah_perusahaan,
+                's_ayah_jabatan' => $request->s_ayah_jabatan,
+                's_ayah_tempat_lahir' => $request->s_ayah_tempat_lahir,
+                's_ayah_agama' => $request->s_ayah_agama,
+                's_ayah_warga_negara' => $request->s_ayah_warga_negara,
                 's_ibu_pendidikan' => $request->s_ibu_pendidikan,
                 's_ibu_penghasilan' => $request->s_ibu_penghasilan,
+                's_ibu_perusahaan' => $request->s_ibu_perusahaan,
+                's_ibu_jabatan' => $request->s_ibu_jabatan,
+                's_ibu_tempat_lahir' => $request->s_ibu_tempat_lahir,
+                's_ibu_agama' => $request->s_ibu_agama,
+                's_ibu_warga_negara' => $request->s_ibu_warga_negara,
                 's_wali_nik' => $request->s_wali_nik,
                 's_wali_pendidikan' => $request->s_wali_pendidikan,
                 's_wali_penghasilan' => $request->s_wali_penghasilan,
@@ -325,10 +341,7 @@ class SiswaController extends Controller
                 's_domisili_kelurahan' => $request->s_domisili_kelurahan,
                 's_domisili_kecamatan' => $request->s_domisili_kecamatan,
                 's_domisili_kota' => $request->s_domisili_kota,
-                's_ayah_perusahaan' => $request->s_ayah_perusahaan,
-                's_ayah_jabatan' => $request->s_ayah_jabatan,
-                's_ibu_perusahaan' => $request->s_ibu_perusahaan,
-                's_ibu_jabatan' => $request->s_ibu_jabatan,
+                's_ortu_alamat' => $request->s_ortu_alamat,
                 's_nama_panggilan' => $request->s_nama_panggilan,
                 's_golongan_darah' => $request->s_golongan_darah,
                 's_warga_negara' => $request->s_warga_negara,
@@ -337,12 +350,6 @@ class SiswaController extends Controller
                 's_saudara_angkat' => $request->s_saudara_angkat,
                 's_status_anak' => $request->s_status_anak,
                 's_bahasa' => $request->s_bahasa,
-                's_ibu_tempat_lahir' => $request->s_ibu_tempat_lahir,
-                's_ibu_agama' => $request->s_ibu_agama,
-                's_ibu_warga_negara' => $request->s_ibu_warga_negara,
-                's_ayah_tempat_lahir' => $request->s_ayah_tempat_lahir,
-                's_ayah_agama' => $request->s_ayah_agama,
-                's_ayah_warga_negara' => $request->s_ayah_warga_negara,
                 's_pengeluaran' => $request->s_pengeluaran
             ]);
         }

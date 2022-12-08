@@ -40,6 +40,11 @@ class KompetensiController extends Controller
         if (request()->s == 'active') {
             $kompetensis = $kompetensis->where('is_active',1);
         }
+        if (request()->k == 'KI3') {
+            $kompetensis = $kompetensis->where('k_inti',3);
+        } elseif(request()->k == 'KI4'){
+            $kompetensis = $kompetensis->where('k_inti',4);
+        }
 
         if (request()->r == 'sisipan') {
             $kompetensis = $kompetensis->select(['kd_kode','id','kompetensi_mapel'])->orderBy('kd_kode');

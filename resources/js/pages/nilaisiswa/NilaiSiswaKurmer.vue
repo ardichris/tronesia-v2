@@ -12,7 +12,8 @@
                                 <label>Kelas</label>
                                 <v-select :options="jammengajars"
                                     v-model="nilaiselect.kelas"
-                                    label="id">
+                                    label="id"
+                                    @input="searchlm">
                                     <template slot="option" slot-scope="option">
                                         {{option.mapel.mapel_kode}} - {{ option.kelas.kelas_nama }}
                                     </template>
@@ -25,44 +26,46 @@
                                 <label>Jenis Nilai</label>
                                 <v-select :options="field"
                                     v-model="nilaiselect.jenis"
-                                    label="text"
-                                    @input="searchkd">
+                                    label="text">
                                     <template slot="selected-option" slot-scope="option">
                                         <span class="badge badge-primary">{{ option.text }}</span>
                                     </template>
                                 </v-select>
                             </div>
-                            <div class="form-group" v-if="nilaiselect.jenis.text=='KI3'||nilaiselect.jenis.text=='KI4'">
-                                <label>Kompetensi</label>
+                            <div class="form-group" v-if="nilaiselect.jenis.text=='SUM'">
+                                <label>Lingkup Materi</label>
                                 <v-select
-                                    :options="kompetensis.data"
-                                    v-model="nilaiselect.kd"
-                                    label="kd_kode"
+                                    :options="lingkupmateris.data"
+                                    v-model="nilaiselect.lm"
+                                    label="lm_title"
                                     placeholder="Masukkan Kata Kunci"
                                     :filterable="false">
                                     <template slot="no-options">
                                         Masukkan Kata Kunci
                                     </template>
                                     <template slot="option" slot-scope="option">
-                                        {{ option.kd_kode }}
+                                        {{ option.lm_order }}. {{ option.lm_title }}
                                     </template>
                                     <template slot="selected-option" slot-scope="option">
-                                        <span class="badge badge-primary">{{ option.kd_kode }}</span>
+                                        <span class="badge badge-primary">{{ option.lm_order }}</span>
                                     </template>
                                 </v-select>
                             </div>
                             <div style="margin-bottom:5px">
                             <button type="button" class="btn btn-success" v-if="nilaiselect.jenis" @click="getNilai">Submit Filter</button>
                             </div>
-                            <button type="button" class="btn btn-danger" v-if="nilaiselect.jenis.text=='KI3'||nilaiselect.jenis.text=='KI4'" @click="$bvModal.show('modal-upload-nilai')">Upload Nilai</button>
-                            <!-- <button type="button" class="btn btn-warning" v-if="nilaiselect.kelas" @click="downloadNilai">Download Nilai</button> -->
-
+                            <div style="margin-bottom:5px">
+                                <button type="button" class="btn btn-danger" v-if="nilaiselect.kelas" @click="$bvModal.show('modal-upload-nilai')">Upload Nilai</button>
+                            </div>
+                            <!-- <div style="margin-bottom:5px">
+                                <button type="button" class="btn btn-warning" v-if="nilaiselect.kelas" @click="downloadNilai">Download Nilai</button>
+                            </div> -->
                         </div>
                         <b-modal id="modal-upload-nilai" scrollable size="md">
                             <template v-slot:modal-title>
                                 Pilih File Nilai
                             </template>
-                            <input type="file" class="form-control" id="input-file-import" name="file_import" ref="import_file"  @change="onFileChange">
+                            <input type="file" class="form-control" :class="{ ' is-invalid' : error.message }" id="input-file-import" name="file_import" ref="import_file"  @change="onFileChange">
                             <template v-slot:modal-footer>
                                 <b-button
                                     variant="success"
@@ -79,6 +82,8 @@
                             <h3 class="card-title">Daftar Nilai</h3>
                         </div>
                         <div class="card-body">
+                            <h6 v-if="description"><b>Deskripsi</b></h6>
+                            <h6 v-if="description">{{description}}</h6><br>
                             <div id="spreadsheet" ref="spreadsheet"></div>
                             <!-- <div v-if="nilaisiswa!=null">
                                 <button type="button" class="btn btn-info" @click="submitNilai(jExcelObj.getData())">Submit Nilai</button>
@@ -103,7 +108,7 @@ export default {
     created() {
         //SEBELUM COMPONENT DI-LOAD, REQUEST DATA DARI SERVER
         this.getJamMengajar({
-                kurikulum: 'kurtilas'
+                kurikulum: 'kurmer'
             })
         .then(() => {
                 const jExcelObj = jexcel(this.$refs["spreadsheet"]);
@@ -112,12 +117,13 @@ export default {
     },
     data() {
         return {
+            //FIELD UNTUK B-TABLE, PASTIKAN KEY NYA SESUAI DENGAN FIELD DATABASE
+            //AGAR OTOMATIS DI-RENDER
             search: '',
+            description: null,
             field: [
-                { value: 'KI3', text: 'KI3' },
-                { value: 'KI4', text: 'KI4' },
-                { value: 'PTS', text: 'PTS' },
-                { value: 'PAS', text: 'PAS' },
+                { value: 'SUM', text: 'SUM' },
+                { value: 'SAS', text: 'SAS' },
                 ],
 
             myNilai: JSON.stringify(this.nilaisiswa),
@@ -132,7 +138,7 @@ export default {
             nilaisiswas: state => state.nilaisiswas,
             nilaisiswa: state => state.nilaisiswas,
             jammengajars: state => state.jammengajars,
-            kompetensis: state => state.kompetensi
+            lingkupmateris: state => state.lingkupmateri
         }),
         ...mapState(['token']),
         page: {
@@ -146,37 +152,23 @@ export default {
                 this.$store.commit('nilaisiswa/SET_PAGE', val)
             }
         },
-        jExcelOptionsKI3() {
+        jExcelOptions() {
             return {
                 data: this.nilaisiswa,
                 columns: [
                 { type: "hidden", name:'id_nilai', title: "Nilai", width: "250px"},
                 { type: "hidden", name:'id', title: "Nilai", width: "250px"},
                 { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
-                { type: "number", name:'ns_tes', title: "UH", width: "100px", readOnly:true },
-                { type: "number", name:'ns_remidi', title: "REMIDI", width: "100px", readOnly:true },
-                { type: "number", name:'ns_tugas', title: "TUGAS", width: "100px" , readOnly:true},
+                { type: "number", name:'ns_tugas', title: "NON-TES", width: "100px", readOnly:true },
                 { type: "number", name:'ns_perbaikan', title: "REMIDI", width: "100px", readOnly:true },
+                { type: "number", name:'ns_tes', title: "TES", width: "100px", readOnly:true },
+                { type: "number", name:'ns_remidi', title: "REMIDI", width: "100px" },
                 { type: "text", name:'ns_nilai', title: "NA", width: "100px", readOnly:true },
                 { type: "hidden", name:'ns_avg_tugas', title: "Rata2", width: "100px" },
                 { type: "hidden", name:'ns_avg_tes', title: "Rata2", width: "100px" },
                 { type: "hidden", name:'absen', title: "Absen", width: "250px"},
-                ]
-            };
-        },
-        jExcelOptionsKI4() {
-            return {
-                data: this.nilaisiswa,
-                columns: [
-                { type: "hidden", name:'id_nilai', title: "Nilai", width: "250px"},
-                { type: "hidden", name:'id', title: "Nilai", width: "250px"},
-                { type: "text", name:'s_nama', title: "Nama Siswa", width: "250px", readOnly:true },
-                { type: "number", name:'ns_tugas', title: "PRAKTEK", width: "100px", readOnly:true },
-                { type: "number", name:'ns_perbaikan', title: "PROYEK", width: "100px", readOnly:true },
-                { type: "number", name:'ns_tes', title: "PRODUK", width: "100px", readOnly:true },
-                { type: "number", name:'ns_remidi', title: "PORTOFOLIO", width: "100px", readOnly:true },
-                { type: "text", name:'ns_nilai', title: "NA", width: "100px", readOnly:true },
-                { type: "hidden", name:'absen', title: "Absen", width: "250px"},
+
+
                 ]
             };
         },
@@ -207,16 +199,13 @@ export default {
         }
     },
     methods: {
-        ...mapActions('nilaisiswa', ['getJamMengajar','submitNilaiSiswa','updateNilaiSiswa','editNilaiSiswa','getNilaiSiswa', 'removeNilaiSiswa','setJM','getKD','uploadNilai']),
+        ...mapActions('nilaisiswa', ['uploadNilai','getJamMengajar','submitNilaiSiswa','updateNilaiSiswa','editNilaiSiswa','getNilaiSiswa', 'removeNilaiSiswa','setJM','getLM']),
         ...mapMutations('nilaisiswa', ['JM_SELECT','JENIS_SELECT','SET_NILAI','CLEAR_FORM']),
         onFileChange(e) {
             this.import_file = e.target.files[0];
         },
-        searchkd(){
-            this.nilaiselect.kd=null
-            this.getKD({
-                kompetensi: this.nilaiselect.jenis.text
-            })
+        searchlm(){
+            this.getLM()
         },
         JMSelected(JMset){
             this.JM_SELECT(JMset)
@@ -224,52 +213,23 @@ export default {
         JenisSelected(JMset){
             this.JENIS_SELECT(JMset)
         },
-        submitfile(){
-            let formData = new FormData();
-            formData.append('import_file', this.import_file);
-            formData.append('mapel', this.nilaiselect.kelas.mapel_id);
-            formData.append('jenjang', this.nilaiselect.kelas.kelas.kelas_jenjang);
-            formData.append('guru', this.nilaiselect.kelas.guru_id);
-            formData.append('jenis', this.nilaiselect.jenis.text);
-            this.uploadNilai(formData).then(() => {
-                this.import_file = '',
-                this.$bvModal.hide('modal-upload-nilai'),
-                this.$swal({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 2000,
-                    type: 'success',
-                    title: 'Import Nilai Berhasil'
-                })
-            }).catch(() => {
-                this.$swal({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 2000,
-                    type: 'error',
-                    title: 'Import Nilai Gagal'
-                })
-            })
-        },
         downloadNilai(){
             window.open(`/api/downloadnilai?api_token=${this.token}&filter=${this.nilaiselect.kelas.id}`)
         },
         getNilai(){
+            if(this.nilaiselect.jenis.text=='SAS'){
+                this.description = 'Sumatif Akhir Semester';
+            } else {
+                this.description = this.nilaiselect.lm.lm_description
+            }
             this.getNilaiSiswa().then(() => {
                 this.jExcelObj.destroy(this.$refs["spreadsheet"], true);
                 jexcel.destroy(document.getElementById('spreadsheet'), true);
-                if(this.nilaiselect.jenis.value=="KI3"){
-                    const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptionsKI3);
+                if(this.nilaiselect.jenis.value=="SUM"){
+                    const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptions);
                     Object.assign(this, { jExcelObj });
-                }
-                if(this.nilaiselect.jenis.value=="PAS"||this.nilaiselect.jenis.value=="PTS"){
+                } else {
                     const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptionsTest);
-                    Object.assign(this, { jExcelObj });
-                }
-                if(this.nilaiselect.jenis.value=="KI4"){
-                    const jExcelObj = jexcel(this.$refs["spreadsheet"], this.jExcelOptionsKI4);
                     Object.assign(this, { jExcelObj });
                 }
                 this.jExcelObj.setData(this.nilaisiswa)
@@ -305,6 +265,36 @@ export default {
                 })
             })
 
+        },
+        submitfile(){
+            let formData = new FormData();
+            formData.append('import_file', this.import_file);
+            formData.append('mapel', this.nilaiselect.kelas.mapel_id);
+            formData.append('jenjang', this.nilaiselect.kelas.kelas.kelas_jenjang);
+            formData.append('guru', this.nilaiselect.kelas.guru_id);
+            formData.append('jenis', '');
+            this.uploadNilai(formData).then(() => {
+                this.import_file = '',
+                this.$bvModal.hide('modal-upload-nilai'),
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    type: 'success',
+                    title: 'Import Nilai Berhasil'
+                })
+
+            }).catch(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    type: 'error',
+                    title: 'Import Nilai Gagal'
+                })
+            })
         },
         simpanNilaiSiswabaru(){
             this.submitNilaiSiswa().then(() => {

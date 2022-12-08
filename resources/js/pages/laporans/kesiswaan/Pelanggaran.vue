@@ -99,6 +99,32 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <div class="table-responsive" v-if="total">
+                                        <table class="table" width="auto">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nama Siswa</th>
+                                                    <th>Kelas</th>
+                                                    <th>Jumlah</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in total" :key="index">
+                                                    <td>
+                                                        {{row.Nama}}
+                                                    </td>
+                                                    <td>
+                                                        <div class="badge badge-primary" v-if="row.Kelas.substr(0, 2)=='IX'">{{row.Kelas}}</div>
+                                                        <div class="badge badge-danger" v-else-if="row.Kelas.substr(0, 4)=='VIII'">{{row.Kelas}}</div>
+                                                        <div class="badge badge-warning" v-else>{{row.Kelas}}</div>
+                                                    </td>
+                                                    <td style="text-align:center">
+                                                        {{row.Pelanggaran}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

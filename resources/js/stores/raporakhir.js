@@ -2,9 +2,11 @@ import $axios from '../api.js'
 
 const state = () => ({
     rapor: {},
+    walikelas: [],
     kelas: [],
     raporsisipan: {},
     raporakhir: {},
+    raporkurmer: {},
     raporpetra: {
         siswa_id: '',
         rp_pone_score: '',
@@ -89,15 +91,21 @@ const mutations = {
         state.raporsisipan = payload
     },
     RAPOR_FORM(state, payload){
-        state.raporakhir = payload
+        state.raporakhir = payload,
+        state.walikelas = payload
     },
     PETRA_FORM(state, payload){
         state.raporpetra = payload
     },
+    RAPOR_KURMER_FORM(state, payload){
+        state.raporkurmer = payload
+    },
     CLEAR_FORM(state) {
         state.raporakhir = {}
+        state.raporkurmer = {}
         state.raporsisipan = {}
         state.raporpetra = {}
+        state.walikelas = {}
     }
 }
 
@@ -199,6 +207,17 @@ const actions = {
             $axios.get(`/raporakhir/view?uuid=${uuid}`)
             .then((response) => {
                 commit('RAPOR_FORM', response.data.data)
+                console.log(state.walikelas)
+                resolve(response.data)
+            })
+        })
+    },
+    viewRaporKurmer({ commit, state }, payload) {
+        let uuid = payload.uuid
+        return new Promise((resolve, reject) => {
+            $axios.get(`/raporkurmer/view?uuid=${uuid}`)
+            .then((response) => {
+                commit('RAPOR_KURMER_FORM', response.data.data)
                 resolve(response.data)
             })
         })
@@ -217,7 +236,27 @@ const actions = {
     submitRaporAkhir({commit, state}, payload){
         let kode = state.raporakhir.id
         return new Promise((resolve, reject) => {
-            $axios.put(`/raporakhir/${kode}`, state.raporakhir)
+            $axios.put(`/raporakhir/${kode}`, state.walikelas)
+            .then((response) => {
+                commit('CLEAR_FORM')
+                resolve(response.data)
+            })
+        })
+    },
+    submitRaporKurmer({commit, state}, payload){
+        let kode = state.raporkurmer.id
+        return new Promise((resolve, reject) => {
+            $axios.put(`/raporkurmer/${kode}`, state.raporkurmer)
+            .then((response) => {
+                commit('CLEAR_FORM')
+                resolve(response.data)
+            })
+        })
+    },
+    submitRaporKurtilas({commit, state}, payload){
+        let kode = state.raporakhir.id
+        return new Promise((resolve, reject) => {
+            $axios.put(`/raporakhir/${kode}`, state.walikelas)
             .then((response) => {
                 commit('CLEAR_FORM')
                 resolve(response.data)

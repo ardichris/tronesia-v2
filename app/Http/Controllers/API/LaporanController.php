@@ -10,11 +10,139 @@ use App\KelasAnggota;
 use App\Siswa;
 use App\Pelanggaran;
 use App\MasterPelanggaran;
+use App\PembayaranPsb;
 use App\Http\Resources\AbsensiCollection;
 
 
 class LaporanController extends Controller
 {
+    public function pembayaran(Request $request){
+        $user = $request->user();
+        $pembayaran = PembayaranPsb::where('unit_id', $user->unit_id)->get();
+        $jumlahdalam = 0;
+        $jumlahluar = 0;
+        $jumlahluartunai = 0;
+        $jumlahdalamtunai = 0;
+        $jumlahdalamangsuran1 = 0;
+        $jumlahdalamangsuran2 = 0;
+        $jumlahdalamangsuran3 = 0;
+        $jumlahdalamangsuran4 = 0;
+        $jumlahdalamlunasangsuran1 = 0;
+        $jumlahdalamlunasangsuran2 = 0;
+        $jumlahdalamlunasangsuran3 = 0;
+        $jumlahdalamlunasangsuran4 = 0;
+        $jumlahluarangsuran1 = 0;
+        $jumlahluarangsuran2 = 0;
+        $jumlahluarangsuran3 = 0;
+        $jumlahluarangsuran4 = 0;
+        $jumlahluarlunasangsuran1 = 0;
+        $jumlahluarlunasangsuran2 = 0;
+        $jumlahluarlunasangsuran3 = 0;
+        $jumlahluarlunasangsuran4 = 0;
+        $siswa=[];
+        foreach($pembayaran as $row){
+
+            if(substr($row->pp_student_code,0,4)=='2023'){
+                if($row->pp_angsuran==1) {
+                    if(intval(str_replace(',', '', $row->pp_bruto))-intval(str_replace(',', '', $row->pp_subsidi))-intval(str_replace(',', '', $row->pp_tunai))==intval(str_replace(',', '', $row->pp_biaya))){
+                        $jumlahluartunai++;
+                    } else {
+                        $jumlahluarangsuran1++;
+                        if($row->pp_sisa==0)$jumlahluarlunasangsuran1++;
+                    }
+                }
+                if($row->pp_angsuran==2) {
+                    $jumlahluarangsuran2++;
+                    if($row->pp_sisa==0)$jumlahluarlunasangsuran2++;
+                }
+                if($row->pp_angsuran==3) {
+                    $jumlahluarangsuran3++;
+                    if($row->pp_sisa==0)$jumlahluarlunasangsuran3++;
+                }
+                if($row->pp_angsuran==4) {
+                    $jumlahluarangsuran4++;
+                    if($row->pp_sisa==0)$jumlahluarlunasangsuran4++;
+                }
+            } elseif(substr($row->pp_student_code,0,4)!='2023') {
+                if($row->pp_angsuran==1) {
+                    if(intval(str_replace(',', '', $row->pp_bruto))-intval(str_replace(',', '', $row->pp_subsidi))-intval(str_replace(',', '', $row->pp_tunai))==intval(str_replace(',', '', $row->pp_biaya))){
+                        $jumlahdalamtunai++;
+                    } else {
+                        $jumlahdalamangsuran1++;
+                        if($row->pp_sisa==0)$jumlahdalamlunasangsuran1++;
+                    }
+                }
+                if($row->pp_angsuran==2) {
+                    $jumlahdalamangsuran2++;
+                    if($row->pp_sisa==0)$jumlahdalamlunasangsuran2++;
+                }
+                if($row->pp_angsuran==3) {
+                    $jumlahdalamangsuran3++;
+                    if($row->pp_sisa==0)$jumlahdalamlunasangsuran3++;
+                }
+                if($row->pp_angsuran==4) {
+                    $jumlahdalamangsuran4++;
+                    if($row->pp_sisa==0)$jumlahdalamlunasangsuran4++;
+                }
+            }
+
+            if(!collect($siswa)->contains('Noform',$row->pp_no_formulir)){
+                array_push($siswa, (object)[
+                    'Noform' => $row->pp_no_formulir,
+                    'Nama' => $row->pp_student_name,
+                    'Kode' => $row->pp_student_code,
+                    'Angsuran1' => null,
+                    'Angsuran2' => null,
+                    'Angsuran3' => null,
+                    'Angsuran4' => null,
+                    'Sisa' => 0
+                ]);
+            }
+                foreach($siswa as $rowsiswa){
+                    if($rowsiswa->Noform == $row->pp_no_formulir){
+                        $rowsiswa->Sisa = $rowsiswa->Sisa+intval(str_replace(',', '', $row->pp_sisa));
+                        if($row->pp_angsuran==1)$rowsiswa->Angsuran1 = $row->pp_sisa;
+                        if($row->pp_angsuran==2)$rowsiswa->Angsuran2 = $row->pp_sisa;
+                        if($row->pp_angsuran==3)$rowsiswa->Angsuran3 = $row->pp_sisa;
+                        if($row->pp_angsuran==4)$rowsiswa->Angsuran4 = $row->pp_sisa;
+                    }
+                }
+
+        }
+        $luarlunas = 0;
+        $dalamlunas = 0;
+        foreach($siswa as $rowsiswa){
+            if(substr($rowsiswa->Kode,0,4)=='2023'){
+                $jumlahluar++;
+                if($rowsiswa->Sisa=='0'){
+                    $luarlunas++;
+                }
+            } else {
+                $jumlahdalam++;
+                if($rowsiswa->Sisa=='0'){
+                    $dalamlunas++;
+                }
+            }
+        }
+        $rekap = ['dalam' => ['jumlah' => $jumlahdalam,
+                              'tunaiangsuran' => $jumlahdalamtunai.'/'.($jumlahdalam-$jumlahdalamtunai),
+                              'lunasUP' => $dalamlunas,
+                              'Angsuran1' => $jumlahdalamangsuran1.'/'.$jumlahdalamlunasangsuran1,
+                              'Angsuran2' => $jumlahdalamangsuran2.'/'.$jumlahdalamlunasangsuran2,
+                              'Angsuran3' => $jumlahdalamangsuran3.'/'.$jumlahdalamlunasangsuran3,
+                              'Angsuran4' => $jumlahdalamangsuran4.'/'.$jumlahdalamlunasangsuran4],
+                  'luar' => ['jumlah' => $jumlahluar,
+                             'tunaiangsuran' => $jumlahluartunai.'/'.($jumlahluar-$jumlahluartunai),
+                             'lunasUP' => $luarlunas,
+                             'Angsuran1' => $jumlahluarangsuran1.'/'.$jumlahluarlunasangsuran1,
+                             'Angsuran2' => $jumlahluarangsuran2.'/'.$jumlahluarlunasangsuran2,
+                             'Angsuran3' => $jumlahluarangsuran3.'/'.$jumlahluarlunasangsuran3,
+                             'Angsuran4' => $jumlahluarangsuran4.'/'.$jumlahluarlunasangsuran4],
+
+                  ];
+        return response()->json(['data' => $siswa, 'rekap' => $rekap, 'status' => 'sukses'],200);
+    }
+
     public function absensi(Request $request){
 
         $this->validate($request, [
@@ -148,6 +276,7 @@ class LaporanController extends Controller
                                 ->where('unit_id', $user->unit_id);
 
         $rekap = [];
+        $total = [];
         if($request->siswa!=''){
             $q = $request->siswa;
             $pelanggaran = $pelanggaran->where(function ($query) use ($q) {
@@ -168,7 +297,7 @@ class LaporanController extends Controller
                                     ->pluck('siswa_id');
             $pelanggaran = $pelanggaran->whereIn('siswa_id',$anggota);
         }
-        $pelanggaran = $pelanggaran->get();
+        $pelanggaran = $pelanggaran->get();//->sortBy('siswa.s_nama');
         $masterpelanggaran = MasterPelanggaran::orderBy('mp_kategori')->get();
 
         foreach($pelanggaran as $row) {
@@ -176,6 +305,21 @@ class LaporanController extends Controller
             $kelasdetail = Kelas::where('id',$kelas['kelas_id'])->first();
             $row['kelas'] = $kelas?$kelasdetail['kelas_nama']:'-';
             $row['absen'] = $kelas?$kelas['absen']:'-';
+            if(!collect($total)->contains('ID',$row->siswa->id)){
+                array_push($total, (object)[
+                    'ID' => $row->siswa->id,
+                    'Nama' => $row->siswa->s_nama,
+                    'Kelas' => $row->kelas,
+                    'Absen' => $row['absen'],
+                    'Pelanggaran' => 0,
+                ]);
+            }
+            foreach($total as $rowtotal){
+                if($rowtotal->ID==$row->siswa_id){
+                    $rowtotal->Pelanggaran++;
+                }
+
+            }
         }
 
         foreach($masterpelanggaran as $rowmp){
@@ -192,11 +336,16 @@ class LaporanController extends Controller
                     'jumlah' => $count,
                 ]);
             }
+
             //$rowmp['jumlah'] = $count;
         }
         //$masterpelanggaran = $masterpelanggaran->toArray();
-        $total = array_column($rekap, 'jumlah');
-        array_multisort($total, SORT_DESC, $rekap);
-        return response()->json(['status' => 'SUKSES', 'data' => $pelanggaran, 'rekap' => $rekap],200);
+        $jumlah = array_column($rekap, 'jumlah');
+        array_multisort($jumlah, SORT_DESC, $rekap);
+        $jumlah = array_column($total, 'Pelanggaran');
+        $kelas = array_column($total, 'Kelas');
+        array_multisort($jumlah, SORT_DESC, $kelas, SORT_ASC, $total);
+        $pelanggaran = $pelanggaran->toArray();
+        return response()->json(['status' => 'SUKSES', 'data' => $pelanggaran, 'rekap' => $rekap, 'total' => $total],200);
     }
 }

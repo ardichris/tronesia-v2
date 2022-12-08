@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Imports\NilaiSiswasImport;
 use Illuminate\Http\Request;
 use App\NilaiSiswa;
 use App\Siswa;
@@ -16,9 +17,51 @@ use App\Exports\NilaiSiswaExport;
 use Jenssegers\Date\Date;
 use Maatwebsite\Excel\Facades\Excel;
 
+function nilaiFinal($nilai, $remidi){
+    if($nilai>75) {
+        return $nilai;
+    } else {
+        if(is_null($remidi)) {
+            return $nilai;
+        } else {
+            if(!is_null($remidi)) {
+                if(max($nilai,$remidi)>75){
+                    return 75;
+                } else {
+                    return max($nilai,$remidi);
+                }
+            }
+        }
+    }
+}
+
+function nilaiAkhir ($non_tes, $tes){
+    if(!is_null($non_tes)&&!is_null($tes)){
+        return round(($non_tes+$tes)/2,0);
+    } else {
+        if(is_null($non_tes)) return $tes;
+        if(is_null($tes)) return $non_tes;
+    }
+}
 
 class NilaiSiswaController extends Controller
 {
+    public function import(Request $request){
+        $request->validate([
+            'import_file' => 'required|file|mimes:xls,xlsx'
+        ]);
+        $user = $request->user();
+        $path = $request->file('import_file');
+        $nilai['periode'] = $user->periode;
+        $nilai['user'] = $user->id;
+        $nilai['unit'] = $user->unit_id;
+        $nilai['jenjang'] = $request->jenjang;
+        $nilai['mapel'] = $request->mapel;
+        $nilai['guru'] = $request->guru;
+        $nilai['jenis'] = $request->jenis;
+        $data = Excel::import(new NilaiSiswasImport($nilai), $path);
+        return response()->json(['message' => 'uploaded successfully'], 200);
+    }
     public function downloadNilai(Request $request){
         $user = $request->user();
         $jammengajar = JamMengajar::whereId($request->filter)
@@ -125,17 +168,26 @@ class NilaiSiswaController extends Controller
                                 ->where('mapel_id', request()->mapel)
                                 ->where('ns_jenis_nilai', request()->jenis)
                                 ->where('periode_id', $user->periode);
-            if($request->kd != ''){
+            if($request->lm != ''){
+                $nilai = $nilai->where('lingkupmateri_id', request()->lm);
+            } elseif($request->kd != ''){
                 $nilai = $nilai->where('kompetensi_id', request()->kd);
             }
             $nilaisiswa[$key]['id_nilai'] = $nilai->value('id');
             $nilaisiswa[$key]['ns_tes'] = $nilai->value('ns_tes');
             $nilaisiswa[$key]['ns_remidi'] = $nilai->value('ns_remidi');
-            if(request()->jenis=='NTT'){
+            if(in_array(request()->jenis,['SUM','KI3'])){
                 $nilaisiswa[$key]['ns_tugas'] = $nilai->value('ns_tugas');
-                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(IF(ISBLANK(F'.$counter.'),AVERAGE(D'.$counter.':E'.$counter.'),IF(F'.$counter.'>75,AVERAGE(D'.$counter.',75),AVERAGE(D'.$counter.',MAX(E'.$counter.':F'.$counter.')))),0),"")';
-            } else {
-                $nilaisiswa[$key]['ns_nilai'] = '=IF(ISBLANK(D'.$counter.'),"",ROUND(IF(D'.$counter.'>75,D'.$counter.',IF(MAX(D'.$counter.':E'.$counter.')>75,75,MAX(D'.$counter.':E'.$counter.'))),0))';
+                $nilaisiswa[$key]['ns_perbaikan'] = $nilai->value('ns_perbaikan');
+                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(AVERAGE(I'.$counter.':J'.$counter.'),0),"")';
+                $nilaisiswa[$key]['ns_avg_tes'] = '=IF(F'.$counter.'>75,F'.$counter.',IF(ISBLANK(G'.$counter.'),F'.$counter.',IF(ISNUMBER(G'.$counter.'),IF(MAX(F'.$counter.',G'.$counter.')>75,75,MAX(F'.$counter.',G'.$counter.')))))';
+                $nilaisiswa[$key]['ns_avg_tugas'] = '=IF(D'.$counter.'>75,D'.$counter.',IF(ISBLANK(E'.$counter.'),D'.$counter.',IF(ISNUMBER(E'.$counter.'),IF(MAX(D'.$counter.',E'.$counter.')>75,75,MAX(D'.$counter.',E'.$counter.')))))';
+            } elseif(in_array(request()->jenis,['PAS','PTS','SAS'])) {
+                $nilaisiswa[$key]['ns_nilai'] = '=IF(D'.$counter.'>75,D'.$counter.',IF(ISBLANK(E'.$counter.'),D'.$counter.',IF(ISNUMBER(E'.$counter.'),IF(MAX(D'.$counter.',E'.$counter.')>75,75,MAX(D'.$counter.',E'.$counter.')))))';
+            } elseif(request()->jenis=='KI4'){
+                $nilaisiswa[$key]['ns_tugas'] = $nilai->value('ns_tugas');
+                $nilaisiswa[$key]['ns_perbaikan'] = $nilai->value('ns_perbaikan');
+                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(AVERAGE(D'.$counter.':G'.$counter.'),0),"")';
             }
             //$nilaisiswa[$key]['sisipan'] = $nilai->value('ns_sisipan');
             //$row = array("nilai" => $nilai->ns_nilai);
@@ -149,64 +201,48 @@ class NilaiSiswaController extends Controller
 
     public function store(Request $request){
         $user = $request->user();
-        if($user->unit_id==1) return response()->json(['status' => 'ditutup'],500);
+        //if($user->unit_id==1) return response()->json(['status' => 'ditutup'],500);
         foreach($request->nilai as $row){
 
-            $ns_final=null;
+            $na_sumatif=null;
+            $na_non_tes=null;
+            $na_tes=null;
 
-            if(!is_null($row[1]) && is_null($row[0]) && (!is_null($row[3])||!is_null($row[4]))){
-                if($row[3]>100||$row[4]>100||$row[5]>100||$row[3]<0||$row[4]<0||$row[5]<0){
+            if(!is_null($row[1]) && is_null($row[0]) && (!is_null($row[3])||!is_null($row[4])||!is_null($row[5])||!is_null($row[6]))){
+                if($row[3]>100||$row[4]>100||$row[5]>100||$row[6]>100||$row[3]<0||$row[4]<0||$row[5]<0||$row[6]<0){
                     continue;
                 }
-                if($request->jenis['value']=='NTT'){
-                    $ns_remidi_test=null;
-                    if(!is_null($row[4])&&!is_null($row[5])){
-                        $ns_remidi_test = max($row[4],$row[5]);
-                        if($ns_remidi_test>75) $ns_remidi_test=75;
-                    }
-                    if(!is_null($row[3])||!is_null($row[4])){
-                        if(!is_null($row[3])&&!is_null($row[4])){
-                            $array_nilai= [$row[3],$row[4]];
-                            $ns_final = round(array_sum($array_nilai)/count($array_nilai));
-                        } else {
-                            $ns_final = max($row[3],$row[4]);
-                        }
-                        if(!is_null($ns_remidi_test)){
-                            $ns_final = round(($row[3]+$ns_remidi_test)/2,0);
-                        }
-                    }
-
+                if($request->jenis['value']=='SUM'){
+                    $na_non_tes = nilaiFinal($row[3],$row[4]);
+                    $na_tes = nilaiFinal($row[5],$row[6]);
+                    $na_sumatif = nilaiAkhir($na_non_tes,$na_tes);
                     NilaiSiswa::create(['siswa_id' => $row[1],
                                         'mapel_id' => $request->kelas['mapel_id'],
-                                        'kompetensi_id' =>  $request->kd['id'],
+                                        'lingkupmateri_id' =>  $request->lm['id'],
                                         'ns_jenis_nilai' => $request->jenis['value'],
                                         'ns_tugas' => $row[3],
-                                        'ns_tes' => $row[4],
-                                        'ns_remidi' => $row[4]<75?$row[5]:null,
-                                        'ns_nilai' => $ns_final?round($ns_final,0):null,
+                                        'ns_perbaikan' => $row[4],
+                                        'ns_tes' => $row[5],
+                                        'ns_remidi' => $row[6],
+                                        'ns_nilai' => $na_sumatif,
                                         //'ns_sisipan' => $row[4],
                                         'periode_id' => $user->periode,
                                         'user_id' => $user->id,
                                         'unit_id' => $user->unit_id]);
                 } else {
-                    $ns_remidi_test=null;
-                    if($row[3]>100||$row[4]>100||$row[3]<0||$row[4]<0){
-                        continue;
+                    if(!is_null($row[3])||!is_null($row[4])){
+                        $na_sas = nilaiFinal($row[3],$row[4]);
+                        NilaiSiswa::create(['siswa_id' => $row[1],
+                                            'mapel_id' => $request->kelas['mapel_id'],
+                                            'ns_jenis_nilai' => $request->jenis['value'],
+                                            'ns_tes' => $row[3],
+                                            'ns_remidi' => $row[4],
+                                            'ns_nilai' => round($na_sas,0),
+                                            //'ns_sisipan' => $row[4],
+                                            'periode_id' => $user->periode,
+                                            'user_id' => $user->id,
+                                            'unit_id' => $user->unit_id]);
                     }
-                    if(!is_null($row[3])&&!is_null($row[4])){
-                        $ns_remidi_test = max($row[3],$row[4]);
-                        if($ns_remidi_test>75&&$row[3]<75) $ns_remidi_test=75;
-                    }
-                    NilaiSiswa::create(['siswa_id' => $row[1],
-                                        'mapel_id' => $request->kelas['mapel_id'],
-                                        'ns_jenis_nilai' => $request->jenis['value'],
-                                        'ns_tes' => $row[3],
-                                        'ns_remidi' => $row[3]<75?$row[4]:null,
-                                        'ns_nilai' => $ns_remidi_test?round($ns_remidi_test,0):$row[3],
-                                        //'ns_sisipan' => $row[4],
-                                        'periode_id' => $user->periode,
-                                        'user_id' => $user->id,
-                                        'unit_id' => $user->unit_id]);
                 }
             }
 
@@ -215,40 +251,23 @@ class NilaiSiswaController extends Controller
                 if($row[3]>100||$row[4]>100||$row[5]>100||$row[3]<0||$row[4]<0||$row[5]<0){
                     continue;
                 }
-                if($request->jenis['value']=='NTT'){
-                    $ns_remidi_test=null;
-                    if(!is_null($row[4])&&!is_null($row[5])){
-                        $ns_remidi_test = max($row[4],$row[5]);
-                        if($ns_remidi_test>75) $ns_remidi_test=75;
-                    }
-                    if(!is_null($row[3])||!is_null($row[4])){
-                        if(!is_null($row[3])&&!is_null($row[4])){
-                            $array_nilai= [$row[3],$row[4]];
-                            $ns_final = round(array_sum($array_nilai)/count($array_nilai));
-                        } else {
-                            $ns_final = max($row[3],$row[4]);
-                        }
-                        if(!is_null($ns_remidi_test)){
-                            $ns_final = round(($row[3]+$ns_remidi_test)/2,0);
-                        }
-                    }
+                if($request->jenis['value']=='SUM'){
+                    $na_non_tes = nilaiFinal($row[3],$row[4]);
+                    $na_tes = nilaiFinal($row[5],$row[6]);
+                    $na_sumatif = nilaiAkhir($na_non_tes,$na_tes);
                     $nilai->update(['ns_tugas' => $row[3],
-                                    'ns_tes' => $row[4],
-                                    'ns_remidi' => $row[4]<75?$row[5]:null,
-                                    'ns_nilai' => $ns_final?round($ns_final,0):null
+                                    'ns_perbaikan' => $row[4],
+                                    'ns_tes' => $row[5],
+                                    'ns_remidi' => $row[6],
+                                    'ns_nilai' => $na_sumatif,
+                                    'user_id' => $user->id,
                                 ]);
                 } else {
-                    $ns_remidi_test=null;
-                    if($row[3]>100||$row[4]>100||$row[3]<0||$row[4]<0){
-                        continue;
-                    }
-                    if(!is_null($row[3])&&!is_null($row[4])){
-                        $ns_remidi_test = max($row[3],$row[4]);
-                        if($ns_remidi_test>75&&$row[3]<75) $ns_remidi_test=75;
-                    }
+                    $na_sas = nilaiFinal($row[3],$row[4]);
                     $nilai->update(['ns_tes' => $row[3],
-                                    'ns_remidi' => $row[3]<75?$row[4]:null,
-                                    'ns_nilai' => $ns_remidi_test?round($ns_remidi_test,0):$row[3]]);
+                                    'ns_remidi' => $row[4],
+                                    'ns_nilai' => round($na_sas,0),
+                                    'user_id' => $user->id]);
                 }
 
             }

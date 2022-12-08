@@ -514,6 +514,111 @@
                         </b-button>
                     </template>
                 </b-modal>
+                <b-modal id="modal-input-kurtilas" scrollable size="lg">
+                    <template v-slot:modal-title>
+                        Form Walikelas
+                    </template>
+                    <walikelas-form></walikelas-form>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"
+                            block  @click="addRaporKurtilas()"
+                        >
+                            Simpan
+                        </b-button>
+                    </template>
+                </b-modal>
+                <b-modal id="modal-input-kurmer" scrollable size="lg">
+                    <template v-slot:modal-title>
+                        Form Walikelas
+                    </template>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <p style="background-color: #5A8DEE; color:white; font-size:15px; text-align:center">ABSENSI</p>
+                            <div class="row">
+                                <div class="form-group col-sm-4">
+                                    <label>Sakit</label>
+                                    <input type="number" class="form-control" v-model="raporKurmer.kmr_attedance_sick">
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label>Ijin</label>
+                                    <input type="number" class="form-control" v-model="raporKurmer.kmr_attedance_excuse">
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label>Alpha</label>
+                                    <input type="number" class="form-control" v-model="raporKurmer.kmr_attedance_alpha">
+                                </div>
+                            </div>
+                            <p style="background-color: #5A8DEE; color:white; font-size:15px; text-align:center">EKSTRA1</p>
+                            <div class="row">
+                                <div class="form-group col-sm-3">
+                                    <select type="text" class="form-control" aria-invalid="false" v-model="raporKurmer.kmr_extracurricular1_score" >
+                                        <option value=''></option>
+                                        <option>A</option>
+                                        <option>B</option>
+                                        <option>C</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-9">
+                                    <textarea cols="6" rows="2" class="form-control" v-model="raporKurmer.kmr_extracurricular1"></textarea>
+                                </div>
+                            </div>
+                            <p style="background-color: #5A8DEE; color:white; font-size:15px; text-align:center">EKSTRA2</p>
+                            <div class="row">
+                                <div class="form-group col-sm-3">
+                                    <select type="text" class="form-control" aria-invalid="false" v-model="raporKurmer.kmr_extracurricular2_score" >
+                                        <option value=''></option>
+                                        <option>A</option>
+                                        <option>B</option>
+                                        <option>C</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-9">
+                                    <textarea cols="6" rows="2" class="form-control" v-model="raporKurmer.kmr_extracurricular2"></textarea>
+                                </div>
+                            </div>
+                            <p style="background-color: #5A8DEE; color:white; font-size:15px; text-align:center">EKSTRA3</p>
+                            <div class="row">
+                                <div class="form-group col-sm-3">
+                                    <select type="text" class="form-control" aria-invalid="false" v-model="raporKurmer.kmr_extracurricular3_score" >
+                                        <option value=''></option>
+                                        <option>A</option>
+                                        <option>B</option>
+                                        <option>C</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-9">
+                                    <textarea cols="6" rows="2" class="form-control" v-model="raporKurmer.kmr_extracurricular3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <p style="background-color: #5A8DEE; color:white; font-size:15px; text-align:center">BIBLICAL</p>
+                            <div class="form-group">
+                                <label>Ayat Alkitab</label>
+                                <input type="text" class="form-control" v-model="raporKurmer.kmr_note_verse">
+                            </div>
+                            <div class="form-group">
+                                <label>Isi Ayat</label>
+                                <textarea cols="6" rows="5" class="form-control" v-model="raporKurmer.kmr_note_godword" ></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Catatan Wali Kelas</label>
+                                <textarea cols="6" rows="5" class="form-control" v-model="raporKurmer.kmr_note" ></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"
+                            block  @click="addRaporKurmer()"
+                        >
+                            Simpan
+                        </b-button>
+                    </template>
+                </b-modal>
                 <b-modal id="modal-input-sisipan" scrollable size="sm">
                     <template v-slot:modal-title>
                         Rapor Sisipan
@@ -634,6 +739,12 @@
                     </template>
                     <rapor-akhir-form></rapor-akhir-form>
                 </b-modal>
+                <b-modal id="rapor-kurmer-preview" scrollable size="lg" hide-footer>
+                    <template v-slot:modal-title>
+                        Preview Rapor Kurikulum Merdeka
+                    </template>
+                    <rapor-kurmer-form></rapor-kurmer-form>
+                </b-modal>
                 <b-modal id="modal-raporpetra-view" scrollable size="lg" hide-footer>
                     <template v-slot:modal-title>
                         Preview Rapor Petra
@@ -656,7 +767,13 @@
                         <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang!='7'"><i class="fa fa-file-pdf"></i></b-button>
                     </template>
                     <template v-slot:cell(akhir)="row">
-                        <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-' && authenticated.unit_id == 1" @click="commentRapor(row.item.RaporAkhir.id)"><i class="fa fa-church"></i></b-button>
+                        <b-button variant="success" size="sm" v-if="row.item.RaporKurmer == '-'&&row.item.kelas.kelas_jenjang=='7'" @click="inputRaporKurmer(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
+                        <b-button variant="success" size="sm" v-if="row.item.RaporAkhir == '-'&&row.item.kelas.kelas_jenjang!='7'" @click="inputRaporKurtilas(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
+                        <b-button variant="warning" size="sm" v-if="row.item.RaporKurmer != '-'&&row.item.kelas.kelas_jenjang=='7'" @click="inputRaporKurmer(row.item.RaporKurmer.id)"><i class="fa fa-edit"></i></b-button>
+                        <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-'&&row.item.kelas.kelas_jenjang!='7'" @click="inputRaporKurtilas(row.item.RaporAkhir.id)"><i class="fa fa-edit"></i></b-button>
+                        <b-button variant="primary" size="sm" v-if="row.item.RaporKurmer != '-'" @click="previewRapor(row.item.RaporKurmer.id,row.item.kelas.kelas_jenjang)"><i class="fa fa-eye"></i></b-button>
+                        <!-- <b-button variant="success" size="sm" :href="'/raporkurmer/pdf?rapor='+row.item.RaporKurmer.id+'&user='+authenticated.id+'&kurikulum=merdeka'" v-if="row.item.RaporKurmer != '-'&&row.item.kelas.kelas_jenjang=='7'"><i class="fa fa-file-pdf"></i></b-button> -->
+                        <!-- <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-'&&authenticated.unit_id == 1" @click="commentRapor(row.item.RaporAkhir.id)"><i class="fa fa-church"></i></b-button> -->
                         <b-button variant="primary" size="sm" v-if="row.item.RaporAkhir != '-'" @click="previewRapor(row.item.RaporAkhir.id)"><i class="fa fa-eye"></i></b-button>
                         <!-- <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan-preview')"></b-button> -->
                         <!-- <b-button variant="success" size="sm" :href="'/laporan/raporakhir?user='+authenticated.id+'&rapor='+row.item.RaporAkhir.id" v-if="row.item.RaporAkhir != '-'"><i class="fa fa-file-pdf"></i> PDF</b-button> -->
@@ -699,6 +816,8 @@ import FormRaporSisipan from './RaporSisipanForm.vue'
 import FormRaporSisipanKurmer from './RaporSisipanKurmerForm.vue'
 import FormRaporSisipanP2 from './RaporSisipanFormP2.vue'
 import FormRaporAkhir from './RaporAkhirForm.vue'
+import FormRaporKurmer from './RaporKurmerForm.vue'
+import FormWalikelas from './FormWalikelas.vue'
 import ViewRaporPetra from './RaporPetraView.vue'
 import vSelect from 'vue-select'
 
@@ -738,6 +857,7 @@ export default {
         ...mapState('raporakhir', {
             rapors: state => state.rapor,
             raporSisipan: state => state.raporsisipan,
+            raporKurmer: state => state.raporkurmer,
             raporAkhir: state => state.raporakhir,
             raporPetra: state => state.raporpetra,
             exportParameter: state => state.exportParameter,
@@ -769,22 +889,25 @@ export default {
         }
     },
     methods: {
-        ...mapActions('raporakhir', ['exportRapor',
-                                    'viewRaporSisipan',
+        ...mapActions('raporakhir', ['viewRaporSisipan',
                                     'viewRaporSisipanKurmer',
+                                    'viewRaporAkhir',
+                                    'viewRaporKurmer',
                                     'getRapor',
                                     'getKelas',
+                                    'getKompetensi',
+                                    'getSettingSisipan',
                                     'uploadLedger',
                                     'submitRaporSisipan',
-                                    'viewRaporAkhir',
                                     'submitRaporAkhir',
-                                    'addRaporPetra',
+                                    'submitRaporKurmer',
                                     'submitNilaiPetra',
+                                    'addRaporPetra',
                                     'editNilaiPetra',
-                                    'getKompetensi',
                                     'setTP',
-                                    'getSettingSisipan',
-                                    'tambahSisipan']),
+                                    'tambahSisipan',
+                                    'exportRapor',
+                                    'submitRaporKurtilas']),
         ...mapMutations('raporakhir', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
 
         filterTP(mapel){
@@ -804,6 +927,22 @@ export default {
         addSisipan(){
             this.submitRaporSisipan().then(() => {
                 this.$bvModal.hide('modal-input-sisipan')
+                this.getRapor({
+                    search: ''
+                })
+            })
+        },
+        addRaporKurmer(){
+            this.submitRaporKurmer().then(() => {
+                this.$bvModal.hide('modal-input-kurmer')
+                this.getRapor({
+                    search: ''
+                })
+            })
+        },
+        addRaporKurtilas(){
+            this.submitRaporKurtilas().then(() => {
+                this.$bvModal.hide('modal-input-kurtilas')
                 this.getRapor({
                     search: ''
                 })
@@ -843,12 +982,20 @@ export default {
                 this.$bvModal.show('modal-sisipan-kurmer-preview')
             })
         },
-        previewRapor(rapor){
-            this.viewRaporAkhir({
-                uuid: rapor
-            }).then(() => {
-                this.$bvModal.show('modal-rapor-preview')
-            })
+        previewRapor(rapor, jenjang){
+            if(jenjang==7){
+                this.viewRaporKurmer({
+                    uuid: rapor
+                }).then(() => {
+                    this.$bvModal.show('rapor-kurmer-preview')
+                })
+            } else {
+                this.viewRaporAkhir({
+                    uuid: rapor
+                }).then(() => {
+                    this.$bvModal.show('modal-rapor-preview')
+                })
+            }
         },
         viewRaporPetra(rapor){
             this.editNilaiPetra(rapor).then(() => {
@@ -865,6 +1012,30 @@ export default {
             this.$bvModal.show('modal-input-sisipan')
 
         },
+        inputRaporKurmer(siswa){
+           this.CLEAR_FORM()
+           let length = siswa.length
+           if(length>30){
+                this.viewRaporKurmer({
+                    uuid: siswa
+                })}
+           this.raporKurmer.id = siswa
+           //this.addRaporKurmer();
+           this.$bvModal.show('modal-input-kurmer')
+
+        },
+        inputRaporKurtilas(siswa){
+           this.CLEAR_FORM()
+           let length = siswa.length
+           if(length>30){
+                this.viewRaporAkhir({
+                    uuid: siswa
+                })}
+           this.raporAkhir.id = siswa
+           //this.addRaporKurtilas();
+           this.$bvModal.show('modal-input-kurtilas')
+        },
+
         editRaporPetra(rapor){
             this.editNilaiPetra(rapor)
             this.$bvModal.show('modal-input-raporpetra')
@@ -943,7 +1114,9 @@ export default {
         'rapor-sisipan-kurmer-form': FormRaporSisipanKurmer,
         'rapor-sisipanP2-form': FormRaporSisipanP2,
         'rapor-akhir-form': FormRaporAkhir,
+        'rapor-kurmer-form': FormRaporKurmer,
         'rapor-petra-view': ViewRaporPetra,
+        'walikelas-form': FormWalikelas,
         vSelect
 
     }
