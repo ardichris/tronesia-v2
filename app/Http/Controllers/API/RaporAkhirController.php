@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Imports\RaporAkhirsImport;
 use App\Imports\RaporSisipansImport;
+use App\Imports\WalikelasImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\RaporAkhirCollection;
 use App\RaporAkhir;
@@ -947,7 +948,11 @@ class RaporAkhirController extends Controller
         $rapor['user'] = $user->id;
         $rapor['unit'] = $user->unit_id;
         if ($jenis=='akhir') {
-            $data = Excel::import(new RaporAkhirsImport($rapor), $path);
+            if($request->jenis=='ledger'){
+                $data = Excel::import(new RaporAkhirsImport($rapor), $path);
+            } else {
+                $data = Excel::import(new WalikelasImport($rapor), $path);
+            }
         }
         if ($jenis=='sisipan') {
             $data = Excel::import(new RaporSisipansImport($rapor), $path);
@@ -1042,8 +1047,7 @@ class RaporAkhirController extends Controller
         return response()->json(['message' => 'success', 'data' => $raporAkhir], 200);
     }
 
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $user = $request->user();
         //$data = raporAkhirUpdate($id, $user->periode, $user->unit_id, $user->id, $request);
         if(strlen($id)<30){

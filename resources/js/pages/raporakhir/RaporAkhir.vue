@@ -21,7 +21,8 @@
                             <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <span class="sr-only">Toggle Dropdown</span>
                             <div class="dropdown-menu" role="menu" style="">
-                                <a class="dropdown-item" @click="$bvModal.show('modal-import')"  v-if="authenticated.role==0">Upload Ledger</a>
+                                <a class="dropdown-item" @click="importRapor('walikelas')">Upload Walikelas</a>
+                                <a class="dropdown-item" @click="importRapor('ledger')" v-if="authenticated.role==0">Upload Ledger</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" @click="$bvModal.show('modal-export')"  v-if="authenticated.role==0">Export Ledger</a>
                             </div>
@@ -449,7 +450,7 @@
                 </b-modal>
                 <b-modal id="modal-import" scrollable size="md">
                     <template v-slot:modal-title>
-                        Pilih File Ledger Rapor Akhir
+                        Pilih File Upload
                     </template>
                     <input type="file" class="form-control" :class="{ ' is-invalid' : error.message }" id="input-file-import" name="file_import" ref="import_file"  @change="onFileChange">
                     <template v-slot:modal-footer>
@@ -863,7 +864,8 @@ export default {
             exportParameter: state => state.exportParameter,
             kompetensi: state => state.kompetensi,
             settingTP: state => state.settingTP,
-            kelasdata: state=> state.kelas
+            kelasdata: state=> state.kelas,
+            importrapor: state=> state.importrapor
         }),
         ...mapState(['token']),
         page: {
@@ -1061,6 +1063,7 @@ export default {
             let formData = new FormData();
             formData.append('import_file', this.import_file);
             formData.append('rapor', rapor);
+            formData.append('jenis_file', this.importrapor);
             this.uploadLedger(formData).then(() => {
                 this.import_file = '',
                 // this.$bvModal.hide('modal-import'),
@@ -1107,6 +1110,11 @@ export default {
             })
             this.$bvModal.hide('setting_sisipan')
         },
+        importRapor(rapor){
+            this.importrapor = rapor;
+            this.$bvModal.show('modal-import');
+
+        }
 
     },
     components: {

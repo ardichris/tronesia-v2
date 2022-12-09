@@ -197,7 +197,7 @@
         <table class="TTD">
             <tr>
                 <td colspan="2"></td>
-                <td style="text-align:left; width:30%">Surabaya, 15 Desember 2022</td>
+                <td style="text-align:left; width:30%">Surabaya, 20 Desember 2022</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align:left">Mengetahui,</td>

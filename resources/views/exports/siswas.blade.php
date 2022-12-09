@@ -22,7 +22,7 @@
             <th>Sekolah Asal</th>
             <th>Alamat Domisili</th>
             <th>No Telp</th>
-            <th>Handphone</th>
+            <th>Kontak Ortu</th>
             <th>Nama Ayah</th>
             <th>Pekerjaan Ayah</th>
             <th>Nama Ibu</th>

@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <center><h1 style="font-family:'Verdana'; font-size: 14px">LAPORAN HASIL BELAJAR AKHIR SEMESTER</h1></center>
+        <center><h1 style="font-family:'Verdana'; font-size: 16px">LAPORAN HASIL BELAJAR AKHIR SEMESTER</h1></center>
         <table class="identitas">
             <tr>
                 <td style="width:15%">Nama Siswa</td>
@@ -13,7 +13,7 @@
                 <td style="width:40%">{{raporAkhir['kelas']['kelas']['kelas_nama']}} / {{raporAkhir['kelas']['absen']}}</td>
                 <td style="width:20%">Semester</td>
                 <td style="width:1%">:</td>
-                <td style="width:20%">2 (Dua)</td>
+                <td style="width:20%">1 (Satu)</td>
             </tr>
             <tr>
                 <td>Nomor Induk</td>
@@ -21,7 +21,7 @@
                 <td>{{raporAkhir['siswa']['s_nis']}}</td>
                 <td>Tahun Pelajaran</td>
                 <td>:</td>
-                <td>2021 - 2022</td>
+                <td>2022 - 2023</td>
             </tr>
         </table>
         <table class="subrapor">
@@ -205,14 +205,14 @@
             </tr>
             <tr>
                 <td>5</td>
-                <td>Ilmu keterampilan Alam</td>
+                <td>Ilmu Pengetahuan Alam</td>
                 <td :class="raporAkhir['ra_ipa_keterampilan_nilai'] > 74 || raporAkhir['ra_ipa_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_ipa_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_ipa_keterampilan_predikat']}}</td>
                 <td>{{sentenceCase(raporAkhir['ra_ipa_keterampilan_deskripsi'])}}</td>
             </tr>
             <tr>
                 <td>6</td>
-                <td>Ilmu keterampilan Sosial</td>
+                <td>Ilmu Pengetahuan Sosial</td>
                 <td :class="raporAkhir['ra_ips_keterampilan_nilai'] > 74 || raporAkhir['ra_ips_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_ips_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_ips_keterampilan_predikat']}}</td>
                 <td>{{sentenceCase(raporAkhir['ra_ips_keterampilan_deskripsi'])}}</td>
@@ -306,9 +306,9 @@
                 <td style="width:33%"><b>Tanpa Keterangan</b></td>
             </tr>
             <tr>
-                <td>{{raporAkhir['ra_catatan_sakit']}} hari</td>
-                <td>{{raporAkhir['ra_catatan_ijin']}} hari</td>
-                <td>{{raporAkhir['ra_catatan_alpha']}} hari</td>
+                <td>{{raporAkhir['ra_catatan_sakit']=="0"?"-":raporAkhir['ra_catatan_sakit']+" hari"}}</td>
+                <td>{{raporAkhir['ra_catatan_ijin']=="0"?"-":raporAkhir['ra_catatan_ijin']+" hari"}}</td>
+                <td>{{raporAkhir['ra_catatan_alpha']=="0"?"-":raporAkhir['ra_catatan_alpha']+" hari"}}</td>
             </tr>
         </table>
         <table class="subrapor">
@@ -324,7 +324,7 @@
         <table class="TTD">
             <tr>
                 <td colspan="2"></td>
-                <td style="text-align:left; width:30%">Surabaya,</td>
+                <td style="text-align:left; width:30%">Surabaya, 20 Desember 2022</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align:left">Mengetahui,</td>
@@ -335,7 +335,7 @@
                 <td style="width:20%;">Kepala Sekolah</td>
             </tr>
             <tr>
-                <td></td>
+                <td><br><br><br><br></td>
                 <td></td>
                 <td></td>
             </tr>
