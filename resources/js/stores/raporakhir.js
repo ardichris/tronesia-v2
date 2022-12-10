@@ -2,7 +2,7 @@ import $axios from '../api.js'
 
 const state = () => ({
     rapor: {},
-    importrapor:'',
+    importrapor: '',
     walikelas: [],
     kelas: [],
     raporsisipan: {},

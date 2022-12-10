@@ -21,6 +21,8 @@
                             <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <span class="sr-only">Toggle Dropdown</span>
                             <div class="dropdown-menu" role="menu" style="">
+                                <a class="dropdown-item" @click="importRapor('ki1')">Upload KI-1</a>
+                                <a class="dropdown-item" @click="importRapor('ki2')">Upload KI-2</a>
                                 <a class="dropdown-item" @click="importRapor('walikelas')">Upload Walikelas</a>
                                 <a class="dropdown-item" @click="importRapor('ledger')" v-if="authenticated.role==0">Upload Ledger</a>
                                 <div class="dropdown-divider"></div>
@@ -848,6 +850,7 @@ export default {
             import_file: '',
             error: {},
             kelas:'',
+            jenisFile: '',
         }
     },
     computed: {
@@ -864,8 +867,8 @@ export default {
             exportParameter: state => state.exportParameter,
             kompetensi: state => state.kompetensi,
             settingTP: state => state.settingTP,
-            kelasdata: state=> state.kelas,
-            importrapor: state=> state.importrapor
+            kelasdata: state => state.kelas,
+            //jenisFile: state => state.importrapor,
         }),
         ...mapState(['token']),
         page: {
@@ -1063,10 +1066,10 @@ export default {
             let formData = new FormData();
             formData.append('import_file', this.import_file);
             formData.append('rapor', rapor);
-            formData.append('jenis_file', this.importrapor);
+            formData.append('jenis_file', this.jenisFile);
             this.uploadLedger(formData).then(() => {
                 this.import_file = '',
-                // this.$bvModal.hide('modal-import'),
+                this.$bvModal.hide('modal-import'),
                 this.getRapor({
                     search: ''
                 }),
@@ -1111,7 +1114,7 @@ export default {
             this.$bvModal.hide('setting_sisipan')
         },
         importRapor(rapor){
-            this.importrapor = rapor;
+            this.jenisFile = rapor
             this.$bvModal.show('modal-import');
 
         }

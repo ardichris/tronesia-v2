@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Imports\RaporAkhirsImport;
 use App\Imports\RaporSisipansImport;
 use App\Imports\WalikelasImport;
+use App\Imports\SpiritualSosialImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\RaporAkhirCollection;
 use App\RaporAkhir;
@@ -947,11 +948,14 @@ class RaporAkhirController extends Controller
         $rapor['periode'] = $user->periode;
         $rapor['user'] = $user->id;
         $rapor['unit'] = $user->unit_id;
+        $rapor['jenis'] = $request->jenis_file;
         if ($jenis=='akhir') {
             if($request->jenis=='ledger'){
                 $data = Excel::import(new RaporAkhirsImport($rapor), $path);
-            } else {
+            } elseif( $request->jenis=='walikelas') {
                 $data = Excel::import(new WalikelasImport($rapor), $path);
+            } elseif(in_array($request->jenis_file,['ki1','ki2'])) {
+                $data = Excel::import(new SpiritualSosialImport($rapor), $path);
             }
         }
         if ($jenis=='sisipan') {
