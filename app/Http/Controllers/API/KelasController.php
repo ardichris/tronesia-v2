@@ -33,6 +33,9 @@ class KelasController extends Controller
         if (request()->q != '') {
             $kelas = $kelas->where('kelas_nama', 'LIKE', '%' . request()->q . '%');
         }
+        if (request()->jenis != '') {
+            $kelas = $kelas->where('k_jenis', request()->jenis);
+        }
         if (request()->key == 'nama') {
             $kelas = $kelas->pluck('kelas_nama');
         } else {

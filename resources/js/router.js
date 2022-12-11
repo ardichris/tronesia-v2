@@ -106,6 +106,8 @@ import LaporanKesiswaan from './pages/laporans/kesiswaan/Kesiswaan.vue'
 import LaporanKesiswaanAbsensi from './pages/laporans/kesiswaan/Absensi.vue'
 import LaporanKesiswaanPelanggaran from './pages/laporans/kesiswaan/Pelanggaran.vue'
 import LaporanKesiswaanKitir from './pages/laporans/kesiswaan/Kitir.vue'
+import LaporanKurikulum from './pages/laporans/kurikulum/Kurikulum.vue'
+import LaporanKurikulumNilaisiswa from './pages/laporans/kurikulum/Nilai.vue'
 import LaporanPembayaranPSB from './pages/laporans/psb/Pembayaran.vue'
 import LaporanDaftarUlangPSB from './pages/laporans/psb/DaftarUlang.vue'
 import PenerimaanSiswa from './pages/penerimaansiswas/PenerimaanSiswa.vue'
@@ -788,6 +790,19 @@ const router = new Router({
                     meta: { title: 'Laporan Kitir' }
                 },
 
+            ]
+        },
+        {
+            path: '/laporan/kurikulum',
+            component: LaporanKurikulum,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: 'nilaisiswa',
+                    name: 'laporan.kurikulum.nilaisiswa',
+                    component: LaporanKurikulumNilaisiswa,
+                    meta: { title: 'Laporan Nilai Siswa' }
+                }
             ]
         },
         {

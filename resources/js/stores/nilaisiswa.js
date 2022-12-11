@@ -79,6 +79,9 @@ const actions = {
         if(mapels=="EKO"||mapels=="GEO"||mapels=="SEJ") {
             mapels="IPS"
         }
+        if(mapels=="SNM"||mapels=="SNR") {
+            mapels="BDY"
+        }
         let jenjangs = state.nilaiselect.kelas.kelas.kelas_jenjang
         let jenis = state.nilaiselect.jenis.value
         let kompetensi = payload.kompetensi? payload.kompetensi:''

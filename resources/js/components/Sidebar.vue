@@ -345,6 +345,14 @@
                                     </a>
                                 </li>
                             </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item ml-3">
+                                    <a class="nav-link">
+                                        <i class="fas fa-spell-check nav-icon"></i>
+                                        <p><router-link :to="{ name: 'laporan.kurikulum.nilaisiswa' }">Nilai Siswa</router-link></p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="nav-item ml-3 has-treeview">
                             <a class="nav-link">

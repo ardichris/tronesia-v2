@@ -87,6 +87,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::put('/absensi/changestatus/{kode}','API\AbsensiController@changeStatus');
     Route::get('/laporan/kesiswaan/absensi','API\LaporanController@absensi');
     Route::get('/laporan/kesiswaan/pelanggaran','API\LaporanController@pelanggaran');
+    Route::get('/laporan/kurikulum/nilai','API\LaporanController@nilai');
     Route::get('/laporan/psb/pembayaran','API\LaporanController@pembayaran');
     Route::resource('notification', 'API\NotificationController')->except(['create', 'destroy']);
     Route::resource('settingsisipan', 'API\SisipanFieldController');

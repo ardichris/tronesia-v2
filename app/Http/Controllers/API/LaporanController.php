@@ -9,6 +9,8 @@ use App\Kelas;
 use App\KelasAnggota;
 use App\Siswa;
 use App\Pelanggaran;
+use App\NilaiSiswa;
+use App\Mapel;
 use App\MasterPelanggaran;
 use App\PembayaranPsb;
 use App\Http\Resources\AbsensiCollection;
@@ -347,5 +349,53 @@ class LaporanController extends Controller
         array_multisort($jumlah, SORT_DESC, $kelas, SORT_ASC, $total);
         $pelanggaran = $pelanggaran->toArray();
         return response()->json(['status' => 'SUKSES', 'data' => $pelanggaran, 'rekap' => $rekap, 'total' => $total],200);
+    }
+
+    public function nilai(Request $request){
+
+        $user = $request->user();
+        if($user->role!=0){
+            $this->validate($request, [
+                'kelas' => 'required'
+            ]);
+        }
+
+        $dataNilai = NilaiSiswa::where('unit_id', $user->unit_id)
+                                ->where('periode_id', $user->periode);
+        $dataMapel = Mapel::get();
+        $dataKelas = Kelas::where('unit_id',$user->unit_id)
+                            ->where('k_jenis','REGULER')
+                            ->where('periode_id', $user->periode)
+                            ->get();
+
+        if($request->kelas!=''){
+            $kelas = $dataKelas->where('kelas_nama',$request->kelas)->pluck('id');
+            $anggotaKelas = KelasAnggota::whereIn('kelas_id',$kelas)->get();
+        } else{
+            $kelas = $dataKelas->pluck('id');
+            $anggotaKelas = KelasAnggota::whereIn('kelas_id',$dataKelas->pluck('id'))->get();
+        }
+        $dataNilai = $dataNilai->whereIn('siswa_id',$anggotaKelas->pluck('siswa_id'))->get();
+
+        $mapelKurmer = ['PAK','PKN','BIN','BIG','MAT','BIO','FIS','EKO','GEO','SEJ','SNM','SNR','MEK','TIK','ORG','JWA','MAN','DC'];
+        //$mapelKurtilas = ['PAK','PKN','BIN','BIG','MAT','BIO','FIS','EKO','GEO','SEJ','SNM','SNR','PKY','ORG','JWA','MAN'];
+        $jenisNilai = ['KI3','KI4','PTS','PAS','SUM','SAS'];
+
+        foreach($kelas as $rowkelas){
+            $siswa = $anggotaKelas->where('kelas_id',$rowkelas)->pluck('siswa_id');
+            foreach($mapelKurmer as $rowmapel){
+                $idMapel = $dataMapel->where('mapel_kode',$rowmapel)->first();
+                foreach($jenisNilai as $rowjenis){
+                    $jumlahnilai = NilaiSiswa::where('periode_id',$user->periode)
+                                                ->where('mapel_id',$idMapel->id)
+                                                ->whereIn('siswa_id',$siswa)
+                                                ->where('ns_jenis_nilai',$rowjenis)
+                                                ->count();
+                    $kelasnama = $dataKelas->where('id',$rowkelas)->first();
+                    $rekap[$kelasnama->kelas_nama][$rowmapel][$rowjenis] = $jumlahnilai;
+                }
+            }
+        }
+        return response()->json($rekap,200);
     }
 }

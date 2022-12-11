@@ -350,7 +350,7 @@ function detail_rapor($id, $periode, $jenjang, $siswa){
                 $descmax = $kd_max?$kompetensi->where('id',$kd_max->kompetensi_id)->first():null;
                 $descmin= $kd_min?$kompetensi->where('id',$kd_min->kompetensi_id)->first():null;
                 if($nilai['score']>=93){
-                    $nilai['description']= 'Sangat Baik, menguasai dan memahami semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
+                    $nilai['description']= 'Sangat baik dalam menguasai dan memahami semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
                 } elseif($nilai['score']>=84){
                     $nilai['description']= 'Menguasai sebagian besar kompetensi yang dipersyaratkan dengan baik. Perlu ditingkatkan pemahaman pada kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
                 } elseif($nilai['score']>=75){
@@ -369,7 +369,7 @@ function detail_rapor($id, $periode, $jenjang, $siswa){
                 $descmax = $kd_max?$kompetensi->where('id',$kd_max->kompetensi_id)->first():null;
                 $descmin= $kd_min?$kompetensi->where('id',$kd_min->kompetensi_id)->first():null;
                 if($nilai['score']>=93){
-                    $nilai['description']= 'Sangat baik, terampil dan mahir dalam semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
+                    $nilai['description']= 'Sangat baik dalam keterampilan dan mahir dalam semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
                 } elseif($nilai['score']>=84){
                     $nilai['description']= 'Terampil pada sebagian besar kompetensi yang dipersyaratkan. Perlu ditingkatkan keterampilan pada kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
                 } elseif($nilai['score']>=75){
@@ -952,7 +952,7 @@ class RaporAkhirController extends Controller
         if ($jenis=='akhir') {
             if($request->jenis=='ledger'){
                 $data = Excel::import(new RaporAkhirsImport($rapor), $path);
-            } elseif( $request->jenis=='walikelas') {
+            } elseif( $request->jenis_file=='walikelas') {
                 $data = Excel::import(new WalikelasImport($rapor), $path);
             } elseif(in_array($request->jenis_file,['ki1','ki2'])) {
                 $data = Excel::import(new SpiritualSosialImport($rapor), $path);

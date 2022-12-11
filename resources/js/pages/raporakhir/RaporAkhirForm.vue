@@ -36,7 +36,8 @@
             </tr>
             <tr>
                 <td style="text-align:center">{{raporAkhir['ra_spiritual_predikat']}}</td>
-                <td class="nilai" style="text-align:center">{{sentenceCase(raporAkhir['ra_spiritual_deskripsi'])}}.</td>
+                <td class="nilai" style="text-align:center">{{raporAkhir['ra_spiritual_deskripsi']}}</td>
+                <!-- <td class="nilai" style="text-align:center">{{sentenceCase(raporAkhir['ra_spiritual_deskripsi'])}}.</td> -->
             </tr>
         </table>
         <table class="ki1ki2">
@@ -46,7 +47,8 @@
             </tr>
             <tr>
                 <td style="text-align:center">{{raporAkhir['ra_sosial_predikat']}}</td>
-                <td class="nilai" style="text-align:center">{{sentenceCase(raporAkhir['ra_sosial_deskripsi'])}}.</td>
+                <td class="nilai" style="text-align:center">{{raporAkhir['ra_sosial_deskripsi']}}</td>
+                <!-- <td class="nilai" style="text-align:center">{{sentenceCase(raporAkhir['ra_sosial_deskripsi'])}}.</td> -->
             </tr>
 
         </table>
@@ -306,9 +308,9 @@
                 <td style="width:33%"><b>Tanpa Keterangan</b></td>
             </tr>
             <tr>
-                <td>{{raporAkhir['ra_catatan_sakit']=="0"?"-":raporAkhir['ra_catatan_sakit']+" hari"}}</td>
-                <td>{{raporAkhir['ra_catatan_ijin']=="0"?"-":raporAkhir['ra_catatan_ijin']+" hari"}}</td>
-                <td>{{raporAkhir['ra_catatan_alpha']=="0"?"-":raporAkhir['ra_catatan_alpha']+" hari"}}</td>
+                <td>{{raporAkhir['ra_catatan_sakit']>0?raporAkhir['ra_catatan_sakit']+" hari":"-"}}</td>
+                <td>{{raporAkhir['ra_catatan_ijin']>0?raporAkhir['ra_catatan_ijin']+" hari":"-"}}</td>
+                <td>{{raporAkhir['ra_catatan_alpha']>0?raporAkhir['ra_catatan_alpha']+" hari":"-"}}</td>
             </tr>
         </table>
         <table class="subrapor">

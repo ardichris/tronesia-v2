@@ -4,11 +4,16 @@ const state = () => ({
     absensis: [],
     pelanggarans: {},
     pembayarans: [],
+    nilais: [],
     kelas: [],
     siswa: [],
     rekap:null,
     total:null,
 
+    laporannilai: {
+        siswa: null,
+        kelas: null,
+    },
     laporanabsensi: {
         siswa: null,
         kelas: null,
@@ -51,6 +56,9 @@ const mutations = {
         state.pelanggarans = payload
         state.total = payload.total
         state.rekap = payload.rekap
+    },
+    NILAI_DATA(state, payload) {
+        state.nilais = payload
     },
     REKAP_DATA(state, payload) {
         state.rekap = payload
@@ -140,6 +148,23 @@ const actions = {
             })
         })
     },
+    searchNilai({commit,state}, payload){
+        let siswa = state.laporannilai.siswa == null? '':state.laporannilai.siswa.uuid
+        let kelas = state.laporannilai.kelas == null? '':state.laporannilai.kelas
+        return new Promise((resolve,reject) => {
+            $axios.get(`/laporan/kurikulum/nilai?siswa=${siswa}&kelas=${kelas}`)
+            .then((response) => {
+                commit('NILAI_DATA', response.data)
+                resolve(response.data)
+            })
+            .catch((error) => {
+                if (error.response.status == 422) {
+                    commit('SET_ERRORS', error.response.data.errors, { root: true })
+                }
+                reject()
+            })
+        })
+    },
     getSiswaKelas({ commit}, payload) {
         let kelas = payload.kelas
         return new Promise((resolve, reject) => {
@@ -165,7 +190,7 @@ const actions = {
     getKelas({ commit, state }, payload) {
         let search = typeof payload != 'undefined' ? payload:''
         return new Promise((resolve, reject) => {
-            $axios.get(`/kelas?q=${search}&key=nama`)
+            $axios.get(`/kelas?q=${search}&key=nama&jenis=REGULER`)
             .then((response) => {
                 commit('KELAS_DATA', response.data)
                 resolve(response.data)
