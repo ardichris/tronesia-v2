@@ -5,6 +5,7 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
                         <router-link :to="{ name: 'kelas.add' }" class="btn btn-primary btn-sm btn-flat">Tambah</router-link>
+                        <button type="button" class="btn btn-success" size="sm" @click="$bvModal.show('modal-duplicate')" v-if="authenticated.role==0">Duplikat</button>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -14,6 +15,44 @@
                 </div>
             </div>
             <div class="panel-body">
+                <b-modal id="modal-duplicate" scrollable size="sm">
+                    <template v-slot:modal-title>
+                        Duplikat Kelas
+                    </template>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" v-model="duplicateKelas">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Duplikat kelas semester lalu
+                        </label>
+                    </div>
+                    <div class="form-check" v-if="duplicateKelas">
+                        <input class="form-check-input" type="checkbox" v-model="duplicateMember">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Duplikat anggota kelas semester lalu
+                        </label>
+                    </div>
+                    <div class="form-check" v-if="duplicateKelas">
+                        <input class="form-check-input" type="checkbox" v-model="duplicateMengajar">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Duplikat mengajar semester lalu
+                        </label>
+                    </div>
+                    <div class="form-check" v-if="duplicateMengajar">
+                        <input class="form-check-input" type="checkbox" v-model="duplicateJadwal">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Duplikat jadwal mengajar semester lalu
+                        </label>
+                    </div>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"
+                            block  @click="submitDuplicate"
+                        >
+                            Apply
+                        </b-button>
+                    </template>
+                </b-modal>
                 <b-table striped hover bordered :items="kelass.data" :fields="fields" show-empty>
                     <template v-slot:cell(kelas_wali)="row">
                         {{ row.item.kelas_wali ? row.item.user.name:'-' }}
@@ -57,13 +96,10 @@ import { mapActions, mapState } from 'vuex'
 export default {
     name: 'DataKelas',
     created() {
-        //SEBELUM COMPONENT DI-LOAD, REQUEST DATA DARI SERVER
         this.getKelas()
     },
     data() {
         return {
-            //FIELD UNTUK B-TABLE, PASTIKAN KEY NYA SESUAI DENGAN FIELD DATABASE
-            //AGAR OTOMATIS DI-RENDER
             fields: [
                 { key: 'kelas_nama', label: 'Nama Kelas' },
                 { key: 'kelas_jenjang', label: 'Jenjang Kelas' },
@@ -71,43 +107,50 @@ export default {
                 { key: 'k_mentor', label: 'Mentor' },
                 { key: 'actions', label: 'Aksi' }
             ],
-            search: ''
+            search: '',
+            duplicateKelas: false,
+            duplicateMember: false,
+            duplicateMengajar: false,
+            duplicateJadwal: false
         }
     },
     computed: {
-        //MENGAMBIL DATA OUTLETS DARI STATE OUTLETS
+        ...mapState('user', {
+            authenticated: state => state.authenticated
+        }),
         ...mapState('kelas', {
             kelass: state => state.kelass
         }),
         page: {
             get() {
-                //MENGAMBIL VALUE PAGE DARI VUEX MODULE kelas
                 return this.$store.state.kelas.page
             },
             set(val) {
-                //APABILA TERJADI PERUBAHAN VALUE DARI PAGE, MAKA STATE PAGE
-                //DI VUEX JUGA AKAN DIUBAH
                 this.$store.commit('kelas/SET_PAGE', val)
             }
         }
     },
     watch: {
         page() {
-            //APABILA VALUE DARI PAGE BERUBAH, MAKA AKAN MEMINTA DATA DARI SERVER
             this.getKelas()
         },
         search() {
-            //APABILA VALUE DARI SEARCH BERUBAH MAKA AKAN MEMINTA DATA
-            //SESUAI DENGAN DATA YANG SEDANG DICARI
             this.getKelas(this.search)
         }
     },
     methods: {
-        //MENGAMBIL FUNGSI DARI VUEX MODULE kelas
-        ...mapActions('kelas', ['getKelas', 'removeKelas']),
-        //KETIKA TOMBOL HAPUS DICLICK, MAKA AKAN MENJALANKAN METHOD INI
+        ...mapActions('kelas', ['getKelas', 'removeKelas', 'duplikatKelas']),
+        submitDuplicate(){
+            this.duplikatKelas({
+                dKelas: this.duplicateKelas,
+                dMember: this.duplicateMember,
+                dMengajar: this.duplicateMengajar,
+                dJadwal: this.duplicateJadwal
+            }).then(() => {
+                this.$bvModal.hide('modal-duplicate')
+            });
+        },
         deleteKelas(id) {
-            //AKAN MENAMPILKAN JENDELA KONFIRMASI
             this.$swal({
                 title: 'Kamu Yakin?',
                 text: "Tindakan ini akan menghapus secara permanent!",
@@ -117,9 +160,7 @@ export default {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Iya, Lanjutkan!'
             }).then((result) => {
-                //JIKA DISETUJUI
                 if (result.value) {
-                    //MAKA FUNGSI removeKelas AKAN DIJALANKAN
                     this.removeKelas(id)
                 }
             })

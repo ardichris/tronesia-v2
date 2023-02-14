@@ -17,6 +17,7 @@ use DB;
 class PelanggaranController extends Controller
 {
     function createKitirMasuk($id_siswa, $tanggal, $jenis, $user, $keterangan){
+        //$user = User::whereId($user)->get();
         $getKS = KitirSiswa::orderBy('id', 'DESC');
                 $rowCount = $getKS->count();
                 $lastId = $getKS->first();
@@ -45,15 +46,20 @@ class PelanggaranController extends Controller
                     'ks_start' => 0,
                     'ks_end' => null,
                     'ks_keterangan' => $keterangan,
-                    'ks_status' => 0,
-                    'creator_id' => $user,
-                    'last_at' => date('d-m-y H:i')
+                    'ks_status' => 1,
+                    'unit_id' => $user->unit_id,
+                    'periode_id' => $user->periode,
+                    'creator_id' => $user->id,
+                    'last_at' => date('d-m-y H:i'),
+                    'approve_by' => $user->id,
+                    'approve_at' => date('d-m-y H:i')
                 ]);
     }
 
     public function total(Request $request)
     {
-        $total = Pelanggaran::where('siswa_id',$request->siswa)->count();
+        $user = $request->user();
+        $total = Pelanggaran::where('siswa_id',$request->siswa)->where('periode_id',$user->periode)->count();
         return response()->json(['status' => 'success', 'data' => $total], 200);
     }
 
@@ -140,7 +146,7 @@ class PelanggaranController extends Controller
                 'periode_id' => $user->periode
             ]);
             if( $request->mp_id['mp_pelanggaran'] == "Terlambat") {
-                $this->createKitirMasuk($request->siswa_id['id'],$request->pelanggaran_tanggal,"Masuk Kelas",$user->id,"Terlambat");
+                $this->createKitirMasuk($request->siswa_id['id'],$request->pelanggaran_tanggal,"Masuk Kelas",$user,"Terlambat");
             }
         } else {
             foreach($request->pelanggar as $row) {

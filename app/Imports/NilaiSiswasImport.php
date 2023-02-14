@@ -41,7 +41,7 @@ function nilaiFinal($nilai, $remidi){
 
 function nilaiAkhir ($non_tes, $tes){
     if(!is_null($non_tes)&&!is_null($tes)){
-        return round(($non_tes+$tes)/2,0);
+        return round(($non_tes+$tes)/2,2);
     } else {
         if(is_null($non_tes)) return $tes;
         if(is_null($tes)) return $non_tes;

@@ -30,6 +30,7 @@ class AbsensiController extends Controller
                                             $query->select('id', 's_nama', 'uuid');
                                         }])
                                 ->where('unit_id', $user->unit_id)
+                                ->where('periode_id', $user->periode)
                                 ->orderBy('created_at', 'DESC');
 
             if (request()->q != '') {

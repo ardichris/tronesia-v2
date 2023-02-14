@@ -186,6 +186,20 @@ const actions = {
                 dispatch('getKelas').then(() => resolve())
             })
         })
+    },
+
+    duplikatKelas({commit}, payload){
+        let dKelas = payload.dKelas
+        let dMember = payload.dMember
+        let dMengajar = payload.dMengajar
+        let dJadwal = payload.dJadwal
+        return new Promise((resolve, reject) => {
+            $axios.put(`/kelas/duplikat?kelas=${dKelas}&member=${dMember}&mengajar=${dMengajar}&jadwal=${dJadwal}`)
+            .then((response) => {
+                commit('CLEAR_FORM')
+                resolve(response.data)
+            })
+        })
     }
 }
 

@@ -775,11 +775,11 @@
                         <b-button variant="warning" size="sm" v-if="row.item.RaporKurmer != '-'&&row.item.kelas.kelas_jenjang=='7'" @click="inputRaporKurmer(row.item.RaporKurmer.id)"><i class="fa fa-edit"></i></b-button>
                         <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-'&&row.item.kelas.kelas_jenjang!='7'" @click="inputRaporKurtilas(row.item.RaporAkhir.id)"><i class="fa fa-edit"></i></b-button>
                         <b-button variant="primary" size="sm" v-if="row.item.RaporKurmer != '-'" @click="previewRapor(row.item.RaporKurmer.id,row.item.kelas.kelas_jenjang)"><i class="fa fa-eye"></i></b-button>
-                        <!-- <b-button variant="success" size="sm" :href="'/raporkurmer/pdf?rapor='+row.item.RaporKurmer.id+'&user='+authenticated.id+'&kurikulum=merdeka'" v-if="row.item.RaporKurmer != '-'&&row.item.kelas.kelas_jenjang=='7'"><i class="fa fa-file-pdf"></i></b-button> -->
+                        <b-button variant="success" size="sm" :href="'/raporkurmer/pdf?rapor='+row.item.RaporKurmer.id+'&user='+authenticated.id+'&kurikulum=merdeka'" v-if="row.item.RaporKurmer != '-'&&row.item.kelas.kelas_jenjang=='7'"><i class="fa fa-file-pdf"></i></b-button>
                         <!-- <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-'&&authenticated.unit_id == 1" @click="commentRapor(row.item.RaporAkhir.id)"><i class="fa fa-church"></i></b-button> -->
                         <b-button variant="primary" size="sm" v-if="row.item.RaporAkhir != '-'" @click="previewRapor(row.item.RaporAkhir.id)"><i class="fa fa-eye"></i></b-button>
                         <!-- <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan-preview')"></b-button> -->
-                        <!-- <b-button variant="success" size="sm" :href="'/laporan/raporakhir?user='+authenticated.id+'&rapor='+row.item.RaporAkhir.id" v-if="row.item.RaporAkhir != '-'"><i class="fa fa-file-pdf"></i> PDF</b-button> -->
+                        <b-button variant="success" size="sm" :href="'/raporakhir/pdf?user='+authenticated.id+'&rapor='+row.item.RaporAkhir.id" v-if="row.item.RaporAkhir != '-'&&authenticated.role=='0'"><i class="fa fa-file-pdf"></i> PDF</b-button>
                     </template>
                     <template v-slot:cell(petra)="row">
                         <b-button variant="success" size="sm" v-if="row.item.RaporPetra == '-'" @click="inputRaporPetra(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>

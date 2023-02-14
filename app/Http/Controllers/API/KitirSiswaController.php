@@ -84,6 +84,8 @@ class KitirSiswaController extends Controller
                 'ks_end' => $request->ks_end,
                 'ks_keterangan' => $request->ks_keterangan,
                 'ks_status' => 0,
+                'unit_id' => $user->unit_id,
+                'periode_id' => $user->periode,
                 'creator_id' => $user->id,
                 'last_at' => date('d-m-y H:i')
             ]);
@@ -118,6 +120,8 @@ class KitirSiswaController extends Controller
                     'ks_end' => $request->ks_end,
                     'ks_keterangan' => $request->ks_keterangan,
                     'ks_status' => 0,
+                    'unit_id' => $user->unit_id,
+                    'periode_id' => $user->periode,
                     'creator_id' => $user->id,
                     'last_at' => date('d-m-y H:i')
                 ]);

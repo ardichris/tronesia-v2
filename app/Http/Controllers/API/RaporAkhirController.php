@@ -33,6 +33,7 @@ use App\Exports\RaporsExport;
 use App\Exports\RaporsSisipanExport;
 use App\Exports\RaporsSisipanKurmerExport;
 use App\Exports\RaporsPetraExport;
+use App\Exports\KurmerReportExport;
 
 function predikatEkstra($huruf){
     if($huruf == 'A') return 'Sangat Baik';
@@ -265,12 +266,34 @@ function detail_rapor($id, $periode, $jenjang, $siswa){
             $avg = $avgkd = 0;
             $nilai['avg'] = null;
             $descmerge = $desckd = $descA = $descB = $descC = $descD = '';
+            $nilaideskmax=0;
+            $nilaideskmin=100;
+            $deskmax=$deskmin='';
             foreach($kd_id as $rowkd){
+                $avgkd = 0;
                 if($dbnilai->where('kompetensi_id',$rowkd)->count() > 0){
                     $avgkd = $dbnilai->where('kompetensi_id',$rowkd)->avg('ns_nilai');
                     $countkd++;
                     $avg = $avg + $avgkd;
                     $nilai['avg']= $avg/$countkd;
+                }
+                $desckd = $kompetensi->where('id', $rowkd)->first();
+                if($nilaideskmax==0&&$nilaideskmin==100){
+                    $nilaideskmax=$nilaideskmin=$avgkd;
+                    $deskmax = lcfirst($desckd->kompetensi_deskripsi).", ";
+                    $deskmin = lcfirst($desckd->kompetensi_deskripsi).", ";
+                } else {
+                    if($avgkd>$nilaideskmax&&$avgkd>0){
+                        $nilaideskmax = $avgkd;
+                        $deskmax = lcfirst($desckd->kompetensi_deskripsi).", ";
+                    }elseif($avgkd<$nilaideskmin&&$avgkd>0){
+                        $nilaideskmin = $avgkd;
+                        $deskmin = lcfirst($desckd->kompetensi_deskripsi).", ";
+                    } elseif($avgkd==$nilaideskmax&&$avgkd>0){
+                        $deskmax = $deskmax.lcfirst($desckd->kompetensi_deskripsi).", ";
+                    } elseif($avgkd==$nilaideskmin&&$avgkd>0){
+                        $deskmin = $deskmin.lcfirst($desckd->kompetensi_deskripsi).", ";
+                    }
                 }
                 // $desckd = $kompetensi->where('id', $rowkd)->first();
                 // if($avgkd>=93){
@@ -342,43 +365,95 @@ function detail_rapor($id, $periode, $jenjang, $siswa){
                                         ->value('ns_nilai');
                 }
 
-                $nilai['score'] = round(($nilai['avg']*2+$pts+$pas)/4,0)!=0?round(($nilai['avg']*2+$pts+$pas)/4,0):null;
+                $nilai['score'] = round((round($nilai['avg'],0)*2+$pts+$pas)/4,0)!=0?round((round($nilai['avg'],0)*2+$pts+$pas)/4,0):null;
                 $max= $dbnilai->max('ns_nilai');
                 $min= $dbnilai->min('ns_nilai');
                 $kd_max= $max?$dbnilai->where('ns_nilai', $max)->first():null;
                 $kd_min= $min?$dbnilai->where('ns_nilai', $min)->first():null;
                 $descmax = $kd_max?$kompetensi->where('id',$kd_max->kompetensi_id)->first():null;
-                $descmin= $kd_min?$kompetensi->where('id',$kd_min->kompetensi_id)->first():null;
-                if($nilai['score']>=93){
-                    $nilai['description']= 'Sangat baik dalam menguasai dan memahami semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
-                } elseif($nilai['score']>=84){
-                    $nilai['description']= 'Menguasai sebagian besar kompetensi yang dipersyaratkan dengan baik. Perlu ditingkatkan pemahaman pada kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
-                } elseif($nilai['score']>=75){
-                    $nilai['description']= 'Beberapa kompetensi telah dikuasai dengan cukup baik. Kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
-                } elseif($nilai['score']>0) {
-                    $nilai['description']= 'Belum menguasai sebagian besar kompetensi yang dipersyaratkan.';
+                $descmin= $kd_min?$kompetensi->where('id',$kd_min->kompetensi_id)->last():null;
+                // if($nilai['score']>=93){
+                //     $nilai['description']= 'Sangat baik dalam menguasai dan memahami semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
+                // } elseif($nilai['score']>=84){
+                //     $nilai['description']= 'Menguasai sebagian besar kompetensi yang dipersyaratkan dengan baik. Perlu ditingkatkan pemahaman pada kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
+                // } elseif($nilai['score']>=75){
+                //     $nilai['description']= 'Beberapa kompetensi telah dikuasai dengan cukup baik. Kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
+                // } elseif($nilai['score']>0) {
+                //     $nilai['description']= 'Belum menguasai sebagian besar kompetensi yang dipersyaratkan.';
+                // } else {
+                //     $nilai['description']= null;
+                // }
+                if($max>=93){
+                    $nilai['max']= $deskmax?'Menunjukkan penguasaan yang sangat baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+                } elseif($max>=84){
+                    $nilai['max']= $deskmax?'Menunjukkan penguasaan yang baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+                } elseif($max>=75){
+                    $nilai['max']= $deskmax?'Menunjukkan penguasaan yang cukup baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+                } elseif($max<75) {
+                    $nilai['max']= $deskmax?'Kurang menguasai dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
                 } else {
-                    $nilai['description']= null;
+                    $nilai['max']= null;
                 }
+                $nilai['min']= null;
+                if($nilaideskmax!=$nilaideskmin){
+                    if($min>=93){
+                        $nilai['min']= $deskmin?'Perlu penguatan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+                    } elseif($min>=84){
+                        $nilai['min']= $deskmin?'Perlu peningkatan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+                    } elseif($min>=75){
+                        $nilai['min']= $deskmin?'Perlu bimbingan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+                    } elseif($min<75) {
+                        $nilai['min']= $deskmin?'Perlu pendampingan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+                    } else {
+                        $nilai['min']= null;
+                    }
+                }
+                $nilai['description'] = $nilai['max']."\r\n".$nilai['min'];
             } else {
                 $nilai['score'] = round($nilai['avg'],0)!=0?round($nilai['avg'],0):null;
                 $max= $dbnilai->max('ns_nilai');
                 $min= $dbnilai->min('ns_nilai');
                 $kd_max= $max?$dbnilai->where('ns_nilai', $max)->first():null;
-                $kd_min= $min?$dbnilai->where('ns_nilai', $min)->first():null;
+                $kd_min= $min?$dbnilai->where('ns_nilai', $min)->last():null;
                 $descmax = $kd_max?$kompetensi->where('id',$kd_max->kompetensi_id)->first():null;
                 $descmin= $kd_min?$kompetensi->where('id',$kd_min->kompetensi_id)->first():null;
-                if($nilai['score']>=93){
-                    $nilai['description']= 'Sangat baik dalam keterampilan dan mahir dalam semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
-                } elseif($nilai['score']>=84){
-                    $nilai['description']= 'Terampil pada sebagian besar kompetensi yang dipersyaratkan. Perlu ditingkatkan keterampilan pada kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
-                } elseif($nilai['score']>=75){
-                    $nilai['description']= 'Cukup terampil dalam beberapa kompetensi. Kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
-                } elseif($nilai['score']>0) {
-                    $nilai['description']= 'Belum terampil pada sebagian besar kompetensi yang dipersyaratkan.';
+                // if($nilai['score']>=93){
+                //     $nilai['description']= 'Sangat baik dalam keterampilan dan mahir dalam semua kompetensi, terutama '.lcfirst($descmax->kompetensi_deskripsi).'.';
+                // } elseif($nilai['score']>=84){
+                //     $nilai['description']= 'Terampil pada sebagian besar kompetensi yang dipersyaratkan. Perlu ditingkatkan keterampilan pada kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
+                // } elseif($nilai['score']>=75){
+                //     $nilai['description']= 'Cukup terampil dalam beberapa kompetensi. Kompetensi '.lcfirst($descmin->kompetensi_deskripsi).' perlu ditingkatkan.';
+                // } elseif($nilai['score']>0) {
+                //     $nilai['description']= 'Belum terampil pada sebagian besar kompetensi yang dipersyaratkan.';
+                // } else {
+                //     $nilai['description']= null;
+                // }
+                if($max>=93){
+                    $nilai['max']= $deskmax?'Menunjukkan penguasaan yang sangat baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+                } elseif($max>=84){
+                    $nilai['max']= $deskmax?'Menunjukkan penguasaan yang baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+                } elseif($max>=75){
+                    $nilai['max']= $deskmax?'Menunjukkan penguasaan yang cukup baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+                } elseif($max<75) {
+                    $nilai['max']= $deskmax?'Kurang menguasai dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
                 } else {
-                    $nilai['description']= null;
+                    $nilai['max']= null;
                 }
+                $nilai['min']= null;
+                if($nilaideskmax!=$nilaideskmin){
+                    if($min>=93){
+                        $nilai['min']= $deskmin?'Perlu penguatan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+                    } elseif($min>=84){
+                        $nilai['min']= $deskmin?'Perlu peningkatan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+                    } elseif($min>=75){
+                        $nilai['min']= $deskmin?'Perlu bimbingan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+                    } elseif($min<75) {
+                        $nilai['min']= $deskmin?'Perlu pendampingan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+                    } else {
+                        $nilai['min']= null;
+                    }
+                }
+                $nilai['description'] = $nilai['max']."\r\n".$nilai['min'];
             }
             //$nilai['description'] = $descmerge;
             if($nilai['score']>=93){
@@ -549,8 +624,49 @@ function raporAkhirUpdate($id, $periode, $unit, $user, $request){
     return response()->json(['data' => $data],200);
 }
 
+function getMapelPilihan($siswa, $periode){
+    $kelaspilihan = KelasAnggota::where('siswa_id', $siswa)
+                                ->where('periode_id', $periode)
+                                ->with('kelas')
+                                ->whereHas('kelas', function($query) {
+                                        $query->where('k_jenis','PILIHAN');
+                                    })
+                                ->first();
+    $mapelpilihan = $kelaspilihan->kelas->k_mapel;
+    return $mapelpilihan;
+}
 class RaporAkhirController extends Controller
 {
+    public function downloadPDF(Request $request){
+        $user = User::where('id', $request->user)->first();
+        $idRapor = $request->rapor;
+        $unit = $request->unit;
+        $raporAkhir = RaporAkhir::whereId($request->rapor)
+                                ->with(['siswa' => function ($query) {
+                                        $query->select('id','s_nama', 's_nis','s_code','s_nisn');
+                                    }])->first();
+        $kelas = KelasAnggota::whereSiswa_id($raporAkhir['siswa']['id'])
+                                            ->where('periode_id',$raporAkhir['periode_id'])
+                                            ->with('kelas')
+                                            ->first();
+        $raporAkhir['kelas'] = $kelas;
+        $ttd = User::whereId($raporAkhir['kelas']['kelas']['kelas_wali'])->first();
+        $kasek = Unit::whereId($user->unit_id)->first();
+        $raporAkhir['email'] = $ttd->email;
+        $raporAkhir['ttd'] = $ttd->ttd;
+        $raporAkhir['walikelas'] = $ttd->full_name;
+        $raporAkhir['kasek'] = $kasek->unit_head;
+        $raporAkhir['periode'] = Periode::whereId($raporAkhir['periode_id']);
+        $pdf = PDF::loadView('raporAkhir', compact('raporAkhir'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
+        return $pdf->stream($raporAkhir['siswa']['s_code'].".pdf");
+        // if($unit == 1) {
+        //     $pdf = PDF::loadView('sisipan', compact('raporSisipan'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
+        //     return $pdf->stream($studentCode.".pdf");
+        // }elseif($unit == 3) {
+        //     $pdf = PDF::loadView('sisipanp2', compact('raporSisipan'))->setPaper([0, 0, 612.283, 935.433], 'portrait');
+        //     return $pdf->stream($studentCode.".pdf");
+        // }
+    }
 
     public function exportRapor(Request $request) {
         $user = $request->user();
@@ -585,7 +701,45 @@ class RaporAkhirController extends Controller
         }
 
         if(request()->rapor=='Akhir'){
-            $rapor = RaporAkhir::whereIn('siswa_id',$siswa)->with('siswa')->where('periode_id',$user->periode)->get();
+            if(request()->grup=='Jenjang'&&request()->detail=='7'){
+                $rapor = KurmerReport::whereIn('siswa_id',$siswa)->with(['siswa','detail'])->where('periode_id',$user->periode)->get();
+                $dbMapel = Mapel::get();
+                $listMapel = ['PAK','PKN','BIN','MAT','IPA','IPS','BIG','ORG','TIK','PIL','JWA','MAN'];
+                foreach($rapor as $rowrapor){
+                    // $rowrapor = [
+                    //     'PAK' => [],
+                    //     'PKN' => [],
+                    //     'BIN' => [],
+                    //     'BIG' => [],
+                    //     'MAT' => [],
+                    //     'IPA' => [],
+                    //     'IPS' => [],
+                    //     'ORG' => [],
+                    //     'MAN' => [],
+                    //     'TIK' => [],
+                    //     'JWA' => [],
+                    //     'PIL' => []
+                    // ];
+                    foreach($listMapel as $rowListMapel){
+                        $mapel_id=null;
+                        if($rowListMapel=='PIL'){
+                            $selectMapel = $dbMapel->where('mapel_kode', getMapelPilihan($rowrapor['siswa']['id'],$user->periode))->first();
+                            $rowrapor['pilihan'] = $selectMapel->mapel_nama;
+                        } else {
+                            $selectMapel = $dbMapel->where('mapel_kode', $rowListMapel)->first();
+                        }
+                        $mapel_id = $selectMapel->id;
+
+                        foreach($rowrapor->detail as $rowDetail){
+                            if($rowDetail->mapel_id == $mapel_id){
+                                $rowrapor[$rowListMapel] = $rowDetail;
+                            }
+                        }
+                    }
+                }
+            } else {
+                $rapor = RaporAkhir::whereIn('siswa_id',$siswa)->with('siswa')->where('periode_id',$user->periode)->get();
+            }
         }
 
         if(request()->rapor=='Petra'){
@@ -599,7 +753,7 @@ class RaporAkhirController extends Controller
             $row['walikelas'] = $kelas?User::whereId($kelas['kelas']['kelas_wali'])->value('full_name'):'-';
             $jenjang = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_jenjang'):'-';
             if($jenjang==7){
-                $row['nilai'] = nilaiSisipanKurmer($row['id'], $user->unit_id);
+                //$row['nilai'] = nilaiSisipanKurmer($row['id'], $user->unit_id);
             }
         }
 
@@ -619,7 +773,11 @@ class RaporAkhirController extends Controller
         $absen = array_column($rapor, 'absen');
         array_multisort($kelas, SORT_ASC, $absen, SORT_ASC, $rapor);
         if(request()->rapor=='Akhir'){
-            return Excel::download(new RaporsExport($rapor), 'raporakhir-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
+            if($jenjang==7){
+                return Excel::download(new KurmerReportExport($rapor), 'raporkurmer-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
+            } else {
+                return Excel::download(new RaporsExport($rapor), 'raporakhir-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
+            }
         } elseif(request()->rapor=='Sisipan'){
             if($jenjang==7){
                 return Excel::download(new RaporsSisipanKurmerExport($rapor), 'raporsisipan-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
@@ -935,8 +1093,7 @@ class RaporAkhirController extends Controller
 
     }
 
-    public function import(Request $request)
-    {
+    public function import(Request $request){
 
         $request->validate([
             'import_file' => 'required|file|mimes:xls,xlsx'

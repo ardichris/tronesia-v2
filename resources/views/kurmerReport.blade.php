@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <br><br><title>RAPOR KURIKULUM MERDEKA</title>
+    <br><br><title>LAPORAN HASIL BELAJAR</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style scoped>
         @page {
@@ -37,7 +37,7 @@
                 margin-left: auto;
                 margin-right: auto;
                 margin-top: 10px;
-                font-size: 12px;
+                font-size: 13px;
                 width: 100%;
             }
             table.ki1ki2 {
@@ -70,9 +70,11 @@
 
             }
             table.absensi {
-                margin-left:auto;
-                margin-right:auto;
-                font-size:12px;
+                martin-top:30px;
+                margin-left:0px;
+                margin-right:300px;
+                margin-bottom:10px;
+                font-size:13px;
                 border: 1px solid black;
                 border-collapse: collapse;
                 width: 100%;
@@ -82,10 +84,23 @@
                 padding: 5px;
                 text-align:center;
             }
+            table.ekstra {
+                margin-left:auto;
+                margin-right:auto;
+                font-size:13px;
+                border: 1px solid black;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            table.ekstra td, th {
+                border: 1px solid black;
+                padding: 5px;
+                text-align:center;
+            }
             table.nilai {
                 margin-left:auto;
                 margin-right:auto;
-                font-size:12px;
+                font-size:13px;
                 border: 1px solid black;
                 border-collapse: collapse;
                 width: 100%;
@@ -96,7 +111,7 @@
             }
             table.nilai td.nilai {
                 text-align: center;
-                font-size:11px;
+                font-size:13px;
                 /* font-family: Verdana; */
                 border: 1px solid black;
                 padding: 5px;
@@ -104,7 +119,7 @@
             table.nilai td.nilaikkm {
                 text-align: center;
                 background-color: #ff6666;
-                font-size:11px;
+                font-size:13px;
                 /* font-family: Verdana; */
                 border: 1px solid black;
                 padding: 5px;
@@ -135,7 +150,8 @@
                 margin:0px;
             }
             table.TTD {
-                font-size: 12px;
+                font-family: 'Times New Roman';
+                font-size: 15px;
                 margin-right: auto;
                 margin-left: auto;
                 margin-top: 15px;
@@ -156,28 +172,33 @@
 </head>
 <body>
     <div class="container">
-        <center><h1 style="font-family:'Verdana'"><b>RAPOR KURIKULUM MERDEKA</b></h1></center>
+        <center><h1 style="font-family:'Verdana'"><b>LAPORAN HASIL BELAJAR</b></h1></center>
+        <br><br>
         <table class="identitas">
             <tr>
-                <td style="width:15%">Sekolah</td>
-                <td style="width:1%">:</td>
-                <td style="padding-left:5px">SMP KRISTEN PETRA 1 SURABAYA</td>
+                <td style="width:100px">Sekolah</td>
+                <td style="width:5px">:</td>
+                <td style="padding-left:5px; width:300px">SMP KRISTEN PETRA 1 SURABAYA</td>
+                <td style="width:150px">Kelas / Absen</td>
+                <td style="width:5px">:</td>
+                <td style="width:100px; padding-left:5px">{{$raporKurmer['kelas']}} / {{$raporKurmer['absen']}}</td>
+
             </tr>
             <tr>
-                <td style="width:15%">Nama Siswa</td>
-                <td style="width:1%">:</td>
+                <td>Alamat</td>
+                <td>:</td>
+                <td style="padding-left:5px">Jl. H.R. Muhammad Kav.808</td>
+                <td>Fase</td>
+                <td>:</td>
+                <td style="padding-left:5px">D</td>
+            </tr>
+            <tr>
+                <td>Nama Siswa</td>
+                <td>:</td>
                 <td style="padding-left:5px">{{$raporKurmer['nama_siswa']}}</td>
-                <td style="width:20%">Fase</td>
-                <td style="width:1%">:</td>
-                <td style="width:20%; padding-left:5px">D</td>
-            </tr>
-            <tr>
-                <td style="width:15%">Kelas / Absen</td>
-                <td style="width:1%">:</td>
-                <td style="width:45%; padding-left:5px">{{$raporKurmer['kelas']}} / {{$raporKurmer['absen']}}</td>
-                <td style="width:20%">Semester</td>
-                <td style="width:1%">:</td>
-                <td style="width:20%; padding-left:5px">1 (Satu)</td>
+                <td>Semester</td>
+                <td>:</td>
+                <td style="padding-left:5px">1 (Satu)</td>
             </tr>
             <tr>
                 <td>NIS / NISN</td>
@@ -188,69 +209,54 @@
                 <td style="padding-left:5px">2022 - 2023</td>
             </tr>
         </table>
-        <table class="subrapor">
-            <tr>
-                <td style="width:660px; font-weight: bold">A. PENILAIAN AKADEMIK</td>
-            </tr>
-            <tr>
-                <td style="width:660px; padding-left:15px">Kriteria Ketercapaian Tujuan Pembelajaran : 75</td>
-            </tr>
-        </table>
+        <br><br>
         <table class="nilai">
             <tr>
                 <td style="width:20px; text-align:center; font-weight: bold">No</td>
-                <td colspan="2" style="width:150px; text-align:center; font-weight: bold">MATA PELAJARAN</td>
-                <td style="width:30px; text-align:center; font-weight: bold">NILAI</td>
-                <td style="width:30px; text-align:center; font-weight: bold">PREDIKAT</td>
-                <td style="text-align:center; font-weight: bold">DESKRIPSI</td>
+                <td colspan="2" style="width:170px; text-align:center; font-weight: bold">Mata Pelajaran</td>
+                <td style="width:30px; text-align:center; font-weight: bold">Nilai<br>Akhir</td>
+                <td style="text-align:center; font-weight: bold">Capaian Kompetensi</td>
             </tr>
             <tr>
                 <td style="text-align:center">1</td>
                 <td colspan="2">Pendidikan Agama dan Budi Pekerti</td>
                 <td class="nilai">{{$raporKurmer['PAK']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['PAK']['kmr_predicate']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['PAK']['kmr_predicate']}}</td> -->
                 <td>{{$raporKurmer['PAK']['kmr_description1']}}<br>{{$raporKurmer['PAK']['kmr_description2']}}</td>
             </tr>
             <tr>
                 <td style="text-align:center">2</td>
-                <td colspan="2">Pendidikan Pancasila dan Kewarganegaraan</td>
+                <td colspan="2">Pendidikan Pancasila</td>
                 <td class="nilai">{{$raporKurmer['PKN']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['PKN']['kmr_predicate']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['PKN']['kmr_predicate']}}</td> -->
                 <td>{{$raporKurmer['PKN']['kmr_description1']}}<br>{{$raporKurmer['PKN']['kmr_description2']}}</td>
             </tr>
             <tr>
                 <td style="text-align:center">3</td>
                 <td colspan="2">Bahasa Indonesia</td>
                 <td class="nilai">{{$raporKurmer['BIN']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['BIN']['kmr_predicate']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['BIN']['kmr_predicate']}}</td> -->
                 <td>{{$raporKurmer['BIN']['kmr_description1']}}<br>{{$raporKurmer['BIN']['kmr_description2']}}</td>
             </tr>
             <tr>
                 <td style="text-align:center">4</td>
-                <td colspan="2">Bahasa Inggris</td>
-                <td class="nilai">{{$raporKurmer['BIG']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['BIG']['kmr_predicate']}}</td>
-                <td>{{$raporKurmer['BIG']['kmr_description1']}}<br>{{$raporKurmer['BIG']['kmr_description2']}}</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">5</td>
                 <td colspan="2">Matematika</td>
                 <td class="nilai">{{$raporKurmer['MAT']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['MAT']['kmr_predicate']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['MAT']['kmr_predicate']}}</td> -->
                 <td>{{$raporKurmer['MAT']['kmr_description1']}}<br>{{$raporKurmer['MAT']['kmr_description2']}}</td>
             </tr>
             <tr>
-                <td style="text-align:center">6</td>
+                <td style="text-align:center">5</td>
                 <td colspan="2">Ilmu Pengetahuan Alam</td>
                 <td class="nilai">{{$raporKurmer['IPA']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['IPA']['kmr_predicate']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['IPA']['kmr_predicate']}}</td> -->
                 <td>{{$raporKurmer['IPA']['kmr_description1']}}<br>{{$raporKurmer['IPA']['kmr_description2']}}</td>
             </tr>
             <tr>
-                <td style="text-align:center">7</td>
+                <td style="text-align:center">6</td>
                 <td colspan="2">Ilmu Pengetahuan Sosial</td>
                 <td class="nilai">{{$raporKurmer['IPS']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['IPS']['kmr_predicate']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['IPS']['kmr_predicate']}}</td> -->
                 <td>{{$raporKurmer['IPS']['kmr_description1']}}<br>{{$raporKurmer['IPS']['kmr_description2']}}</td>
             </tr>
         </table>
@@ -260,53 +266,60 @@
         <table class="nilai" style="margin-top:50px">
             <tr>
                 <td style="width:20px; text-align:center; font-weight: bold">No</td>
-                <td colspan="2" style="width:150px; text-align:center; font-weight: bold">MATA PELAJARAN</td>
-                <td style="width:30px; text-align:center; font-weight: bold">NILAI</td>
-                <td style="width:30px; text-align:center; font-weight: bold">PREDIKAT</td>
-                <td style="text-align:center; font-weight: bold">DESKRIPSI</td>
+                <td colspan="2" style="width:170px; text-align:center; font-weight: bold">Mata Pelajaran</td>
+                <td style="width:30px; text-align:center; font-weight: bold">Nilai<br>Akhir</td>
+                <td style="text-align:center; font-weight: bold">Capaian Kompetensi</td>
+            </tr>
+            <tr>
+                <td style="text-align:center">7</td>
+                <td colspan="2">Bahasa Inggris</td>
+                <td class="nilai">{{$raporKurmer['BIG']['kmr_score']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['BIG']['kmr_predicate']}}</td> -->
+                <td>{{$raporKurmer['BIG']['kmr_description1']}}<br>{{$raporKurmer['BIG']['kmr_description2']}}</td>
             </tr>
             <tr>
                 <td style="text-align:center">8</td>
-                <td colspan="2">Mapel Pilihan :<br>{{$raporKurmer['pilihan']}}</td>
-                <td class="nilai" style="text-align:center">{{$raporKurmer['PIL']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['PIL']['kmr_predicate']}}</td>
-                <td>{{$raporKurmer['PIL']['kmr_description1']}}<br>{{$raporKurmer['PIL']['kmr_description2']}}</td>
-            </tr>
-            <tr>
-                <td style="text-align:center">9</td>
                 <td colspan="2">Pend. Jasmani, Olah Raga & Kesehatan</td>
                 <td class="nilai">{{$raporKurmer['ORG']?$raporKurmer['ORG']['kmr_score']:null}}</td>
-                <td style="text-align:center">{{$raporKurmer['ORG']?$raporKurmer['ORG']['kmr_predicate']:null}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['ORG']?$raporKurmer['ORG']['kmr_predicate']:null}}</td> -->
                 <td>{{$raporKurmer['ORG']?$raporKurmer['ORG']['kmr_description1']:null}}<br>{{$raporKurmer['ORG']?$raporKurmer['ORG']['kmr_description2']:null}}</td>
             </tr>
             <tr>
-                <td style="text-align:center">10</td>
+                <td style="text-align:center">9</td>
                 <td colspan="2">Informatika</td>
                 <td class="nilai">{{$raporKurmer['TIK']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['TIK']['kmr_predicate']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['TIK']['kmr_predicate']}}</td> -->
                 <td>{{$raporKurmer['TIK']['kmr_description1']}}<br>{{$raporKurmer['TIK']['kmr_description2']}}</td>
+            </tr>
+            <tr>
+                <td style="text-align:center">10</td>
+                <td colspan="2">Mapel Pilihan :<br>{{$raporKurmer['pilihan']}}</td>
+                <td class="nilai" style="text-align:center">{{$raporKurmer['PIL']['kmr_score']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['PIL']['kmr_predicate']}}</td> -->
+                <td>{{$raporKurmer['PIL']['kmr_description1']}}<br>{{$raporKurmer['PIL']['kmr_description2']}}</td>
             </tr>
             <tr>
                 <td style="text-align:center">11</td>
                 <td colspan="2">Bahasa Jawa</td>
                 <td class="nilai">{{$raporKurmer['JWA']?$raporKurmer['JWA']['kmr_score']:null}}</td>
-                <td style="text-align:center">{{$raporKurmer['JWA']?$raporKurmer['JWA']['kmr_predicate']:null}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['JWA']?$raporKurmer['JWA']['kmr_predicate']:null}}</td> -->
                 <td>{{$raporKurmer['JWA']?$raporKurmer['JWA']['kmr_description1']:null}}<br>{{$raporKurmer['JWA']?$raporKurmer['JWA']['kmr_description2']:null}}</td>
             </tr>
             <tr>
                 <td style="text-align:center">12</td>
                 <td colspan="2">Mandarin</td>
                 <td class="nilai">{{$raporKurmer['MAN']['kmr_score']}}</td>
-                <td style="text-align:center">{{$raporKurmer['MAN']['kmr_predicate']}}</td>
+                <!-- <td style="text-align:center">{{$raporKurmer['MAN']['kmr_predicate']}}</td> -->
                 <td>{{$raporKurmer['MAN']['kmr_description1']}}<br>{{$raporKurmer['MAN']['kmr_description2']}}</td>
             </tr>
         </table>
-        <table class="subrapor" style="margin-top:50px">
-            <tr>
-                <td style="width:675px; font-weight: bold;">B. PENGEMBANGAN DIRI</td>
-            </tr>
-        </table>
-        <table class="absensi">
+        <div class="footer">
+            <i>{{$raporKurmer['nama_siswa']}} - {{$raporKurmer['kelas']}}/{{$raporKurmer['absen']}}</i>
+        </div>
+    </div>
+    <div class="page-break"></div>
+    <div class="container">
+        <table class="ekstra" style="margin-top:50px">
             <tr>
                 <td style="width:5%"><b>No</b></td>
                 <td style="width:55%"><b>Jenis Kegiatan</b></td>
@@ -315,7 +328,7 @@
             </tr>
             <tr>
                 <td>1</td>
-                <td>{{$raporKurmer['kmr_extracurricular1']?$raporKurmer['kmr_extracurricular1']:null}}</td>
+                <td>{{$raporKurmer['kmr_extracurricular1']?ucwords(strtolower($raporKurmer['kmr_extracurricular1'])):null}}</td>
                 <td>{{$raporKurmer['kmr_extracurricular1_score']?$raporKurmer['kmr_extracurricular1_score']:null}}</td>
                 <td>{{$raporKurmer['kmr_extracurricular1_predicate']?$raporKurmer['kmr_extracurricular1_predicate']:null}}</td>
             </tr>
@@ -332,47 +345,42 @@
                 <td>{{$raporKurmer['kmr_extracurricular3_predicate']?$raporKurmer['kmr_extracurricular3_predicate']:null}}</td>
             </tr>
         </table>
-
-        <table class="subrapor">
-            <tr>
-                <td style="width:675px; font-weight: bold">C. KETIDAKHADIRAN</td>
-            </tr>
-        </table>
+            <br><br>
         <table class="absensi">
             <tr>
-                <td style="width:33%"><b>Sakit</b></td>
-                <td style="width:33%"><b>Ijin</b></td>
-                <td style="width:33%"><b>Tanpa Keterangan</b></td>
+                <td colspan="2"><b>Ketidakhadiran</td>
             </tr>
             <tr>
-                <td>{{$raporKurmer['kmr_attedance_sick']?$raporKurmer['kmr_attedance_sick'].' hari':'-'}}</td>
+                <td style="width:100px">Sakit</td>
+                <td style="width:50px">{{$raporKurmer['kmr_attedance_sick']?$raporKurmer['kmr_attedance_sick'].' hari':'-'}}</td>
+            </tr>
+            <tr>
+                <td>Izin</td>
                 <td>{{$raporKurmer['kmr_attedance_excuse']?$raporKurmer['kmr_attedance_excuse'].' hari':'-'}}</td>
+            </tr>
+            <tr>
+                <td>Tanpa Keterangan</td>
                 <td>{{$raporKurmer['kmr_attedance_alpha']?$raporKurmer['kmr_attedance_alpha'].' hari':'-'}}</td>
             </tr>
         </table>
-
-        <table class="subrapor">
-            <tr>
-                <td style="width:675px; font-weight: bold">D. CATATAN WALIKELAS</td>
-            </tr>
-        </table>
+        <br>
         <table class="nilai">
             <tr>
-                <td colspan="3" style="padding: 10px;"><center><i>{{$raporKurmer["kmr_note_godword"]}}</i><br><b>{{$raporKurmer["kmr_note_verse"]}}</b></center><br>{{$raporKurmer["kmr_note"]}}</td>
+                <td colspan="3" style="padding: 10px;"><b>Catatan Wali Kelas</b><br><br><center><i>{{$raporKurmer["kmr_note_godword"]}}</i><br><b>{{$raporKurmer["kmr_note_verse"]}}</b></center><br>{{$raporKurmer["kmr_note"]}}</td>
             </tr>
         </table>
         <table class="TTD">
             <tr>
                 <td colspan="2"></td>
-                <td style="text-align:left; width:30%">Surabaya, 15 Desember 2022</td>
+                <td style="text-align:left; width:30%">Surabaya, 20 Desember 2022</td>
             </tr>
             <tr>
-                <td colspan="3" style="text-align:left">Mengetahui,</td>
+                <td colspan="3" style="text-align:left">Mengetahui</td>
             </tr>
             <tr>
                 <td style="width:30%;">Orang Tua Siswa/Wali</td>
-                <td style="width:50%;text-align:center">Walikelas</td>
-                <td style="width:20%;">Kepala Sekolah</td>
+                <td style="width:50%;text-align:center"></td>
+                <td style="width:20%;text-align:center">Wali Kelas</td>
             </tr>
             <tr>
                 <td></td>
@@ -381,8 +389,13 @@
             </tr>
             <tr>
                 <td>..................................</td>
-                <td style="text-align:center;">{{$raporKurmer['walikelas']}}</td>
-                <td>Yurui, S.Pd., M.M.</td>
+                <td style="text-align:center;"></td>
+                <td style="width:20%;text-align:center"><b>{{$raporKurmer['walikelas']}}</b></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="text-align:center;"><center>Kepala SMP Kristen Petra 1 Surabaya<br><br><br><br><br><br><br><br><b>Yurui, S.Pd., M.M.</b></center></td>
+                <td></td>
             </tr>
         </table>
         <div class="footer">

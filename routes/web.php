@@ -16,5 +16,6 @@ Route::get('/', function () {
 Route::get('/laporan/cetak_pdf', 'API\JurnalController@rekapJurnalPDF')->name('jurnal.pdf');
 Route::get('/laporan/raporsisipan', 'API\RaporSisipanController@raporSisipanPDF')->name('sisipan.pdf');
 Route::get('/raporkurmer/pdf', 'API\KurmerReportController@downloadPDF');
+Route::get('/raporakhir/pdf', 'API\RaporAkhirController@downloadPDF');
 Route::post('/livetracking', 'API\LiveTrackingController@requestLiveTracking');
 Route::get('/{any}', 'FrontController@index')->where('any', '.*');

@@ -157,7 +157,7 @@ class LaporanController extends Controller
                                 $query->select('id', 's_nama', 'uuid');
                             }])
                         ->whereBetween('absensi_tanggal',[$request->start,$request->end])
-                        ->where('ab_status', 'Approved')
+                        //->where('ab_status', 'Approved')
                         ->where('unit_id', $user->unit_id);
 
         if($request->siswa!=''){
@@ -182,80 +182,90 @@ class LaporanController extends Controller
         }
 
         $absen = $absen->get();
-        $total = array('kelas7_total'=> 0,
-                        'kelas7_sakit' => 0,
-                        'kelas7_ijin' => 0,
-                        'kelas7_alpha' => 0,
-                        'kelas7_covid' => 0,
-                        'kelas8_total'=> 0,
-                        'kelas8_sakit' => 0,
-                        'kelas8_ijin' => 0,
-                        'kelas8_alpha' => 0,
-                        'kelas8_covid' => 0,
-                        'kelas9_total'=> 0,
-                        'kelas9_sakit' => 0,
-                        'kelas9_ijin' => 0,
-                        'kelas9_alpha' => 0,
-                        'kelas9_covid' => 0,
+        $total = array('kelas7_Total'=> 0,
+                        'kelas7_Sakit' => 0,
+                        'kelas7_Ijin' => 0,
+                        'kelas7_Alpha' => 0,
+                        'kelas7_Covid' => 0,
+                        'kelas8_Total'=> 0,
+                        'kelas8_Sakit' => 0,
+                        'kelas8_Ijin' => 0,
+                        'kelas8_Alpha' => 0,
+                        'kelas8_Covid' => 0,
+                        'kelas9_Total'=> 0,
+                        'kelas9_Sakit' => 0,
+                        'kelas9_Ijin' => 0,
+                        'kelas9_Alpha' => 0,
+                        'kelas9_Covid' => 0,
+                        'kelas7_Issued' => 0,
+                        'kelas8_Issued' => 0,
+                        'kelas9_Issued' => 0,
+
                     );
         $rekap = [];
         foreach ($absen as $row){
             $kelas = KelasAnggota::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->first();
             $kelasdetail = Kelas::where('id',$kelas['kelas_id'])->first();
-            if($kelasdetail['kelas_jenjang']==7){
-                $total['kelas7_total']++;
-                if($row->absensi_jenis=="Sakit")
-                    $total['kelas7_sakit']++;
-                if($row->absensi_jenis=="Ijin")
-                    $total['kelas7_ijin']++;
-                if($row->absensi_jenis=="Alpha")
-                    $total['kelas7_alpha']++;
-                if($row->absensi_jenis=="Covid")
-                    $total['kelas7_covid']++;
-            }
-            elseif($kelasdetail['kelas_jenjang']==8){
-                $total['kelas8_total']++;
-                if($row->absensi_jenis=="Sakit")
-                    $total['kelas8_sakit']++;
-                if($row->absensi_jenis=="Ijin")
-                    $total['kelas8_ijin']++;
-                if($row->absensi_jenis=="Alpha")
-                    $total['kelas8_alpha']++;
-                if($row->absensi_jenis=="Covid")
-                    $total['kelas8_covid']++;
-            }
-            elseif($kelasdetail['kelas_jenjang']==9){
-                $total['kelas9_total']++;
-                if($row->absensi_jenis=="Sakit")
-                    $total['kelas9_sakit']++;
-                if($row->absensi_jenis=="Ijin")
-                    $total['kelas9_ijin']++;
-                if($row->absensi_jenis=="Alpha")
-                    $total['kelas9_alpha']++;
-                if($row->absensi_jenis=="Covid")
-                    $total['kelas9_covid']++;
-            }
-            $row['kelas'] = $kelas?$kelasdetail['kelas_nama']:'-';
-            $row['absen'] = $kelas?$kelas['absen']:'-';
-            if(!collect($rekap)->contains('id',$row->siswa->id)){
-                array_push($rekap, (object)[
-                    'id' => $row->siswa->id,
-                    'Nama' => $row->siswa->s_nama,
-                    'Kelas' => $row->kelas,
-                    'Absen' => $kelas['absen'],
-                    'Sakit' => 0,
-                    'Ijin' => 0,
-                    'Alpha' => 0,
-                    'Covid' => 0
-                ]);
-            }
-
-            foreach($rekap as $rowrekap){
-                if($rowrekap->id==$row->siswa_id){
-                    $rowrekap->{$row->absensi_jenis}++;
+            //if($kelasdetail['kelas_jenjang']==7){
+            if($row->ab_status=='Approved'){
+                $total['kelas'.$kelasdetail['kelas_jenjang'].'_Total']++;
+                $total['kelas'.$kelasdetail['kelas_jenjang'].'_'.$row->absensi_jenis]++;
+                $row['kelas'] = $kelas?$kelasdetail['kelas_nama']:'-';
+                $row['absen'] = $kelas?$kelas['absen']:'-';
+                if($row->ab_status=='Approved'&&!collect($rekap)->contains('id',$row->siswa->id)){
+                    array_push($rekap, (object)[
+                        'id' => $row->siswa->id,
+                        'Nama' => $row->siswa->s_nama,
+                        'Kelas' => $row->kelas,
+                        'Absen' => $kelas['absen'],
+                        'Sakit' => 0,
+                        'Ijin' => 0,
+                        'Alpha' => 0,
+                        'Covid' => 0
+                    ]);
                 }
 
+                foreach($rekap as $rowrekap){
+                    if($rowrekap->id==$row->siswa_id){
+                        $rowrekap->{$row->absensi_jenis}++;
+                    }
+
+                }
+            } else {
+                $total['kelas'.$kelasdetail['kelas_jenjang'].'_Issued']++;
             }
+                // if($row->absensi_jenis=="Sakit")
+                //     $total['kelas'.$kelasdetail['kelas_jenjang'].'_sakit']++;
+                // if($row->absensi_jenis=="Ijin")
+                //     $total['kelas7_ijin']++;
+                // if($row->absensi_jenis=="Alpha")
+                //     $total['kelas7_alpha']++;
+                // if($row->absensi_jenis=="Covid")
+                //     $total['kelas7_covid']++;
+            // }
+            // elseif($kelasdetail['kelas_jenjang']==8){
+            //     $total['kelas8_total']++;
+            //     if($row->absensi_jenis=="Sakit")
+            //         $total['kelas8_sakit']++;
+            //     if($row->absensi_jenis=="Ijin")
+            //         $total['kelas8_ijin']++;
+            //     if($row->absensi_jenis=="Alpha")
+            //         $total['kelas8_alpha']++;
+            //     if($row->absensi_jenis=="Covid")
+            //         $total['kelas8_covid']++;
+            // }
+            // elseif($kelasdetail['kelas_jenjang']==9){
+            //     $total['kelas9_total']++;
+            //     if($row->absensi_jenis=="Sakit")
+            //         $total['kelas9_sakit']++;
+            //     if($row->absensi_jenis=="Ijin")
+            //         $total['kelas9_ijin']++;
+            //     if($row->absensi_jenis=="Alpha")
+            //         $total['kelas9_alpha']++;
+            //     if($row->absensi_jenis=="Covid")
+            //         $total['kelas9_covid']++;
+            // }
+
         }
         return response()->json(['status' => 'success', 'data' => $absen, 'total' => $total, 'rekap' => $rekap], 200);
 

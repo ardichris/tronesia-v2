@@ -69,97 +69,97 @@
             <tr>
                 <td style="text-align:center; font-weight: bold">Nilai</td>
                 <td style="text-align:center; font-weight: bold">Predikat</td>
-                <td style="text-align:center; font-weight: bold">Deskripsi</td>
+                <!-- <td style="text-align:center; font-weight: bold">Deskripsi</td> -->
             </tr>
             <tr>
-                <td colspan="5" style="font-weight: bold">Kelompok A</td>
+                <td colspan="4" style="font-weight: bold">Kelompok A</td>
             </tr>
             <tr>
                 <td>1</td>
                 <td>Pendidikan Agama dan Budi Pekerti</td>
                 <td :class="raporAkhir['ra_pak_pengetahuan_nilai'] > 74 || raporAkhir['ra_pak_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_pak_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_pak_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_pak_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{nl2br(sentenceCase(raporAkhir['ra_pak_pengetahuan_deskripsi']))}}</td> -->
             </tr>
             <tr>
                 <td>2</td>
                 <td>Pendidikan Pancasila dan Kewarganegaraan</td>
                 <td :class="raporAkhir['ra_pkn_pengetahuan_nilai'] > 74 || raporAkhir['ra_pkn_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_pkn_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_pkn_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_pkn_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_pkn_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>3</td>
                 <td>Bahasa Indonesia</td>
                 <td :class="raporAkhir['ra_bin_pengetahuan_nilai'] > 74 || raporAkhir['ra_bin_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_bin_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_bin_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_bin_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_bin_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>4</td>
                 <td>Matematika</td>
                 <td :class="raporAkhir['ra_mat_pengetahuan_nilai'] > 74 || raporAkhir['ra_mat_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_mat_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_mat_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_mat_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_mat_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>5</td>
                 <td>Ilmu Pengetahuan Alam</td>
                 <td :class="raporAkhir['ra_ipa_pengetahuan_nilai'] > 74 || raporAkhir['ra_ipa_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_ipa_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_ipa_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_ipa_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_ipa_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>6</td>
                 <td>Ilmu Pengetahuan Sosial</td>
                 <td :class="raporAkhir['ra_ips_pengetahuan_nilai'] > 74 || raporAkhir['ra_ips_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_ips_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_ips_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_ips_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_ips_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>7</td>
                 <td>Bahasa Inggris</td>
                 <td :class="raporAkhir['ra_big_pengetahuan_nilai'] > 74 || raporAkhir['ra_big_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_big_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_big_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_big_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_big_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
-                <td colspan="5" style="font-weight: bold">Kelompok B</td>
+                <td colspan="4" style="font-weight: bold">Kelompok B</td>
             </tr>
             <tr>
                 <td>8</td>
                 <td>Seni Budaya</td>
                 <td :class="raporAkhir['ra_bdy_pengetahuan_nilai'] > 74 || raporAkhir['ra_bdy_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_bdy_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_bdy_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_bdy_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_bdy_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>9</td>
                 <td>Pendidikan Jasmani dan Kesehatan</td>
                 <td :class="raporAkhir['ra_org_pengetahuan_nilai'] > 74 || raporAkhir['ra_org_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_org_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_org_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_org_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_org_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>10</td>
                 <td>Prakarya</td>
                 <td :class="raporAkhir['ra_pky_pengetahuan_nilai'] > 74 || raporAkhir['ra_pky_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_pky_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_pky_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_pky_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_pky_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>11</td>
                 <td>Bahasa Jawa</td>
                 <td :class="raporAkhir['ra_jwa_pengetahuan_nilai'] > 74 || raporAkhir['ra_jwa_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_jwa_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_jwa_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_jwa_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_jwa_pengetahuan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>12</td>
                 <td>Mandarin</td>
                 <td :class="raporAkhir['ra_man_pengetahuan_nilai'] > 74 || raporAkhir['ra_man_pengetahuan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_man_pengetahuan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_man_pengetahuan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_man_pengetahuan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_man_pengetahuan_deskripsi'])}}</td> -->
             </tr>
         </table>
         <br>
@@ -172,97 +172,97 @@
             <tr>
                 <td style="text-align:center; font-weight: bold">Nilai</td>
                 <td style="text-align:center; font-weight: bold">Predikat</td>
-                <td style="text-align:center; font-weight: bold">Deskripsi</td>
+                <!-- <td style="text-align:center; font-weight: bold">Deskripsi</td> -->
             </tr>
             <tr>
-                <td colspan="5" style="font-weight: bold">Kelompok A</td>
+                <td colspan="4" style="font-weight: bold">Kelompok A</td>
             </tr>
             <tr>
                 <td>1</td>
                 <td>Pendidikan Agama dan Budi Pekerti</td>
                 <td :class="raporAkhir['ra_pak_keterampilan_nilai'] > 74 || raporAkhir['ra_pak_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_pak_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_pak_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_pak_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_pak_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>2</td>
                 <td>Pendidikan Pancasila dan Kewarganegaraan</td>
                 <td :class="raporAkhir['ra_pkn_keterampilan_nilai'] > 74 || raporAkhir['ra_pkn_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_pkn_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_pkn_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_pkn_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_pkn_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>3</td>
                 <td>Bahasa Indonesia</td>
                 <td :class="raporAkhir['ra_bin_keterampilan_nilai'] > 74 || raporAkhir['ra_bin_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_bin_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_bin_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_bin_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_bin_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>4</td>
                 <td>Matematika</td>
                 <td :class="raporAkhir['ra_mat_keterampilan_nilai'] > 74 || raporAkhir['ra_mat_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_mat_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_mat_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_mat_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_mat_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>5</td>
                 <td>Ilmu Pengetahuan Alam</td>
                 <td :class="raporAkhir['ra_ipa_keterampilan_nilai'] > 74 || raporAkhir['ra_ipa_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_ipa_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_ipa_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_ipa_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_ipa_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>6</td>
                 <td>Ilmu Pengetahuan Sosial</td>
                 <td :class="raporAkhir['ra_ips_keterampilan_nilai'] > 74 || raporAkhir['ra_ips_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_ips_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_ips_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_ips_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_ips_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>7</td>
                 <td>Bahasa Inggris</td>
                 <td :class="raporAkhir['ra_big_keterampilan_nilai'] > 74 || raporAkhir['ra_big_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_big_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_big_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_big_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_big_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
-                <td colspan="5" style="font-weight: bold">Kelompok B</td>
+                <td colspan="4" style="font-weight: bold">Kelompok B</td>
             </tr>
             <tr>
                 <td>8</td>
                 <td>Seni Budaya</td>
                 <td :class="raporAkhir['ra_bdy_keterampilan_nilai'] > 74 || raporAkhir['ra_bdy_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_bdy_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_bdy_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_bdy_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_bdy_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>9</td>
                 <td>Pendidikan Jasmani dan Kesehatan</td>
                 <td :class="raporAkhir['ra_org_keterampilan_nilai'] > 74 || raporAkhir['ra_org_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_org_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_org_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_org_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_org_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>10</td>
                 <td>Prakarya</td>
                 <td :class="raporAkhir['ra_pky_keterampilan_nilai'] > 74 || raporAkhir['ra_pky_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_pky_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_pky_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_pky_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_pky_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>11</td>
                 <td>Bahasa Jawa</td>
                 <td :class="raporAkhir['ra_jwa_keterampilan_nilai'] > 74 || raporAkhir['ra_jwa_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_jwa_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_jwa_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_jwa_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_jwa_keterampilan_deskripsi'])}}</td> -->
             </tr>
             <tr>
                 <td>12</td>
                 <td>Mandarin</td>
                 <td :class="raporAkhir['ra_man_keterampilan_nilai'] > 74 || raporAkhir['ra_man_keterampilan_nilai'] == null ? 'nilai' : 'nilaikkm'">{{raporAkhir['ra_man_keterampilan_nilai']}}</td>
                 <td style="text-align:center">{{raporAkhir['ra_man_keterampilan_predikat']}}</td>
-                <td>{{sentenceCase(raporAkhir['ra_man_keterampilan_deskripsi'])}}</td>
+                <!-- <td>{{sentenceCase(raporAkhir['ra_man_keterampilan_deskripsi'])}}</td> -->
             </tr>
         </table>
         <table class="subrapor">

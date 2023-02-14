@@ -116,7 +116,7 @@ class WalikelasImport implements ToCollection, WithStartRow
                                             'kmr_extracurricular3_score' => $row[7],
                                             'kmr_extracurricular3_predicate' => predikatEkstra($row[7]),
                                             'kmr_attedance_sick' => $row[22],
-                                            'kmr_attedance_excuse' => $row[23],
+                                            'kmr_attedance_excuse' => $row['23'],
                                             'kmr_attedance_alpha' => $row[24],
                                             'kmr_note_verse' => $ayat?$ayat[0]:null,
                                             'kmr_note_godword' => $ayat?$ayat[1]:null,

@@ -7,6 +7,14 @@ import IndexBarang from './pages/barangs/Index.vue'
 import DataBarang from './pages/barangs/Barang.vue'
 import AddBarang from './pages/barangs/Add.vue'
 import EditBarang from './pages/barangs/Edit.vue'
+import IndexInventory from './pages/inventories/Index.vue'
+import DataInventory from './pages/inventories/Inventory.vue'
+import AddInventory from './pages/inventories/Add.vue'
+import EditInventory from './pages/inventories/Edit.vue'
+import IndexDelivery from './pages/deliveries/Index.vue'
+import DataDelivery from './pages/deliveries/Delivery.vue'
+import AddDelivery from './pages/deliveries/Add.vue'
+import EditDelivery from './pages/deliveries/Edit.vue'
 import IndexPemakaianBarang from './pages/pemakaianbarangs/Index.vue'
 import DataPemakaianBarang from './pages/pemakaianbarangs/PemakaianBarang.vue'
 import AddPemakaianBarang from './pages/pemakaianbarangs/Add.vue'
@@ -276,6 +284,68 @@ const router = new Router({
                     name: 'pemakaianbarang.edit',
                     component: EditPemakaianBarang,
                     meta: { title: 'Edit Barang' }
+                }
+            ]
+        },
+        {
+            path: '/inventories',
+            component: IndexInventory,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'inventories.data',
+                    component: DataInventory,
+                    meta: { title: 'Daftar Inventaris' }
+                },
+                {
+                    path: 'add',
+                    name: 'inventories.add',
+                    component: AddInventory,
+                    meta: { title: 'Tambah Inventaris' }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'inventories.view',
+                    component: EditInventory,
+                    meta: { title: 'View Inventaris' }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'inventories.edit',
+                    component: EditInventory,
+                    meta: { title: 'Edit Inventaris' }
+                }
+            ]
+        },
+        {
+            path: '/deliveries',
+            component: IndexDelivery,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'deliveries.data',
+                    component: DataDelivery,
+                    meta: { title: 'Daftar Delivery' }
+                },
+                {
+                    path: 'add',
+                    name: 'deliveries.add',
+                    component: AddDelivery,
+                    meta: { title: 'Tambah Delivery' }
+                },
+                {
+                    path: 'view/:id',
+                    name: 'deliveries.view',
+                    component: EditDelivery,
+                    meta: { title: 'View Delivery' }
+                },
+                {
+                    path: 'edit/:id',
+                    name: 'deliveries.edit',
+                    component: EditDelivery,
+                    meta: { title: 'Edit Delivery' }
                 }
             ]
         },

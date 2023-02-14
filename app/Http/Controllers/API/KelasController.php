@@ -9,9 +9,116 @@ use App\Kelas;
 use App\User;
 use App\Siswa;
 use App\KelasAnggota;
+use App\JamMengajar;
+use App\JadwalPelajaran;
 
 class KelasController extends Controller
 {
+    public function duplikat(Request $request){
+        $user = $request->user();
+        if($user->role==0){
+            if($request->kelas=='true'){
+                $kelas = Kelas::where('periode_id',$user->periode-1)
+                                ->where('unit_id', $user->unit_id)
+                                ->get();
+                foreach($kelas as $rowKelas){
+                    $existClass = Kelas::where('kelas_nama',$rowKelas->kelas_nama)
+                                        ->where('kelas_jenjang',$rowKelas->kelas_jenjang)
+                                        ->where('k_jenis',$rowKelas->k_jenis)
+                                        ->where('periode_id',$user->periode)
+                                        ->where('unit_id',$user->unit_id)
+                                        ->first();
+                    if($existClass == null){
+                        $createdClass = Kelas::create([
+                                                    'kelas_nama' => $rowKelas->kelas_nama,
+                                                    'kelas_jenjang' => $rowKelas->kelas_jenjang,
+                                                    'k_jenis' => $rowKelas->k_jenis,
+                                                    'kelas_wali' => $rowKelas->kelas_wali,
+                                                    'k_mentor' => $rowKelas->k_mentor,
+                                                    'k_mapel' => $rowKelas->k_mapel,
+                                                    'unit_id' => $user->unit_id,
+                                                    'periode_id' => $user->periode,
+                                                ]);
+                        $newClass = $createdClass->id;
+                    } else {
+                        $newClass = $existClass->id;
+                    }
+                    if($request->member=='true'){
+                        $anggota = KelasAnggota::where('kelas_id', $rowKelas->id)->get();
+                        foreach($anggota as $rowAnggota){
+                            $existAnggota = KelasAnggota::where('kelas_id',$newClass)
+                                                        ->where('siswa_id',$rowAnggota->siswa_id)
+                                                        ->where('absen',$rowAnggota->absen)
+                                                        ->where('periode_id',$user->periode)
+                                                        ->exists();
+                            if(!$existAnggota){
+                                $newAnggota = KelasAnggota::create([
+                                                                    'kelas_id' => $newClass,
+                                                                    'siswa_id' => $rowAnggota->siswa_id,
+                                                                    'absen' => $rowAnggota->absen,
+                                                                    'periode_id' => $user->periode,
+                                                                    ]);
+                            }
+                        }
+                    }
+
+                    if($request->mengajar=='true'){
+                        $dataMengajar = JamMengajar::where('kelas_id', $rowKelas->id)->get();
+                        foreach($dataMengajar as $rowMengajar){
+                            $existMengajar = JamMengajar::where('kelas_id',$newClass)
+                                                        ->where('mapel_id',$rowMengajar->mapel_id)
+                                                        ->where('guru_id',$rowMengajar->guru_id)
+                                                        ->where('unit_id',$rowMengajar->unit_id)
+                                                        ->where('periode_id',$user->periode)
+                                                        ->exists();
+                            if(!$existMengajar){
+                                $newMengajar = JamMengajar::create([
+                                                                    'kelas_id' => $newClass,
+                                                                    'mapel_id' => $rowMengajar->mapel_id,
+                                                                    'guru_id' => $rowMengajar->guru_id,
+                                                                    'unit_id' => $user->unit_id,
+                                                                    'user_id' => $user->id,
+                                                                    'periode_id' => $user->periode
+                                                                    ]);
+                            }
+                        }
+                    }
+
+                    if($request->jadwal=='true'){
+                        $dataJadwal = JadwalPelajaran::where('kelas_id', $rowKelas->id)->get();
+                        foreach($dataJadwal as $rowJadwal){
+                            $existJadwal = JadwalPelajaran::where('kelas_id',$newClass)
+                                                            ->where('mapel_id',$rowJadwal->mapel_id)
+                                                            ->where('guru_id',$rowJadwal->guru_id)
+                                                            ->where('jp_hari',$rowJadwal->jp_hari)
+                                                            ->where('jp_jampel',$rowJadwal->jp_jampel)
+                                                            ->where('guru_id',$rowJadwal->guru_id)
+                                                            ->where('unit_id',$rowJadwal->unit_id)
+                                                            ->where('periode_id',$user->periode)
+                                                            ->exists();
+                            if(!$existJadwal){
+                                $newJadwal = JadwalPelajaran::create([
+                                                                    'kelas_id' => $newClass,
+                                                                    'mapel_id' => $rowJadwal->mapel_id,
+                                                                    'guru_id' => $rowJadwal->guru_id,
+                                                                    'jp_hari' => $rowJadwal->jp_hari,
+                                                                    'jp_jampel' => $rowJadwal->jp_jampel,
+                                                                    'unit_id' => $user->unit_id,
+                                                                    'user_id' => $user->id,
+                                                                    'periode_id' => $user->periode
+                                                                    ]);
+                            }
+                        }
+                    }
+
+                }
+            }
+            return response()->json(['status' => 'Success'],200);
+        } else {
+            return response()->json(['status'  => 'Unauthorized'],400);
+        }
+    }
+
     public function getAnggota($id)
     {
         $anggota = Siswa::whereKelas_id($id)->orderBy('s_nama', 'ASC');
@@ -95,8 +202,6 @@ class KelasController extends Controller
 
     public function update(Request $request, $id)
     {
-
-
         $this->validate($request, [
             'kelas_jenjang' => 'required|string',
         ]);

@@ -13,7 +13,7 @@ const state = () => ({
         kelas: [],
         jurnal: []
     },
-    
+
     jurnal: {
         jm_kode: '',
         mapel_id: '',
@@ -31,7 +31,7 @@ const state = () => ({
         detail: [],
         pelanggaran: [],
     },
-    page: 1 
+    page: 1
 })
 
 const mutations = {
@@ -174,7 +174,7 @@ const actions = {
         let mapels = state.jurnal.mapel_id.mapel_kode
         let jenjangs = state.jurnal.kelas_id.kelas_jenjang
         return new Promise((resolve, reject) => {
-            $axios.get(`/kompetensi?m=${mapels}&j=${jenjangs}`)
+            $axios.get(`/kompetensi?m=${mapels}&j=${jenjangs}&s=active`)
             .then((response) => {
                 commit('KOMPETENSI_DATA', response.data)
                 resolve(response.data)

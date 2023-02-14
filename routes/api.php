@@ -28,9 +28,10 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/pelanggaran', 'API\PelanggaranController')->except(['create', 'show']);
     Route::post('/pelanggaran/{id}', 'API\PelanggaranController@update')->name('pelanggarans.update');
     Route::resource('/mapel', 'API\MapelController')->except(['create', 'show']);
-    Route::resource('/kelas', 'API\KelasController')->except(['create', 'show']);
+    Route::put('/kelas/duplikat','API\KelasController@duplikat');
     Route::put('/kelas/addanggota','API\KelasController@tambahAnggota');
     Route::get('/kelas/anggotakelas/{kode}','API\KelasController@getAnggota');
+    Route::resource('/kelas', 'API\KelasController')->except(['create', 'show']);
     Route::resource('/masterpelanggaran', 'API\MasterPelanggaranController')->except(['create', 'show']);
     Route::resource('/barang', 'API\BarangController')->except(['create', 'show']);
     Route::resource('/pemakaianbarang', 'API\PemakaianBarangController')->except(['create', 'show']);
@@ -97,6 +98,10 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('/penerimaansiswa/pembayaran/import', 'API\PenerimaanSiswaController@importPembayaran');
     Route::resource('/lingkupmateri', 'API\LingkupMateriController');
     Route::resource('/raporkurmer', 'API\KurmerReportController');
+    Route::resource('/inventories', 'API\InventoryController');
+    Route::resource('/deliveries', 'API\DeliveryController');
+    Route::put('/deliveries/changestatus/{kode}', 'API\DeliveryController@ChangeStatus');
+
 
 
 

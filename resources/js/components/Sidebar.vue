@@ -94,8 +94,8 @@
                     </li>
                     <li class="nav-item" v-if="authenticated.role!=2">
                         <a class="nav-link ml-3">
-                        <i class="fas fa-barcode nav-icon"></i>
-                        <p>Master Inventaris</p>
+                            <i class="fas fa-barcode nav-icon"></i>
+                            <p><router-link :to="{ name: 'inventories.data' }">Master Inventaris</router-link></p>
                         </a>
                     </li>
                     </ul>
@@ -131,6 +131,12 @@
                             <a class="nav-link">
                                 <i class="fas fa-ticket-alt nav-icon"></i>
                                 <p><router-link :to="{ name: 'kitirsiswa.data' }">Kitir Siswa</router-link></p>
+                            </a>
+                        </li>
+                        <li class="nav-item ml-3">
+                            <a class="nav-link">
+                                <i class="fas fa-boxes nav-icon"></i>
+                                <p><router-link :to="{ name: 'deliveries.data' }">Delivery</router-link></p>
                             </a>
                         </li>
                         <li class="nav-item ml-3">
@@ -224,8 +230,8 @@
                         </li>
                         <li class="nav-item" v-if="authenticated.role!=2">
                             <a class="nav-link ml-3">
-                            <i class="fas fa-barcode nav-icon"></i>
-                            <p>Inventaris</p>
+                                <i class="fas fa-barcode nav-icon"></i>
+                                <p><router-link :to="{ name: 'inventories.data' }">Inventaris</router-link></p>
                             </a>
                         </li>
                     </ul>

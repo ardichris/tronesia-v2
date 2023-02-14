@@ -71,45 +71,40 @@ function detail_report($id, $periode, $jenjang, $siswa){
                             ->where('periode_id', $periode)
                             ->whereIn('lingkupmateri_id', $lm_id)
                             ->get();
-        $max= $dbnilai->max('ns_nilai');
-        $min= $dbnilai->min('ns_nilai');
-        $lm_max= $max?$dbnilai->where('ns_nilai', $max)->first():null;
-        $lm_min= $min?$dbnilai->where('ns_nilai', $min)->first():null;
-        $descmax = $lm_max?$lingkupmateri->where('id',$lm_max->lingkupmateri_id)->first():null;
-        $descmin= $lm_min?$lingkupmateri->where('id',$lm_min->lingkupmateri_id)->first():null;
-        if($max>=93){
-            $nilai['max']= $descmax?'Menunjukkan penguasaan yang sangat baik dalam '.lcfirst($descmax->lm_description).'.':null;
-        } elseif($max>=84){
-            $nilai['max']= $descmax?'Menunjukkan penguasaan yang baik dalam '.lcfirst($descmax->lm_description).'.':null;
-        } elseif($max>=75){
-            $nilai['max']= $descmax?'Menunjukkan penguasaan yang cukup baik dalam '.lcfirst($descmax->lm_description).'.':null;
-        } elseif($max<75) {
-            $nilai['max']= $descmax?'Kurang menguasai dalam '.lcfirst($descmax->lm_description).'.':null;
-        } else {
-            $nilai['max']= null;
-        }
-        if($max>=93){
-            $nilai['min']= $descmin?'Perlu penguatan dalam '.lcfirst($descmin->lm_description).'.':null;
-        } elseif($max>=84){
-            $nilai['min']= $descmin?'Perlu peningkatan dalam '.lcfirst($descmin->lm_description).'.':null;
-        } elseif($max>=75){
-            $nilai['min']= $descmin?'Perlu bimbingan dalam '.lcfirst($descmin->lm_description).'.':null;
-        } elseif($max<75) {
-            $nilai['min']= $descmin?'Perlu pendampingan dalam '.lcfirst($descmin->lm_description).'.':null;
-        } else {
-            $nilai['min']= null;
-        }
 
         $countlm = 0;
         $avg = 0;
         $nilai['avg'] = null;
         //$nilai['avg'] = $dbnilai->avg('ns_nilai');
+        $nilaideskmax=0;
+        $nilaideskmin=100;
+        $deskmax=$deskmin='';
         foreach($lm_id as $rowlm){
+            $avglm = 0;
             if($dbnilai->where('lingkupmateri_id',$rowlm)->count() > 0){
                 $avglm = $dbnilai->where('lingkupmateri_id',$rowlm)->avg('ns_nilai');
                 //$countlm++;
                 $avg = $avg + $avglm;
                 //$nilai['avg']= $avg/$countlm;
+            }
+
+            $desclm = $lingkupmateri->where('id', $rowlm)->first();
+            if($nilaideskmax==0&&$nilaideskmin==100){
+                $nilaideskmax=$nilaideskmin=$avglm;
+                $deskmax = lcfirst($desclm->lm_description).", ";
+                $deskmin = lcfirst($desclm->lm_description).", ";
+            } else {
+                if($avglm>$nilaideskmax&&$avglm>0){
+                    $nilaideskmax = $avglm;
+                    $deskmax = lcfirst($desclm->lm_description).", ";
+                }elseif($avglm<$nilaideskmin&&$avglm>0){
+                    $nilaideskmin = $avglm;
+                    $deskmin = lcfirst($desclm->lm_description).", ";
+                } elseif($avglm==$nilaideskmax&&$avglm>0){
+                    $deskmax = $deskmax.lcfirst($desclm->lm_description).", ";
+                } elseif($avglm==$nilaideskmin&&$avglm>0){
+                    $deskmin = $deskmin.lcfirst($desclm->lm_description).", ";
+                }
             }
         }
         $nilai['avg']= $avg/count($lm_id);
@@ -147,6 +142,35 @@ function detail_report($id, $periode, $jenjang, $siswa){
             $nilai['predicate']= 'D';
         } else {
             $nilai['predicate']= null;
+        }
+
+        $max= $dbnilai->max('ns_nilai');
+        $min= $dbnilai->min('ns_nilai');
+        $lm_max= $max?$dbnilai->where('ns_nilai', $max)->first():null;
+        $lm_min= $min?$dbnilai->where('ns_nilai', $min)->first():null;
+        $descmax = $lm_max?$lingkupmateri->where('id',$lm_max->lingkupmateri_id)->first():null;
+        $descmin= $lm_min?$lingkupmateri->where('id',$lm_min->lingkupmateri_id)->last():null;
+        if($max>=93){
+            $nilai['max']= $deskmax?'Menunjukkan penguasaan yang sangat baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+        } elseif($max>=84){
+            $nilai['max']= $deskmax?'Menunjukkan penguasaan yang baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+        } elseif($max>=75){
+            $nilai['max']= $deskmax?'Menunjukkan penguasaan yang cukup baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+        } elseif($max<75) {
+            $nilai['max']= $deskmax?'Kurang menguasai dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+        } else {
+            $nilai['max']= null;
+        }
+        if($min>=93){
+            $nilai['min']= $deskmin?'Perlu penguatan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+        } elseif($min>=84){
+            $nilai['min']= $deskmin?'Perlu peningkatan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+        } elseif($min>=75){
+            $nilai['min']= $deskmin?'Perlu bimbingan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+        } elseif($min<75) {
+            $nilai['min']= $deskmin?'Perlu pendampingan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+        } else {
+            $nilai['min']= null;
         }
 
         $cek = KmrDetail::where('kmr_id',$id)

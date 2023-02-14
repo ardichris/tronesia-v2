@@ -179,7 +179,7 @@ class NilaiSiswaController extends Controller
             if(in_array(request()->jenis,['SUM','KI3'])){
                 $nilaisiswa[$key]['ns_tugas'] = $nilai->value('ns_tugas');
                 $nilaisiswa[$key]['ns_perbaikan'] = $nilai->value('ns_perbaikan');
-                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(AVERAGE(I'.$counter.':J'.$counter.'),0),"")';
+                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(AVERAGE(I'.$counter.':J'.$counter.'),2),"")';
                 $nilaisiswa[$key]['ns_avg_tes'] = '=IF(F'.$counter.'>75,F'.$counter.',IF(ISBLANK(G'.$counter.'),F'.$counter.',IF(ISNUMBER(G'.$counter.'),IF(MAX(F'.$counter.',G'.$counter.')>75,75,MAX(F'.$counter.',G'.$counter.')))))';
                 $nilaisiswa[$key]['ns_avg_tugas'] = '=IF(D'.$counter.'>75,D'.$counter.',IF(ISBLANK(E'.$counter.'),D'.$counter.',IF(ISNUMBER(E'.$counter.'),IF(MAX(D'.$counter.',E'.$counter.')>75,75,MAX(D'.$counter.',E'.$counter.')))))';
             } elseif(in_array(request()->jenis,['PAS','PTS','SAS'])) {
@@ -187,7 +187,7 @@ class NilaiSiswaController extends Controller
             } elseif(request()->jenis=='KI4'){
                 $nilaisiswa[$key]['ns_tugas'] = $nilai->value('ns_tugas');
                 $nilaisiswa[$key]['ns_perbaikan'] = $nilai->value('ns_perbaikan');
-                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(AVERAGE(D'.$counter.':G'.$counter.'),0),"")';
+                $nilaisiswa[$key]['ns_nilai'] = '=IFERROR(ROUND(AVERAGE(D'.$counter.':G'.$counter.'),2),"")';
             }
             //$nilaisiswa[$key]['sisipan'] = $nilai->value('ns_sisipan');
             //$row = array("nilai" => $nilai->ns_nilai);

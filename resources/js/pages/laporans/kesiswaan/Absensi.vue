@@ -3,7 +3,7 @@
         <div class="panel">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-lg-6 col-md-6 ">
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title"><i class="fas fa-filter mr-1"></i>Filter Absensi</h3>
@@ -116,37 +116,41 @@
                                         <thead>
                                             <tr>
                                                 <th>Jenjang</th>
-                                                <th>Total</th>
+                                                <th>Issued</th>
                                                 <th>Sakit</th>
                                                 <th>Ijin</th>
                                                 <th>Alpha</th>
                                                 <th>Covid</th>
+                                                <th>Total</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td>VII</td>
-                                                <td>{{total.kelas7_total}}</td>
-                                                <td>{{total.kelas7_sakit}}</td>
-                                                <td>{{total.kelas7_ijin}}</td>
-                                                <td>{{total.kelas7_alpha}}</td>
-                                                <td>{{total.kelas7_covid}}</td>
+                                                <td>{{total.kelas7_Issued}}</td>
+                                                <td>{{total.kelas7_Sakit}}</td>
+                                                <td>{{total.kelas7_Ijin}}</td>
+                                                <td>{{total.kelas7_Alpha}}</td>
+                                                <td>{{total.kelas7_Covid}}</td>
+                                                <td>{{total.kelas7_Total}}</td>
                                             </tr>
                                             <tr>
                                                 <td>VIII</td>
-                                                <td>{{total.kelas8_total}}</td>
-                                                <td>{{total.kelas8_sakit}}</td>
-                                                <td>{{total.kelas8_ijin}}</td>
-                                                <td>{{total.kelas8_alpha}}</td>
-                                                <td>{{total.kelas8_covid}}</td>
+                                                <td>{{total.kelas8_Issued}}</td>
+                                                <td>{{total.kelas8_Sakit}}</td>
+                                                <td>{{total.kelas8_Ijin}}</td>
+                                                <td>{{total.kelas8_Alpha}}</td>
+                                                <td>{{total.kelas8_Covid}}</td>
+                                                <td>{{total.kelas8_Total}}</td>
                                             </tr>
                                             <tr>
                                                 <td>IX</td>
-                                                <td>{{total.kelas9_total}}</td>
-                                                <td>{{total.kelas9_sakit}}</td>
-                                                <td>{{total.kelas9_ijin}}</td>
-                                                <td>{{total.kelas9_alpha}}</td>
-                                                <td>{{total.kelas9_covid}}</td>
+                                                <td>{{total.kelas9_Issued}}</td>
+                                                <td>{{total.kelas9_Sakit}}</td>
+                                                <td>{{total.kelas9_Ijin}}</td>
+                                                <td>{{total.kelas9_Alpha}}</td>
+                                                <td>{{total.kelas9_Covid}}</td>
+                                                <td>{{total.kelas9_Total}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -154,7 +158,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-lg-6 col-md-6">
                         <b-table striped hover bordered :items="absensis.data" :fields="fields" show-empty>
                             <template v-slot:cell(absensi_tanggal)="row">
                                 <span>{{row.item.absensi_tanggal|formatDateView}}</span>
@@ -191,6 +195,7 @@ export default {
                 { key: 'kelas', label: 'Kelas'},
                 { key: 'absensi_jenis', label: 'Jenis' },
                 { key: 'absensi_keterangan', label: 'Keterangan' },
+                { key: 'ab_status', label: 'Status' },
             ],
         }
     },

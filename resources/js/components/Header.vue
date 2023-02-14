@@ -85,6 +85,11 @@ import { mapState, mapActions } from 'vuex'
 import moment from 'moment'
 
 export default {
+    beforeCreate() {
+        if (this.$store.state.isLogged) {
+            this.$router.push('/login')
+        }
+    },
     computed: {
     ...mapState('user', {
         authenticated: state => state.authenticated
