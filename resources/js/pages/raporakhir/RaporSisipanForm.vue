@@ -16,7 +16,7 @@
                 <td style="width:40%">{{raporSisipan['kelas']['kelas']['kelas_nama']}} / {{raporSisipan['kelas']['absen']}}</td>
                 <td style="width:20%">Semester</td>
                 <td style="width:1%">:</td>
-                <td style="width:20%">1 (Satu)</td>
+                <td style="width:20%">2 (Dua)</td>
             </tr>
             <tr>
                 <td>Nomor Induk</td>
@@ -155,8 +155,8 @@
                 <td :class="raporSisipan['rs_mat_pry'] > 74 || raporSisipan['rs_mat_pry'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_mat_pry']}}</td>
             </tr>
             <tr>
-                <td rowspan="2" style="width:50px">6. IPA</td>
-                <td>Biologi</td>
+                <td style="width:50px">6. IPA</td>
+                <!-- <td>Biologi</td>
                 <td :class="raporSisipan['rs_bio_uh1'] > 74 || raporSisipan['rs_bio_uh1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_bio_uh1']}}</td>
                 <td :class="raporSisipan['rs_bio_tgs1'] > 74 || raporSisipan['rs_bio_tgs1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_bio_tgs1']}}</td>
                 <td :class="raporSisipan['rs_bio_uh2'] > 74 || raporSisipan['rs_bio_uh2'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_bio_uh2']}}</td>
@@ -168,7 +168,7 @@
                 <td :class="raporSisipan['rs_bio_prd'] > 74 || raporSisipan['rs_bio_prd'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_bio_prd']}}</td>
                 <td :class="raporSisipan['rs_bio_pry'] > 74 || raporSisipan['rs_bio_pry'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_bio_pry']}}</td>
             </tr>
-            <tr>
+            <tr>-->
                 <td>Fisika</td>
                 <td :class="raporSisipan['rs_fis_uh1'] > 74 || raporSisipan['rs_fis_uh1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_fis_uh1']}}</td>
                 <td :class="raporSisipan['rs_fis_tgs1'] > 74 || raporSisipan['rs_fis_tgs1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_fis_tgs1']}}</td>
@@ -182,7 +182,7 @@
                 <td :class="raporSisipan['rs_fis_pry'] > 74 || raporSisipan['rs_fis_pry'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_fis_pry']}}</td>
             </tr>
             <tr>
-                <td rowspan="3">7. IPS</td>
+                <td rowspan="2">7. IPS</td>
                 <td>Geografi</td>
                 <td :class="raporSisipan['rs_geo_uh1'] > 74 || raporSisipan['rs_geo_uh1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_geo_uh1']}}</td>
                 <td :class="raporSisipan['rs_geo_tgs1'] > 74 || raporSisipan['rs_geo_tgs1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_geo_tgs1']}}</td>
@@ -208,7 +208,7 @@
                 <td :class="raporSisipan['rs_eko_prd'] > 74 || raporSisipan['rs_eko_prd'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_prd']}}</td>
                 <td :class="raporSisipan['rs_eko_pry'] > 74 || raporSisipan['rs_eko_pry'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_eko_pry']}}</td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td>Sejarah</td>
                 <td :class="raporSisipan['rs_sej_uh1'] > 74 || raporSisipan['rs_sej_uh1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_uh1']}}</td>
                 <td :class="raporSisipan['rs_sej_tgs1'] > 74 || raporSisipan['rs_sej_tgs1'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_tgs1']}}</td>
@@ -220,7 +220,7 @@
                 <td :class="raporSisipan['rs_sej_prk'] > 74 || raporSisipan['rs_sej_prk'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_prk']}}</td>
                 <td :class="raporSisipan['rs_sej_prd'] > 74 || raporSisipan['rs_sej_prd'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_prd']}}</td>
                 <td :class="raporSisipan['rs_sej_pry'] > 74 || raporSisipan['rs_sej_pry'] == null ? 'nilai' : 'nilaikkm'">{{raporSisipan['rs_sej_pry']}}</td>
-            </tr>
+            </tr> -->
             <tr>
                 <td colspan="12" style="font-weight: bold">Kelompok B</td>
             </tr>
@@ -327,8 +327,8 @@
         <table class="TTD">
             <tr>
                 <td style="text-align:left; width:30%"></td>
-                <td style="text-align:center; padding:1px; width:40%" rowspan="5"><img :src="'/storage/stamps/'+raporSisipan['stamp']+'.png'" style="width:100px"></td>
-                <td style="text-align:center; width:30%">Surabaya, 14 Oktober 2022</td>
+                <td style="text-align:center; padding:1px; width:40%" rowspan="5"><!--<img :src="'/storage/stamps/'+raporSisipan['stamp']+'.png'" style="width:100px">--></td>
+                <td style="text-align:center; width:30%">Surabaya, 20 Maret 2023</td>
             </tr>
             <tr>
                 <td></td>
@@ -340,7 +340,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td style="text-align:center"><img :src="'/storage/signs/'+raporSisipan['ttd']+'.png'" style="width: 100px;"></td>
+                <td style="text-align:center"><!--<img :src="'/storage/signs/'+raporSisipan['ttd']+'.png'" style="width: 100px;">--><br><br><br></td>
             </tr>
             <tr>
                 <td></td>

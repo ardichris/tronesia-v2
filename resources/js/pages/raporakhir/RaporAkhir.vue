@@ -491,17 +491,17 @@
                                 <v-select
                                     :options="filterTP(item)"
                                     :filterable="false"
-                                    label="kd_kode"
+                                    label="lm_order"
                                     v-model="settingTP.field[item][items]">
 
                                     <template slot="no-options">
                                         Masukkan Kata Kunci
                                     </template>
                                     <template slot="option" slot-scope="option">
-                                        {{ option.kd_kode }}
+                                        LM{{ option.lm_order }}
                                     </template>
                                     <template slot="selected-option" slot-scope="option">
-                                        <span class="badge badge-primary">{{ option.kd_kode }}</span>
+                                        <span class="badge badge-primary">LM{{ option.lm_order }}</span>
                                     </template>
                                 </v-select>
                             </div>
@@ -836,9 +836,8 @@ export default {
     },
     data() {
         return {
-            mapel_sisipan : ['PAK','PKN','BIN','BIG','MAT','BIO','FIS',
-                             'EKO','GEO','SEJ','SNR','SNM','MEK','TIK',
-                             'ORG','JWA','MAN'],
+            mapel_sisipan : ['PAK','PKN','BIN','BIG','MAT','IPA','IPS',
+                             'SNR','SNM','MEK','TIK','ORG','JWA','MAN'],
             field_sisipan : ['1','2','3','4'],
             fields: [
                 { key: 's_nama', label: 'Nama Siswa' },
@@ -866,6 +865,7 @@ export default {
             raporPetra: state => state.raporpetra,
             exportParameter: state => state.exportParameter,
             kompetensi: state => state.kompetensi,
+            lingkupmateri: state => state.lingkupmateri,
             settingTP: state => state.settingTP,
             kelasdata: state => state.kelas,
             //jenisFile: state => state.importrapor,
@@ -901,6 +901,7 @@ export default {
                                     'getRapor',
                                     'getKelas',
                                     'getKompetensi',
+                                    'getLingkupMateri',
                                     'getSettingSisipan',
                                     'uploadLedger',
                                     'submitRaporSisipan',
@@ -916,7 +917,7 @@ export default {
         ...mapMutations('raporakhir', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
 
         filterTP(mapel){
-          return this.kompetensi.filter(item => item.kompetensi_mapel === mapel)
+          return this.lingkupmateri.filter(item => item.mapel.mapel_kode === mapel)
         },
         submitExport(){
             window.open(`/api/exportrapor?api_token=${this.token}&file=${this.exportParameter.file}&rapor=${this.exportParameter.rapor}&grup=${this.exportParameter.grup}&detail=${this.exportParameter.detail}`,)
@@ -1095,7 +1096,7 @@ export default {
         },
         settingsisipan(){
             this.getSettingSisipan()
-            this.getKompetensi().then(()=>{
+            this.getLingkupMateri().then(()=>{
                 this.$bvModal.show('setting-sisipan')
             })
         },

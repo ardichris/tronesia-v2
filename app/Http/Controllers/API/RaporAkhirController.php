@@ -24,6 +24,7 @@ use App\Mapel;
 use App\SisipanField;
 use App\KurmerReport;
 use App\Kompetensi;
+use App\LingkupMateri;
 use PDF;
 use Ramsey\Uuid\Uuid;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -67,10 +68,6 @@ function nilaiSisipanKurmer($id, $unit) {
                                             'periode_id'])
                                 ->first();
 
-    $fieldrapor = SisipanField::where('periode_id',$rapor['periode_id'])
-                                ->where('unit_id', $unit)
-                                ->get()->toArray();
-
     $kelas = KelasAnggota::whereSiswa_id($rapor['siswa']['id'])
                                 ->where('periode_id',$rapor['periode_id'])
                                 ->with('kelas')
@@ -98,68 +95,92 @@ function nilaiSisipanKurmer($id, $unit) {
                         'DC' => [],
                     ];
 
-    $kelompok = ['1','2','3','4','STS'];
+    $kelompok = [1,2,3,4];
     foreach($raporSisipan as $key=>$value){
-        foreach($kelompok as $valuekelompok){
-            if($valuekelompok=='STS'){
-                $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                        ->where('periode_id',$rapor['periode_id'])
-                                        ->where('ns_jenis_nilai', 'STS')
-                                        ->with(['mapel'])
-                                        ->whereHas('mapel', function($query) use($key){
-                                            $query->where('mapel_kode', $key);
-                                        })
-                                        ->first();
-                $raporSisipan[$key][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
-                $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
-
-            } else {
-            $komp = SisipanField::where('periode_id',$rapor['periode_id'])
-                                ->where('unit_id', $unit)
-                                ->where('mapel', $key)
-                                ->where('field', $valuekelompok)
-                                ->with('kompetensi')
-                                ->first();
-            if($komp){
-                $kompetensi = explode('.', $komp->kompetensi->kd_kode);
-                $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+        $mapelid = Mapel::where('mapel_kode', $key)->value('id');
+        $lm = LingkupMateri::where('mapel_id',$mapelid)
+                            ->where('lm_grade',7)
+                            ->where('lm_semester', 2)
+                            ->get();
+        foreach($kelompok as $valkelompok){
+            $raporSisipan[$key][$valkelompok]=[
+                                                'ns_tugas' => null,
+                                                'ns_tes' => null,
+                                                'ns_jenis' => null,
+                                                'LM' =>  null
+                                                ];
+        }
+        $valuekelompok = 1;
+        foreach($lm as $valuelm) {
+            $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
                                     ->where('periode_id',$rapor['periode_id'])
-                                    ->where('kompetensi_id',$komp['kompetensi_id'])
-                                    ->with(['kompetensi','mapel'])
+                                    ->where('lingkupmateri_id',$valuelm['id'])
+                                    ->with(['lingkupmateri','mapel'])
                                     ->first();
 
-                if($nilaisiswa){
-                    $raporSisipan[$key][$valuekelompok]=[
-                                                        'ns_tugas' => $nilaisiswa['ns_tugas'],
-                                                        'ns_tes' => $nilaisiswa['ns_tes'],
-                                                        'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
-                                                        'TP' =>  $kompetensi[1]
-                                                        ];
+            if($nilaisiswa){
+                $raporSisipan[$key][$valuekelompok]=[
+                                                    'ns_tugas' => $nilaisiswa['ns_tugas'],
+                                                    'ns_tes' => $nilaisiswa['ns_tes'],
+                                                    'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
+                                                    'LM' =>  $valuelm['lm_order']
+                                                    ];
                 $raporSisipan[$key][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tugas'];
                 $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
 
-                } else {
-                    $raporSisipan[$key][$valuekelompok]=[
-                                                        'ns_tugas' => '-',
-                                                        'ns_tes' => '-',
-                                                        'ns_jenis' => '-',
-                                                        'TP' =>  $kompetensi[1]
-                                                        ];
-                }
-
-            } else {
-                $raporSisipan[$key][$valuekelompok]=[
-                                                    'ns_tugas' => null,
-                                                    'ns_tes' => null,
-                                                    'ns_jenis' => null,
-                                                    'TP' =>  null
-                                                    ];
-            }
-
-            }
+            } //else {
+            //     $raporSisipan[$key][$valuekelompok]=[
+            //                                         'ns_tugas' => '-',
+            //                                         'ns_tes' => '-',
+            //                                         'ns_jenis' => '-',
+            //                                         'LM' =>  $valuelm['lm_order']
+            //                                         ];
+            // }
+            $valuekelompok++;
         }
 
+
+        // foreach($kelompok as $valuekelompok){
+        //     if($lm[$valuekelompok-1]['id']){
+        //         $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+        //                             ->where('periode_id',$rapor['periode_id'])
+        //                             ->where('lingkupmateri_id',$lm[$valuekelompok-1]['id'])
+        //                             ->with(['lingkupmateri','mapel'])
+        //                             ->first();
+
+        //         if($nilaisiswa){
+        //             $raporSisipan[$key][$valuekelompok]=[
+        //                                                 'ns_tugas' => $nilaisiswa['ns_tugas'],
+        //                                                 'ns_tes' => $nilaisiswa['ns_tes'],
+        //                                                 'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
+        //                                                 'LM' =>  $lm[$valuekelompok-1]['lm_order']
+        //                                                 ];
+        //         $raporSisipan[$key][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tugas'];
+        //         $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
+
+        //         } else {
+        //             $raporSisipan[$key][$valuekelompok]=[
+        //                                                 'ns_tugas' => '-',
+        //                                                 'ns_tes' => '-',
+        //                                                 'ns_jenis' => '-',
+        //                                                 'LM' =>  $lm[$valuekelompok-1]['lm_order']
+        //                                                 ];
+        //         }
+
+        //     } else {
+        //         $raporSisipan[$key][$valuekelompok]=[
+        //                                             'ns_tugas' => null,
+        //                                             'ns_tes' => null,
+        //                                             'ns_jenis' => null,
+        //                                             'LM' =>  null
+        //                                             ];
+        //     }
+
+        // }
+        //}
+
     }
+
     $kelaspilihan = KelasAnggota::where('siswa_id', $rapor['siswa']['id'])
                                 ->where('periode_id', $rapor['periode_id'])
                                 ->with('kelas')
@@ -167,38 +188,30 @@ function nilaiSisipanKurmer($id, $unit) {
                                     $query->where('k_jenis','PILIHAN');
                                 })
                                 ->first();
-
     $mapelpilihan = $kelaspilihan->kelas->k_mapel;
+    $dbmapel = Mapel::where('mapel_kode', $mapelpilihan)->first();
     $raporSisipan['PIL'] = [];
-    $raporSisipan['PIL']['KET'] = Mapel::where('mapel_kode', $mapelpilihan)->value('mapel_nama');
+    $raporSisipan['PIL']['KET'] = $dbmapel->mapel_nama;
+    $lm = LingkupMateri::where('mapel_id',$dbmapel->id)
+                        ->where('lm_grade',7)
+                        ->where('lm_semester', 2)
+                        ->get();
+    foreach($kelompok as $valkelompok){
+        $raporSisipan['PIL'][$valkelompok]=[
+                                            'ns_tugas' => null,
+                                            'ns_tes' => null,
+                                            'ns_jenis' => null,
+                                            'LM' =>  null
+                                            ];
+    }
+    $valuekelompok = 1;
+    foreach($lm as $valuelm){
 
-    foreach($kelompok as $valuekelompok){
-        if($valuekelompok=='STS'){
-            $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                    ->where('periode_id',$rapor['periode_id'])
-                                    ->where('ns_jenis_nilai', 'STS')
-                                    ->with(['mapel'])
-                                    ->whereHas('mapel', function($query) use($mapelpilihan){
-                                        $query->where('mapel_kode', $mapelpilihan);
-                                    })
-                                    ->first();
-
-            $raporSisipan['PIL'][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
-
-        } else {
-        $komp = SisipanField::where('periode_id',$rapor['periode_id'])
-                            ->where('unit_id', $unit)
-                            ->where('mapel', $mapelpilihan)
-                            ->where('field', $valuekelompok)
-                            ->with('kompetensi')
-                            ->first();
-
-        if($komp){
-            $kompetensi = explode('.', $komp->kompetensi->kd_kode);
+        //if(!is_null($lm[$valuekelompok-1])){
             $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
                                 ->where('periode_id',$rapor['periode_id'])
-                                ->where('kompetensi_id',$komp['kompetensi_id'])
-                                ->with(['kompetensi','mapel'])
+                                ->where('lingkupmateri_id',$valuelm['id'])
+                                ->with(['lingkupmateri','mapel'])
                                 ->first();
 
             if($nilaisiswa){
@@ -206,33 +219,34 @@ function nilaiSisipanKurmer($id, $unit) {
                                                     'ns_tugas' => $nilaisiswa['ns_tugas'],
                                                     'ns_tes' => $nilaisiswa['ns_tes'],
                                                     'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
-                                                    'TP' =>  $kompetensi[1]
+                                                    'LM' =>  $lm[$valuekelompok-1]['lm_order']
                                                     ];
                 $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tugas'];
                 $raporSisipan['PIL'][$valuekelompok]['ns_tes']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tes'];
+                $valuekelompok++;
+            } //else {
+            //     $raporSisipan['PIL'][$valuekelompok]=[
+            //                                         'ns_tugas' => '-',
+            //                                         'ns_tes' => '-',
+            //                                         'ns_jenis' => '-',
+            //                                         'LM' =>  $lm[$valuekelompok-1]['lm_order']
+            //                                         ];
+            // }
 
-            } else {
-                $raporSisipan['PIL'][$valuekelompok]=[
-                                                    'ns_tugas' => '-',
-                                                    'ns_tes' => '-',
-                                                    'ns_jenis' => '-',
-                                                    'TP' =>  $kompetensi[1]
-                                                    ];
-            }
-
-        } else {
-            $raporSisipan['PIL'][$valuekelompok]=[
-                                                'ns_tugas' => null,
-                                                'ns_tes' => null,
-                                                'ns_jenis' => null,
-                                                'TP' =>  null
-                                                ];
-        }
-
-        }
+        // } else {
+        //     $raporSisipan['PIL'][$valuekelompok]=[
+        //                                         'ns_tugas' => null,
+        //                                         'ns_tes' => null,
+        //                                         'ns_jenis' => null,
+        //                                         'LM' =>  null
+        //                                         ];
+        // }
     }
-
-    $rapor = $raporSisipan;
+    $rapor['kelas'] = $kelas;
+    $rapor['ttd'] = User::whereId($kelas['kelas']['kelas_wali'])->value('ttd');
+    $rapor['stamp'] = Unit::whereId($unit)->value('unit_stamp');
+    $rapor['kop'] = Unit::whereId($unit)->value('unit_kop');
+    $rapor['nilai'] = $raporSisipan;
 
     return $rapor;
 }
@@ -850,186 +864,189 @@ class RaporAkhirController extends Controller
         $unit = $user->unit_id;
 
         if($request->kurikulum == 'merdeka'){
-            $rapor = RaporSisipan::whereId($request->uuid)
-                                        ->with(['siswa' => function ($query) {
-                                            $query->select('id','s_nama', 's_nis','s_code');
-                                            }])
-                                        ->select(['id',
-                                                  'siswa_id',
-                                                  'rs_absensi_sakit',
-                                                  'rs_absensi_ijin',
-                                                  'rs_absensi_alpha',
-                                                  'rs_catatan_ayat',
-                                                  'rs_catatan_isi',
-                                                  'rs_catatan_pesan',
-                                                  'rs_walikelas'])
-                                        ->first();
-
-            $fieldrapor = SisipanField::where('periode_id',$user->periode)
-                                      ->where('unit_id', $user->unit_id)
-                                      ->get()->toArray();
-
-            $kelas = KelasAnggota::whereSiswa_id($rapor['siswa']['id'])
-                                        ->where('periode_id',$user->periode)
-                                        ->with('kelas')
-                                        ->whereHas('kelas', function($query) use($unit){
-                                            $query->where('unit_id', $unit)
-                                            ->where('k_jenis', "REGULER");
-                                        })
-                                        ->first();
-            $rapor['kelas'] = $kelas;
-            $rapor['ttd'] = User::whereId($kelas['kelas']['kelas_wali'])->value('ttd');
-            $rapor['stamp'] = Unit::whereId($unit)->value('unit_stamp');
-            $rapor['kop'] = Unit::whereId($unit)->value('unit_kop');
-            $raporSisipan = [
-                                'PAK' => [],
-                                'PKN' => [],
-                                'BIN' => [],
-                                'BIG' => [],
-                                'MAT' => [],
-                                'BIO' => [],
-                                'FIS' => [],
-                                'EKO' => [],
-                                'GEO' => [],
-                                'SEJ' => [],
-                                'ORG' => [],
-                                'MAN' => [],
-                                'TIK' => [],
-                                'JWA' => [],
-                                'DC' => [],
-                            ];
-
-            $kelompok = ['1','2','3','4','STS'];
-            foreach($raporSisipan as $key=>$value){
-                foreach($kelompok as $valuekelompok){
-                    if($valuekelompok=='STS'){
-                        $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                                ->where('periode_id',$user->periode)
-                                                ->where('ns_jenis_nilai', 'STS')
-                                                ->with(['mapel'])
-                                                ->whereHas('mapel', function($query) use($key){
-                                                    $query->where('mapel_kode', $key);
-                                                })
-                                                ->first();
-
-                        $raporSisipan[$key][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
-
-                    } else {
-                    $komp = SisipanField::where('periode_id',$user->periode)
-                                      ->where('unit_id', $user->unit_id)
-                                      ->where('mapel', $key)
-                                      ->where('field', $valuekelompok)
-                                      ->with('kompetensi')
-                                      ->first();
-
-                    if($komp){
-                        $kompetensi = explode('.', $komp->kompetensi->kd_kode);
-                        $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                            ->where('periode_id',$user->periode)
-                                            ->where('kompetensi_id',$komp['kompetensi_id'])
-                                            ->with(['kompetensi','mapel'])
-                                            ->first();
-
-                        if($nilaisiswa){
-                            $raporSisipan[$key][$valuekelompok]=[
-                                                                'ns_tugas' => $nilaisiswa['ns_tugas'],
-                                                                'ns_tes' => $nilaisiswa['ns_tes'],
-                                                                'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
-                                                                'TP' =>  $kompetensi[1]
-                                                                ];
-                        } else {
-                            $raporSisipan[$key][$valuekelompok]=[
-                                                                'ns_tugas' => '-',
-                                                                'ns_tes' => '-',
-                                                                'ns_jenis' => '-',
-                                                                'TP' =>  $kompetensi[1]
-                                                                ];
-                        }
-
-                    } else {
-                        $raporSisipan[$key][$valuekelompok]=[
-                                                            'ns_tugas' => null,
-                                                            'ns_tes' => null,
-                                                            'ns_jenis' => null,
-                                                            'TP' =>  null
-                                                            ];
-                    }
-
-                    }
-                }
-
-            }
-            $kelaspilihan = KelasAnggota::where('siswa_id', $rapor['siswa']['id'])
-                                        ->where('periode_id', $user->periode)
-                                        ->with('kelas')
-                                        ->whereHas('kelas', function($query) {
-                                            $query->where('k_jenis','PILIHAN');
-                                        })
-                                        ->first();
-            $mapelpilihan = $kelaspilihan->kelas->k_mapel;
-            $raporSisipan['PIL'] = [];
-            $raporSisipan['PIL']['KET'] = Mapel::where('mapel_kode', $mapelpilihan)->value('mapel_nama');
-
-            foreach($kelompok as $valuekelompok){
-                if($valuekelompok=='STS'){
-                    $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                            ->where('periode_id',$user->periode)
-                                            ->where('ns_jenis_nilai', 'STS')
-                                            ->with(['mapel'])
-                                            ->whereHas('mapel', function($query) use($mapelpilihan){
-                                                $query->where('mapel_kode', $mapelpilihan);
-                                            })
-                                            ->first();
-
-                    $raporSisipan['PIL'][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
-
-                } else {
-                $komp = SisipanField::where('periode_id',$user->periode)
-                                  ->where('unit_id', $user->unit_id)
-                                  ->where('mapel', $mapelpilihan)
-                                  ->where('field', $valuekelompok)
-                                  ->with('kompetensi')
-                                  ->first();
-
-                if($komp){
-                    $kompetensi = explode('.', $komp->kompetensi->kd_kode);
-                    $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                        ->where('periode_id',$user->periode)
-                                        ->where('kompetensi_id',$komp['kompetensi_id'])
-                                        ->with(['kompetensi','mapel'])
-                                        ->first();
-
-                    if($nilaisiswa){
-                        $raporSisipan['PIL'][$valuekelompok]=[
-                                                            'ns_tugas' => $nilaisiswa['ns_tugas'],
-                                                            'ns_tes' => $nilaisiswa['ns_tes'],
-                                                            'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
-                                                            'TP' =>  $kompetensi[1]
-                                                            ];
-                    } else {
-                        $raporSisipan['PIL'][$valuekelompok]=[
-                                                            'ns_tugas' => '-',
-                                                            'ns_tes' => '-',
-                                                            'ns_jenis' => '-',
-                                                            'TP' =>  $kompetensi[1]
-                                                            ];
-                    }
-
-                } else {
-                    $raporSisipan['PIL'][$valuekelompok]=[
-                                                        'ns_tugas' => null,
-                                                        'ns_tes' => null,
-                                                        'ns_jenis' => null,
-                                                        'TP' =>  null
-                                                        ];
-                }
-
-                }
-            }
-
-            $rapor['nilai'] = $raporSisipan;
+            $rapor = nilaiSisipanKurmer($request->uuid, $unit);
 
             return response()->json(['message' => 'success', 'data' => $rapor], 200);
+            // $rapor = RaporSisipan::whereId($request->uuid)
+            //                             ->with(['siswa' => function ($query) {
+            //                                 $query->select('id','s_nama', 's_nis','s_code');
+            //                                 }])
+            //                             ->select(['id',
+            //                                       'siswa_id',
+            //                                       'rs_absensi_sakit',
+            //                                       'rs_absensi_ijin',
+            //                                       'rs_absensi_alpha',
+            //                                       'rs_catatan_ayat',
+            //                                       'rs_catatan_isi',
+            //                                       'rs_catatan_pesan',
+            //                                       'rs_walikelas'])
+            //                             ->first();
+
+            // $fieldrapor = SisipanField::where('periode_id',$user->periode)
+            //                           ->where('unit_id', $user->unit_id)
+            //                           ->get()->toArray();
+
+            // $kelas = KelasAnggota::whereSiswa_id($rapor['siswa']['id'])
+            //                             ->where('periode_id',$user->periode)
+            //                             ->with('kelas')
+            //                             ->whereHas('kelas', function($query) use($unit){
+            //                                 $query->where('unit_id', $unit)
+            //                                 ->where('k_jenis', "REGULER");
+            //                             })
+            //                             ->first();
+            // $rapor['kelas'] = $kelas;
+            // $rapor['ttd'] = User::whereId($kelas['kelas']['kelas_wali'])->value('ttd');
+            // $rapor['stamp'] = Unit::whereId($unit)->value('unit_stamp');
+            // $rapor['kop'] = Unit::whereId($unit)->value('unit_kop');
+            // $raporSisipan = [
+            //                     'PAK' => [],
+            //                     'PKN' => [],
+            //                     'BIN' => [],
+            //                     'BIG' => [],
+            //                     'MAT' => [],
+            //                     'BIO' => [],
+            //                     'FIS' => [],
+            //                     'EKO' => [],
+            //                     'GEO' => [],
+            //                     'SEJ' => [],
+            //                     'ORG' => [],
+            //                     'MAN' => [],
+            //                     'TIK' => [],
+            //                     'JWA' => [],
+            //                     'DC' => [],
+            //                 ];
+
+            // $kelompok = ['1','2','3','4','STS'];
+            // foreach($raporSisipan as $key=>$value){
+            //     foreach($kelompok as $valuekelompok){
+            //         if($valuekelompok=='STS'){
+            //             $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+            //                                     ->where('periode_id',$user->periode)
+            //                                     ->where('ns_jenis_nilai', 'STS')
+            //                                     ->with(['mapel'])
+            //                                     ->whereHas('mapel', function($query) use($key){
+            //                                         $query->where('mapel_kode', $key);
+            //                                     })
+            //                                     ->first();
+
+            //             $raporSisipan[$key][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
+
+            //         } else {
+            //         $komp = SisipanField::where('periode_id',$user->periode)
+            //                           ->where('unit_id', $user->unit_id)
+            //                           ->where('mapel', $key)
+            //                           ->where('field', $valuekelompok)
+            //                           ->with('kompetensi')
+            //                           ->first();
+
+            //         if($komp){
+            //             $kompetensi = explode('.', $komp->kompetensi->kd_kode);
+            //             $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+            //                                 ->where('periode_id',$user->periode)
+            //                                 ->where('kompetensi_id',$komp['kompetensi_id'])
+            //                                 ->with(['kompetensi','mapel'])
+            //                                 ->first();
+
+            //             if($nilaisiswa){
+            //                 $raporSisipan[$key][$valuekelompok]=[
+            //                                                     'ns_tugas' => $nilaisiswa['ns_tugas'],
+            //                                                     'ns_tes' => $nilaisiswa['ns_tes'],
+            //                                                     'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
+            //                                                     'TP' =>  $kompetensi[1]
+            //                                                     ];
+            //             } else {
+            //                 $raporSisipan[$key][$valuekelompok]=[
+            //                                                     'ns_tugas' => '-',
+            //                                                     'ns_tes' => '-',
+            //                                                     'ns_jenis' => '-',
+            //                                                     'TP' =>  $kompetensi[1]
+            //                                                     ];
+            //             }
+
+            //         } else {
+            //             $raporSisipan[$key][$valuekelompok]=[
+            //                                                 'ns_tugas' => null,
+            //                                                 'ns_tes' => null,
+            //                                                 'ns_jenis' => null,
+            //                                                 'TP' =>  null
+            //                                                 ];
+            //         }
+
+            //         }
+            //     }
+
+            // }
+            // $kelaspilihan = KelasAnggota::where('siswa_id', $rapor['siswa']['id'])
+            //                             ->where('periode_id', $user->periode)
+            //                             ->with('kelas')
+            //                             ->whereHas('kelas', function($query) {
+            //                                 $query->where('k_jenis','PILIHAN');
+            //                             })
+            //                             ->first();
+            // $mapelpilihan = $kelaspilihan->kelas->k_mapel;
+            // $raporSisipan['PIL'] = [];
+            // $raporSisipan['PIL']['KET'] = Mapel::where('mapel_kode', $mapelpilihan)->value('mapel_nama');
+
+            // foreach($kelompok as $valuekelompok){
+            //     if($valuekelompok=='STS'){
+            //         $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+            //                                 ->where('periode_id',$user->periode)
+            //                                 ->where('ns_jenis_nilai', 'STS')
+            //                                 ->with(['mapel'])
+            //                                 ->whereHas('mapel', function($query) use($mapelpilihan){
+            //                                     $query->where('mapel_kode', $mapelpilihan);
+            //                                 })
+            //                                 ->first();
+
+            //         $raporSisipan['PIL'][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
+
+            //     } else {
+            //     $komp = SisipanField::where('periode_id',$user->periode)
+            //                       ->where('unit_id', $user->unit_id)
+            //                       ->where('mapel', $mapelpilihan)
+            //                       ->where('field', $valuekelompok)
+            //                       ->with('kompetensi')
+            //                       ->first();
+
+            //     if($komp){
+            //         $kompetensi = explode('.', $komp->kompetensi->kd_kode);
+            //         $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+            //                             ->where('periode_id',$user->periode)
+            //                             ->where('kompetensi_id',$komp['kompetensi_id'])
+            //                             ->with(['kompetensi','mapel'])
+            //                             ->first();
+
+            //         if($nilaisiswa){
+            //             $raporSisipan['PIL'][$valuekelompok]=[
+            //                                                 'ns_tugas' => $nilaisiswa['ns_tugas'],
+            //                                                 'ns_tes' => $nilaisiswa['ns_tes'],
+            //                                                 'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
+            //                                                 'TP' =>  $kompetensi[1]
+            //                                                 ];
+            //         } else {
+            //             $raporSisipan['PIL'][$valuekelompok]=[
+            //                                                 'ns_tugas' => '-',
+            //                                                 'ns_tes' => '-',
+            //                                                 'ns_jenis' => '-',
+            //                                                 'TP' =>  $kompetensi[1]
+            //                                                 ];
+            //         }
+
+            //     } else {
+            //         $raporSisipan['PIL'][$valuekelompok]=[
+            //                                             'ns_tugas' => null,
+            //                                             'ns_tes' => null,
+            //                                             'ns_jenis' => null,
+            //                                             'TP' =>  null
+            //                                             ];
+            //     }
+
+            //     }
+            // }
+
+            // $rapor['nilai'] = $raporSisipan;
+
+            // return response()->json(['message' => 'success', 'data' => $rapor], 200);
 
         } else {
         $raporSisipan = RaporSisipan::whereId($request->uuid)

@@ -18,6 +18,11 @@ class NilaiSiswa extends Model
         return $this->belongsTo(Kompetensi::class);
     }
 
+    public function lingkupmateri()
+    {
+        return $this->belongsTo(LingkupMateri::class);
+    }
+
     public function mapel()
     {
         return $this->belongsTo(Mapel::class);

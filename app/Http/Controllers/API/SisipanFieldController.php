@@ -13,11 +13,11 @@ class SisipanFieldController extends Controller
         $user = $request->user();
         $data = SisipanField::where('unit_id', $user->unit_id)
                                 ->where('periode_id', $user->periode)
-                                ->with('kompetensi')
+                                ->with('lingkupmateri')
                                 ->get();
         $setting = [];
         foreach($data as $item) {
-            $setting[$item['mapel']][$item['field']]=$item->kompetensi;
+            $setting[$item['mapel']][$item['field']]=$item->lingkupmateri;
         }
         return response()->json(['status' => 'success', 'data' => $setting], 200);
     }
@@ -36,7 +36,7 @@ class SisipanFieldController extends Controller
                         if($field->count()==0){
                             SisipanField::create([
                                                 'mapel' => $keymapel,
-                                                'kompetensi_id' => $itemfield['id'],
+                                                'lingkupmateri_id' => $itemfield['id'],
                                                 'jenjang' => 7,
                                                 'field' => $keyfield,
                                                 'periode_id' => $user->periode,
@@ -44,7 +44,7 @@ class SisipanFieldController extends Controller
                                             ]);
                         } else {
                             $field->update([
-                                            'kompetensi_id' => $itemfield['id'],
+                                            'lingkupmateri_id' => $itemfield['id'],
                                             ]);
                         }
                     } else {

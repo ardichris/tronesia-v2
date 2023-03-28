@@ -228,12 +228,12 @@ class RaporSisipansImport implements ToCollection, WithStartRow
                         'rs_man_prd' => $row[52] != '0' ? $row[52]:null,
                         'rs_man_pry' => $row[51] != '0' ? $row[51]:null,
                         'rs_man_prt' => $row[53] != '0' ? $row[53]:null,
-                        'rs_absensi_sakit' => $row[186] ? $row[186]:null,
-                        'rs_absensi_ijin' => $row[187] ? $row[187]:null,
-                        'rs_absensi_alpha' => $row[188] ? $row[188]:null,
+                        'rs_absensi_sakit' => $row[205] ? $row[205]:null,
+                        'rs_absensi_ijin' => $row[206] ? $row[206]:null,
+                        'rs_absensi_alpha' => $row[207] ? $row[207]:null,
                         //'rs_catatan_ayat' => $row[178] ? $row[178]:null,
                         //'rs_catatan_isi' => $row[179] ? $row[179]:null,
-                        'rs_catatan_pesan' => $row[189] ? $row[189]:null,
+                        'rs_catatan_pesan' => $row[208] ? $row[208]:null,
                     ]);
                 } else {
                     $cekdata->update([
@@ -422,12 +422,12 @@ class RaporSisipansImport implements ToCollection, WithStartRow
                         'rs_man_prd' => $row[52] != '0' ? $row[52]:null,
                         'rs_man_pry' => $row[51] != '0' ? $row[51]:null,
                         'rs_man_prt' => $row[53] != '0' ? $row[53]:null,
-                        'rs_absensi_sakit' => $row[186] ? $row[186]:null,
-                        'rs_absensi_ijin' => $row[187] ? $row[187]:null,
-                        'rs_absensi_alpha' => $row[188] ? $row[188]:null,
+                        'rs_absensi_sakit' => $row[205] ? $row[205]:null,
+                        'rs_absensi_ijin' => $row[206] ? $row[206]:null,
+                        'rs_absensi_alpha' => $row[207] ? $row[207]:null,
                         //'rs_catatan_ayat' => $row[178] ? $row[178]:null,
                         //'rs_catatan_isi' => $row[179] ? $row[179]:null,
-                        'rs_catatan_pesan' => $row[189] ? $row[189]:null
+                        'rs_catatan_pesan' => $row[208] ? $row[208]:null,
                     ]);
                 }
 

@@ -18,7 +18,7 @@
                 @change="setSelected"
                 :value="$store.myValue"
                 label="mapel_kode"
-                placeholder="Masukkan Kata Kunci" 
+                placeholder="Masukkan Kata Kunci"
                 :disabled="jurnal.jm_status == 1 && authenticated.role != 0"
                 :filterable="false">
                 <template slot="no-options">
@@ -38,7 +38,7 @@
                 :value="$store.myValue"
                 @change="setSelected"
                 label="kelas_nama"
-                placeholder="Masukkan Kata Kunci" 
+                placeholder="Masukkan Kata Kunci"
                 :disabled="jurnal.jm_status == 1 && authenticated.role != 0"
                 :filterable="false">
                 <template slot="no-options">
@@ -52,7 +52,7 @@
         </div>
         <div class="form-group" :class="{ 'has-error': errors.jm_jampel }">
             <label for="">Jam Pelajaran</label>
-            <!--input type="text" class="form-control" v-model="jurnal.jm_jampel" :readonly="jurnal.jm_status == 1 && authenticated.role != 0" v-if="$route.name == 'jurnal.edit'"-->       
+            <!--input type="text" class="form-control" v-model="jurnal.jm_jampel" :readonly="jurnal.jm_status == 1 && authenticated.role != 0" v-if="$route.name == 'jurnal.edit'"-->
             <v-select :options="[0,1,2,3,4,5,6,7,8,9]"
                 v-model="jurnal.jm_jampel"
                 :disabled="jurnal.jm_status == 1 && authenticated.role != 0"
@@ -67,7 +67,7 @@
                 v-model="jurnal.kompetensi_id"
                 @search="setSelected"
                 label="kd_kode"
-                placeholder="Masukkan Kata Kunci" 
+                placeholder="Masukkan Kata Kunci"
                 :disabled="jurnal.jm_status == 1 && authenticated.role != 0"
                 :filterable="false">
                 <template slot="no-options">
@@ -120,9 +120,9 @@
                         <td>
                             <v-select :options="siswas.data"
                                 v-model="row.siswa"
-                                @search="onSearchSiswa" 
+                                @search="onSearchSiswa"
                                 label="s_nama"
-                                placeholder="Masukkan Kata Kunci" 
+                                placeholder="Masukkan Kata Kunci"
                                 :filterable="false">
                                 <template slot="no-options">
                                     Masukkan Kata Kunci
@@ -163,9 +163,9 @@
                         <td>
                             <v-select :options="siswas.data"
                                 v-model="row.siswa"
-                                @search="onSearchSiswa" 
+                                @search="onSearchSiswa"
                                 label="s_nama"
-                                placeholder="Masukkan Kata Kunci" 
+                                placeholder="Masukkan Kata Kunci"
                                 :filterable="false">
                                 <template slot="no-options">
                                     Masukkan Kata Kunci
@@ -176,10 +176,21 @@
                             </v-select>
                         </td>
                         <td>
-                            <v-select :options="['Terlambat', 'Escape', 'Atribut', 'Seragam', 'Sepatu', 'Kaos Kaki', 'Rambut', 'Berkelahi', 'Bermain Game', 'Mendengarkan Musik', 'Berkata Kotor']"
-                                v-model="row.pelanggaran_jenis"
-                                :value="row.pelanggaran_jenis"
-                                >
+                            <v-select :options="MPs.data"
+                                v-model="row.mp_id"
+                                @search="onSearchMP"
+                                v-on:input="onSearchPelanggaran"
+                                label="mp_pelanggaran"
+                                placeholder="Masukkan Kata Kunci"
+                                :disabled="$route.name == 'pelanggarans.view'"
+                                :filterable="false">
+                                <template slot="no-options">
+                                    Masukkan Kata Kunci
+                                </template>
+                                <template slot="option" slot-scope="option">
+                                    {{ option.mp_pelanggaran }}
+                                    <span class="badge badge-danger float-right" v-if="option.total>0">{{option.total}}</span>
+                                </template>
                             </v-select>
                         </td>
                         <td>
@@ -195,13 +206,13 @@
         <!--div>
             <b-tabs card>
                 <b-tab title="Kompetensi" active>
-                    
+
                 </b-tab>
                 <b-tab title="Presensi">
-                    
+
                 </b-tab>
                 <b-tab title="Pelanggaran">
-                    
+
                 </b-tab>
             </b-tabs>
         </div-->
@@ -237,7 +248,10 @@ export default {
             siswas: state => state.siswa,
             kelass: state => state.kelas,
             kompetensis: state => state.kompetensi,
-            jurnal: state => state.jurnal 
+            jurnal: state => state.jurnal,
+        }),
+        ...mapState('pelanggaran', {
+            MPs: state => state.MPs,
         }),
         ...mapState('user', {
             authenticated: state => state.authenticated
@@ -255,6 +269,7 @@ export default {
     },
     methods: {
         ...mapActions('jurnal',['getMapel','getKelas','getKompetensi', 'getSiswa']),
+        ...mapActions('pelanggaran', ['getMPs']),
         ...mapMutations('jurnal', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
         mediaClick(){
             window.open(this.jurnal.jm_media, "_blank");
@@ -272,13 +287,19 @@ export default {
             this.getKelas({
                 search: search,
                 loading: loading
-            })            
+            })
         },
         onSearchSiswa(search, loading) {
             this.getSiswa({
                 search: search,
                 loading: loading
-            })            
+            })
+        },
+        onSearchMP(search, loading) {
+            this.getMPs({
+                search: search,
+                loading: loading
+            })
         },
         addSiswa() {
             if (this.filterSiswa.length == 0) {
@@ -303,7 +324,7 @@ export default {
             }
         },
     },
-    //KETIKA PAGE INI DITINGGALKAN MAKA 
+    //KETIKA PAGE INI DITINGGALKAN MAKA
     destroyed() {
         //FORM DI BERSIHKAN
         this.CLEAR_FORM()

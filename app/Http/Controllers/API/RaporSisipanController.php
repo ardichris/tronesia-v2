@@ -16,6 +16,7 @@ use App\Periode;
 use App\NilaiSiswa;
 use App\Mapel;
 use App\SisipanField;
+use App\LingkupMateri;
 use PDF;
 
 function capitalize_after_delimiters($string)
@@ -45,9 +46,9 @@ function nilaiSisipanKurmer($id, $unit){
                                             'periode_id'])
                                 ->first();
 
-    $fieldrapor = SisipanField::where('periode_id',$rapor['periode_id'])
-                                ->where('unit_id', $unit)
-                                ->get()->toArray();
+    // $fieldrapor = SisipanField::where('periode_id',$rapor['periode_id'])
+    //                             ->where('unit_id', $unit)
+    //                             ->get()->toArray();
 
     $kelas = KelasAnggota::whereSiswa_id($rapor['siswa']['id'])
                                 ->where('periode_id',$rapor['periode_id'])
@@ -76,35 +77,40 @@ function nilaiSisipanKurmer($id, $unit){
                         'DC' => [],
                     ];
 
-    $kelompok = ['1','2','3','4','STS'];
+    $kelompok = ['1','2','3','4'];
     foreach($raporSisipan as $key=>$value){
+        $mapelid = Mapel::where('mapel_nama', $key)->value('id');
+        $lm = LingkupMateri::where('mapel_id',$mapelid)
+                            ->where('lm_grade',7)
+                            ->where('lm_semester', 2)
+                            ->get();
         foreach($kelompok as $valuekelompok){
-            if($valuekelompok=='STS'){
-                $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                        ->where('periode_id',$rapor['periode_id'])
-                                        ->where('ns_jenis_nilai', 'STS')
-                                        ->with(['mapel'])
-                                        ->whereHas('mapel', function($query) use($key){
-                                            $query->where('mapel_kode', $key);
-                                        })
-                                        ->first();
-                $raporSisipan[$key][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
-                $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
+            // if($valuekelompok=='STS'){
+            //     $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+            //                             ->where('periode_id',$rapor['periode_id'])
+            //                             ->where('ns_jenis_nilai', 'STS')
+            //                             ->with(['mapel'])
+            //                             ->whereHas('mapel', function($query) use($key){
+            //                                 $query->where('mapel_kode', $key);
+            //                             })
+            //                             ->first();
+            //     $raporSisipan[$key][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
+            //     $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
 
-            } else {
-            $komp = SisipanField::where('periode_id',$rapor['periode_id'])
-                                ->where('unit_id', $unit)
-                                ->where('mapel', $key)
-                                ->where('field', $valuekelompok)
-                                ->with('kompetensi')
-                                ->first();
+            // } else {
+            // $komp = SisipanField::where('periode_id',$rapor['periode_id'])
+            //                     ->where('unit_id', $unit)
+            //                     ->where('mapel', $key)
+            //                     ->where('field', $valuekelompok)
+            //                     ->with('kompetensi')
+            //                     ->first();
 
-            if($komp){
-                $kompetensi = explode('.', $komp->kompetensi->kd_kode);
+            if(!is_null($lm[$valuekelompok])){
+                //$kompetensi = explode('.', $komp->kompetensi->kd_kode);
                 $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
                                     ->where('periode_id',$rapor['periode_id'])
-                                    ->where('kompetensi_id',$komp['kompetensi_id'])
-                                    ->with(['kompetensi','mapel'])
+                                    ->where('lingkupmateri_id',$lm[$valuekelompok-1]['id'])
+                                    ->with(['lingkupmateri','mapel'])
                                     ->first();
 
                 if($nilaisiswa){
@@ -112,7 +118,7 @@ function nilaiSisipanKurmer($id, $unit){
                                                         'ns_tugas' => $nilaisiswa['ns_tugas'],
                                                         'ns_tes' => $nilaisiswa['ns_tes'],
                                                         'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
-                                                        'TP' =>  $kompetensi[1]
+                                                        'LM' =>  $lm[$valuekelompok-1]['lm_order']
                                                         ];
                 $raporSisipan[$key][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tugas'];
                 $raporSisipan[$key][$valuekelompok]['ns_tes']=='0' ? $raporSisipan[$key][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan[$key][$valuekelompok]['ns_tes'];
@@ -122,7 +128,7 @@ function nilaiSisipanKurmer($id, $unit){
                                                         'ns_tugas' => '-',
                                                         'ns_tes' => '-',
                                                         'ns_jenis' => '-',
-                                                        'TP' =>  $kompetensi[1]
+                                                        'LM' =>  $lm[$valuekelompok-1]['lm_order']
                                                         ];
                 }
 
@@ -131,12 +137,12 @@ function nilaiSisipanKurmer($id, $unit){
                                                     'ns_tugas' => null,
                                                     'ns_tes' => null,
                                                     'ns_jenis' => null,
-                                                    'TP' =>  null
+                                                    'LM' =>  null
                                                     ];
             }
 
             }
-        }
+        //}
 
     }
     $kelaspilihan = KelasAnggota::where('siswa_id', $rapor['siswa']['id'])
@@ -150,34 +156,38 @@ function nilaiSisipanKurmer($id, $unit){
     $mapelpilihan = $kelaspilihan->kelas->k_mapel;
     $raporSisipan['PIL'] = [];
     $raporSisipan['PIL']['KET'] = Mapel::where('mapel_kode', $mapelpilihan)->value('mapel_nama');
-
+    $mapelid = Mapel::where('mapel_nama', $key)->value('id');
+    $lm = LingkupMateri::where('mapel_id',$mapelid)
+                        ->where('lm_grade',7)
+                        ->where('lm_semester', 2)
+                        ->get();
     foreach($kelompok as $valuekelompok){
-        if($valuekelompok=='STS'){
-            $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
-                                    ->where('periode_id',$rapor['periode_id'])
-                                    ->where('ns_jenis_nilai', 'STS')
-                                    ->with(['mapel'])
-                                    ->whereHas('mapel', function($query) use($mapelpilihan){
-                                        $query->where('mapel_kode', $mapelpilihan);
-                                    })
-                                    ->first();
+        // if($valuekelompok=='STS'){
+        //     $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
+        //                             ->where('periode_id',$rapor['periode_id'])
+        //                             ->where('ns_jenis_nilai', 'STS')
+        //                             ->with(['mapel'])
+        //                             ->whereHas('mapel', function($query) use($mapelpilihan){
+        //                                 $query->where('mapel_kode', $mapelpilihan);
+        //                             })
+        //                             ->first();
 
-            $raporSisipan['PIL'][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
+        //     $raporSisipan['PIL'][$valuekelompok]= ['ns_tes' => $nilaisiswa?$nilaisiswa['ns_tes']:null];
 
-        } else {
-        $komp = SisipanField::where('periode_id',$rapor['periode_id'])
-                            ->where('unit_id', $unit)
-                            ->where('mapel', $mapelpilihan)
-                            ->where('field', $valuekelompok)
-                            ->with('kompetensi')
-                            ->first();
+        // } else {
+        // $komp = SisipanField::where('periode_id',$rapor['periode_id'])
+        //                     ->where('unit_id', $unit)
+        //                     ->where('mapel', $mapelpilihan)
+        //                     ->where('field', $valuekelompok)
+        //                     ->with('kompetensi')
+        //                     ->first();
 
-        if($komp){
-            $kompetensi = explode('.', $komp->kompetensi->kd_kode);
+        if(!is_null($lm[$valuekelompok])){
+            //$kompetensi = explode('.', $komp->kompetensi->kd_kode);
             $nilaisiswa = NilaiSiswa::where('siswa_id', $rapor['siswa']['id'])
                                 ->where('periode_id',$rapor['periode_id'])
-                                ->where('kompetensi_id',$komp['kompetensi_id'])
-                                ->with(['kompetensi','mapel'])
+                                ->where('lingkupmateri_id',$lm[$valuekelompok-1]['id'])
+                                ->with(['lingkupmateri','mapel'])
                                 ->first();
 
             if($nilaisiswa){
@@ -185,7 +195,7 @@ function nilaiSisipanKurmer($id, $unit){
                                                     'ns_tugas' => $nilaisiswa['ns_tugas'],
                                                     'ns_tes' => $nilaisiswa['ns_tes'],
                                                     'ns_jenis' => $nilaisiswa['ns_jenis_nilai'],
-                                                    'TP' =>  $kompetensi[1]
+                                                    'LM' =>  $lm[$valuekelompok-1]['lm_order']
                                                     ];
                 $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tugas']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tugas'];
                 $raporSisipan['PIL'][$valuekelompok]['ns_tes']=='0' ? $raporSisipan['PIL'][$valuekelompok]['ns_tes']=' 0 ': $raporSisipan['PIL'][$valuekelompok]['ns_tes'];
@@ -195,7 +205,7 @@ function nilaiSisipanKurmer($id, $unit){
                                                     'ns_tugas' => '-',
                                                     'ns_tes' => '-',
                                                     'ns_jenis' => '-',
-                                                    'TP' =>  $kompetensi[1]
+                                                    'LM' =>  $lm[$valuekelompok-1]['lm_order']
                                                     ];
             }
 
@@ -204,11 +214,11 @@ function nilaiSisipanKurmer($id, $unit){
                                                 'ns_tugas' => null,
                                                 'ns_tes' => null,
                                                 'ns_jenis' => null,
-                                                'TP' =>  null
+                                                'LM' =>  null
                                                 ];
         }
 
-        }
+        //}
     }
 
     $rapor['kelas'] = $kelas;

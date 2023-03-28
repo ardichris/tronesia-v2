@@ -12,6 +12,8 @@ use App\Kompetensi;
 use App\Mapel;
 use App\KelasAnggota;
 use App\JamMengajar;
+use App\Periode;
+use App\LingkupMateri;
 use App\Http\Resources\NilaiSiswaCollection;
 use App\Exports\NilaiSiswaExport;
 use Jenssegers\Date\Date;
@@ -52,6 +54,7 @@ class NilaiSiswaController extends Controller
         ]);
         $user = $request->user();
         $path = $request->file('import_file');
+        $semester = Periode::where('id',$user->periode)->value('p_semester');
         $nilai['periode'] = $user->periode;
         $nilai['user'] = $user->id;
         $nilai['unit'] = $user->unit_id;
@@ -59,9 +62,119 @@ class NilaiSiswaController extends Controller
         $nilai['mapel'] = $request->mapel;
         $nilai['guru'] = $request->guru;
         $nilai['jenis'] = $request->jenis;
+        $nilai['semester'] = $semester;
         $data = Excel::import(new NilaiSiswasImport($nilai), $path);
         return response()->json(['message' => 'uploaded successfully'], 200);
     }
+
+    public function downloadNilaiKurmer(Request $request){
+        $user = $request->user();
+        $jammengajar = JamMengajar::whereId($request->filter)
+                                  ->with(['kelas','mapel'])
+                                  ->first();
+        $periode = Periode::whereId($jammengajar->periode_id)->first();
+        if($jammengajar->mapel->mapel_kode=='DC'){
+            $jammengajar->mapel->mapel_kode = 'BIG';
+            $jammengajar->mapel_id = 4;
+        }// } elseif(in_array($jammengajar->mapel->mapel_kode,['BIO','FIS'])){
+        //     $jammengajar->mapel->mapel_kode = 'IPA';
+        //     $jammengajar->mapel_id = 8;
+        // } elseif(in_array($jammengajar->mapel->mapel_kode,['EKO','GEO','SEJ'])){
+        //     $jammengajar->mapel->mapel_kode = 'IPS';
+        //     $jammengajar->mapel_id = 12;
+        // }
+        $lingkupMateri = LingkupMateri::where('mapel_id', $jammengajar->mapel->id)
+                                      ->where('lm_grade', $jammengajar->kelas->kelas_jenjang)
+                                      ->where('lm_semester', $periode->p_semester)
+                                      ->get();
+        $idLM = $lingkupMateri->pluck('id');
+        $siswa = KelasAnggota::where('kelas_id', $jammengajar->kelas_id)
+                                ->with(['siswa' => function ($query) {
+                                    $query->select('id','s_nama', 's_nis','s_code');
+                                    }])
+                                ->orderBy('absen')
+                                ->get();
+        $siswaID = $siswa->pluck('siswa_id');
+        $nilai = NilaiSiswa::whereIn('siswa_id', $siswaID)
+                           ->where('mapel_id', $jammengajar->mapel_id)
+                           ->where('periode_id', $jammengajar->periode_id)
+                           ->get();
+        $namaLM = $lingkupMateri->pluck('lm_order');
+        $header = ['SAS'=> null, 'LM'=>$namaLM];
+        $rowstart = 3;
+        foreach($siswa as $rowsiswa){
+            $arrNALM = [];
+            $nilaiSAS = null;
+            $nilaiRemidiSAS = null;
+            $colstart = 'C';
+            $rowsiswa['SAS']=['ns_tes' => null, 'ns_remidi' => null];
+            $col_lm = $colstart;
+            foreach($lingkupMateri as $rowLM){
+                $cell_non_tes = $col_lm.$rowstart;
+                $col_lm = ++$col_lm;
+                $cell_remidi_nts = $col_lm.$rowstart;
+                $col_lm = ++$col_lm;
+                $cell_na_nts = $col_lm.$rowstart;
+                $col_lm = ++$col_lm;
+                $cell_tes = $col_lm.$rowstart;
+                $col_lm = ++$col_lm;
+                $cell_remidi_tes = $col_lm.$rowstart;
+                $col_lm = ++$col_lm;
+                $cell_na_tes = $col_lm.$rowstart;
+                $col_lm = ++$col_lm;
+                $cell_na_lm = $col_lm.$rowstart;
+                $col_lm = ++$col_lm;
+                array_push($arrNALM,$cell_na_lm);
+                $nanontes = '=IF('.$cell_non_tes.'="","",IF('.$cell_non_tes.'>=75,'.$cell_non_tes.',IF('.$cell_remidi_nts.'>=75,75,MAX('.$cell_non_tes.','.$cell_remidi_nts.'))))';
+                $nates = '=IF('.$cell_tes.'="","",IF('.$cell_tes.'>=75,'.$cell_tes.',IF('.$cell_remidi_tes.'>=75,75,MAX('.$cell_tes.','.$cell_remidi_tes.'))))';
+                $nalm = '=IF(IF('.$cell_na_nts.'="",0,1)+IF('.$cell_na_tes.'="",0,1)=0,"",(IF('.$cell_na_nts.'="",0,'.$cell_na_nts.')+IF('.$cell_na_tes.'="",0,'.$cell_na_tes.'))/(IF('.$cell_na_nts.'="",0,1)+IF('.$cell_na_tes.'="",0,1)))';
+                $nilaisiswa[$rowLM->lm_order]=[ 'ns_tugas' => null,
+                                                'ns_perbaikan' => null,
+                                                'ns_tes' => null,
+                                                'ns_remidi' => null,
+                                                'na_nontes'=> $nanontes,
+                                                'na_tes' => $nates,
+                                                'na_lm' => $nalm ];
+                foreach($nilai as $rownilai) {
+                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->lingkupmateri_id==$rowLM->id){
+                        $nilaisiswa[$rowLM->lm_order] = [   'ns_tugas' => $rownilai->ns_tugas,
+                                                            'ns_perbaikan' => $rownilai->ns_perbaikan,
+                                                            'ns_tes' => $rownilai->ns_tes,
+                                                            'ns_remidi' => $rownilai->ns_remidi,
+                                                            'na_nontes'=> $nanontes,
+                                                            'na_tes' => $nates,
+                                                            'na_lm' => $nalm
+                                                        ];
+                    }
+                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->ns_jenis_nilai=='SAS'){
+                        //$rowsiswa['SAS'] = ['ns_tes' => $rownilai->ns_tes, 'ns_remidi' => $rownilai->ns_remidi];
+                        $nilaiSAS = $rownilai->ns_tes;
+                        $nilaiRemidiSAS = $rownilai->ns_remidi;
+                    }
+                }
+            }
+            $formulaNALM = '';
+            $formula2NALM = '';
+            foreach($arrNALM as $rowNALM) {
+                $formulaNALM = $formulaNALM.'IF('.$rowNALM.'="",0,1),';
+                $formula2NALM = $formula2NALM.'IF('.$rowNALM.'="",0,'.$rowNALM.'),';
+            }
+            $cell_sas = $col_lm.$rowstart;
+            $col_lm = ++$col_lm;
+            $cell_remidi_sas = $col_lm.$rowstart;
+            $col_lm = ++$col_lm;
+            $cell_na_sas = $col_lm.$rowstart;
+            $rowsiswa['SAS'] = ['ns_tes' => $nilaiSAS,
+                                'ns_remidi' => $nilaiRemidiSAS,
+                                'na_sas' => '=IF('.$cell_sas.'="","",IF('.$cell_sas.'>=75,'.$cell_sas.',IF('.$cell_remidi_sas.'>=75,75,MAX('.$cell_sas.','.$cell_remidi_sas.'))))'];
+            $rowsiswa['nilai'] = $nilaisiswa;
+            $rowsiswa['NR'] = '=ROUND(IF(SUM('.substr($formulaNALM,0,-1).')=0,"",SUM('.substr($formula2NALM,0,-1).')/SUM('.substr($formulaNALM,0,-1).')*50/100)+IF('.$cell_na_sas.'="",0,'.$cell_na_sas.')*50/100,0)';
+            $rowstart = ++$rowstart;
+        }
+        $download = ['header' => $header, 'siswa' => $siswa];
+        return Excel::download(new NilaiSiswaExport($download), 'SIAP-nilaisiswa-'.$jammengajar->kelas->kelas_nama.'-'.$jammengajar->mapel->mapel_kode.'-'.date('y').date('m').date('d').'.xlsx');
+    }
+
     public function downloadNilai(Request $request){
         $user = $request->user();
         $jammengajar = JamMengajar::whereId($request->filter)

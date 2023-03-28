@@ -35,6 +35,7 @@ const state = () => ({
     },
     exportRapor: {},
     kompetensi: [],
+    lingkupmateri: [],
     settingTP: {
         field:{
             PAK:{1:[],2:[],3:[],4:[]},
@@ -42,11 +43,8 @@ const state = () => ({
             BIN:{1:[],2:[],3:[],4:[]},
             BIG:{1:[],2:[],3:[],4:[]},
             MAT:{1:[],2:[],3:[],4:[]},
-            BIO:{1:[],2:[],3:[],4:[]},
-            FIS:{1:[],2:[],3:[],4:[]},
-            EKO:{1:[],2:[],3:[],4:[]},
-            GEO:{1:[],2:[],3:[],4:[]},
-            SEJ:{1:[],2:[],3:[],4:[]},
+            IPA:{1:[],2:[],3:[],4:[]},
+            IPS:{1:[],2:[],3:[],4:[]},
             SNR:{1:[],2:[],3:[],4:[]},
             SNM:{1:[],2:[],3:[],4:[]},
             MEK:{1:[],2:[],3:[],4:[]},
@@ -69,6 +67,9 @@ const mutations = {
     },
     KOMPETENSI_DATA(state, payload){
         state.kompetensi = payload
+    },
+    LINGKUPMATERI_DATA(state, payload){
+        state.lingkupmateri = payload
     },
     EXPORT_RAPOR(state, payload) {
         state.exportRapor = payload
@@ -326,6 +327,17 @@ const actions = {
             $axios.get(`/kompetensi?j=${jenjangs}&r=sisipan&s=active`)
             .then((response) => {
                 commit('KOMPETENSI_DATA', response.data.data)
+                resolve(response.data)
+            })
+        })
+    },
+    getLingkupMateri({ commit, state }, payload){
+        let jenjangs = 7
+        return new Promise((resolve, reject) => {
+            $axios.get(`/lingkupmateri?j=${jenjangs}&r=sisipan&s=active`)
+            .then((response) => {
+                commit('LINGKUPMATERI_DATA', response.data.data)
+                console.log(response.data)
                 resolve(response.data)
             })
         })

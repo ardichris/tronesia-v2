@@ -55,6 +55,9 @@
                             <button type="button" class="btn btn-success" v-if="nilaiselect.jenis" @click="getNilai">Submit Filter</button>
                             </div>
                             <div style="margin-bottom:5px">
+                                <button type="button" class="btn btn-warning" v-if="nilaiselect.kelas" @click="downloadNilai">Download Nilai</button>
+                            </div>
+                            <div style="margin-bottom:5px">
                                 <button type="button" class="btn btn-danger" v-if="nilaiselect.kelas" @click="$bvModal.show('modal-upload-nilai')">Upload Nilai</button>
                             </div>
                             <!-- <div style="margin-bottom:5px">
@@ -220,7 +223,7 @@ export default {
             if(this.nilaiselect.jenis.text=='SAS'){
                 this.description = 'Sumatif Akhir Semester';
             } else {
-                this.description = this.nilaiselect.lm.lm_description
+                this.description = '[LM'+this.nilaiselect.lm.lm_order+'] '+this.nilaiselect.lm.lm_description
             }
             this.getNilaiSiswa().then(() => {
                 this.jExcelObj.destroy(this.$refs["spreadsheet"], true);

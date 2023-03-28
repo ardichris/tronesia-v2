@@ -200,17 +200,17 @@
     <tbody>
         @foreach($rapor as $row)
             <tr>
-                <td>{{$row['kelas']}}/{{$row['absen']}}</td>
+                <td>{{$row['kelas']}} / {{$row['absen']}}</td>
                 <td>{{$row['siswa']['s_nama']}}</td>
                 <td>{{$row['siswa']['s_code']}}</td>
                 <td>{{$row['siswa']['s_nis']}}</td>
                 <td>{{$row['rs_walikelas']}}</td>
                 <td>{{$row['rs_spiritual_nilai']}}</td>
                 <td>{{$row['rs_spiritual_predikat']}}</td>
-                <td>{{$row['rs_spiritual_deskripsi']}}</td>
+                <td>{{ucfirst($row['rs_spiritual_deskripsi'])}}.</td>
                 <td>{{$row['rs_sosial_nilai']}}</td>
                 <td>{{$row['rs_sosial_predikat']}}</td>
-                <td>{{$row['rs_sosial_deskripsi']}}</td>
+                <td>{{ucfirst($row['rs_sosial_deskripsi'])}}.</td>
                 <td>{{$row['rs_pak_uh1']}}</td>
                 <td>{{$row['rs_pak_uh2']}}</td>
                 <td>{{$row['rs_pak_uh3']}}</td>
@@ -387,9 +387,9 @@
                 <td>{{$row['rs_man_prd']}}</td>
                 <td>{{$row['rs_man_pry']}}</td>
                 <td>{{$row['rs_man_prt']}}</td>
-                <td>{{$row['rs_absensi_sakit']}}</td>
-                <td>{{$row['rs_absensi_ijin']}}</td>
-                <td>{{$row['rs_absensi_alpha']}}</td>
+                <td>{{$row['rs_absensi_sakit']?$row['rs_absensi_sakit']:'-'}}</td>
+                <td>{{$row['rs_absensi_ijin']?$row['rs_absensi_ijin']:'-'}}</td>
+                <td>{{$row['rs_absensi_alpha']?$row['rs_absensi_alpha']:'-'}}</td>
                 <td>{{$row['rs_catatan_ayat']}}</td>
                 <td>{{$row['rs_catatan_isi']}}</td>
                 <td>{{$row['rs_catatan_pesan']}}</td>

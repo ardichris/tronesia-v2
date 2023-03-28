@@ -67,6 +67,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
             }
             $lmid = LingkupMateri::where('mapel_id', $mapel_kode->id)
                                 ->where('lm_grade', $this->nilai['jenjang'])
+                                ->where('lm_semester','>=',$this->nilai['semester'])
                                 ->get();
             $jenis = 'SUM';
         } elseif($this->nilai['jenis']=='KI3'){
@@ -83,6 +84,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                                 ->where('kompetensi_jenjang', $this->nilai['jenjang'])
                                 ->where('k_inti', 3)
                                 ->where('is_active', 1)
+                                ->where('kd_semester','>=',$this->nilai['semester'])
                                 ->get();
             $jenis = 'KI3';
         } elseif($this->nilai['jenis']=='KI4'){
@@ -99,6 +101,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                                 ->where('kompetensi_jenjang', $this->nilai['jenjang'])
                                 ->where('k_inti', 4)
                                 ->where('is_active', 1)
+                                ->where('kd_semester','>=',$this->nilai['semester'])
                                 ->get();
             $jenis = 'KI4';
         }
@@ -166,7 +169,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                                                 ]);
                             } else {$cekdata->delete();}
                         }
-                        $colcounter = $colcounter+13;
+                        $colcounter = $colcounter+4;
                     } else {
                         if($row[$colcounter]=='0') $tugas = 0;  else $tugas = $row[$colcounter]?(int)$row[$colcounter]:null;
                         if($row[$colcounter+1]=='0') $perbaikan = 0;  else $perbaikan = $row[$colcounter+1]?(int)$row[$colcounter+1]:null;
@@ -181,7 +184,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                             if($na_sumatif>0){
                                 if($this->nilai['jenis']=='KI3'){
                                     NilaiSiswa::create(['siswa_id' => $siswa,
-                                                        'lingkupmateri_id' => $lmselect,
+                                                        //'lingkupmateri_id' => $lmselect,
                                                         'kompetensi_id' => $kdselect,
                                                         'mapel_id' => $this->nilai['mapel'],
                                                         'ns_tes' => $tugas,
@@ -197,7 +200,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                                 } else {
                                     NilaiSiswa::create(['siswa_id' => $siswa,
                                                         'lingkupmateri_id' => $lmselect,
-                                                        'kompetensi_id' => $kdselect,
+                                                        //'kompetensi_id' => $kdselect,
                                                         'mapel_id' => $this->nilai['mapel'],
                                                         'ns_tugas' => $tugas,
                                                         'ns_perbaikan' => $perbaikan,

@@ -298,7 +298,7 @@ class JurnalController extends Controller
                     'jurnal_id' => $new_jurnal->id,
                     'siswa_id' => $row['siswa']['id'],
                     'pelanggaran_tanggal' => $request->jm_tanggal,
-                    'pelanggaran_jenis' => $row['pelanggaran_jenis'],
+                    'mp_id' => $row['mp_id']['id'],
                     'pelanggaran_keterangan' => $row['pelanggaran_keterangan'],
                     'user_id' => $user->id,
                     'unit_id' => $user->unit_id,
@@ -345,15 +345,18 @@ class JurnalController extends Controller
 
         $jurnal = Jurnal::where('jm_kode',$id)->first();
         $konflik = 0;
-        if($request->mapel_id['id']!=23 && $request->mapel_id['id']!=24){
+
+        if(!is_null($request->mapel_id) && $request->mapel_id['id']!=23 && $request->mapel_id['id']!=24){
             $cekkonflik = Jurnal::where([['jm_kode','!=',$request->jm_kode],
                                             ['jm_jampel', $request->jm_jampel],
                                             ['kelas_id', $request->kelas_id['id']],
                                             ['jm_tanggal', $request->jm_tanggal],
                                             ['jm_status','!=',2]]);
+
             $konflik = $cekkonflik->count();
             $konflikwith = $cekkonflik->with('user')->first();
         }
+
         if($konflik!=0){
             $catatan="Konflik dengan ".$konflikwith->user->name;
         } else {
@@ -361,7 +364,7 @@ class JurnalController extends Controller
         }
 
         $jurnal->update([
-            'mapel_id' => $request->mapel_id['id'],
+            'mapel_id' => $request->mapel_id?$request->mapel_id['id']:null,
             'jm_tanggal' => $request->jm_tanggal,
             'jm_jampel' => $request->jm_jampel,
             'kelas_id' => $request->kelas_id['id'],
@@ -385,7 +388,7 @@ class JurnalController extends Controller
                 ]);
             }
         }
-        //return response()->json(['status' => $request->pelanggaran], 200);
+
         Pelanggaran::whereJurnal_id($jurnal->id)->delete();
         foreach ($request->pelanggaran as $row) {
             if (!is_null($row['siswa'])) {
@@ -415,7 +418,8 @@ class JurnalController extends Controller
                     'jurnal_id' => $jurnal->id,
                     'siswa_id' => $row['siswa']['id'],
                     'pelanggaran_tanggal' => $request->jm_tanggal,
-                    'pelanggaran_jenis' => $row['pelanggaran_jenis'],
+                    //'mp_id' => $row['mp_id']['id'],
+                    'mp_id' => $row['mp_id']['id']?$row['mp_id']['id']:$row->mp_id,
                     'pelanggaran_keterangan' => $row['pelanggaran_keterangan'],
                     'user_id' => $user->id,
                     'unit_id' => $user->unit_id,
