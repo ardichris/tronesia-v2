@@ -55,12 +55,12 @@
                             <button type="button" class="btn btn-success" v-if="nilaiselect.jenis" @click="getNilai">Submit Filter</button>
                             </div>
                             <button type="button" class="btn btn-danger" v-if="nilaiselect.jenis.text=='KI3'||nilaiselect.jenis.text=='KI4'" @click="$bvModal.show('modal-upload-nilai')">Upload Nilai</button>
-                            <!-- <button type="button" class="btn btn-warning" v-if="nilaiselect.kelas" @click="downloadNilai">Download Nilai</button> -->
+                            <button type="button" class="btn btn-warning" v-if="nilaiselect.jenis.text=='KI3'||nilaiselect.jenis.text=='KI4'" @click="downloadNilai">Download Nilai</button>
 
                         </div>
                         <b-modal id="modal-upload-nilai" scrollable size="md">
                             <template v-slot:modal-title>
-                                Pilih File Nilai
+                                Pilih File Nilai {{nilaiselect.jenis.text}}
                             </template>
                             <input type="file" class="form-control" id="input-file-import" name="file_import" ref="import_file"  @change="onFileChange">
                             <template v-slot:modal-footer>
@@ -118,6 +118,7 @@ export default {
                 { value: 'KI4', text: 'KI4' },
                 { value: 'PTS', text: 'PTS' },
                 { value: 'PAS', text: 'PAS' },
+                { value: 'Rapor', text: 'Rapor' },
                 ],
 
             myNilai: JSON.stringify(this.nilaisiswa),
@@ -254,7 +255,11 @@ export default {
             })
         },
         downloadNilai(){
-            window.open(`/api/downloadnilai?api_token=${this.token}&filter=${this.nilaiselect.kelas.id}`)
+            if(this.nilaiselect.jenis.value=="KI4"){
+                window.open(`/api/downloadnilaiketerampilan?api_token=${this.token}&filter=${this.nilaiselect.kelas.id}`)
+            } else {
+                window.open(`/api/downloadnilaipengetahuan?api_token=${this.token}&filter=${this.nilaiselect.kelas.id}`)
+            }
         },
         getNilai(){
             this.getNilaiSiswa().then(() => {

@@ -21,7 +21,7 @@
                 <td>{{raporPetra['siswa']['s_nis']}}</td>
                 <td>Tahun Pelajaran</td>
                 <td>:</td>
-                <td>2021 - 2022</td>
+                <td>2022 - 2023</td>
             </tr>
         </table>
         <table class="nilai">
@@ -57,7 +57,7 @@
             </tr>
 
         </table>
-        <table class="TTD">
+        <!-- <table class="TTD">
             <tr>
                 <td colspan="2"></td>
                 <td style="text-align:left; width:30%">Surabaya, 18 Juni 2022</td>
@@ -73,7 +73,7 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td></td><!-- <img :src="'/storage/signs/'+raporPetra['ttd']+'.png'" style="width: 100px;"> -->
+                <td></td>   -- <img :src="'/storage/signs/'+raporPetra['ttd']+'.png'" style="width: 100px;"> --
             </tr>
             <tr>
                 <td>..................................</td>
@@ -81,6 +81,7 @@
                 <td>Yurui, S.Pd., M.M.</td>
             </tr>
         </table>
+        -->
     </div>
 </template>
 <style scoped>

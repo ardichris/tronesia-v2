@@ -93,7 +93,9 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('notification', 'API\NotificationController')->except(['create', 'destroy']);
     Route::resource('settingsisipan', 'API\SisipanFieldController');
     Route::get('/laporan/raporsisipan', 'API\RaporSisipanController@raporSisipanPDF');
-    Route::get('downloadnilai', 'API\NilaiSiswaController@downloadNilaiKurmer');
+    Route::get('downloadnilaikurmer', 'API\NilaiSiswaController@downloadNilaiKurmer');
+    Route::get('downloadnilaipengetahuan', 'API\NilaiSiswaController@downloadNilaiPengetahuan');
+    Route::get('downloadnilaiketerampilan', 'API\NilaiSiswaController@downloadNilaiKeterampilan');
     Route::get('/penerimaansiswa/pembayaran', 'API\PenerimaanSiswaController@indexPembayaran');
     Route::post('/penerimaansiswa/pembayaran/import', 'API\PenerimaanSiswaController@importPembayaran');
     Route::resource('/lingkupmateri', 'API\LingkupMateriController');

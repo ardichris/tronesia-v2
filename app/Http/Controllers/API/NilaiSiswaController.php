@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Imports\NilaiSiswasImport;
+use App\Imports\NilaiSiswaPengetahuanImport;
+use App\Imports\NilaiSiswaKeterampilanImport;
 use Illuminate\Http\Request;
 use App\NilaiSiswa;
 use App\Siswa;
@@ -15,7 +17,9 @@ use App\JamMengajar;
 use App\Periode;
 use App\LingkupMateri;
 use App\Http\Resources\NilaiSiswaCollection;
-use App\Exports\NilaiSiswaExport;
+use App\Exports\NilaiSiswaPengetahuanExport;
+use App\Exports\NilaiSiswaKeterampilanExport;
+use App\Exports\NilaiSiswaKurmerExport;
 use Jenssegers\Date\Date;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -48,6 +52,61 @@ function nilaiAkhir ($non_tes, $tes){
 
 class NilaiSiswaController extends Controller
 {
+    public function descriptionKurmer($mapel, $avglm, $lingkupmateri, $arrNS){
+        $nilaideskmax=0;
+        $nilaideskmin=100;
+        $deskmax=$deskmin='';
+        foreach($lingkupmateri as $keylm=>$rowlm){
+            //$desclm = $lingkupmateri->where('id', $rowlm)->first();
+            if($nilaideskmax==0&&$nilaideskmin==100){
+                $nilaideskmax=$nilaideskmin=$arrNS[$keylm];
+                $deskmax = lcfirst($rowlm->lm_description).", ";
+                $deskmin = lcfirst($rowlm->lm_description).", ";
+            } else {
+                if($arrNS[$keylm]>$nilaideskmax&&$arrNS[$keylm]>0){
+                    $nilaideskmax = $arrNS[$keylm];
+                    $deskmax = lcfirst($rowlm->lm_description).", ";
+                } elseif($arrNS[$keylm]<$nilaideskmin&&$arrNS[$keylm]>0){
+                    $nilaideskmin = $arrNS[$keylm];
+                    $deskmin = lcfirst($rowlm->lm_description).", ";
+                } elseif($arrNS[$keylm]==$nilaideskmax&&$arrNS[$keylm]>0){
+                    $deskmax = $deskmax.lcfirst($rowlm->lm_description).", ";
+                } elseif($arrNS[$keylm]==$nilaideskmin&&$arrNS[$keylm]>0){
+                    $deskmin = $deskmin.lcfirst($rowlm->lm_description).", ";
+                }
+            }
+        }
+        $max= max($arrNS);
+        $min= min($arrNS);
+        $lm_max= $max?array_search($max, $arrNS):null;//$dbnilai->where('ns_nilai', $max)->first():null;
+        $lm_min= $min?array_search($min, $arrNS):null;//$dbnilai->where('ns_nilai', $min)->first():null;
+        $descmax = $lm_max?$lingkupmateri[$lm_max]->lm_description:null;//$lingkupmateri->where('id',$lm_max->lingkupmateri_id)->first():null;
+        $descmin= $lm_min?$lingkupmateri[$lm_min]->lm_description:null;//$lingkupmateri->where('id',$lm_min->lingkupmateri_id)->last():null;
+        if($max>=93){
+            $desc['max']= $deskmax?'Menunjukkan penguasaan yang sangat baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+        } elseif($max>=84){
+            $desc['max']= $deskmax?'Menunjukkan penguasaan yang baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+        } elseif($max>=75){
+            $desc['max']= $deskmax?'Menunjukkan penguasaan yang cukup baik dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+        } elseif($max<75) {
+            $desc['max']= $deskmax?'Kurang menguasai dalam '.substr(lcfirst($deskmax), 0, -2).'.':null;
+        } else {
+            $desc['max']= null;
+        }
+        if($min>=93){
+            $desc['min']= $deskmin?'Perlu penguatan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+        } elseif($min>=84){
+            $desc['min']= $deskmin?'Perlu peningkatan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+        } elseif($min>=75){
+            $desc['min']= $deskmin?'Perlu bimbingan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+        } elseif($min<75) {
+            $desc['min']= $deskmin?'Perlu pendampingan dalam '.substr(lcfirst($deskmin), 0, -2).'.':null;
+        } else {
+            $desc['min']= null;
+        }
+
+        return $desc;
+    }
     public function import(Request $request){
         $request->validate([
             'import_file' => 'required|file|mimes:xls,xlsx'
@@ -147,7 +206,6 @@ class NilaiSiswaController extends Controller
                                                         ];
                     }
                     if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->ns_jenis_nilai=='SAS'){
-                        //$rowsiswa['SAS'] = ['ns_tes' => $rownilai->ns_tes, 'ns_remidi' => $rownilai->ns_remidi];
                         $nilaiSAS = $rownilai->ns_tes;
                         $nilaiRemidiSAS = $rownilai->ns_remidi;
                     }
@@ -172,10 +230,10 @@ class NilaiSiswaController extends Controller
             $rowstart = ++$rowstart;
         }
         $download = ['header' => $header, 'siswa' => $siswa];
-        return Excel::download(new NilaiSiswaExport($download), 'SIAP-nilaisiswa-'.$jammengajar->kelas->kelas_nama.'-'.$jammengajar->mapel->mapel_kode.'-'.date('y').date('m').date('d').'.xlsx');
+        return Excel::download(new NilaiSiswaKurmerExport($download), 'SIAP-KM-'.$jammengajar->kelas->kelas_nama.'-'.$jammengajar->mapel->mapel_kode.'-'.date('y').date('m').date('d').'.xlsx');
     }
 
-    public function downloadNilai(Request $request){
+    public function downloadNilaiPengetahuan(Request $request){
         $user = $request->user();
         $jammengajar = JamMengajar::whereId($request->filter)
                                   ->with(['kelas','mapel'])
@@ -186,6 +244,7 @@ class NilaiSiswaController extends Controller
         }
         $kompetensi = Kompetensi::where('kompetensi_mapel', $jammengajar->mapel->mapel_kode)
                                 ->where('kompetensi_jenjang', $jammengajar->kelas->kelas_jenjang)
+                                ->where('k_inti', 3)
                                 ->where('is_active',1)
                                 ->get();
         $siswa = KelasAnggota::where('kelas_id', $jammengajar->kelas_id)
@@ -199,32 +258,214 @@ class NilaiSiswaController extends Controller
                            ->where('mapel_id', $jammengajar->mapel_id)
                            ->where('periode_id', $jammengajar->periode_id)
                            ->get();
-        $namaTP = $kompetensi->pluck('kd_kode');
-        $header = ['STS' => null,'SAS'=> null, 'TP'=>$namaTP];
+        $namaKD = $kompetensi->pluck('kd_kode');
+        $header = ['PTS' => null,'PAS'=> null, 'KD'=>$namaKD];
         $kompID = $kompetensi->pluck('id');
         $periode = $jammengajar->periode_id;
+        $rowstart = 3;
         foreach($siswa as $rowsiswa){
-            $rowsiswa['STS']=['ns_tes' => null, 'ns_remidi' => null];
-            $rowsiswa['SAS']=['ns_tes' => null, 'ns_remidi' => null];
+            $arrNAKD = $arrNATGS = $arrNATES = [];
+            $nilaiPAS = null;
+            $nilaiPTS = null;
+            $nilaiRemidiPAS = null;
+            $nilaiRemidiPTS = null;
+            $colstart = 'C';
+            $rowsiswa['PAS']=['ns_tes' => null, 'ns_remidi' => null];
+            $rowsiswa['PTS']=['ns_tes' => null, 'ns_remidi' => null];
+            $col_kd = $colstart;
             foreach($kompetensi as $rowkomp){
-                $nilaisiswa[$rowkomp->kd_kode]=['ns_tugas' => null, 'ns_tes' => null, 'ns_remidi' => null];
+                //$nilaisiswa[$rowkomp->kd_kode]=['ns_tugas' => null, 'ns_tes' => null, 'ns_remidi' => null, 'ns_perbaikan' => null, 'na_tugas'=> null, 'na_tes' => null];
+                $cell_tugas = $col_kd.$rowstart;
+                $col_kd = ++$col_kd;
+                $cell_remidi_tgs = $col_kd.$rowstart;
+                $col_kd = ++$col_kd;
+                $cell_na_tgs = $col_kd.$rowstart;
+                array_push($arrNATGS,$cell_na_tgs);
+                $col_kd = ++$col_kd;
+                $cell_tes = $col_kd.$rowstart;
+                $col_kd = ++$col_kd;
+                $cell_remidi_tes = $col_kd.$rowstart;
+                $col_kd = ++$col_kd;
+                $cell_na_tes = $col_kd.$rowstart;
+                array_push($arrNATES,$cell_na_tes);
+                $col_kd = ++$col_kd;
+                $cell_na_kd = $col_kd.$rowstart;
+                $col_kd = ++$col_kd;
+                array_push($arrNAKD,$cell_na_kd);
+                $natgs = '=IF('.$cell_tugas.'="","",IF('.$cell_tugas.'>=75,'.$cell_tugas.',IF('.$cell_remidi_tgs.'>=75,75,MAX('.$cell_tugas.','.$cell_remidi_tgs.'))))';
+                $nates = '=IF('.$cell_tes.'="","",IF('.$cell_tes.'>=75,'.$cell_tes.',IF('.$cell_remidi_tes.'>=75,75,MAX('.$cell_tes.','.$cell_remidi_tes.'))))';
+                $nakd = '=IF(IF('.$cell_na_tgs.'="",0,1)+IF('.$cell_na_tes.'="",0,1)=0,"",(IF('.$cell_na_tgs.'="",0,'.$cell_na_tgs.')+IF('.$cell_na_tes.'="",0,'.$cell_na_tes.'))/(IF('.$cell_na_tgs.'="",0,1)+IF('.$cell_na_tes.'="",0,1)))';
+                $nilaisiswa[$rowkomp->kd_kode]=[ 'ns_tugas' => null,
+                                                'ns_perbaikan' => null,
+                                                'ns_tes' => null,
+                                                'ns_remidi' => null,
+                                                'na_tgs'=> $natgs,
+                                                'na_tes' => $nates,
+                                                'na_kd' => $nakd ];
                 foreach($nilai as $rownilai) {
                     if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->kompetensi_id==$rowkomp->id){
-                        $nilaisiswa[$rowkomp->kd_kode] = ['ns_tugas' => $rownilai->ns_tugas, 'ns_tes' => $rownilai->ns_tes, 'ns_remidi' => $rownilai->ns_remidi];
+                        $nilaisiswa[$rowkomp->kd_kode] = [   'ns_tugas' => $rownilai->ns_tugas,
+                                                            'ns_perbaikan' => $rownilai->ns_perbaikan,
+                                                            'ns_tes' => $rownilai->ns_tes,
+                                                            'ns_remidi' => $rownilai->ns_remidi,
+                                                            'na_tgs'=> $natgs,
+                                                            'na_tes' => $nates,
+                                                            'na_kd' => $nakd
+                                                        ];
                     }
-                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->ns_jenis_nilai=='STS'){
-                        $rowsiswa['STS'] = ['ns_tes' => $rownilai->ns_tes, 'ns_remidi' => $rownilai->ns_remidi];
+                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->ns_jenis_nilai=='PAS'){
+                        $nilaiPAS = $rownilai->ns_tes;
+                        $nilaiRemidiPAS = $rownilai->ns_remidi;
                     }
-                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->ns_jenis_nilai=='SAS'){
-                        $rowsiswa['SAS'] = ['ns_tes' => $rownilai->ns_tes, 'ns_remidi' => $rownilai->ns_remidi];
+                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->ns_jenis_nilai=='PTS'){
+                        $nilaiPTS = $rownilai->ns_tes;
+                        $nilaiRemidiPTS = $rownilai->ns_remidi;
                     }
                 }
             }
+            $formulaavPT = '';
+            $formulaavUH = '';
+            foreach($arrNATGS as $rowNATGS) {
+                $formulaavPT = $formulaavPT.$rowNATGS.',';
+            }
+            foreach($arrNATES as $rowNATES) {
+                $formulaavUH = $formulaavUH.$rowNATES.',';
+            }
+            $cell_pts = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_remidi_pts = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_na_pts = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_pas = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_remidi_pas = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_na_pas = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_av_pt = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_av_uh = $col_kd.$rowstart;
+            $rowsiswa['PTS'] = ['ns_tes' => $nilaiPTS,
+                                'ns_remidi' => $nilaiRemidiPTS,
+                                'na_pts' => '=IF('.$cell_pts.'="","",IF('.$cell_pts.'>=75,'.$cell_pts.',IF('.$cell_remidi_pts.'>=75,75,MAX('.$cell_pts.','.$cell_remidi_pts.'))))'];
+            $rowsiswa['PAS'] = ['ns_tes' => $nilaiPAS,
+                                'ns_remidi' => $nilaiRemidiPAS,
+                                'na_pas' => '=IF('.$cell_pas.'="","",IF('.$cell_pas.'>=75,'.$cell_pas.',IF('.$cell_remidi_pas.'>=75,75,MAX('.$cell_pas.','.$cell_remidi_pas.'))))'];
             $rowsiswa['nilai'] = $nilaisiswa;
+            $rowsiswa['avPT'] = '=IFERROR(AVERAGE('.substr($formulaavPT,0,-1).'),"")';
+            $rowsiswa['avUH'] = '=IFERROR(AVERAGE('.substr($formulaavUH,0,-1).'),"")';
+            $rowsiswa['NR'] = '=IFERROR(ROUND(AVERAGE('.$cell_av_pt.','.$cell_av_uh.')*50/100+IF('.$cell_na_pts.'="",0,'.$cell_na_pts.')*25/100+IF('.$cell_na_pas.'="",0,'.$cell_na_pas.')*25/100,0),"")';
+            $rowstart = ++$rowstart;
         }
         $download = ['header' => $header, 'siswa' => $siswa];
         //return response()->json(['data' => $download],200);
-        return Excel::download(new NilaiSiswaExport($download), 'nilaisiswa-'.$jammengajar->kelas->kelas_nama.'-'.$jammengajar->mapel->mapel_kode.'-'.date('y').date('m').date('d').'.xlsx');
+        //return $download;
+        return Excel::download(new NilaiSiswaPengetahuanExport($download), 'SIAP-KI3-'.$jammengajar->kelas->kelas_nama.'-'.$jammengajar->mapel->mapel_kode.'-'.date('y').date('m').date('d').'.xlsx');
+    }
+
+    public function downloadNilaiKeterampilan(Request $request){
+        $user = $request->user();
+        $jammengajar = JamMengajar::whereId($request->filter)
+                                  ->with(['kelas','mapel'])
+                                  ->first();
+        if($jammengajar->mapel->mapel_kode=='DC'){
+            $jammengajar->mapel->mapel_kode = 'BIG';
+            $jammengajar->mapel_id = 4;
+        }
+        $kompetensi = Kompetensi::where('kompetensi_mapel', $jammengajar->mapel->mapel_kode)
+                                ->where('kompetensi_jenjang', $jammengajar->kelas->kelas_jenjang)
+                                ->where('k_inti', 4)
+                                ->where('is_active',1)
+                                ->get();
+        $siswa = KelasAnggota::where('kelas_id', $jammengajar->kelas_id)
+                             ->with(['siswa' => function ($query) {
+                                 $query->select('id','s_nama', 's_nis','s_code');
+                               }])
+                             ->orderBy('absen')
+                             ->get();
+        $siswaID = $siswa->pluck('siswa_id');
+        $nilai = NilaiSiswa::whereIn('siswa_id', $siswaID)
+                           ->where('mapel_id', $jammengajar->mapel_id)
+                           ->where('periode_id', $jammengajar->periode_id)
+                           ->get();
+        $namaKD = $kompetensi->pluck('kd_kode');
+        $header = ['KD'=>$namaKD];
+        $kompID = $kompetensi->pluck('id');
+        $periode = $jammengajar->periode_id;
+        $rowstart = 3;
+        foreach($siswa as $rowsiswa){
+            $arrPRK = $arrPRY = $arrPRD = $arrPRT = [];
+            $colstart = 'C';
+            $col_kd = $colstart;
+            foreach($kompetensi as $rowkomp){
+                $cell_praktek = $col_kd.$rowstart;
+                array_push($arrPRK,$cell_praktek);
+                $col_kd = ++$col_kd;
+                $cell_proyek = $col_kd.$rowstart;
+                array_push($arrPRY,$cell_proyek);
+                $col_kd = ++$col_kd;
+                $cell_produk = $col_kd.$rowstart;
+                array_push($arrPRD,$cell_produk);
+                $col_kd = ++$col_kd;
+                $cell_portofolio = $col_kd.$rowstart;
+                array_push($arrPRT,$cell_portofolio);
+                $col_kd = ++$col_kd;
+                $cell_na_kd = $col_kd.$rowstart;
+                $col_kd = ++$col_kd;
+                $nakd = '=IFERROR(AVERAGE('.$cell_praktek.','.$cell_proyek.','.$cell_produk.','.$cell_portofolio.'),"")';
+                $nilaisiswa[$rowkomp->kd_kode]=[ 'ns_tugas' => null,
+                                                'ns_perbaikan' => null,
+                                                'ns_tes' => null,
+                                                'ns_remidi' => null,
+                                                'na_kd' => $nakd ];
+                foreach($nilai as $rownilai) {
+                    if($rownilai->siswa_id==$rowsiswa->siswa->id&&$rownilai->kompetensi_id==$rowkomp->id){
+                        $nilaisiswa[$rowkomp->kd_kode] = [   'ns_tugas' => $rownilai->ns_tugas,
+                                                            'ns_perbaikan' => $rownilai->ns_perbaikan,
+                                                            'ns_tes' => $rownilai->ns_tes,
+                                                            'ns_remidi' => $rownilai->ns_remidi,
+                                                            'na_kd' => $nakd
+                                                        ];
+                    }
+                }
+            }
+            $formulaavPRK = '';
+            $formulaavPRY = '';
+            $formulaavPRD = '';
+            $formulaavPRT = '';
+            foreach($arrPRK as $rowPRK) {
+                $formulaavPRK = $formulaavPRK.$rowPRK.',';
+            }
+            foreach($arrPRY as $rowPRY) {
+                $formulaavPRY = $formulaavPRY.$rowPRY.',';
+            }
+            foreach($arrPRD as $rowPRD) {
+                $formulaavPRD = $formulaavPRD.$rowPRD.',';
+            }
+            foreach($arrPRT as $rowPRT) {
+                $formulaavPRT = $formulaavPRT.$rowPRT.',';
+            }
+            $cell_av_prk = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_av_pry = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_av_prd = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $cell_av_prt = $col_kd.$rowstart;
+            $col_kd = ++$col_kd;
+            $rowsiswa['nilai'] = $nilaisiswa;
+            $rowsiswa['avPRK'] = '=IFERROR(AVERAGE('.substr($formulaavPRK,0,-1).'),"")';
+            $rowsiswa['avPRY'] = '=IFERROR(AVERAGE('.substr($formulaavPRY,0,-1).'),"")';
+            $rowsiswa['avPRD'] = '=IFERROR(AVERAGE('.substr($formulaavPRD,0,-1).'),"")';
+            $rowsiswa['avPRT'] = '=IFERROR(AVERAGE('.substr($formulaavPRT,0,-1).'),"")';
+            $rowsiswa['NR'] = '=IFERROR(ROUND(AVERAGE('.$cell_av_prk.','.$cell_av_pry.','.$cell_av_prd.','.$cell_av_prt.'),0),"")';
+            $rowstart = ++$rowstart;
+        }
+        $download = ['header' => $header, 'siswa' => $siswa];
+        //return response()->json(['data' => $download],200);
+        //return $download;
+        return Excel::download(new NilaiSiswaKeterampilanExport($download), 'SIAP-KI4-'.$jammengajar->kelas->kelas_nama.'-'.$jammengajar->mapel->mapel_kode.'-'.date('y').date('m').date('d').'.xlsx');
     }
 
     public function nilaiki12(Request $request) {

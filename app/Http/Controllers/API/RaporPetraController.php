@@ -40,7 +40,8 @@ class RaporPetraController extends Controller
                             'rp_rtwo_score' => $request->rp_rtwo_score,
                             'rp_rthree_score' => $request->rp_rthree_score,
                             'rp_rfour_score' => $request->rp_rfour_score,
-                            'rp_religious_score' => $request->rp_rone_score.$request->rp_rtwo_score.$request->rp_rthree_score.$request->rp_rfour_score,
+                            'rp_rfive_score' => $request->rp_rfive_score,
+                            'rp_religious_score' => $request->rp_rone_score.$request->rp_rtwo_score.$request->rp_rthree_score.$request->rp_rfour_score.$request->rp_rfive_score,
                             'rp_academic_score' => $request->rp_academic_score,
                              ]);
                     $id = $add->id;
@@ -60,10 +61,11 @@ class RaporPetraController extends Controller
                                         'rp_rtwo_score' => $request->rp_rtwo_score,
                                         'rp_rthree_score' => $request->rp_rthree_score,
                                         'rp_rfour_score' => $request->rp_rfour_score,
+                                        'rp_rfive_score' => $request->rp_rfive_score,
                                         'rp_academic_score' => $request->rp_academic_score,
                                         'rp_physical_score' => $request->rp_pone_score.$request->rp_ptwo_score.$request->rp_pthree_score,
                                         'rp_emotional_score' => $request->rp_eone_score.$request->rp_etwo_score.$request->rp_ethree_score.$request->rp_efour_score,
-                                        'rp_religious_score' => $request->rp_rone_score.$request->rp_rtwo_score.$request->rp_rthree_score.$request->rp_rfour_score,
+                                        'rp_religious_score' => $request->rp_rone_score.$request->rp_rtwo_score.$request->rp_rthree_score.$request->rp_rfour_score.$request->rp_rfive_score,
                                     ]);
                 }
 
@@ -75,8 +77,8 @@ class RaporPetraController extends Controller
                 if(!is_null($request->rp_eone_score)&&!is_null($request->rp_etwo_score)&&!is_null($request->rp_ethree_score)&&!is_null($request->rp_efour_score)){
                     $emotional = DeskripsiRaporpetra::where('kode',$request->rp_eone_score.$request->rp_etwo_score.$request->rp_ethree_score.$request->rp_efour_score)->value('deskripsi');
                 }
-                if(!is_null($request->rp_rone_score)&&!is_null($request->rp_rtwo_score)&&!is_null($request->rp_rthree_score)&&!is_null($request->rp_rfour_score)){
-                    $religious = DeskripsiRaporpetra::where('kode',$request->rp_rone_score.$request->rp_rtwo_score.$request->rp_rthree_score.$request->rp_rfour_score)->value('deskripsi');
+                if(!is_null($request->rp_rone_score)&&!is_null($request->rp_rtwo_score)&&!is_null($request->rp_rthree_score)&&!is_null($request->rp_rfour_score)&&!is_null($request->rp_rfive_score)){
+                    $religious = DeskripsiRaporpetra::where('kode',$request->rp_rone_score.$request->rp_rtwo_score.$request->rp_rthree_score.$request->rp_rfour_score.$request->rp_rfive_score)->value('deskripsi');
                 }
                 if(!is_null($request->rp_talent_score)){
                     $talent = DeskripsiRaporpetra::where('kode',$request->rp_talent_score)->value('deskripsi');

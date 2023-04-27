@@ -7,7 +7,7 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class NilaiSiswaExport implements FromView, ShouldAutoSize
+class NilaiSiswaKurmerExport implements FromView, ShouldAutoSize
 {
     protected $download;
 
@@ -19,7 +19,7 @@ class NilaiSiswaExport implements FromView, ShouldAutoSize
     public function view(): View
     {
         //LOAD VIEW transaction.blade.php DAN PASSING DATA YANG DIMINTA DIATAS
-        return view('exports.nilaisiswa', [
+        return view('exports.nilaisiswakurmer', [
             'data' => $this->download
         ]);
     }

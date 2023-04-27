@@ -383,38 +383,45 @@
                             <div class="card-header" id="headingFour">
                             <h5 class="mb-0">
                                 <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                Religious Education
+                                Relationship with God
                                 </button>
                             </h5>
                             </div>
                             <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label>Doa Pagi, PD dan Kebaktian</label>
+                                        <label>Bersikap Sopan</label>
                                         <select type="text" class="form-control" aria-invalid="false" v-model="raporPetra.rp_rone_score">
-                                            <option value="R1+">Aktif</option>
-                                            <option value="R1-">Kurang Aktif</option>
+                                            <option value="R1+">Mampu</option>
+                                            <option value="R1-">Perlu Berupaya</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label>Mengekspresikan Keceriaan, Berkata Ramah, Mengungkapkan Perasaan Dan Pengalaman</label>
+                                        <label>Memaafkan</label>
                                         <select type="text" class="form-control" aria-invalid="false" v-model="raporPetra.rp_rtwo_score">
                                             <option value="R2+">Mampu</option>
-                                            <option value="R2-">Kurang Mampu</option>
+                                            <option value="R2-">Perlu Berupaya</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label>Berterimakasih Kepada Tuhan, Berbagi Dengan Sesama Dan Menghargai Segala Sesuatu Pada Dirinya Dan Sekitarnya</label>
+                                        <label>Menolong</label>
                                         <select type="text" class="form-control" aria-invalid="false" v-model="raporPetra.rp_rthree_score">
                                             <option value="R3+">Mampu</option>
-                                            <option value="R3-">Kurang Mampu</option>
+                                            <option value="R3-">Perlu Berupaya</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label>Menghormati Tuhan Saat Ibadah, Menyatakan Kebaikan Tuhan Dalam Perbuatan Dan Perkataan Dan Menunjukkan Sikap Rendah Hati</label>
+                                        <label>Sabar</label>
                                         <select type="text" class="form-control" aria-invalid="false" v-model="raporPetra.rp_rfour_score">
                                             <option value="R4+">Mampu</option>
-                                            <option value="R4-">Kurang Mampu</option>
+                                            <option value="R4-">Perlu Berupaya</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Menempatkan Diri</label>
+                                        <select type="text" class="form-control" aria-invalid="false" v-model="raporPetra.rp_rfive_score">
+                                            <option value="R5+">Mampu</option>
+                                            <option value="R5-">Perlu Berupaya</option>
                                         </select>
                                     </div>
                                 </div>
@@ -752,7 +759,7 @@
                     <template v-slot:modal-title>
                         Preview Rapor Petra
                     </template>
-                    <rapor-petra-view v-if="authenticated.unit_id == 1"></rapor-petra-view>
+                    <rapor-petra-view></rapor-petra-view>
                 </b-modal>
             </div>
             <div class="panel-body">

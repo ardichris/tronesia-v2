@@ -11,8 +11,6 @@ use App\NilaiSiswa;
 use App\LingkupMateri;
 use App\Kompetensi;
 use App\Mapel;
-use App\KmrDetail;
-use App\Http\Controllers\API\NilaiSiswaController;
 
 function capitalize_after_delimiters($string)
     {
@@ -49,7 +47,7 @@ function nilaiAkhir ($non_tes, $tes){
         if(is_null($tes)) return $non_tes;
     }
 }
-class NilaiSiswasImport implements ToCollection, WithStartRow
+class NilaiSiswaPengetahuanImport implements ToCollection, WithStartRow
 {
     /**
     * @param array $row
@@ -86,7 +84,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                                 ->where('kompetensi_jenjang', $this->nilai['jenjang'])
                                 ->where('k_inti', 3)
                                 ->where('is_active', 1)
-                                //->where('kd_semester','>=',$this->nilai['semester'])
+                                ->where('kd_semester','>=',$this->nilai['semester'])
                                 ->get();
             $jenis = 'KI3';
         } elseif($this->nilai['jenis']=='KI4'){
@@ -103,7 +101,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                                 ->where('kompetensi_jenjang', $this->nilai['jenjang'])
                                 ->where('k_inti', 4)
                                 ->where('is_active', 1)
-                                //->where('kd_semester','>=',$this->nilai['semester'])
+                                ->where('kd_semester','>=',$this->nilai['semester'])
                                 ->get();
             $jenis = 'KI4';
         }
@@ -111,7 +109,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
         {
             $colcounter = 2;
             $siswa = Siswa::where('s_code',$row[0])->value('id');
-            $arrNilaiSumatif = [];
+
             if(!is_null($siswa)){
                 foreach($lmid as $rowlm){
                     $cekdata = $na_non_tes = $na_tes = $na_sumatif = null;
@@ -136,12 +134,11 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
 
 
                     if($this->nilai['jenis']=='KI4'){
-                        $praktek = nilaiFinal($row[$colcounter],$row[$colcounter]);
-                        $proyek = nilaiFinal($row[$colcounter+1],$row[$colcounter+1]);
-                        $produk = nilaiFinal($row[$colcounter+2],$row[$colcounter+2]);
-                        $portofolio = nilaiFinal($row[$colcounter+3],$row[$colcounter+3]);
+                        $praktek = nilaiFinal($row[$colcounter],$row[$colcounter+1]);
+                        $proyek = nilaiFinal($row[$colcounter+3],$row[$colcounter+4]);
+                        $produk = nilaiFinal($row[$colcounter+6],$row[$colcounter+7]);
+                        $portofolio = nilaiFinal($row[$colcounter+9],$row[$colcounter+10]);
                         $nilaiKI4 = [$praktek,$proyek,$produk,$portofolio];
-                        //$nilaiKI4 = [$row[$colcounter],$row[$colcounter]+1,$row[$colcounter]+2,$row[$colcounter]+3];
                         $nilaiKI4 = array_filter($nilaiKI4);
                         $nsKI4 = count($nilaiKI4)>0?array_sum($nilaiKI4)/count($nilaiKI4):null;
                         if(is_null($cekdata)){
@@ -172,7 +169,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                                                 ]);
                             } else {$cekdata->delete();}
                         }
-                        $colcounter = $colcounter+5;
+                        $colcounter = $colcounter+4;
                     } else {
                         if($row[$colcounter]=='0') $tugas = 0;  else $tugas = $row[$colcounter]?(int)$row[$colcounter]:null;
                         if($row[$colcounter+1]=='0') $perbaikan = 0;  else $perbaikan = $row[$colcounter+1]?(int)$row[$colcounter+1]:null;
@@ -183,7 +180,6 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                         if(is_null($na_non_tes)){$na_sumatif = $na_tes;}
                         elseif(is_null($na_tes)){$na_sumatif = $na_non_tes;}
                         else {$na_sumatif = nilaiAkhir($na_non_tes,$na_tes);}
-                        array_push($arrNilaiSumatif, round($na_sumatif,0));
                         if(is_null($cekdata)){
                             if($na_sumatif>0){
                                 if($this->nilai['jenis']=='KI3'){
@@ -210,7 +206,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                                                         'ns_perbaikan' => $perbaikan,
                                                         'ns_tes' => $tes,
                                                         'ns_remidi' => $remidi,
-                                                        'ns_nilai' => round($na_sumatif,0),
+                                                        'ns_nilai' => round($na_sumatif,2),
                                                         'ns_jenis_nilai' => $jenis,
                                                         'user_id' => $this->nilai['guru'],
                                                         'unit_id' => $this->nilai['unit'],
@@ -235,7 +231,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
                                                         'ns_perbaikan' => $perbaikan,
                                                         'ns_tes' => $tes,
                                                         'ns_remidi' => $remidi,
-                                                        'ns_nilai' => round($na_sumatif,0),
+                                                        'ns_nilai' => round($na_sumatif,2),
                                                         'mapel_id' => $this->nilai['mapel'],
                                                         'user_id' => $this->nilai['guru'],
                                                     ]);
@@ -322,30 +318,7 @@ class NilaiSiswasImport implements ToCollection, WithStartRow
 
                 $siswa = null;
             }
-            if($this->nilai['jenjang']==7){
-                $nilaiRapor = round(((array_sum($arrNilaiSumatif)/count($arrNilaiSumatif)) + round($nilaiSAS,0)) / 2 , 0);
-                if($nilaiRapor>=93){
-                    $predikatRapor= 'A';
-                } elseif($nilaiRapor>=84){
-                    $predikatRapor= 'B';
-                } elseif($nilaiRapor>=75){
-                    $predikatRapor= 'C';
-                } elseif($nilaiRapor<75) {
-                    $predikatRapor= 'D';
-                } else {
-                    $predikatRapor= null;
-                }
-                $deskripsiRapor = (new NilaiSiswaController)->descriptionKurmer($this->nilai['mapel'], array_sum($arrNilaiSumatif)/count($arrNilaiSumatif), $lmid, $arrNilaiSumatif);
-                $NR = KmrDetail::create([
-                                            'mapel_id' => $this->nilai['mapel'],
-                                            'kmr_score' => $nilaiRapor,
-                                            'kmr_predicate' => $predikatRapor,
-                                            'kmr_description1' => $deskripsiRapor['max'],
-                                            'kmr_description2' => $deskripsiRapor['min'],
-                                            'periode_id' => $this->nilai['periode'],
-                                            'siswa_id' => $siswa
-                                        ]);
-            }
+
         }
     }
 

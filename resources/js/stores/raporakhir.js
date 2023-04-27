@@ -24,6 +24,7 @@ const state = () => ({
         rp_rtwo_score: '',
         rp_rthree_score: '',
         rp_rfour_score: '',
+        rp_rfive_score: '',
         rp_academic_score: '',
     },
     siswa: {},

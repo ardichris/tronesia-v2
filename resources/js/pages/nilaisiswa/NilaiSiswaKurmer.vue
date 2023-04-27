@@ -217,7 +217,7 @@ export default {
             this.JENIS_SELECT(JMset)
         },
         downloadNilai(){
-            window.open(`/api/downloadnilai?api_token=${this.token}&filter=${this.nilaiselect.kelas.id}`)
+            window.open(`/api/downloadnilaikurmer?api_token=${this.token}&filter=${this.nilaiselect.kelas.id}`)
         },
         getNilai(){
             if(this.nilaiselect.jenis.text=='SAS'){
