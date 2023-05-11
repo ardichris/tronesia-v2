@@ -103,7 +103,10 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/inventories', 'API\InventoryController');
     Route::resource('/deliveries', 'API\DeliveryController');
     Route::put('/deliveries/changestatus/{kode}', 'API\DeliveryController@ChangeStatus');
-
+    Route::resource('/pancasilaproject', 'API\PancasilaProjectController');
+    Route::resource('/pancasilaelement', 'API\PancasilaElementController');
+    Route::resource('/pancasilareport', 'API\PancasilaReportController');
+    Route::get('/pancasilareport/view/{kode}', 'API\PancasilaReportController@viewRapor');
 
 
 

@@ -761,6 +761,27 @@
                     </template>
                     <rapor-petra-view></rapor-petra-view>
                 </b-modal>
+                <b-modal id="modal-pancasila-report" scrollable size="md">
+                    <template v-slot:modal-title>
+                        Rapor P5
+                    </template>
+                    <pancasila-report-form></pancasila-report-form>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"
+                            block  @click="submitPancasilaReport()"
+                        >
+                            Submit
+                        </b-button>
+                    </template>
+                </b-modal>
+                <b-modal id="modal-pancasilareport-view" scrollable size="lg" hide-footer>
+                    <template v-slot:modal-title>
+                        Rapor P5
+                    </template>
+                    <pancasila-report-view></pancasila-report-view>
+                </b-modal>
             </div>
             <div class="panel-body">
                 <b-table striped hover bordered :items="rapors.data" :fields="fields" show-empty>
@@ -792,6 +813,12 @@
                         <b-button variant="success" size="sm" v-if="row.item.RaporPetra == '-'" @click="inputRaporPetra(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
                         <b-button variant="warning" size="sm" v-if="row.item.RaporPetra != '-'" @click="editRaporPetra(row.item.RaporPetra.id)"><i class="fa fa-pen"></i></b-button>
                         <b-button variant="primary" size="sm" v-if="row.item.RaporPetra != '-'" @click="viewRaporPetra(row.item.RaporPetra.id)"><i class="fa fa-eye"></i></b-button>
+
+                    </template>
+                    <template v-slot:cell(pancasila)="row">
+                        <b-button variant="success" size="sm" v-if="row.item.PancasilaReport == '-'" @click="inputPancasilaReport(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
+                        <b-button variant="warning" size="sm" v-if="row.item.PancasilaReport != '-'" @click="changePancasilaReport(row.item.PancasilaReport.id)"><i class="fa fa-pen"></i></b-button>
+                        <b-button variant="primary" size="sm" v-if="row.item.PancasilaReport != '-'" @click="viewPancasilaReport(row.item.PancasilaReport.id)"><i class="fa fa-eye"></i></b-button>
 
                     </template>
                     <!-- <template v-slot:cell(walikelas)="row">
@@ -828,6 +855,8 @@ import FormRaporSisipanP2 from './RaporSisipanFormP2.vue'
 import FormRaporAkhir from './RaporAkhirForm.vue'
 import FormRaporKurmer from './RaporKurmerForm.vue'
 import FormWalikelas from './FormWalikelas.vue'
+import PancasilaReportForm from './PancasilaReportForm.vue'
+import PancasilaReportView from './PancasilaReportView.vue'
 import ViewRaporPetra from './RaporPetraView.vue'
 import vSelect from 'vue-select'
 
@@ -850,7 +879,8 @@ export default {
                 { key: 's_nama', label: 'Nama Siswa' },
                 { key: 'sisipan', label: 'Rapor Sisipan' },
                 { key: 'akhir', label: 'Rapor Akhir' },
-                { key: 'petra', label: 'Rapor Petra'}
+                { key: 'petra', label: 'Rapor Petra'},
+                { key: 'pancasila', label: 'Rapor P5'},
             ],
             search: '',
             import_file: '',
@@ -920,7 +950,11 @@ export default {
                                     'setTP',
                                     'tambahSisipan',
                                     'exportRapor',
-                                    'submitRaporKurtilas']),
+                                    'submitRaporKurtilas',
+                                    'getPancasilaReport',
+                                    'setPancasilaReport',
+                                    'editPancasilaReport',
+                                    'showPancasilaReport']),
         ...mapMutations('raporakhir', ['CLEAR_FORM']), //PANGGIL MUTATIONS CLEAR_FORM
 
         filterTP(mapel){
@@ -1016,6 +1050,7 @@ export default {
             })
         },
         inputRaporPetra(siswa){
+            this.CLEAR_FORM()
            this.$store.commit('raporakhir/SET_SISWA', siswa)
             this.$bvModal.show('modal-input-raporpetra')
         },
@@ -1048,7 +1083,6 @@ export default {
            //this.addRaporKurtilas();
            this.$bvModal.show('modal-input-kurtilas')
         },
-
         editRaporPetra(rapor){
             this.editNilaiPetra(rapor)
             this.$bvModal.show('modal-input-raporpetra')
@@ -1125,7 +1159,31 @@ export default {
             this.jenisFile = rapor
             this.$bvModal.show('modal-import');
 
-        }
+        },
+        inputPancasilaReport(siswa){
+            this.$store.commit('raporakhir/SET_SISWA', siswa)
+            this.getPancasilaReport().then(() => {
+                this.$bvModal.show('modal-pancasila-report')
+            })
+        },
+        viewPancasilaReport(rapor){
+            this.showPancasilaReport(rapor).then(() => {
+                this.$bvModal.show('modal-pancasilareport-view')
+            })
+        },
+        changePancasilaReport(rapor){
+            this.editPancasilaReport(rapor).then(() => {
+                this.$bvModal.show('modal-pancasila-report')
+            })
+        },
+        submitPancasilaReport(){
+            this.setPancasilaReport().then(() => {
+                this.$bvModal.hide('modal-pancasila-report')
+                this.getRapor({
+                    search: ''
+                })
+            })
+        },
 
     },
     components: {
@@ -1136,6 +1194,8 @@ export default {
         'rapor-kurmer-form': FormRaporKurmer,
         'rapor-petra-view': ViewRaporPetra,
         'walikelas-form': FormWalikelas,
+        'pancasila-report-form': PancasilaReportForm,
+        'pancasila-report-view': PancasilaReportView,
         vSelect
 
     }

@@ -121,6 +121,8 @@ import LaporanDaftarUlangPSB from './pages/laporans/psb/DaftarUlang.vue'
 import PenerimaanSiswa from './pages/penerimaansiswas/PenerimaanSiswa.vue'
 import PenerimaanSiswaDaftarUlang from './pages/penerimaansiswas/DaftarUlang.vue'
 import PenerimaanSiswaPembayaran from './pages/penerimaansiswas/Pembayaran.vue'
+import DataPancasilaProject from './pages/pancasilaprojects/PancasilaProject.vue'
+import IndexPancasilaProject from './pages/pancasilaprojects/Index.vue'
 
 
 Vue.use(Router)
@@ -905,7 +907,20 @@ const router = new Router({
                     meta: { title: 'Laporan Daftar Ulang PSB' }
                 }
             ]
-        }
+        },
+        {
+            path: '/pancasilaproject',
+            component: IndexPancasilaProject,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'pancasilaproject.data',
+                    component: DataPancasilaProject,
+                    meta: { title: 'Daftar Proyek Pancasila' }
+                },
+            ]
+        },
     ]
 });
 

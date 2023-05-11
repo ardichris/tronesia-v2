@@ -25,6 +25,7 @@ use App\SisipanField;
 use App\KurmerReport;
 use App\Kompetensi;
 use App\LingkupMateri;
+use App\PancasilaReport;
 use PDF;
 use Ramsey\Uuid\Uuid;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -1172,10 +1173,12 @@ class RaporAkhirController extends Controller
             $raporAkhir = RaporAkhir::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $raporKurmer = KurmerReport::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $raporPetra = RaporPetra::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
+            $pancasilaReport = PancasilaReport::where('siswa_id',$row->siswa->id)->where('periode_id',$user->periode)->select('id')->first();
             $row['RaporSisipan'] = $raporSisipan?$raporSisipan:'-';
             $row['RaporAkhir'] = $raporAkhir?$raporAkhir:'-';
             $row['RaporKurmer'] = $raporKurmer?$raporKurmer:'-';
             $row['RaporPetra'] = $raporPetra?$raporPetra:'-';
+            $row['PancasilaReport'] = $pancasilaReport?$pancasilaReport:'-';
         }
 
         return new RaporAkhirCollection($kelasAnggota);

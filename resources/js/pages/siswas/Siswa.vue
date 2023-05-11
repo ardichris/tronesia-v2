@@ -129,7 +129,7 @@ export default {
             //FIELD UNTUK B-TABLE, PASTIKAN KEY NYA SESUAI DENGAN FIELD DATABASE
             //AGAR OTOMATIS DI-RENDER
             fields: [
-                { key: 'kelas', label: 'Kelas' },
+                { key: 'kelas', label: 'Kelas', sortable: true },
                 { key: 's_code', label: 'Kode' },
                 { key: 's_nama', label: 'Nama Siswa' },
                 { key: 's_kelamin', label: 'L/P' },

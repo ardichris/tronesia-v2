@@ -36,6 +36,7 @@ import notification from './stores/notification.js'
 import lingkupmateri from './stores/lingkupmateri.js'
 import inventory from './stores/inventory.js'
 import delivery from './stores/delivery.js'
+import pancasilaproject from './stores/pancasilaproject'
 
 Vue.use(Vuex)
 
@@ -76,7 +77,8 @@ const store = new Vuex.Store({
         notification,
         lingkupmateri,
         inventory,
-        delivery
+        delivery,
+        pancasilaproject
     },
   	//STATE HAMPIR SERUPA DENGAN PROPERTY DATA DARI COMPONENT HANYA SAJA DAPAT DIGUNAKAN SECARA GLOBAL
     state: {

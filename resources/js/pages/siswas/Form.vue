@@ -8,7 +8,7 @@
                     <div class="col-12 col-sm-6">
                         <div class="form-group">
                             <label>Nama</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
-                            <input type="text" class="form-control" v-model="siswa.s_nama" :readonly="$route.name == 'siswas.view'">
+                            <input type="text" class="form-control" v-model="siswa.s_nama" :readonly="$route.name == 'siswas.view' || authenticated.role!=0">
                         </div>
                         <div class="form-group">
                             <label>Nama Panggilan</label>
@@ -32,10 +32,10 @@
                                 <label>Tempat Tanggal Lahir</label><span class="badge badge-danger" style="margin-left : 5px">!</span>
                                 <div class="row">
                                     <div class="col">
-                                        <input type="text" class="form-control" placeholder="Tempat lahir" v-model="siswa.s_tempat_lahir" :readonly="$route.name == 'siswas.view'">
+                                        <input type="text" class="form-control" placeholder="Tempat lahir" v-model="siswa.s_tempat_lahir" :readonly="$route.name == 'siswas.view' || authenticated.role!=0">
                                     </div>
                                     <div class="col">
-                                        <input type="date" class="form-control" placeholder="dd-mm-yyyy" v-model="siswa.s_tanggal_lahir" :readonly="$route.name == 'siswas.view'">
+                                        <input type="date" class="form-control" placeholder="dd-mm-yyyy" v-model="siswa.s_tanggal_lahir" :readonly="$route.name == 'siswas.view' || authenticated.role!=0">
                                     </div>
                                 </div>
                             </div>

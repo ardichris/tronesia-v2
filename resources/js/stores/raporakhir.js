@@ -27,6 +27,11 @@ const state = () => ({
         rp_rfive_score: '',
         rp_academic_score: '',
     },
+    pancasilareport: {
+        id: '',
+        siswa_id: '',
+        pr_project: {}
+    },
     siswa: {},
     exportParameter: {
         file:'',
@@ -60,6 +65,12 @@ const state = () => ({
 })
 
 const mutations = {
+    ASSIGN_PP(state, payload){
+        state.pancasilareport.pr_project = payload
+    },
+    ASSIGN_PR(state, payload){
+        state.pancasilareport = payload
+    },
     KELAS_DATA(state, payload) {
         state.kelas = payload
     },
@@ -83,6 +94,7 @@ const mutations = {
     },
     SET_SISWA(state, payload) {
         state.raporpetra.siswa_id = payload
+        state.pancasilareport.siswa_id = payload
     },
     ASSIGN_FORM(state, payload) {
         state.raporakhir = {
@@ -104,16 +116,83 @@ const mutations = {
         state.raporkurmer = payload
     },
     CLEAR_FORM(state) {
-        state.raporakhir = {}
-        state.raporkurmer = {}
-        state.raporsisipan = {}
-        state.raporpetra = {}
-        state.walikelas = {}
+        state.raporakhir = {},
+        state.raporkurmer = {},
+        state.raporsisipan = {},
+        state.raporpetra= {
+            siswa_id: '',
+            rp_pone_score: '',
+            rp_ptwo_score: '',
+            rp_pthree_score: '',
+            rp_eone_score: '',
+            rp_etwo_score: '',
+            rp_ethree_score: '',
+            rp_efour_score: '',
+            rp_tone_desc: '',
+            rp_ttwo_desc: '',
+            rp_talent_score: '',
+            rp_rone_score: '',
+            rp_rtwo_score: '',
+            rp_rthree_score: '',
+            rp_rfour_score: '',
+            rp_rfive_score: '',
+            rp_academic_score: '',
+        },
+        state.walikelas = {},
+        state.pancasilareport= {
+            id: '',
+            siswa_id: '',
+            pr_project: {}
+        }
     }
 }
 
 const actions = {
-
+    setPancasilaReport({commit,state}, payload){
+        let kode = state.pancasilareport.id?state.pancasilareport.id:state.pancasilareport.siswa_id
+        return new Promise((resolve, reject) => {
+            $axios.put(`/pancasilareport/${kode}`, state.pancasilareport)
+            .then((response) => {
+                commit('CLEAR_FORM')
+                resolve(response.data)
+            })
+        })
+    },
+    getPancasilaReport({commit, state}, payload) {
+        let id = typeof payload != 'undefined' ? payload:state.pancasilareport.siswa_id
+        if(payload != 'undefined') state.pancasilareport.id = payload
+        return new Promise((resolve, reject ) => {
+            $axios.get(`/pancasilareport?id=${id}`)
+            .then((response) => {
+                commit('ASSIGN_PP', response.data)
+                resolve(response.data)
+            })
+        })
+    },
+    showPancasilaReport({commit, state}, payload) {
+        let id = typeof payload != 'undefined' ? payload:state.pancasilareport.siswa_id
+        if(payload != 'undefined') state.pancasilareport.id = payload
+        return new Promise((resolve, reject ) => {
+            $axios.get(`/pancasilareport/view/${id}`)
+            .then((response) => {
+                commit('ASSIGN_PR', response.data.data)
+                console.log(response.data.data)
+                resolve(response.data)
+            })
+        })
+    },
+    editPancasilaReport({commit, state}, payload) {
+        let id = typeof payload != 'undefined' ? payload:state.pancasilareport.siswa_id
+        if(payload != 'undefined') state.pancasilareport.id = payload
+        return new Promise((resolve, reject ) => {
+            $axios.get(`/pancasilareport/${id}/edit`)
+            .then((response) => {
+                commit('ASSIGN_PR', response.data.data)
+                console.log(response.data.data)
+                resolve(response.data)
+            })
+        })
+    },
     exportRapor({commit, state}, payload){
 
         // return new Promise((resolve, reject)=> {

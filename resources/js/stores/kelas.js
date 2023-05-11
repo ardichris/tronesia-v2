@@ -16,7 +16,7 @@ const state = () => ({
         tambah: '',
         anggota: [],
     },
-    page: 1
+    page: '1'
 })
 
 const mutations = {

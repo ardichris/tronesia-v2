@@ -473,7 +473,7 @@
 
 </style>
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapMutations } from 'vuex'
 
 export default {
     name: 'RaporPetraForm',
@@ -498,6 +498,7 @@ export default {
             raporSisipan : state => state.raporsisipan
         }),
         ...mapState(['token']),
+        ...mapMutations('raporakhir',['CLEAR_FORM'])
     },
     methods: {
         ...mapActions('raporakhir', ['viewRaporSisipan']),
@@ -509,6 +510,9 @@ export default {
             });
         }
     },
+    destroyed(){
+        this.CLEAR_FORM()
+    }
 
 }
 </script>
