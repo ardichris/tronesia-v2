@@ -7,6 +7,7 @@
             <th colspan="2"></th>
         </tr>
         <tr>
+            <th>Id</th>
             <th>Kode</th>
             <th>Kelas</th>
             <th>No. Induk</th>
@@ -37,6 +38,7 @@
     <tbody>
         @foreach($siswa as $row)
             <tr>
+                <td>{{$row['id']}}</td>
                 <td>{{$row['s_code']}}</td>
                 <td>{{$row['kelas']}}/{{$row['absen']}}</td>
                 <td>{{$row['s_nis']}}</td>

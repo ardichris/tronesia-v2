@@ -53,6 +53,33 @@ class PancasilaProjectController extends Controller
         return response()->json(['status'=>'SUKSES'],200);
     }
 
+    public function update(Request $request) {
+        $this->validate($request, [
+            'pp_theme' => 'required',
+            'pp_name' => 'required',
+            'pp_desc' => 'required',
+            'pp_element' => 'required'
+        ]);
+        $user = $request->user();
+        $project = PancasilaProject::where('id',$request->id)->update([
+                        'pp_theme' => $request->pp_theme,
+                        'pp_name' => $request->pp_name,
+                        'pp_desc' => $request->pp_desc,
+                        'updater_id' => $user->id,
+                    ]);
+        $ppe = PancasilaProjectElement::where('pp_id',$request->id)->delete();
+        foreach($request->pp_element as $rowPE){
+            $pppe = PancasilaProjectElement::create([
+                        'pp_id' => $request->id,
+                        'pe_id' => $rowPE['element']['id']
+                    ]);
+        }
+
+
+
+        return response()->json(['status'=>'SUKSES'],200);
+    }
+
     public function edit($id) {
         $pp = PancasilaProject::where('id',$id)->with(['pp_element','pp_element.element'])->first();
         $ppe = PancasilaProjectElement::where('pp_id',$id)->pluck('pe_id');

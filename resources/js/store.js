@@ -37,6 +37,8 @@ import lingkupmateri from './stores/lingkupmateri.js'
 import inventory from './stores/inventory.js'
 import delivery from './stores/delivery.js'
 import pancasilaproject from './stores/pancasilaproject'
+import event from './stores/event'
+import eventticket from './stores/eventticket'
 
 Vue.use(Vuex)
 
@@ -78,7 +80,9 @@ const store = new Vuex.Store({
         lingkupmateri,
         inventory,
         delivery,
-        pancasilaproject
+        pancasilaproject,
+        event,
+        eventticket
     },
   	//STATE HAMPIR SERUPA DENGAN PROPERTY DATA DARI COMPONENT HANYA SAJA DAPAT DIGUNAKAN SECARA GLOBAL
     state: {

@@ -9,16 +9,16 @@
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-jemput')" v-if="authenticated.role==0">Penjemputan</b-button>
                     </div>
                     <div class="col-sm-6">
-                        <span class="float-right">                            
+                        <span class="float-right">
                             <b-button variant="primary" size="sm" @click="cari()"><i class="fas fa-search"></i></b-button>
                         </span>
                         <span class="float-right">
                             <b-form-input type="text" class="form-control form-control-sm" placeholder="Cari..." v-model="search" ref="search"></b-form-input>
                         </span>
                         <span class="float-right">
-                            <b-form-select 
+                            <b-form-select
                                 v-model="kelas"
-                                size="sm"                               
+                                size="sm"
                                 :options="['','VII-1','VII-2','VII-3','VII-4','VII-5','VII-6','VII-7','VII-8','VII-9',
                                            'VIII-1','VIII-2','VIII-3','VIII-4','VIII-5','VIII-6','VIII-7','VIII-8','VIII-9','VIII-10',
                                            'IX-1','IX-2','IX-3','IX-4','IX-5','IX-6','IX-7','IX-8','IX-9','IX-10']"
@@ -49,7 +49,7 @@
                                             @search="SearchSiswa"
                                             :value="$store.myValue"
                                             label="s_nama"
-                                            placeholder="Masukkan Kata Kunci" 
+                                            placeholder="Masukkan Kata Kunci"
                                             :filterable="false">
                                             <template slot="no-options">
                                                 Masukkan Kata Kunci
@@ -57,7 +57,7 @@
                                             <template slot="option" slot-scope="option">
                                                 {{ option.s_nama }}
                                             </template>
-                                        </v-select>    
+                                        </v-select>
                                     </td>
                                     <td>
                                         <button class="btn btn-danger btn-flat" @click="removeSiswa(index)"><i class="fa fa-trash"></i></button>
@@ -69,7 +69,7 @@
                     <template v-slot:modal-footer>
                         <b-button
                             variant="success"
-                            class="mt-3"                                    
+                            class="mt-3"
                             block  @click="submitSiswaPtm()"
                         >
                             Submit
@@ -86,7 +86,7 @@
                     <template v-slot:modal-footer>
                         <b-button
                             variant="success"
-                            class="mt-3"                                    
+                            class="mt-3"
                             block  @click="sudahdijemput(siswas.id)"
                         >
                             Submit
@@ -103,7 +103,7 @@
                     <template v-slot:modal-footer>
                         <b-button
                             variant="success"
-                            class="mt-3"                                    
+                            class="mt-3"
                             block  @click="submitabsenmasuk()"
                         >
                             Submit
@@ -118,7 +118,7 @@
                     <template v-slot:modal-footer>
                         <b-button
                             variant="success"
-                            class="mt-3"                                    
+                            class="mt-3"
                             block  @click="submitabsenmasuk()"
                         >
                             Submit
@@ -133,7 +133,7 @@
                     <template v-slot:modal-footer>
                         <b-button
                             variant="success"
-                            class="mt-3"                                    
+                            class="mt-3"
                             block  @click="suhupulang()"
                         >
                             Submit
@@ -156,11 +156,11 @@
                         <span class="badge badge-dark" v-if="row.item.distance">{{row.item.distance}}km aways</span>
                     </template>
                     <template v-slot:cell(actions)="row">
-                        
+
                             <button class="btn btn-success btn-sm" v-if="(row.item.absensi.aptm_status == null)" @click="submitabsenmasuk(row.item.siswa_id)"><i class="fa fa-check"></i></button>
                             <button class="btn btn-primary btn-sm" v-if="(row.item.absensi.aptm_status == 'Masuk')"  @click="sudahdijemput(row.item.siswa_id)" ><i class="fas fa-car"></i></button>
                             <button class="btn btn-danger btn-sm" v-if="(row.item.absensi != '-' && row.item.absensi.aptm_suhu_pulang == null)" @click="deleteAbsence(row.item.siswa_id)"><i class="fas fa-trash"></i></button>
-                        
+
                     </template>
                 </b-table>
 
@@ -268,27 +268,27 @@ export default {
         },
 
         async onInit (promise) {
-        try {
-            await promise
-        } catch (error) {
-            if (error.name === 'NotAllowedError') {
-            this.error = "ERROR: you need to grant camera access permission"
-            } else if (error.name === 'NotFoundError') {
-            this.error = "ERROR: no camera on this device"
-            } else if (error.name === 'NotSupportedError') {
-            this.error = "ERROR: secure context required (HTTPS, localhost)"
-            } else if (error.name === 'NotReadableError') {
-            this.error = "ERROR: is the camera already in use?"
-            } else if (error.name === 'OverconstrainedError') {
-            this.error = "ERROR: installed cameras are not suitable"
-            } else if (error.name === 'StreamApiNotSupportedError') {
-            this.error = "ERROR: Stream API is not supported in this browser"
-            } else if (error.name === 'InsecureContextError') {
-            this.error = 'ERROR: Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.';
-            } else {
-            this.error = `ERROR: Camera error (${error.name})`;
+            try {
+                await promise
+            } catch (error) {
+                if (error.name === 'NotAllowedError') {
+                this.error = "ERROR: you need to grant camera access permission"
+                } else if (error.name === 'NotFoundError') {
+                this.error = "ERROR: no camera on this device"
+                } else if (error.name === 'NotSupportedError') {
+                this.error = "ERROR: secure context required (HTTPS, localhost)"
+                } else if (error.name === 'NotReadableError') {
+                this.error = "ERROR: is the camera already in use?"
+                } else if (error.name === 'OverconstrainedError') {
+                this.error = "ERROR: installed cameras are not suitable"
+                } else if (error.name === 'StreamApiNotSupportedError') {
+                this.error = "ERROR: Stream API is not supported in this browser"
+                } else if (error.name === 'InsecureContextError') {
+                this.error = 'ERROR: Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.';
+                } else {
+                this.error = `ERROR: Camera error (${error.name})`;
+                }
             }
-        }
         },
         refreshdata(){
             this.getSiswaPtm({
@@ -299,7 +299,7 @@ export default {
         submitSiswaPtm(){
             this.submitPTM().then(() => {
                 this.$bvModal.hide('modal-add')
-                this.refreshdata()                
+                this.refreshdata()
             })
         },
         removeSiswa(index) {
@@ -329,7 +329,7 @@ export default {
         },
         submitabsenmasuk(id){
             this.absenDatang({siswaid: id})
-            .then(() => {              
+            .then(() => {
                 this.refreshdata()
             });
         },
@@ -366,13 +366,13 @@ export default {
                 this.refreshdata()
             });
         },
-        
+
     },
     components: {
         vSelect,
         QrcodeStream
     }
-    
+
 }
 </script>
 

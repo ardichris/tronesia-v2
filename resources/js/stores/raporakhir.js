@@ -155,6 +155,8 @@ const actions = {
             .then((response) => {
                 commit('CLEAR_FORM')
                 resolve(response.data)
+            }).catch(() => {
+                reject()
             })
         })
     },

@@ -27,6 +27,7 @@ const mutations = {
     },
     ASSIGN_FORM(state, payload) {
         state.pancasilaproject = {
+            id: payload.id,
             pp_name: payload.pp_name,
             pp_desc: payload.pp_desc,
             pp_theme: payload.pp_theme,
@@ -93,6 +94,22 @@ const actions = {
     storePancasilaProject({dispatch,commit,state},payload) {
         return new Promise((resolve,reject) => {
             $axios.post(`/pancasilaproject`, state.pancasilaproject)
+            .then((response) => {
+                dispatch('getPancasilaProject').then(() => {
+                    resolve(response.data)
+                })
+            })
+            .catch((error) => {
+                if(error.response.status == 422) {
+                    commit('SET_ERRORS', error.response.data.errors, {root: true})
+                }
+            })
+        })
+    },
+    updatePancasilaProject({dispatch,commit,state},payload) {
+        console.log(state.pancasilaproject)
+        return new Promise((resolve,reject) => {
+            $axios.put(`/pancasilaproject/${state.pancasilaproject.id}`, state.pancasilaproject)
             .then((response) => {
                 dispatch('getPancasilaProject').then(() => {
                     resolve(response.data)

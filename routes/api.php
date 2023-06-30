@@ -103,9 +103,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::resource('/inventories', 'API\InventoryController');
     Route::resource('/deliveries', 'API\DeliveryController');
     Route::put('/deliveries/changestatus/{kode}', 'API\DeliveryController@ChangeStatus');
-    Route::resource('/pancasilaproject', 'API\PancasilaProjectController');
+    Route::resource('/pancasilaproject', 'API\PancasilaProjectController')->except(['create', 'show']);;
     Route::resource('/pancasilaelement', 'API\PancasilaElementController');
     Route::resource('/pancasilareport', 'API\PancasilaReportController');
+    Route::resource('/event', 'API\EventController');
+    Route::resource('/eventticket', 'API\EventTicketController');
+    Route::put('/eventticket/attend/{kode}', 'API\EventTicketController@attend');
+    Route::resource('/eventtransaction', 'API\EventTransactionController');
     Route::get('/pancasilareport/view/{kode}', 'API\PancasilaReportController@viewRapor');
 
 

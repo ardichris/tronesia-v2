@@ -123,6 +123,10 @@ import PenerimaanSiswaDaftarUlang from './pages/penerimaansiswas/DaftarUlang.vue
 import PenerimaanSiswaPembayaran from './pages/penerimaansiswas/Pembayaran.vue'
 import DataPancasilaProject from './pages/pancasilaprojects/PancasilaProject.vue'
 import IndexPancasilaProject from './pages/pancasilaprojects/Index.vue'
+import DataEvent from './pages/events/Event.vue'
+import IndexEvent from './pages/events/Index.vue'
+import DataEventTicket from './pages/eventtickets/EventTicket.vue'
+import IndexEventTicket from './pages/eventtickets/Index.vue'
 
 
 Vue.use(Router)
@@ -918,6 +922,32 @@ const router = new Router({
                     name: 'pancasilaproject.data',
                     component: DataPancasilaProject,
                     meta: { title: 'Daftar Proyek Pancasila' }
+                },
+            ]
+        },
+        {
+            path: '/event',
+            component: IndexEvent,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'event.data',
+                    component: DataEvent,
+                    meta: { title: 'Event List' }
+                },
+            ]
+        },
+        {
+            path: '/eventticket',
+            component: IndexEventTicket,
+            meta: { requiresAuth: true },
+            children: [
+                {
+                    path: '',
+                    name: 'eventticket.data',
+                    component: DataEventTicket,
+                    meta: { title: 'Ticket List' }
                 },
             ]
         },

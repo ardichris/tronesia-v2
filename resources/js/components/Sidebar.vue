@@ -259,6 +259,22 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="nav nav-treeview" v-if="authenticated.unit_id==1">
+                        <li class="nav-item ml-3">
+                            <a class="nav-link">
+                                <i class="fas fa-diagnoses nav-icon"></i>
+                                <p><router-link :to="{ name: 'event.data' }">Event</router-link></p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview" v-if="authenticated.unit_id==1">
+                        <li class="nav-item ml-3">
+                            <a class="nav-link">
+                                <i class="fas fa-ticket-alt nav-icon"></i>
+                                <p><router-link :to="{ name: 'eventticket.data' }">Ticket</router-link></p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <li class="nav-item has-treeview" v-if="authenticated.role==0 || authenticated.role==4">

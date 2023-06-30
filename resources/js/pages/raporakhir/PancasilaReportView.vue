@@ -1,38 +1,40 @@
 <template>
-    <div class="container">
-        <center><h1 style="font-family:'Verdana'; font-size: 14px">RAPOR PROJEK PENGUATAN<br>PROFIL PELAJAR PANCASILA</h1></center>
-        <table class="identitas">
-            <tr>
-                <td style="width:15%">Nama Siswa</td>
-                <td style="width:1%">:</td>
-                <td colspan="4">{{pancasilaReport['siswa']['s_nama']}}</td>
-            </tr>
-            <tr>
-                <td style="width:15%">Kelas</td>
-                <td style="width:1%">:</td>
-                <td style="width:40%">{{pancasilaReport['kelas']['kelas']['kelas_nama']}} / {{pancasilaReport['kelas']['absen']}}</td>
-                <td style="width:20%">Semester</td>
-                <td style="width:1%">:</td>
-                <td style="width:20%">2 (Dua)</td>
-            </tr>
-            <tr>
-                <td>Nomor Induk</td>
-                <td>:</td>
-                <td>{{pancasilaReport['siswa']['s_nis']}}</td>
-                <td>Tahun Pelajaran</td>
-                <td>:</td>
-                <td>2022 - 2023</td>
-            </tr>
-        </table>
-        <table class="identitas" v-for="(row,index) in pancasilaReport.pr_project" v-bind:key="index" style="margin-top:20px">
-            <tr>
-                <td><b>Projek {{index+1}} | {{row.pp_name}}</b></td>
-            </tr>
-            <tr>
-                <td>{{row.pp_desc}}</td>
-            </tr>
-        </table>
-        <table class="nilai" v-for="(rowproject,indexproject) in pancasilaReport.pr_project" v-bind:key="indexproject" style="margin-top:10px">
+<div>
+<div ref='content'>
+    <center><h1 style="font-family:'Verdana'; font-size: 14px">RAPOR PROJEK PENGUATAN<br>PROFIL PELAJAR PANCASILA</h1></center>
+    <table class="identitas">
+        <tr>
+            <td style="width:15%">Nama Siswa</td>
+            <td style="width:1%">:</td>
+            <td colspan="4">{{pancasilaReport['siswa']['s_nama']}}</td>
+        </tr>
+        <tr>
+            <td style="width:15%">Kelas</td>
+            <td style="width:1%">:</td>
+            <td style="width:40%">{{pancasilaReport['kelas']['kelas']['kelas_nama']}} / {{pancasilaReport['kelas']['absen']}}</td>
+            <td style="width:20%">Semester</td>
+            <td style="width:1%">:</td>
+            <td style="width:20%">2 (Dua)</td>
+        </tr>
+        <tr>
+            <td>Nomor Induk</td>
+            <td>:</td>
+            <td>{{pancasilaReport['siswa']['s_nis']}}</td>
+            <td>Tahun Pelajaran</td>
+            <td>:</td>
+            <td>2022 - 2023</td>
+        </tr>
+    </table>
+    <table class="identitas" v-for="(row,index) in pancasilaReport.pr_project" v-bind:key="index" style="margin-top:20px">
+        <tr>
+            <td><b>Projek {{index+1}} | {{row.pp_name}}</b></td>
+        </tr>
+        <tr>
+            <td>{{row.pp_desc}}</td>
+        </tr>
+    </table>
+    <div v-for="(rowproject,indexproject) in pancasilaReport.pr_project" v-bind:key="indexproject">
+        <table class="nilai" style="margin-top:10px">
             <tr>
                 <td style="width:50%"><b>{{rowproject.pp_name}}</b></td>
                 <td style="text-align:center">MB</td>
@@ -101,8 +103,15 @@
                 <td style="text-align:center"><a v-if="rowdetail.score[0]">{{rowdetail.score[0]['ps_score']=='BSH'?'✔':''}}</a></td>
                 <td style="text-align:center"><a v-if="rowdetail.score[0]">{{rowdetail.score[0]['ps_score']=='SAB'?'✔':''}}</a></td>
             </tr>
+
+        </table>
+        <table class="nilai" style="margin-top:10px; border-style:none">
+            <tr><b>Catatan Proses :</b></tr>
+            <tr>{{rowproject.comment}}</tr>
         </table>
     </div>
+</div>
+</div>
 </template>
 <style scoped>
     @page {
@@ -232,6 +241,7 @@
 </style>
 <script>
 import { mapActions, mapState } from 'vuex'
+import jspdf from 'jspdf'
 
 export default {
     name: 'PancasilaReportView',
@@ -264,8 +274,20 @@ export default {
             return input.toString().replace( /(^|\. *)([a-z])/g, function(match, separator, char) {
                 return separator + char.toUpperCase();
             });
+        },
+        exportPDF(){
+            const doc = new jspdf()
+            doc.text("Hello world!", 10, 10);
+            doc.save("a4.pdf");
+            const html = this.$refs.content.innerHTML
+            doc.fromHTML(html,15,15,{
+                width:150
+            })
+            doc.save("pancasilareport.pdf")
         }
     },
+    components: {
+    }
 
 }
 </script>

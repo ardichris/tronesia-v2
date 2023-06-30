@@ -15,6 +15,11 @@ class PancasilaReport extends Model
         return $this->belongsTo(Siswa::class);
     }
 
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
+
 
 
 }

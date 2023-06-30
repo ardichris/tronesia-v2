@@ -20,6 +20,21 @@
                                 </b-button>
                             </template>
                         </b-modal>
+                        <b-modal id="edit-modal" scrollable size="lg">
+                            <template v-slot:modal-title>
+                                Edit Proyek
+                            </template>
+                            <pancasilaproject-form></pancasilaproject-form>
+                            <template v-slot:modal-footer>
+                                <b-button
+                                    variant="success"
+                                    class="mt-3"
+                                    block @click="updatePP"
+                                >
+                                    Simpan
+                                </b-button>
+                            </template>
+                        </b-modal>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <span class="float-right">
@@ -119,13 +134,20 @@ export default {
         },
     },
     watch: {
+        page() {
+            this.getPancasilaProject(this.search)
+        },
+        search() {
+            this.getPancasilaProject(this.search)
+        }
     },
     methods: {
         ...mapActions('pancasilaproject',
                         ['getPancasilaProject',
                          'storePancasilaProject',
                          'editPancasilaProject',
-                         'removePancasilaProject']),
+                         'removePancasilaProject',
+                         'updatePancasilaProject']),
         storePP(){
             this.storePancasilaProject().then(() => {
                 this.$bvModal.hide('add-modal')
@@ -135,7 +157,13 @@ export default {
         editPP(id){
             this.mode = 'edit',
             this.editPancasilaProject(id).then(() => {
-                this.$bvModal.show('add-modal')
+                this.$bvModal.show('edit-modal')
+            })
+        },
+        updatePP(){
+            this.updatePancasilaProject().then(() => {
+                this.$bvModal.hide('edit-modal')
+                this.getPancasilaProject()
             })
         },
         deletePP(id){

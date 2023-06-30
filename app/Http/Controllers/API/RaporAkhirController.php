@@ -26,6 +26,11 @@ use App\KurmerReport;
 use App\Kompetensi;
 use App\LingkupMateri;
 use App\PancasilaReport;
+use App\PancasilaProject;
+use App\PancasilaProjectElement;
+use App\PancasilaElement;
+use App\PancasilaScore;
+use App\PancasilaComment;
 use PDF;
 use Ramsey\Uuid\Uuid;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -36,6 +41,7 @@ use App\Exports\RaporsSisipanExport;
 use App\Exports\RaporsSisipanKurmerExport;
 use App\Exports\RaporsPetraExport;
 use App\Exports\KurmerReportExport;
+use App\Exports\PancasilaReportExport;
 
 function predikatEkstra($huruf){
     if($huruf == 'A') return 'Sangat Baik';
@@ -704,7 +710,7 @@ class RaporAkhirController extends Controller
                                         ->where('periode_id',$user->periode);
                                     });
         }
-
+        $siswa_full = $siswa->get();
         $siswa = $siswa->pluck('siswa_id');
 
         if(request()->rapor=='Sisipan'){
@@ -716,62 +722,172 @@ class RaporAkhirController extends Controller
         }
 
         if(request()->rapor=='Akhir'){
-            if(request()->grup=='Jenjang'&&request()->detail=='7'){
-                $rapor = KurmerReport::whereIn('siswa_id',$siswa)->with(['siswa','detail'])->where('periode_id',$user->periode)->get();
-                $dbMapel = Mapel::get();
-                $listMapel = ['PAK','PKN','BIN','MAT','IPA','IPS','BIG','ORG','TIK','PIL','JWA','MAN'];
-                foreach($rapor as $rowrapor){
-                    // $rowrapor = [
-                    //     'PAK' => [],
-                    //     'PKN' => [],
-                    //     'BIN' => [],
-                    //     'BIG' => [],
-                    //     'MAT' => [],
-                    //     'IPA' => [],
-                    //     'IPS' => [],
-                    //     'ORG' => [],
-                    //     'MAN' => [],
-                    //     'TIK' => [],
-                    //     'JWA' => [],
-                    //     'PIL' => []
-                    // ];
-                    foreach($listMapel as $rowListMapel){
-                        $mapel_id=null;
-                        if($rowListMapel=='PIL'){
-                            $selectMapel = $dbMapel->where('mapel_kode', getMapelPilihan($rowrapor['siswa']['id'],$user->periode))->first();
-                            $rowrapor['pilihan'] = $selectMapel->mapel_nama;
-                        } else {
-                            $selectMapel = $dbMapel->where('mapel_kode', $rowListMapel)->first();
-                        }
-                        $mapel_id = $selectMapel->id;
+            // if(request()->grup=='Jenjang'&&request()->detail=='7'){
+            //     $rapor = KurmerReport::whereIn('siswa_id',$siswa)->with(['siswa','detail'])->where('periode_id',$user->periode)->get();
+            //     $dbMapel = Mapel::get();
+            //     $listMapel = ['PAK','PKN','BIN','MAT','IPA','IPS','BIG','ORG','TIK','PIL','JWA','MAN'];
+            //     foreach($rapor as $rowrapor){
+            //         // $rowrapor = [
+            //         //     'PAK' => [],
+            //         //     'PKN' => [],
+            //         //     'BIN' => [],
+            //         //     'BIG' => [],
+            //         //     'MAT' => [],
+            //         //     'IPA' => [],
+            //         //     'IPS' => [],
+            //         //     'ORG' => [],
+            //         //     'MAN' => [],
+            //         //     'TIK' => [],
+            //         //     'JWA' => [],
+            //         //     'PIL' => []
+            //         // ];
+            //         foreach($listMapel as $rowListMapel){
+            //             $mapel_id=null;
+            //             if($rowListMapel=='PIL'){
+            //                 $selectMapel = $dbMapel->where('mapel_kode', getMapelPilihan($rowrapor['siswa']['id'],$user->periode))->first();
+            //                 $rowrapor['pilihan'] = $selectMapel->mapel_nama;
+            //             } else {
+            //                 $selectMapel = $dbMapel->where('mapel_kode', $rowListMapel)->first();
+            //             }
+            //             $mapel_id = $selectMapel->id;
 
-                        foreach($rowrapor->detail as $rowDetail){
-                            if($rowDetail->mapel_id == $mapel_id){
-                                $rowrapor[$rowListMapel] = $rowDetail;
-                            }
-                        }
-                    }
-                }
-            } else {
+            //             foreach($rowrapor->detail as $rowDetail){
+            //                 if($rowDetail->mapel_id == $mapel_id){
+            //                     $rowrapor[$rowListMapel] = $rowDetail;
+            //                 }
+            //             }
+            //         }
+            //     }
+            // } else {
                 $rapor = RaporAkhir::whereIn('siswa_id',$siswa)->with('siswa')->where('periode_id',$user->periode)->get();
-            }
+            //}
         }
 
         if(request()->rapor=='Petra'){
             $rapor = RaporPetra::whereIn('siswa_id',$siswa)->with('siswa')->where('periode_id',$user->periode)->get();
         }
 
-        foreach($rapor as $row) {
-            $kelas = KelasAnggota::with('kelas')->where('siswa_id',$row->siswa_id)->where('periode_id',$user->periode)->first();
-            $row['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
-            $row['absen'] = $kelas?$kelas['absen']:'-';
-            $row['walikelas'] = $kelas?User::whereId($kelas['kelas']['kelas_wali'])->value('full_name'):'-';
-            $jenjang = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_jenjang'):'-';
-            if($jenjang==7){
-                //$row['nilai'] = nilaiSisipanKurmer($row['id'], $user->unit_id);
+        if(request()->rapor=='P5'){
+            $rapor = PancasilaReport::whereIn('siswa_id',$siswa)
+                                    ->with(['siswa' => function ($query) {
+                                        $query->select('id','s_nama', 's_nis','s_code','s_nisn');
+                                        }])
+                                    ->where('periode_id',$user->periode)
+                                    ->get();
+            $pp = PancasilaProject::whereIn('kelas_id',$siswa_full->pluck('kelas.id'))->get();
+            $ps = PancasilaScore::whereIn('siswa_id',$siswa)->where('periode_id',$user->periode)->get();
+            $pc = PancasilaComment::whereIn('siswa_id',$siswa)->get();
+            foreach($pp as $rowpp) {
+                $ppe = PancasilaProjectElement::where('pp_id', $rowpp['id'])
+                                                 ->pluck('pe_id');
+                $element = [];
+                $dimension = ['Beriman, Bertakwa Kepada Tuhan Yang Maha Esa dan Berakhlak Mulia',
+                                'Berkebinekaan Global',
+                                'Bergotong Royong',
+                                'Mandiri',
+                                'Bernalar Kritis',
+                                'Kreatif'];
+                foreach($dimension as $index=>$rowelement){
+                    $pe_cek = PancasilaElement::whereIn('id', $ppe)
+                                                ->where('pe_dimension',$rowelement);
+                    $pe_count = $pe_cek->count();
+                    $n = $index+1;
+                    if($pe_count>0){
+                        //array_push($element,(object)['d'.$index => $pe_cek->get()]);
+
+                        $element['d'.$n] = $pe_cek->get();
+                        foreach($element['d'.$n] as $rowscore){
+                            // $rowscore['score'] = PancasilaScore::where('siswa_id',$pancasilaReport['siswa']['id'])
+                            //                         ->where('pp_id',$rowpp['id'])
+                            //                         ->where('pe_id',$rowscore['id'])
+                            //                         ->value('ps_score');
+
+                        }
+                    } else {
+                        //array_push($element,(object)['d'.$index=>null]);
+                        $element['d'.$n] = null;
+                    }
+
+                }
+                $rowpp['element'] = $element;
             }
+
+
         }
 
+        foreach($rapor as $rowpr) {
+            $kelas = KelasAnggota::with('kelas')->where('siswa_id',$rowpr->siswa_id)->where('periode_id',$user->periode)->first();
+            $rowpr['kelas'] = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_nama'):'-';
+            $rowpr['absen'] = $kelas?$kelas['absen']:'-';
+            $rowpr['walikelas'] = $kelas?User::whereId($kelas['kelas']['kelas_wali'])->value('full_name'):'-';
+            $jenjang = $kelas?Kelas::where('id',$kelas['kelas_id'])->value('kelas_jenjang'):'-';
+
+            if(request()->rapor=='P5'){
+                $rowpr['project'] = PancasilaProject::whereIn('kelas_id',$siswa_full->pluck('kelas.id'))->get();
+                foreach($rowpr['project'] as $rowproject){
+                    $ppe = PancasilaProjectElement::where('pp_id', $rowproject['id'])
+                                                 ->pluck('pe_id');
+                    $element = [];
+                    $dimension = ['Beriman, Bertakwa Kepada Tuhan Yang Maha Esa dan Berakhlak Mulia',
+                                    'Berkebinekaan Global',
+                                    'Bergotong Royong',
+                                    'Mandiri',
+                                    'Bernalar Kritis',
+                                    'Kreatif'];
+                    foreach($dimension as $index=>$rowelement){
+                        $pe_cek = PancasilaElement::whereIn('id', $ppe)
+                                                    ->where('pe_dimension',$rowelement);
+                        $pe_count = $pe_cek->count();
+                        $n = $index+1;
+                        if($pe_count>0){
+                            //array_push($element,(object)['d'.$index => $pe_cek->get()]);
+
+                            $element['d'.$n] = $pe_cek->get();
+                            foreach($element['d'.$n] as $rowscore){
+                                // $rowscore['score'] = PancasilaScore::where('siswa_id',$pancasilaReport['siswa']['id'])
+                                //                         ->where('pp_id',$rowpp['id'])
+                                //                         ->where('pe_id',$rowscore['id'])
+                                //                         ->value('ps_score');
+
+                            }
+                        } else {
+                            //array_push($element,(object)['d'.$index=>null]);
+                            $element['d'.$n] = null;
+                        }
+
+                    }
+                    $rowproject['element'] = $element;
+                    foreach($rowproject['element'] as $rowelement){
+                        if($rowelement){
+                            foreach($rowelement as $rowlistelement){
+
+                                //$pscore =  $ps->where('siswa_id',$row['siswa_id'])->where('pp_id',$rowproject['id'])->where('pe_id',$rowlistelement['id'])->first();
+                                // $pscore = $ps->filter(function($el) use($row){
+                                //                     return $el->siswa_id == $row['siswa_id'];
+                                //                 })->filter(function($el) use($rowproject){
+                                //                     return $el->pp_id == $rowproject['id'];
+                                //                 })->filter(function($el) use($rowlistelement){
+                                //                     return $el->pe_id == $rowlistelement['id'];
+                                //                 })->values();
+                                // $rowlistelement['score']= $pscore;
+                                $rowlistelement['score'] = PancasilaScore::where('siswa_id',$rowpr->siswa_id)
+                                                                            ->where('pp_id',$rowproject['id'])
+                                                                            ->where('pe_id',$rowlistelement['id'])
+                                                                            ->value('ps_score');
+
+                                //$pscore=null;
+
+                            }
+                        }
+                    }
+                    $pcomment = $pc->where('siswa_id',$rowpr['siswa_id'])->where('pp_id',$rowproject['id'])->first();
+                    $rowproject['comment'] = $pcomment;
+                }
+
+            }
+            //return $rapor;
+        }
+        //return $rapor;
         // Date::setLocale('id');
         // $siswa = Siswa::where('s_keterangan','AKTIF')->where('unit_id',$user->unit_id)->orderBy('s_nama')->get();
         // foreach($siswa as $row) {
@@ -787,12 +903,13 @@ class RaporAkhirController extends Controller
         $kelas = array_column($rapor, 'kelas');
         $absen = array_column($rapor, 'absen');
         array_multisort($kelas, SORT_ASC, $absen, SORT_ASC, $rapor);
+        //return $rapor;
         if(request()->rapor=='Akhir'){
-            if($jenjang==7){
-                return Excel::download(new KurmerReportExport($rapor), 'raporkurmer-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
-            } else {
+            // if($jenjang==7){
+            //     return Excel::download(new KurmerReportExport($rapor), 'raporkurmer-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
+            // } else {
                 return Excel::download(new RaporsExport($rapor), 'raporakhir-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
-            }
+            //}
         } elseif(request()->rapor=='Sisipan'){
             if($jenjang==7){
                 return Excel::download(new RaporsSisipanKurmerExport($rapor), 'raporsisipan-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
@@ -801,6 +918,10 @@ class RaporAkhirController extends Controller
             }
         } elseif(request()->rapor=='Petra'){
             return Excel::download(new RaporsPetraExport($rapor), 'raporpetra-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
+        } elseif(request()->rapor=='P5'){
+            $PRexport['data'] = $rapor;
+            $PRexport['header'] = $pp;
+            return Excel::download(new PancasilaReportExport($PRexport), 'PancasilaReport-'.request()->grup.request()->detail.'-'.date('y').date('m').date('d').'.xlsx');
         }
         //return response()->json(['status' => 'sukses'],200);
     }
@@ -1125,7 +1246,7 @@ class RaporAkhirController extends Controller
         $rapor['unit'] = $user->unit_id;
         $rapor['jenis'] = $request->jenis_file;
         if ($jenis=='akhir') {
-            if($request->jenis=='ledger'){
+            if($rapor['jenis']=='ledger'){
                 $data = Excel::import(new RaporAkhirsImport($rapor), $path);
             } elseif( $request->jenis_file=='walikelas') {
                 $data = Excel::import(new WalikelasImport($rapor), $path);
@@ -1151,8 +1272,8 @@ class RaporAkhirController extends Controller
                                     ->orderBy('kelas_id')
                                     ->orderBy('absen');
         if($user->role!=0){
-            $kelas = Kelas::whereKelas_wali($user->id)->where('periode_id',$user->periode)->value('id');
-            $kelasAnggota = $kelasAnggota->whereKelas_id($kelas);
+            $kelas = Kelas::where('periode_id',$user->periode)->where('kelas_wali',$user->id)->orWhere('k_mentor',$user->id)->pluck('id');//where('periode_id',$user->periode)->where('kelas_wali',$user->id)->value('id');
+            $kelasAnggota = $kelasAnggota->whereIn('kelas_id',$kelas);
         }
 
         $kelasAnggota = $kelasAnggota->with(['siswa' => function ($query) {

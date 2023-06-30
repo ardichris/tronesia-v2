@@ -1,103 +1,76 @@
 <table>
     <thead>
         <tr>
-            <th>Kelas</th>
-            <th>Nama</th>
-            <th>Code</th>
-            <th>NISN</th>
-            <th>NIS</th>
-            <th>Walikelas</th>
-            <th>spiritual_predikat</th>
-            <th>spiritual_deskripsi</th>
-            <th>sosial_predikat</th>
-            <th>sosial_deskripsi</th>
-            <th>pak_ki3_nilai</th>
-            <th>pak_ki3_predikat</th>
-            <th>pak_ki3_deskripsi</th>
-            <th>pak_ki4_nilai</th>
-            <th>pak_ki4_predikat</th>
-            <th>pak_ki4_deskripsi</th>
-            <th>pkn_ki3_nilai</th>
-            <th>pkn_ki3_predikat</th>
-            <th>pkn_ki3_deskripsi</th>
-            <th>pkn_ki4_nilai</th>
-            <th>pkn_ki4_predikat</th>
-            <th>pkn_ki4_deskripsi</th>
-            <th>bin_ki3_nilai</th>
-            <th>bin_ki3_predikat</th>
-            <th>bin_ki3_deskripsi</th>
-            <th>bin_ki4_nilai</th>
-            <th>bin_ki4_predikat</th>
-            <th>bin_ki4_deskripsi</th>
-            <th>mat_ki3_nilai</th>
-            <th>mat_ki3_predikat</th>
-            <th>mat_ki3_deskripsi</th>
-            <th>mat_ki4_nilai</th>
-            <th>mat_ki4_predikat</th>
-            <th>mat_ki4_deskripsi</th>
-            <th>ipa_ki3_nilai</th>
-            <th>ipa_ki3_predikat</th>
-            <th>ipa_ki3_deskripsi</th>
-            <th>ipa_ki4_nilai</th>
-            <th>ipa_ki4_predikat</th>
-            <th>ipa_ki4_deskripsi</th>
-            <th>ips_ki3_nilai</th>
-            <th>ips_ki3_predikat</th>
-            <th>ips_ki3_deskripsi</th>
-            <th>ips_ki4_nilai</th>
-            <th>ips_ki4_predikat</th>
-            <th>ips_ki4_deskripsi</th>
-            <th>big_ki3_nilai</th>
-            <th>big_ki3_predikat</th>
-            <th>big_ki3_deskripsi</th>
-            <th>big_ki4_nilai</th>
-            <th>big_ki4_predikat</th>
-            <th>big_ki4_deskripsi</th>
-            <th>bdy_ki3_nilai</th>
-            <th>bdy_ki3_predikat</th>
-            <th>bdy_ki3_deskripsi</th>
-            <th>bdy_ki4_nilai</th>
-            <th>bdy_ki4_predikat</th>
-            <th>bdy_ki4_deskripsi</th>
-            <th>org_ki3_nilai</th>
-            <th>org_ki3_predikat</th>
-            <th>org_ki3_deskripsi</th>
-            <th>org_ki4_nilai</th>
-            <th>org_ki4_predikat</th>
-            <th>org_ki4_deskripsi</th>
-            <th>pky_ki3_nilai</th>
-            <th>pky_ki3_predikat</th>
-            <th>pky_ki3_deskripsi</th>
-            <th>pky_ki4_nilai</th>
-            <th>pky_ki4_predikat</th>
-            <th>pky_ki4_deskripsi</th>
-            <th>jwa_ki3_nilai</th>
-            <th>jwa_ki3_predikat</th>
-            <th>jwa_ki3_deskripsi</th>
-            <th>jwa_ki4_nilai</th>
-            <th>jwa_ki4_predikat</th>
-            <th>jwa_ki4_deskripsi</th>
-            <th>man_ki3_nilai</th>
-            <th>man_ki3_predikat</th>
-            <th>man_ki3_deskripsi</th>
-            <th>man_ki4_nilai</th>
-            <th>man_ki4_predikat</th>
-            <th>man_ki4_deskripsi</th>
-            <th>ekstra1_kegiatan</th>
-            <th>ekstra1_nilai</th>
-            <th>ekstra1_predikat</th>
-            <th>ekstra2_kegiatan</th>
-            <th>ekstra2_nilai</th>
-            <th>ekstra2_predikat</th>
-            <th>ekstra3_kegiatan</th>
-            <th>ekstra3_nilai</th>
-            <th>ekstra3_predikat</th>
-            <th>catatan_sakit</th>
-            <th>catatan_ijin</th>
-            <th>catatan_alpha</th>
-            <th>catatan_ayat</th>
-            <th>catatan_isi</th>
-            <th>catatan_pesan</th>
+            <th style="width:10px;">Kelas</th>
+            <th style="width:10px;">Nama</th>
+            <th style="width:10px;">Code</th>
+            <th style="width:10px;">NISN</th>
+            <th style="width:10px;">NIS</th>
+            <th style="width:10px;">Walikelas</th>
+            <th style="width:10px;">spiritual_predikat</th>
+            <th style="width:10px;">spiritual_deskripsi</th>
+            <th style="width:10px;">sosial_predikat</th>
+            <th style="width:10px;">sosial_deskripsi</th>
+            <th style="width:10px;">pak_ki3_nilai</th>
+            <th style="width:10px;">pak_ki3_predikat</th>
+            <th style="width:10px;">pak_ki3_deskripsi</th>
+            <th style="width:10px;">pkn_ki3_nilai</th>
+            <th style="width:10px;">pkn_ki3_predikat</th>
+            <th style="width:10px;">pkn_ki3_deskripsi</th>
+            <th style="width:10px;">bin_ki3_nilai</th>
+            <th style="width:10px;">bin_ki3_predikat</th>
+            <th style="width:10px;">bin_ki3_deskripsi</th>
+            <th style="width:10px;">mat_ki3_nilai</th>
+            <th style="width:10px;">mat_ki3_predikat</th>
+            <th style="width:10px;">mat_ki3_deskripsi</th>
+            <th style="width:10px;">ipa_ki3_nilai</th>
+            <th style="width:10px;">ipa_ki3_predikat</th>
+            <th style="width:10px;">ipa_ki3_deskripsi</th>
+            <th style="width:10px;">ips_ki3_nilai</th>
+            <th style="width:10px;">ips_ki3_predikat</th>
+            <th style="width:10px;">ips_ki3_deskripsi</th>
+            <th style="width:10px;">big_ki3_nilai</th>
+            <th style="width:10px;">big_ki3_predikat</th>
+            <th style="width:10px;">big_ki3_deskripsi</th>
+            <th style="width:10px;">bdy_ki3_nilai</th>
+            <th style="width:10px;">bdy_ki3_predikat</th>
+            <th style="width:10px;">bdy_ki3_deskripsi</th>
+            <th style="width:10px;">org_ki3_nilai</th>
+            <th style="width:10px;">org_ki3_predikat</th>
+            <th style="width:10px;">org_ki3_deskripsi</th>
+            <th style="width:10px;">pky_ki3_nilai</th>
+            <th style="width:10px;">pky_ki3_predikat</th>
+            <th style="width:10px;">pky_ki3_deskripsi</th>
+            <th style="width:10px;">snm_ki3_nilai</th>
+            <th style="width:10px;">snm_ki3_predikat</th>
+            <th style="width:10px;">snm_ki3_deskripsi</th>
+            <th style="width:10px;">snr_ki3_nilai</th>
+            <th style="width:10px;">snr_ki3_predikat</th>
+            <th style="width:10px;">snr_ki3_deskripsi</th>
+            <th style="width:10px;">jwa_ki3_nilai</th>
+            <th style="width:10px;">jwa_ki3_predikat</th>
+            <th style="width:10px;">jwa_ki3_deskripsi</th>
+            <th style="width:10px;">man_ki3_nilai</th>
+            <th style="width:10px;">man_ki3_predikat</th>
+            <th style="width:10px;">man_ki3_deskripsi</th>
+            <th style="width:10px;">tik_ki3_nilai</th>
+            <th style="width:10px;">tik_ki3_predikat</th>
+            <th style="width:10px;">tik_ki3_deskripsi</th>
+            <th style="width:10px;">ekstra1_kegiatan</th>
+            <th style="width:10px;">ekstra1_nilai</th>
+            <th style="width:10px;">ekstra1_predikat</th>
+            <th style="width:10px;">ekstra2_kegiatan</th>
+            <th style="width:10px;">ekstra2_nilai</th>
+            <th style="width:10px;">ekstra2_predikat</th>
+            <th style="width:10px;">ekstra3_kegiatan</th>
+            <th style="width:10px;">ekstra3_nilai</th>
+            <th style="width:10px;">ekstra3_predikat</th>
+            <th style="width:10px;">catatan_sakit</th>
+            <th style="width:10px;">catatan_ijin</th>
+            <th style="width:10px;">catatan_alpha</th>
+            <th style="width:10px;">catatan_ayat</th>
+            <th style="width:10px;">catatan_isi</th>
+            <th style="width:10px;">catatan_pesan</th>
 
         </tr>
     </thead>
@@ -117,75 +90,48 @@
                 <td>{{$row['ra_pak_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_pak_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_pak_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_pak_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_pak_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_pak_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_pkn_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_pkn_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_pkn_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_pkn_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_pkn_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_pkn_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_bin_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_bin_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_bin_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_bin_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_bin_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_bin_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_mat_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_mat_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_mat_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_mat_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_mat_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_mat_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_ipa_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_ipa_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_ipa_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_ipa_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_ipa_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_ipa_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_ips_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_ips_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_ips_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_ips_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_ips_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_ips_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_big_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_big_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_big_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_big_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_big_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_big_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_bdy_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_bdy_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_bdy_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_bdy_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_bdy_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_bdy_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_org_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_org_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_org_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_org_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_org_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_org_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_pky_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_pky_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_pky_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_pky_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_pky_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_pky_keterampilan_deskripsi']}}</td>
+                <td>{{$row['ra_snm_pengetahuan_nilai']}}</td>
+                <td>{{$row['ra_snm_pengetahuan_predikat']}}</td>
+                <td>{{$row['ra_snm_pengetahuan_deskripsi']}}</td>
+                <td>{{$row['ra_snr_pengetahuan_nilai']}}</td>
+                <td>{{$row['ra_snr_pengetahuan_predikat']}}</td>
+                <td>{{$row['ra_snr_pengetahuan_deskripsi']}}</td>
                 <td>{{$row['ra_jwa_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_jwa_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_jwa_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_jwa_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_jwa_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_jwa_keterampilan_deskripsi']}}</td>
                 <td>{{$row['ra_man_pengetahuan_nilai']}}</td>
                 <td>{{$row['ra_man_pengetahuan_predikat']}}</td>
                 <td>{{$row['ra_man_pengetahuan_deskripsi']}}</td>
-                <td>{{$row['ra_man_keterampilan_nilai']}}</td>
-                <td>{{$row['ra_man_keterampilan_predikat']}}</td>
-                <td>{{$row['ra_man_keterampilan_deskripsi']}}</td>
+                <td>{{$row['ra_tik_pengetahuan_nilai']}}</td>
+                <td>{{$row['ra_tik_pengetahuan_predikat']}}</td>
+                <td>{{$row['ra_tik_pengetahuan_deskripsi']}}</td>
                 <td>{{$row['ra_ekstra1_kegiatan']}}</td>
                 <td>{{$row['ra_ekstra1_nilai']}}</td>
                 <td>{{$row['ra_ekstra1_predikat']}}</td>

@@ -46,18 +46,18 @@
                             <label>Extensi File</label>
                             <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.file">
                                 <option>Excel</option>
-                                <option>PDF</option>
                             </select>
                             <label>Rapor</label>
                             <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.rapor">
                                 <option>Sisipan</option>
                                 <option>Akhir</option>
                                 <option>Petra</option>
+                                <option>P5</option>
                             </select>
                             <label>Grup</label>
                             <select type="text" class="form-control" aria-invalid="false" v-model="exportParameter.grup">
-                                <option>Jenjang</option>
                                 <option>Kelas</option>
+                                <option v-if="exportParameter.rapor!='P5'">Jenjang</option>
                             </select>
                             <div class="form-group" v-if="exportParameter.grup!=''&&exportParameter.grup!='All'">
                                 <label>Detail</label>
@@ -106,10 +106,10 @@
                                <div class="form-group">
                                     <label>Berat Badan</label>
                                     <select type="text" class="form-control" aria-invalid="false" v-model="raporPetra.rp_pone_score">
-                                        <option value="P1">Ideal</option>
-                                        <option value="P1+">Menuju Ideal</option>
-                                        <option value="P1-">Menjauhi Ideal</option>
-                                        <option value="P1++">Obesitas/Overweight</option>
+                                        <option value="P1">BB IDEAL TETAP/TURUN</option>
+                                        <option value="P1+">BB OB /OW TURUN, UW NAIK</option>
+                                        <option value="P1-">BB IDEAL NAIK, OB/OW NAIK</option>
+                                        <option value="P1++">BB OB / OW TETAP</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -186,6 +186,7 @@
                                             <option>Art And Craft</option>
                                             <option>Bahasa Inggris</option>
                                             <option>Bahasa Israel</option>
+                                            <option>Bahasa Jepang</option>
                                             <option>Bahasa Mandarin</option>
                                             <option>Bahasa Perancis</option>
                                             <option>Balet</option>
@@ -200,6 +201,7 @@
                                             <option>Bulutangkis</option>
                                             <option>Catur</option>
                                             <option>Comedy</option>
+                                            <option>Concept Art</option>
                                             <option>Cover Dance</option>
                                             <option>Dance</option>
                                             <option>Debat</option>
@@ -213,6 +215,7 @@
                                             <option>Fashion</option>
                                             <option>Fotografi</option>
                                             <option>Futsal</option>
+                                            <option>Game Design</option>
                                             <option>Gitar</option>
                                             <option>Handycraft</option>
                                             <option>Hip-Hop</option>
@@ -280,6 +283,7 @@
                                             <option>Art And Craft</option>
                                             <option>Bahasa Inggris</option>
                                             <option>Bahasa Israel</option>
+                                            <option>Bahasa Jepang</option>
                                             <option>Bahasa Mandarin</option>
                                             <option>Bahasa Perancis</option>
                                             <option>Balet</option>
@@ -294,6 +298,7 @@
                                             <option>Bulutangkis</option>
                                             <option>Catur</option>
                                             <option>Comedy</option>
+                                            <option>Concept Art</option>
                                             <option>Cover Dance</option>
                                             <option>Dance</option>
                                             <option>Debat</option>
@@ -307,6 +312,7 @@
                                             <option>Fashion</option>
                                             <option>Fotografi</option>
                                             <option>Futsal</option>
+                                            <option>Game Design</option>
                                             <option>Gitar</option>
                                             <option>Handycraft</option>
                                             <option>Hip-Hop</option>
@@ -776,11 +782,20 @@
                         </b-button>
                     </template>
                 </b-modal>
-                <b-modal id="modal-pancasilareport-view" scrollable size="lg" hide-footer>
+                <b-modal id="modal-pancasilareport-view" scrollable size="lg">
                     <template v-slot:modal-title>
                         Rapor P5
                     </template>
                     <pancasila-report-view></pancasila-report-view>
+                    <template v-slot:modal-footer>
+                        <b-button
+                            variant="success"
+                            class="mt-3"
+                            block  @click="exportPDF()"
+                        >
+                            Download PDF
+                        </b-button>
+                    </template>
                 </b-modal>
             </div>
             <div class="panel-body">
@@ -789,25 +804,25 @@
                         {{row.item.siswa.s_nama}}
                     </template>
                     <template v-slot:cell(sisipan)="row">
-                        <b-button variant="success" size="sm" v-if="row.item.RaporSisipan == '-'" @click="inputRaporSisipan(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
                         <!-- <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-' && row.item.kelas.kelas_jenjang!='7'" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-church"></i></b-button> -->
+                        <!-- <b-button variant="success" size="sm" v-if="row.item.RaporSisipan == '-'" @click="inputRaporSisipan(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
                         <b-button variant="warning" size="sm" v-if="row.item.RaporSisipan != '-'" @click="commentSisipan(row.item.RaporSisipan.id)"><i class="fa fa-edit"></i></b-button>
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang!='7'" @click="previewSisipan(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i></b-button>
                         <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang=='7'" @click="previewSisipanKurmer(row.item.RaporSisipan.id)"><i class="fa fa-eye"></i></b-button>
                         <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id+'&kurikulum=merdeka'" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang=='7'"><i class="fa fa-file-pdf"></i></b-button>
-                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang!='7'"><i class="fa fa-file-pdf"></i></b-button>
+                        <b-button variant="success" size="sm" :href="'/laporan/raporsisipan?rapor='+row.item.RaporSisipan.id+'&unit='+authenticated.unit_id" v-if="row.item.RaporSisipan != '-'&&row.item.kelas.kelas_jenjang!='7'"><i class="fa fa-file-pdf"></i></b-button> -->
                     </template>
                     <template v-slot:cell(akhir)="row">
-                        <b-button variant="success" size="sm" v-if="row.item.RaporKurmer == '-'&&row.item.kelas.kelas_jenjang=='7'" @click="inputRaporKurmer(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
+                        <!-- <b-button variant="success" size="sm" v-if="row.item.RaporKurmer == '-'&&row.item.kelas.kelas_jenjang=='7'" @click="inputRaporKurmer(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
                         <b-button variant="success" size="sm" v-if="row.item.RaporAkhir == '-'&&row.item.kelas.kelas_jenjang!='7'" @click="inputRaporKurtilas(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
                         <b-button variant="warning" size="sm" v-if="row.item.RaporKurmer != '-'&&row.item.kelas.kelas_jenjang=='7'" @click="inputRaporKurmer(row.item.RaporKurmer.id)"><i class="fa fa-edit"></i></b-button>
                         <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-'&&row.item.kelas.kelas_jenjang!='7'" @click="inputRaporKurtilas(row.item.RaporAkhir.id)"><i class="fa fa-edit"></i></b-button>
                         <b-button variant="primary" size="sm" v-if="row.item.RaporKurmer != '-'" @click="previewRapor(row.item.RaporKurmer.id,row.item.kelas.kelas_jenjang)"><i class="fa fa-eye"></i></b-button>
                         <b-button variant="success" size="sm" :href="'/raporkurmer/pdf?rapor='+row.item.RaporKurmer.id+'&user='+authenticated.id+'&kurikulum=merdeka'" v-if="row.item.RaporKurmer != '-'&&row.item.kelas.kelas_jenjang=='7'"><i class="fa fa-file-pdf"></i></b-button>
-                        <!-- <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-'&&authenticated.unit_id == 1" @click="commentRapor(row.item.RaporAkhir.id)"><i class="fa fa-church"></i></b-button> -->
                         <b-button variant="primary" size="sm" v-if="row.item.RaporAkhir != '-'" @click="previewRapor(row.item.RaporAkhir.id)"><i class="fa fa-eye"></i></b-button>
+                        <b-button variant="success" size="sm" :href="'/raporakhir/pdf?user='+authenticated.id+'&rapor='+row.item.RaporAkhir.id" v-if="row.item.RaporAkhir != '-'&&authenticated.role=='0'"><i class="fa fa-file-pdf"></i> PDF</b-button> -->
+                        <!-- <b-button variant="warning" size="sm" v-if="row.item.RaporAkhir != '-'&&authenticated.unit_id == 1" @click="commentRapor(row.item.RaporAkhir.id)"><i class="fa fa-church"></i></b-button> -->
                         <!-- <b-button variant="primary" size="sm" v-b-modal="'modal-jurnal-roster'" @click="$bvModal.show('modal-sisipan-preview')"></b-button> -->
-                        <b-button variant="success" size="sm" :href="'/raporakhir/pdf?user='+authenticated.id+'&rapor='+row.item.RaporAkhir.id" v-if="row.item.RaporAkhir != '-'&&authenticated.role=='0'"><i class="fa fa-file-pdf"></i> PDF</b-button>
                     </template>
                     <template v-slot:cell(petra)="row">
                         <b-button variant="success" size="sm" v-if="row.item.RaporPetra == '-'" @click="inputRaporPetra(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
@@ -819,6 +834,7 @@
                         <b-button variant="success" size="sm" v-if="row.item.PancasilaReport == '-'" @click="inputPancasilaReport(row.item.siswa.id)"><i class="fa fa-plus"></i></b-button>
                         <b-button variant="warning" size="sm" v-if="row.item.PancasilaReport != '-'" @click="changePancasilaReport(row.item.PancasilaReport.id)"><i class="fa fa-pen"></i></b-button>
                         <b-button variant="primary" size="sm" v-if="row.item.PancasilaReport != '-'" @click="viewPancasilaReport(row.item.PancasilaReport.id)"><i class="fa fa-eye"></i></b-button>
+                        <b-button variant="success" size="sm" :href="'/pancasilareport/pdf?id='+row.item.PancasilaReport.id+'&unit='+authenticated.unit_id" v-if="row.item.PancasilaReport != '-'"><i class="fa fa-file-pdf"></i></b-button>
 
                     </template>
                     <!-- <template v-slot:cell(walikelas)="row">
@@ -859,6 +875,7 @@ import PancasilaReportForm from './PancasilaReportForm.vue'
 import PancasilaReportView from './PancasilaReportView.vue'
 import ViewRaporPetra from './RaporPetraView.vue'
 import vSelect from 'vue-select'
+import VueHtml2pdf from 'vue-html2pdf'
 
 
 export default {
@@ -1177,13 +1194,33 @@ export default {
             })
         },
         submitPancasilaReport(){
+            this.$bvModal.hide('modal-pancasila-report')
             this.setPancasilaReport().then(() => {
-                this.$bvModal.hide('modal-pancasila-report')
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    title: 'Rapor P5 Tersimpan',
+                    type: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                }),
                 this.getRapor({
                     search: ''
                 })
+            }).catch(() => {
+                this.$swal({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    type: 'error',
+                    title: 'Submit Rapor P5 Gagal'
+                })
             })
         },
+        exportPDF(){
+            this.$refs.html2Pdf.generatePdf()
+        }
 
     },
     components: {
@@ -1196,7 +1233,8 @@ export default {
         'walikelas-form': FormWalikelas,
         'pancasila-report-form': PancasilaReportForm,
         'pancasila-report-view': PancasilaReportView,
-        vSelect
+        vSelect,
+        VueHtml2pdf
 
     }
 }
