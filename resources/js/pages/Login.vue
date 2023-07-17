@@ -46,7 +46,8 @@
                                 <option value="3">Semester 1 Tahun Ajaran 2021/2022</option>
                                 <option value="4">Semester 2 Tahun Ajaran 2021/2022</option>
                                 <option value="5">Semester 1 Tahun Ajaran 2022/2023</option>
-                                <option value="6" selected>Semester 2 Tahun Ajaran 2022/2023</option>
+                                <option value="6">Semester 2 Tahun Ajaran 2022/2023</option>
+                                <option value="7" selected>Semester 1 Tahun Ajaran 2023/2024</option>
                             </select>
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                             <p class="text-danger" v-if="errors.periode">{{ errors.periode[0] }}</p>
