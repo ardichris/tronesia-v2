@@ -90,7 +90,7 @@ export default {
             data: {
                 email: '',
                 password: '',
-                periode: 6,
+                periode: 7,
                 remember_me: false
             },
             options: {
